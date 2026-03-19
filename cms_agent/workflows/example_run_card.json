@@ -1,0 +1,24 @@
+{
+  "workflow": "cms_diphoton_sketch",
+  "intent": "Plot leading photon pT from UL18 skim after loose ID; compare MC vs data with ratio panel.",
+  "allowlisted_tools": [
+    "cms_run_cmsDriver",
+    "cms_histogram_task",
+    "inspire_search",
+    "repro_bundle_packager"
+  ],
+  "checks": [
+    {
+      "name": "event_count_nonzero",
+      "expression": "events_processed > 0"
+    },
+    {
+      "name": "histogram_integral_positive",
+      "expression": "integral(leading_photon_pt) > 0"
+    }
+  ],
+  "artifacts": [
+    "plots/leading_photon_pt.pdf",
+    "metadata/run_card.json"
+  ]
+}

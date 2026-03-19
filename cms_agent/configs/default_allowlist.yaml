@@ -1,0 +1,11 @@
+# Example tool allowlist for a CMS read-only exploratory session.
+tools:
+  - pdg_lookup
+  - inspire_search
+  - kinematics_core
+  - cms_histogram_task
+safety:
+  shell: forbid
+  max_wall_seconds: 3600
+  writable_paths:
+    - ./artifacts

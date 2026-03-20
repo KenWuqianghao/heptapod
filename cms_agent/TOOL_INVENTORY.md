@@ -15,6 +15,7 @@ Each entry names a **purpose**, **primary dependency**, **inputs/outputs**, and 
 | `systematics_card_writer` | Human + templating | Record JES/JER/norm uncertainties | YAML template + measured stat → LaTeX/snippet | Manual formula mistakes |
 | `repro_bundle_packager` | Idea from HEPTAPOD paper ([arXiv:2512.15867](https://arxiv.org/abs/2512.15867)) | Ship code + env + pins for reviewers | Git SHA + container digest → tarball | Non-reproducible random seeds |
 
-## Adapter stubs
+## Adapter status
 
-Python stubs under `cms_agent/tools/adapters/` document function signatures only; real installs belong in user-controlled environments (CVMFS, Apptainer, conda).
+- `cms_agent/tools/adapters/cms_histograms.py` now provides a **minimal working JSON histogram contract** for nano-like tables.
+- Heavier integrations should still live in user-controlled environments (CVMFS, Apptainer, conda) and keep the same input/output surface.

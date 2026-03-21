@@ -5,6 +5,39 @@
 [![Python](https://img.shields.io/badge/Python-3.12%20|%203.13-blue.svg)](https://www.python.org/downloads/)
 [![Framework](https://img.shields.io/badge/Framework-Orchestral--AI-green.svg)](https://orchestral-ai.com)
 
+## ML4SCI GSoC 2026 — changes on this fork (Task 2c)
+
+> **This repository is a fork.** Active development for the **ML4SCI umbrella evaluation** lives on branch **`gsoc26-cms-restructure`** ([browse on GitHub](https://github.com/KenWuqianghao/heptapod/tree/gsoc26-cms-restructure)).  
+> **Upstream:** [tonymenzo/heptapod](https://github.com/tonymenzo/heptapod). Everything below **“Overview”** still describes the base HEPTAPOD project; the following table lists **only what was added here for Task 2c** (*Agentic AI for High Energy Physics Analyses at the CMS Detector*).
+
+### Deliverables added for Task 2c
+
+| Location | What changed |
+| -------- | ------------- |
+| **[`cms_agent/`](cms_agent/)** | **New** parallel tree for CMS-oriented agent work: `agents/` (planner contract), `workflows/` (example run cards + schema), `configs/` (tool allowlists), `knowledge/` and `eval/` stubs, **`tools/adapters/`** for thin CMS-facing wrappers. Does **not** replace upstream `tools/`. |
+| **[`ARCHITECTURE_CMS_AGENT.md`](ARCHITECTURE_CMS_AGENT.md)** | **New** document: how `cms_agent/` maps to Orchestral AI, MCP, and CMS analysis steps; links to the PDF report. |
+| **[`docs/GSoC26_Task2c_Report.pdf`](docs/GSoC26_Task2c_Report.pdf)** | **New** PDF write-up for the task (LaTeX: [`docs/GSoC26_Task2c_Report.tex`](docs/GSoC26_Task2c_Report.tex); build notes: [`docs/README.md`](docs/README.md)). |
+| **[`cms_agent/TOOL_INVENTORY.md`](cms_agent/TOOL_INVENTORY.md)** | **New** tool manifest (linked ecosystem: Orchestral AI, MCP, PDG/INSPIRE tools in-repo, CMSSW/coffea-class stacks for CMS steps). |
+| **[`cms_agent/tools/adapters/cms_histograms.py`](cms_agent/tools/adapters/cms_histograms.py)** | **New** minimal **NumPy** implementation of a JSON histogram contract so reviewers can run something without CMSSW or coffea. |
+
+### Not in this repo (separate task)
+
+**Task 2b** (GAN super-resolution on CMS jet images) is implemented in a **different repository**: **[KenWuqianghao/CMS_E2E](https://github.com/KenWuqianghao/CMS_E2E)** — not in this fork.
+
+### Evaluation compliance
+
+- Work is merged on **`gsoc26-cms-restructure`** in this fork only.  
+- **Do not open a pull request** to **upstream** `tonymenzo/heptapod` unless the program explicitly asks.
+
+### Clone this branch
+
+```bash
+git clone -b gsoc26-cms-restructure https://github.com/KenWuqianghao/heptapod.git
+cd heptapod
+```
+
+---
+
 ## Overview
 
 **HEPTAPOD** (High-Energy Physics Toolkit for Agentic Planning, Orchestration, and Deployment) is a toolkit and orchestration framework designed to **integrate LLMs into general HEP workflows** spanning theoretical calculations, simulation, and data analysis.
@@ -40,8 +73,13 @@ The design and philosophy of HEPTAPOD are described in detail in the accompanyin
 
 ## Directory Structure
 
+**On branch `gsoc26-cms-restructure`,** these entries are **additions** for Task 2c: `cms_agent/`, `docs/` (GSoC PDF), and `ARCHITECTURE_CMS_AGENT.md`. Upstream layout otherwise matches the tree below.
+
 ```bash
 heptapod/
+├── cms_agent/                   # [THIS FORK] CMS agent scaffold + adapters (Task 2c)
+├── docs/                        # [THIS FORK] GSoC Task 2c PDF + LaTeX source
+├── ARCHITECTURE_CMS_AGENT.md    # [THIS FORK] CMS layout vs upstream tools/
 ├── tools/                       # Physics tools for event generation and analysis
 │   ├── feynrules/               # FeynRules → UFO model generation
 │   ├── mg5/                     # MadGraph parton-level event generation
@@ -81,8 +119,17 @@ heptapod/
 
 **1. Clone the Repository**
 
+Upstream (vanilla HEPTAPOD):
+
 ```bash
 git clone https://github.com/tonymenzo/heptapod.git
+cd heptapod
+```
+
+**For ML4SCI GSoC 2026 Task 2c**, use this fork and branch (includes `cms_agent/` and the PDF under `docs/`):
+
+```bash
+git clone -b gsoc26-cms-restructure https://github.com/KenWuqianghao/heptapod.git
 cd heptapod
 ```
 

@@ -20,10 +20,6 @@
 | **[`cms_agent/TOOL_INVENTORY.md`](cms_agent/TOOL_INVENTORY.md)** | **New** tool manifest (linked ecosystem: Orchestral AI, MCP, PDG/INSPIRE tools in-repo, CMSSW/coffea-class stacks for CMS steps). |
 | **[`cms_agent/tools/adapters/cms_histograms.py`](cms_agent/tools/adapters/cms_histograms.py)** | **New** minimal **NumPy** implementation of a JSON histogram contract so reviewers can run something without CMSSW or coffea. |
 
-### Not in this repo (separate task)
-
-**Task 2b** (GAN super-resolution on CMS jet images) is implemented in a **different repository**: **[KenWuqianghao/CMS_E2E](https://github.com/KenWuqianghao/CMS_E2E)** — not in this fork.
-
 ### Evaluation compliance
 
 - Work is merged on **`gsoc26-cms-restructure`** in this fork only.  

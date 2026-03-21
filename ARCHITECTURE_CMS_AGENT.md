@@ -1,5 +1,7 @@
 # CMS-oriented agent layout (GSoC 2c proposal)
 
+**PDF write-up (Task 2c only):** [`docs/GSoC26_Task2c_Report.pdf`](docs/GSoC26_Task2c_Report.pdf) · source [`docs/GSoC26_Task2c_Report.tex`](docs/GSoC26_Task2c_Report.tex). Task 2b (super-resolution) lives in a **separate** repo: [`KenWuqianghao/CMS_E2E`](https://github.com/KenWuqianghao/CMS_E2E).
+
 This branch adds a **parallel layout** for *agentic CMS analyses* without disrupting the existing general-purpose `tools/`, `llm/`, and `examples/` tree from upstream HEPTAPOD. The intent is to separate **orchestration** (agents, workflows, prompts, eval) from **vendor-style physics tools** already shipped in `tools/`.
 
 Upstream overview (unchanged): see the root [README.md](README.md).

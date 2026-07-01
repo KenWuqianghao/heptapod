@@ -35,6 +35,13 @@ def load_prompt(filename: str) -> str:
 HEP_BSM_EVT_GEN_TODO_PROMPT = load_prompt('examples/hep_bsm/system/hep_bsm_evt_gen_todo_prompt.md')
 HEP_BSM_EVT_GEN_PLAN_PROMPT = load_prompt('examples/hep_bsm/system/hep_bsm_evt_gen_plan_prompt.md')
 HEP_BSM_EVT_GEN_EXPLORER_PROMPT = load_prompt('examples/hep_bsm/system/hep_bsm_evt_gen_explorer_prompt.md')
+LAGRANGIAN_EXTRACTION_PROMPT = load_prompt('examples/lagrangian_extraction/system/lagrangian_extraction_prompt.md')
 
 
-__all__ = ['load_prompt', 'HEP_BSM_EVT_GEN_TODO_PROMPT', 'HEP_BSM_EVT_GEN_PLAN_PROMPT', 'HEP_BSM_EVT_GEN_EXPLORER_PROMPT']
+__all__ = [
+    'load_prompt',
+    'HEP_BSM_EVT_GEN_TODO_PROMPT',
+    'HEP_BSM_EVT_GEN_PLAN_PROMPT',
+    'HEP_BSM_EVT_GEN_EXPLORER_PROMPT',
+    'LAGRANGIAN_EXTRACTION_PROMPT',
+]

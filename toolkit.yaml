@@ -41,6 +41,15 @@ bundles:
   inspire: {}                            # uses requests (always-installed base)
   pdg:
     deps: [pdg>=0.2.0]                   # PDG database API
+  # arXiv search + PDF full-text extraction (INSPIRE covers neither)
+  literature:
+    deps: [pymupdf>=1.24.0]              # requests is in the always-installed base
+  # FeynRules .fr generation from a structured spec (no Mathematica needed)
+  frgen:
+    deps: [jinja2>=3.1.0]               # pydantic comes via orchestral-ai base
+  # Lagrangian extraction: paper text -> structured FeynRulesModel via LLM.
+  # LLM providers (ollama/openai) are optional runtime deps, not required here.
+  extract: {}
 
   # ── analysis stack ───────────────────────────────────────────────
   analysis:
@@ -178,6 +187,18 @@ tools:
     description: Generate a UFO model directory from a FeynRules .fr model file
       by calling Mathematica's `wolframscript`.
     bundle: feynrules
+  - module: tools.frgen.frgen_tool
+    name: GenerateFeynRulesModelTool
+    description: Generate a FeynRules .fr model file from a structured JSON spec.
+    bundle: frgen
+  - module: tools.extract.extract_tool
+    name: ExtractLagrangianTool
+    description: Extract a structured FeynRules model from BSM paper text (LLM).
+    bundle: extract
+  - module: tools.validate.validate_tool
+    name: ValidateModelTool
+    description: Compile a .fr to a UFO and run structural pass/fail checks.
+    bundle: feynrules
   - module: tools.inspire.inspire_tools
     name: InspireAuthorTool
     description: Get information about a physicist and their publication
@@ -223,6 +244,18 @@ tools:
     name: InspireSearchTool
     description: Search INSPIRE HEP for physics papers.
     bundle: inspire
+  - module: tools.literature.literature_tools
+    name: ArxivSearchTool
+    description: Search arXiv for physics papers (arXiv ids, PDF links, abstracts).
+    bundle: literature
+  - module: tools.literature.literature_tools
+    name: FetchPaperPDFTool
+    description: Download an arXiv paper PDF into the sandbox.
+    bundle: literature
+  - module: tools.literature.literature_tools
+    name: ExtractPaperTextTool
+    description: Extract full plain text from a PDF (PyMuPDF) for downstream extraction.
+    bundle: literature
   - module: tools.mg5.mg5
     name: MadGraphFromRunCardTool
     description: Run MadGraph5_aMC@NLO to generate parton-level events given a

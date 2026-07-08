@@ -313,7 +313,7 @@ def main():
     )
     parser.add_argument(
         "--only",
-        choices=["prereqs", "conversions", "kinematics", "reconstruction", "delta_r_filter", "feynrules", "mg5", "pythia", "sherpa", "llm", "pdg", "inspire", "units", "nda", "eda", "feyngraph", "logging"],
+        choices=["prereqs", "conversions", "kinematics", "reconstruction", "delta_r_filter", "feynrules", "mg5", "pythia", "sherpa", "llm", "pdg", "inspire", "units", "nda", "eda", "feyngraph", "llp", "logging"],
         help="Run only tests for specified component (prereqs = prerequisites check only)"
     )
     parser.add_argument(
@@ -413,6 +413,10 @@ def main():
                 REPO_ROOT / "tools" / "eda" / "tests" / "test_e2e_feyncalc.py",
             ],
             "description": "EDA tools (FeynCalc codegen, Wolfram runner, symbolic-to-Python conversion)"
+        },
+        "llp": {
+            "script": REPO_ROOT / "tools" / "llp" / "tests" / "test_llp_tools.py",
+            "description": "LLP tools (flux sampling from meson decay, decay-in-volume yields, g^4 scaling)"
         },
         "logging": {
             "script": REPO_ROOT / "tools" / "logging" / "tests" / "test_findings.py",

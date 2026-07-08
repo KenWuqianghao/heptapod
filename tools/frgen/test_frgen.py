@@ -270,6 +270,43 @@ def test_ufo_generation() -> bool:
     return True
 
 
+_MODELS_DIR = REPO_ROOT / "tools" / "feynrules" / "test_files" / "models"
+
+
+def test_fr_parser_s1() -> bool:
+    print(">> Testing .fr parser on S1_LQ_RR.fr...\n")
+    from tools.frgen.fr_parser import parse_fr_file
+
+    m = parse_fr_file(str(_MODELS_DIR / "S1_LQ_RR.fr"))
+    assert m["model_name"] == "S1_LQ_RR", m["model_name"]
+    s1 = [c for c in m["classes"] if c["class_name"] == "S1"]
+    assert len(s1) == 1, m["classes"]
+    assert s1[0]["spin_type"] == "S" and s1[0]["class_index"] == 100, s1[0]
+    assert s1[0]["quantum_numbers"].get("Q") == "-1/3", s1[0]["quantum_numbers"]
+    # Commented-out MS1 parameter block must NOT be parsed; only yRR11 remains.
+    names = [p["name"] for p in m["parameters"]]
+    assert names == ["yRR11"], names
+    assert m["parameters"][0]["parameter_type"] == "External", m["parameters"][0]
+    print("[✓] .fr parser (S1) test passed\n")
+    return True
+
+
+def test_fr_parser_sm() -> bool:
+    print(">> Testing .fr parser on SM.fr (full model)...\n")
+    from tools.frgen.fr_parser import parse_fr_file
+
+    m = parse_fr_file(str(_MODELS_DIR / "SM.fr"))
+    assert m["model_name"] == "Standard Model", m["model_name"]
+    assert len(m["classes"]) >= 15, len(m["classes"])
+    assert len(m["parameters"]) >= 20, len(m["parameters"])
+    gg = {g["name"] for g in m["gauge_groups"]}
+    assert {"U1Y", "SU2L", "SU3C"} <= gg, gg
+    pnames = {p["name"] for p in m["parameters"]}
+    assert {"aEWM1", "Gf", "aS", "CKM"} <= pnames, sorted(pnames)[:10]
+    print("[✓] .fr parser (SM) test passed\n")
+    return True
+
+
 def cleanup_test_files() -> None:
     print("\n>> Cleaning up test files...\n")
     if TEST_DIR.exists():
@@ -286,6 +323,8 @@ TESTS = [
     test_number_must_be_string,
     test_topo_sort,
     test_cyclic_dependency_raises,
+    test_fr_parser_s1,
+    test_fr_parser_sm,
     test_ufo_generation,
 ]
 

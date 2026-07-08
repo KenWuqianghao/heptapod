@@ -347,7 +347,15 @@ class FeynRulesModel(BaseModel):
             dupes = sorted({x for x in labels if labels.count(x) > 1})
             raise ValueError(f"duplicate ParticleClass labels: {dupes}")
 
-        builtin = {"Lorentz", "Spin", "Spin1", "Spin2"}
+        # Lorentz/Spin* are FeynRules built-ins. Colour/Gluon/Generation/SU2D/
+        # SU2W are declared by SM.fr, which every BSM add-on is loaded on top of,
+        # so they need no IndexRange in the add-on itself (matches the reference
+        # S1_LQ_RR.fr, which uses Index[Colour] without redeclaring it). Only
+        # genuinely new indices must be declared in index_decls.
+        builtin = {
+            "Lorentz", "Spin", "Spin1", "Spin2",
+            "Colour", "Gluon", "Generation", "SU2D", "SU2W",
+        }
         declared = {d.name for d in self.index_decls} | builtin
         used = {i for p in self.particles for i in p.indices} | {
             i for prm in self.parameters for i in prm.indices

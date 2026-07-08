@@ -27,6 +27,56 @@ sys.path.insert(0, _project_root)
 import config
 
 
+def _ollama_format_schema(output_type) -> dict:
+    """Plain pydantic JSON schema, minus cosmetic keys the grammar backend
+    rejects (``title``/``default``). Optionals stay optional (unlike the strict
+    all-required rewrite), keeping constrained decode fast on large schemas."""
+    import copy
+
+    def _clean(node):
+        if isinstance(node, dict):
+            node.pop("title", None)
+            node.pop("default", None)
+            for v in node.values():
+                _clean(v)
+        elif isinstance(node, list):
+            for v in node:
+                _clean(v)
+
+    schema = copy.deepcopy(output_type.model_json_schema())
+    _clean(schema)
+    return schema
+
+
+class StructuredOllama(Ollama):
+    """Ollama with native constrained structured output enabled.
+
+    Orchestral's stock ``Ollama`` leaves ``supports_structured_output()`` False,
+    so ``Agent.structured(mode="auto")`` falls back to the forced-tool path —
+    which passes ``tool_choice`` to ``ollama.Client.chat()``, a kwarg the ollama
+    python client does not accept (it raises ``unexpected keyword argument
+    'tool_choice'``). The ollama client *does* support native constrained
+    decoding via the ``format`` parameter (a JSON schema), which yields
+    schema-valid output without any tool_choice. We opt into that native path.
+    """
+
+    def supports_structured_output(self) -> bool:
+        return True
+
+    def _build_structured_request(self, output_type) -> dict:
+        # Merged into the chat() call by Agent._structured_native_call; the
+        # ollama client forwards `format` straight to the constrained decoder.
+        #
+        # We deliberately do NOT use `to_strict_json_schema` here: its
+        # every-field-required rewrite makes llama.cpp's grammar force the model
+        # to emit every optional field of the large nested FeynRulesModel, which
+        # blows up decode time (minutes). The plain pydantic schema keeps
+        # optionals optional -> a compact object -> fast. Pydantic still
+        # validates the result (with Agent.structured's retry budget). We only
+        # strip cosmetic keys the grammar backend dislikes.
+        return {"format": _ollama_format_schema(output_type)}
+
+
 def get_ollama(model=None, host=None, **kwargs):
     """
     Get a configured Ollama LLM instance using settings from config.py.
@@ -65,13 +115,13 @@ def get_ollama(model=None, host=None, **kwargs):
     if host is None:
         host = config.ollama_host
 
-    # Create Ollama instance
+    # Create Ollama instance (native structured-output path enabled).
     if host is None:
         # Local instance
-        return Ollama(model=model, **kwargs)
+        return StructuredOllama(model=model, **kwargs)
     else:
         # Remote instance
-        return Ollama(model=model, host=host, **kwargs)
+        return StructuredOllama(model=model, host=host, **kwargs)
 
 
 def get_reasoning_ollama(model=None, host=None, **kwargs):

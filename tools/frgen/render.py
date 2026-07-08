@@ -286,7 +286,15 @@ def render_model(model: FeynRulesModel) -> str:
 
     for t in model.lagrangian_terms:
         op = ":=" if t.delayed else "="
-        sections.append(f"{t.name} {op} {t.expression};")
+        # Defensive: some (LLM-produced) expressions already carry a leading
+        # assignment operator ("= ..." or ":= ..."); strip it so we don't emit a
+        # duplicated operator (e.g. "L := := Block[...]").
+        rhs = t.expression.lstrip()
+        for lead in (":=", "="):
+            if rhs.startswith(lead):
+                rhs = rhs[len(lead):].lstrip()
+                break
+        sections.append(f"{t.name} {op} {rhs};")
 
     env = Environment(
         loader=FileSystemLoader(_TEMPLATE_DIR),

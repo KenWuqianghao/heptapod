@@ -28,7 +28,11 @@ sys.path.insert(0, str(REPO_ROOT))
 from eval.scoring import aggregate, score_case
 from tools.extract.extract_tool import ExtractLagrangianTool
 from tools.frgen.frgen_tool import GenerateFeynRulesModelTool
-from tools.literature.literature_tools import ExtractPaperTextTool, FetchPaperPDFTool
+from tools.literature.literature_tools import (
+    ArxivSourceTool,
+    ExtractPaperTextTool,
+    FetchPaperPDFTool,
+)
 from tools.validate.validate_tool import ValidateModelTool
 
 
@@ -45,12 +49,25 @@ def _first_line(raw: str) -> str:
 
 
 def _resolve_paper_text(case: Dict[str, Any], base_directory: str) -> Dict[str, Any]:
-    """Return {paper_text|text_path} for a case, fetching the arXiv PDF if needed."""
+    """Return {paper_text|text_path} for a case.
+
+    Preference order: inline text -> arXiv LaTeX source (equations survive
+    exactly) -> PDF text extraction as the fallback.
+    """
     if case.get("paper_text"):
         return {"paper_text": case["paper_text"]}
     arxiv_id = case.get("arxiv_id")
     if not arxiv_id:
         return {}
+
+    # Primary: LaTeX e-print source.
+    src = _try_json(
+        ArxivSourceTool(arxiv_id=arxiv_id, base_directory=base_directory)._run()
+    )
+    if src and src.get("status") == "ok" and src.get("tex_path"):
+        return {"text_path": src["tex_path"]}
+
+    # Fallback: PDF -> plain text.
     fr = _try_json(FetchPaperPDFTool(arxiv_id=arxiv_id, base_directory=base_directory)._run())
     if not fr or fr.get("status") != "ok":
         return {}

@@ -25,8 +25,16 @@ from .arxiv_interface import (
     is_allowed_pdf_url,
     validate_arxiv_id,
 )
+from .source_archive import (
+    detect_payload,
+    gunzip_capped,
+    inline_inputs,
+    resolve_main_tex,
+    safe_extract_tar,
+    strip_comments,
+)
 
-SCHEMA_VERSION = "literature-1.0"
+SCHEMA_VERSION = "literature-1.1"
 
 _SEARCH_SORT_BY = {"relevance", "submittedDate", "lastUpdatedDate"}
 _SEARCH_SORT_ORDER = {"ascending", "descending"}
@@ -340,6 +348,204 @@ class FetchPaperPDFTool(BaseTool):
                 "pdf_path": rel_dest,
                 "bytes": meta["bytes"],
                 "sha256": meta["sha256"],
+                "cached": False,
+            },
+            indent=2,
+        )
+
+
+# ======================= LaTeX source (e-print) ================= #
+
+
+class ArxivSourceTool(BaseTool):
+    """
+    Fetch a paper's LaTeX SOURCE from arXiv (e-print) — the preferred input for
+    Lagrangian extraction, since PDF text mangles equations while the .tex
+    source preserves them exactly.
+
+    Input:
+        arxiv_id: arXiv identifier, e.g. "2103.02708" (version suffix optional).
+        output_dir: Directory (relative to base_directory) for extracted source
+                    files (default "source").
+        inline_one_level: Inline \\input{...}/\\include{...} one level into the
+                          main file (default true).
+        preview_chars: Length of the inline LaTeX preview returned (default 2000).
+
+    Behavior:
+        Downloads https://export.arxiv.org/e-print/<id> (size-capped), detects
+        the payload (gzipped tar of sources / gzipped single .tex / bare PDF),
+        extracts archives with strict safety checks, resolves the main .tex,
+        strips % comments, optionally inlines one level of \\input, and writes
+        the normalized LaTeX to text/<id>_source.tex.
+
+    Returns JSON:
+        {"status": "ok", "schema": "literature-1.1", "arxiv_id": "...",
+         "source_type": "tar"|"single_tex"|"pdf_only",
+         "source_dir": "source/<id>/"?, "main_tex": "source/<id>/ms.tex"?,
+         "tex_path": "text/<id>_source.tex"?, "n_files": N, "chars": M,
+         "preview": "...", "cached": bool}
+
+        source_type "pdf_only" means arXiv has no LaTeX source for this paper;
+        the result includes a suggestion to use FetchPaperPDFTool +
+        ExtractPaperTextTool instead (this is a normal outcome, not an error).
+    """
+
+    # ======================== Runtime fields ======================== #
+    arxiv_id: str = RuntimeField(
+        description="arXiv identifier, e.g. '2103.02708' (version suffix optional)"
+    )
+    output_dir: Optional[str] = RuntimeField(
+        default="source",
+        description="Directory (relative to base_directory) for extracted source files",
+    )
+    inline_one_level: Optional[bool] = RuntimeField(
+        default=True,
+        description="Inline \\input/\\include one level into the main file (default true)",
+    )
+    preview_chars: Optional[int] = RuntimeField(
+        default=2000, description="Length of the inline LaTeX preview (default 2000)"
+    )
+    # ================================================================ #
+
+    # ========================= State fields ========================= #
+    base_directory: str = StateField(
+        description="Base sandbox directory for file operations"
+    )
+    # ================================================================ #
+
+    def _run(self) -> str:
+        valid = validate_arxiv_id(self.arxiv_id)
+        if not valid:
+            return self.format_error(
+                error="Invalid Parameter",
+                reason="arxiv_id is not a well-formed arXiv identifier",
+                context=f"arxiv_id={self.arxiv_id}",
+                suggestion="Use e.g. '2103.02708' or 'hep-ph/9905221' (version optional)",
+            )
+        stem = _pdf_stem(self.arxiv_id, None)
+
+        base = os.path.realpath(self.base_directory)
+        tex_rel = os.path.join("text", f"{stem}_source.tex")
+        tex_abs = os.path.join(base, tex_rel)
+
+        # Cache: normalized LaTeX already produced for this id.
+        if os.path.isfile(tex_abs) and os.path.getsize(tex_abs) > 0:
+            try:
+                with open(tex_abs, "r", encoding="utf-8", errors="replace") as fh:
+                    text = fh.read()
+            except OSError as e:
+                return self.format_error(error="Filesystem Error", reason=str(e))
+            n = self.preview_chars if self.preview_chars is not None else 2000
+            return json.dumps(
+                {
+                    "status": "ok",
+                    "schema": SCHEMA_VERSION,
+                    "arxiv_id": self.arxiv_id,
+                    "source_type": "cached",
+                    "tex_path": tex_rel,
+                    "chars": len(text),
+                    "preview": text[:n],
+                    "cached": True,
+                },
+                indent=2,
+            )
+
+        out_dir = _safe_join(self.base_directory, self.output_dir or "source")
+        if out_dir is None:
+            return self.format_error(
+                error="Access Denied",
+                reason="output_dir escapes base_directory",
+                context=self.output_dir,
+            )
+        src_dir = os.path.join(out_dir, stem)
+
+        # 1. Download the e-print payload.
+        try:
+            interface = ArxivInterface()
+            payload = interface.download_eprint(self.arxiv_id)
+        except Exception as e:  # noqa: BLE001
+            return self.format_error(
+                error="E-print Download Failed",
+                reason=str(e),
+                context=f"arxiv_id={self.arxiv_id}",
+                suggestion="Verify the arXiv id; arXiv may be rate-limiting",
+            )
+        data = payload["data"]
+
+        # 2. Classify + unwrap.
+        try:
+            kind = detect_payload(data)
+            if kind == "gzip":
+                data = gunzip_capped(data)
+                kind = detect_payload(data)
+                if kind == "gzip":  # double-wrapped is not a thing; treat as tex
+                    kind = "tex"
+            if kind == "pdf":
+                return json.dumps(
+                    {
+                        "status": "ok",
+                        "schema": SCHEMA_VERSION,
+                        "arxiv_id": self.arxiv_id,
+                        "source_type": "pdf_only",
+                        "cached": False,
+                        "suggestion": (
+                            "No LaTeX source on arXiv for this paper; use "
+                            "FetchPaperPDFTool + ExtractPaperTextTool instead."
+                        ),
+                    },
+                    indent=2,
+                )
+
+            os.makedirs(src_dir, exist_ok=True)
+            if kind == "tar":
+                files = safe_extract_tar(data, src_dir)
+                source_type = "tar"
+                main_rel = resolve_main_tex(src_dir)
+                if main_rel is None:
+                    return self.format_error(
+                        error="No TeX Found",
+                        reason="archive extracted but contains no .tex files",
+                        context=f"n_files={len(files)}",
+                    )
+            else:  # single tex (or unknown-but-texish)
+                main_rel = "main.tex"
+                files = [main_rel]
+                with open(os.path.join(src_dir, main_rel), "wb") as fh:
+                    fh.write(data)
+                source_type = "single_tex"
+
+            main_abs = os.path.join(src_dir, main_rel)
+            with open(main_abs, "r", encoding="utf-8", errors="replace") as fh:
+                tex = fh.read()
+            if self.inline_one_level is not False:
+                tex = inline_inputs(tex, src_dir, main_rel)
+            tex = strip_comments(tex)
+
+            os.makedirs(os.path.dirname(tex_abs), exist_ok=True)
+            with open(tex_abs, "w", encoding="utf-8") as fh:
+                fh.write(tex)
+        except ValueError as e:  # archive-safety violations, caps, bombs
+            return self.format_error(
+                error="Unsafe or Invalid Archive",
+                reason=str(e),
+                context=f"arxiv_id={self.arxiv_id}",
+            )
+        except OSError as e:
+            return self.format_error(error="Filesystem Error", reason=str(e))
+
+        n = self.preview_chars if self.preview_chars is not None else 2000
+        return json.dumps(
+            {
+                "status": "ok",
+                "schema": SCHEMA_VERSION,
+                "arxiv_id": self.arxiv_id,
+                "source_type": source_type,
+                "source_dir": os.path.relpath(src_dir, base),
+                "main_tex": os.path.join(os.path.relpath(src_dir, base), main_rel),
+                "tex_path": tex_rel,
+                "n_files": len(files),
+                "chars": len(tex),
+                "preview": tex[:n],
                 "cached": False,
             },
             indent=2,

@@ -70,13 +70,17 @@ def validate_arxiv_id(arxiv_id: str) -> Optional[str]:
     return None
 
 
-def is_allowed_pdf_url(url: str) -> bool:
+def is_allowed_arxiv_url(url: str) -> bool:
     """True only for HTTPS URLs on a known arXiv host."""
     try:
         parsed = urlparse(url)
     except Exception:  # noqa: BLE001
         return False
     return parsed.scheme == "https" and (parsed.hostname or "") in _ALLOWED_PDF_HOSTS
+
+
+# Back-compat alias (original, PDF-specific name).
+is_allowed_pdf_url = is_allowed_arxiv_url
 
 
 def https_arxiv_url(url: Optional[str]) -> Optional[str]:
@@ -326,6 +330,43 @@ class ArxivInterface:
                 os.remove(tmp)
             raise
         return {"bytes": total, "sha256": digest.hexdigest()}
+
+    # ------------------------ E-print retrieval ----------------------- #
+
+    def download_eprint(
+        self,
+        arxiv_id: str,
+        max_bytes: int = 50 * 1024 * 1024,
+    ) -> Dict[str, Any]:
+        """Download the arXiv e-print source payload for ``arxiv_id``.
+
+        Fetches ``https://export.arxiv.org/e-print/<id>`` (gzipped tar of LaTeX
+        sources, gzipped single ``.tex``, or a bare PDF when no source exists),
+        streaming with a size cap. Returns ``{"data": bytes, "sha256": str,
+        "bytes": int}``; the caller classifies via source_archive.detect_payload.
+        """
+        valid = validate_arxiv_id(arxiv_id)
+        if not valid:
+            raise ValueError(f"Invalid arXiv id: {arxiv_id!r}")
+        url = f"https://export.arxiv.org/e-print/{valid}"
+        if not is_allowed_arxiv_url(url):  # defensive; host is ours by construction
+            raise ValueError(f"Refusing non-arXiv URL: {url!r}")
+
+        _LIMITER.wait()
+        digest = hashlib.sha256()
+        buf = bytearray()
+        with self._session.get(url, timeout=self.timeout, stream=True) as resp:
+            resp.raise_for_status()
+            for chunk in resp.iter_content(chunk_size=65536):
+                if not chunk:
+                    continue
+                buf.extend(chunk)
+                if len(buf) > max_bytes:
+                    raise ValueError(f"e-print exceeds max size of {max_bytes} bytes")
+                digest.update(chunk)
+        if not buf:
+            raise ValueError("e-print payload is empty")
+        return {"data": bytes(buf), "sha256": digest.hexdigest(), "bytes": len(buf)}
 
     # ------------------------- Text extraction ------------------------ #
 

@@ -9,12 +9,14 @@ arXiv literature toolkit: search arXiv, download PDFs, and extract full text.
 
 from .literature_tools import (
     ArxivSearchTool,
+    ArxivSourceTool,
     ExtractPaperTextTool,
     FetchPaperPDFTool,
 )
 
 __all__ = [
     "ArxivSearchTool",
+    "ArxivSourceTool",
     "FetchPaperPDFTool",
     "ExtractPaperTextTool",
 ]

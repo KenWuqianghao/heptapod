@@ -256,6 +256,11 @@ tools:
     name: ExtractPaperTextTool
     description: Extract full plain text from a PDF (PyMuPDF) for downstream extraction.
     bundle: literature
+  - module: tools.literature.literature_tools
+    name: ArxivSourceTool
+    description: Fetch a paper's LaTeX source from arXiv (e-print) — preferred
+      input for Lagrangian extraction (PDF text mangles equations).
+    bundle: literature
   - module: tools.mg5.mg5
     name: MadGraphFromRunCardTool
     description: Run MadGraph5_aMC@NLO to generate parton-level events given a

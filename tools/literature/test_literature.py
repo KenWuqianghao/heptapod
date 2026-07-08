@@ -14,6 +14,7 @@ unreachable, so the suite passes in offline/CI environments.
 """
 
 import argparse
+import io
 import json
 import os
 import shutil
@@ -319,6 +320,175 @@ def test_cache_symlink_not_followed() -> bool:
     return True
 
 
+def _make_tar(members, symlink=None, absolute=None):
+    """Build an in-memory tar. members: {name: bytes}."""
+    import tarfile
+
+    buf = io.BytesIO()
+    with tarfile.open(fileobj=buf, mode="w") as tf:
+        for name, data in members.items():
+            info = tarfile.TarInfo(name=name)
+            info.size = len(data)
+            tf.addfile(info, io.BytesIO(data))
+        if symlink:
+            info = tarfile.TarInfo(name=symlink[0])
+            info.type = tarfile.SYMTYPE
+            info.linkname = symlink[1]
+            tf.addfile(info)
+        if absolute:
+            info = tarfile.TarInfo(name=absolute)
+            info.size = 1
+            tf.addfile(info, io.BytesIO(b"x"))
+    return buf.getvalue()
+
+
+def _gz(data: bytes) -> bytes:
+    import gzip as _gzip
+
+    return _gzip.compress(data)
+
+
+def test_source_archive_safety() -> bool:
+    print(">> Testing source-archive safety (tar-slip, links, caps)...\n")
+    from tools.literature.source_archive import safe_extract_tar
+
+    dest = str(TEST_DIR / "srcbox")
+
+    for bad_tar, label in [
+        (_make_tar({"../evil.tex": b"x"}), "traversal ../"),
+        (_make_tar({}, absolute="/etc/evil.tex"), "absolute path"),
+        (_make_tar({"ok.tex": b"x"}, symlink=("link.tex", "/etc/passwd")), "symlink"),
+        (_make_tar({f"f{i}.tex": b"x" for i in range(11)}), "member count cap"),
+    ]:
+        try:
+            if label == "member count cap":
+                safe_extract_tar(bad_tar, dest, max_members=10)
+            else:
+                safe_extract_tar(bad_tar, dest)
+            raise AssertionError(f"{label}: should have been rejected")
+        except ValueError:
+            pass
+
+    # Size caps.
+    big = _make_tar({"big.tex": b"y" * 2048})
+    try:
+        safe_extract_tar(big, dest, max_member_bytes=1024)
+        raise AssertionError("member size cap not enforced")
+    except ValueError:
+        pass
+
+    # A benign archive extracts.
+    ok = _make_tar({"paper/ms.tex": b"\\documentclass{article}"})
+    files = safe_extract_tar(ok, dest)
+    assert files == [os.path.join("paper", "ms.tex")], files
+    print("[✓] Source-archive safety test passed\n")
+    return True
+
+
+def test_payload_detection_and_tex_processing() -> bool:
+    print(">> Testing payload detection, main-tex resolution, comments, inlining...\n")
+    from tools.literature.source_archive import (
+        detect_payload,
+        gunzip_capped,
+        inline_inputs,
+        resolve_main_tex,
+        strip_comments,
+    )
+
+    assert detect_payload(_gz(b"anything")) == "gzip"
+    assert detect_payload(b"%PDF-1.4 x") == "pdf"
+    assert detect_payload(_make_tar({"a.tex": b"x"})) == "tar"
+    assert detect_payload(b"\\documentclass{article}") == "tex"
+    assert gunzip_capped(_gz(b"hello")) == b"hello"
+    try:
+        gunzip_capped(_gz(b"z" * 4096), max_bytes=1024)
+        raise AssertionError("gunzip cap not enforced")
+    except ValueError:
+        pass
+
+    # Main-tex resolution with decoys: appendix (no \documentclass) + main.
+    src = TEST_DIR / "resolvebox"
+    (src / "sub").mkdir(parents=True, exist_ok=True)
+    (src / "appendix.tex").write_text("\\section{app}")
+    (src / "sub" / "real.tex").write_text(
+        "\\documentclass{article}\n\\begin{document}\nBody\n\\end{document}"
+    )
+    assert resolve_main_tex(str(src)) == os.path.join("sub", "real.tex")
+
+    # Comment stripping preserves escaped \%.
+    out = strip_comments("a \\% kept % dropped\nplain % gone")
+    assert out == "a \\% kept \nplain ", repr(out)
+
+    # One-level inlining with containment + missing marker.
+    (src / "sub" / "part.tex").write_text("INLINED-CONTENT")
+    main = "\\input{part}\n\\input{../../../etc/passwd}\n\\input{missing}"
+    inlined = inline_inputs(main, str(src), os.path.join("sub", "real.tex"))
+    assert "INLINED-CONTENT" in inlined, inlined
+    assert "passwd' not inlined" in inlined or "not inlined" in inlined, inlined
+    print("[✓] Payload/tex-processing test passed\n")
+    return True
+
+
+def test_arxiv_source_tool_mocked() -> bool:
+    print(">> Testing ArxivSourceTool end-to-end (mocked network)...\n")
+    from tools.literature.literature_tools import ArxivSourceTool
+
+    tar = _make_tar(
+        {
+            "ms.tex": b"\\documentclass{article}\n% comment\n\\input{lag}\n\\begin{document}\\end{document}",
+            "lag.tex": b"L = y S1 u e % yukawa",
+        }
+    )
+    with mock.patch.object(
+        arxiv_interface.requests.Session, "get",
+        return_value=_FakeStreamResponse(_gz(tar)),
+    ):
+        r = json.loads(
+            ArxivSourceTool(arxiv_id="2103.02708", base_directory=str(TEST_DIR))._run()
+        )
+    assert r["status"] == "ok" and r["source_type"] == "tar", r
+    assert r["n_files"] == 2, r
+    text = (TEST_DIR / r["tex_path"]).read_text()
+    assert "L = y S1 u e" in text and "% comment" not in text, text[:200]
+
+    # Cache hit on second call (no network needed).
+    r2 = json.loads(
+        ArxivSourceTool(arxiv_id="2103.02708", base_directory=str(TEST_DIR))._run()
+    )
+    assert r2["cached"] is True, r2
+
+    # pdf_only payload.
+    with mock.patch.object(
+        arxiv_interface.requests.Session, "get",
+        return_value=_FakeStreamResponse(b"%PDF-1.4 binary"),
+    ):
+        r3 = json.loads(
+            ArxivSourceTool(arxiv_id="1811.07920", base_directory=str(TEST_DIR))._run()
+        )
+    assert r3["status"] == "ok" and r3["source_type"] == "pdf_only", r3
+    assert "FetchPaperPDFTool" in r3.get("suggestion", ""), r3
+
+    # Malicious archive rejected via the tool path.
+    with mock.patch.object(
+        arxiv_interface.requests.Session, "get",
+        return_value=_FakeStreamResponse(_gz(_make_tar({"../evil.tex": b"x"}))),
+    ):
+        r4 = ArxivSourceTool(arxiv_id="2000.00001", base_directory=str(TEST_DIR))._run()
+    assert "unsafe" in r4.lower() or "error" in r4.lower(), r4
+
+    # Single gzipped .tex payload.
+    with mock.patch.object(
+        arxiv_interface.requests.Session, "get",
+        return_value=_FakeStreamResponse(_gz(b"\\documentclass{a}\nBody % c")),
+    ):
+        r5 = json.loads(
+            ArxivSourceTool(arxiv_id="2005.06475", base_directory=str(TEST_DIR))._run()
+        )
+    assert r5["status"] == "ok" and r5["source_type"] == "single_tex", r5
+    print("[✓] ArxivSourceTool mocked end-to-end test passed\n")
+    return True
+
+
 def test_symlink_escape() -> bool:
     print(">> Testing symlink-escape rejection in sandbox...\n")
     base = TEST_DIR / "sandbox"
@@ -360,6 +530,9 @@ TESTS = [
     test_fetch_download_and_cache_mocked,
     test_fetch_both_args_precedence,
     test_cache_symlink_not_followed,
+    test_source_archive_safety,
+    test_payload_detection_and_tex_processing,
+    test_arxiv_source_tool_mocked,
     test_arxiv_search_live,
 ]
 

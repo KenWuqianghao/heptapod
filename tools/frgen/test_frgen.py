@@ -245,6 +245,11 @@ def test_ufo_generation() -> bool:
     ):
         print("[⊘] Skipping: wolframscript/FeynRules not configured\n")
         return True
+    from tools.feynrules.wl_probe import wolframscript_activated
+
+    if not wolframscript_activated(wolframscript_path):
+        print("[⊘] Skipping: wolframscript not activated (no Wolfram license)\n")
+        return True
 
     from tools.feynrules import FeynRulesToUFOTool
 

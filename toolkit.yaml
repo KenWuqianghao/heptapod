@@ -50,6 +50,8 @@ bundles:
   # Lagrangian extraction: paper text -> structured FeynRulesModel via LLM.
   # LLM providers (ollama/openai) are optional runtime deps, not required here.
   extract: {}
+  # Structured provenance ledger (audit.json) for end-to-end runs; pure python.
+  logging: {}
 
   # ── analysis stack ───────────────────────────────────────────────
   analysis:
@@ -195,6 +197,11 @@ tools:
     name: ExtractLagrangianTool
     description: Extract a structured FeynRules model from BSM paper text (LLM).
     bundle: extract
+  - module: tools.logging.audit_tool
+    name: AuditTrailTool
+    description: Record, render, or read a structured provenance ledger
+      (audit.json) of pipeline stages for an end-to-end run.
+    bundle: logging
   - module: tools.validate.validate_tool
     name: ValidateModelTool
     description: Compile a .fr to a UFO and run structural pass/fail checks.

@@ -435,8 +435,11 @@ def main():
             "description": "EDA tools (FeynCalc codegen, Wolfram runner, symbolic-to-Python conversion)"
         },
         "logging": {
-            "script": REPO_ROOT / "tools" / "logging" / "tests" / "test_findings.py",
-            "description": "Logging tools (findings ledger)"
+            "scripts": [
+                REPO_ROOT / "tools" / "logging" / "tests" / "test_findings.py",
+                REPO_ROOT / "tools" / "logging" / "tests" / "test_audit.py",
+            ],
+            "description": "Logging tools (findings ledger, audit provenance trail)"
         },
     }
 

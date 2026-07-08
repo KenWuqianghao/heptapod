@@ -23,6 +23,14 @@ from orchestral.tools.base.field_utils import RuntimeField, StateField
 
 from tools.feynrules import FeynRulesToUFOTool
 from tools.validate.ufo_parser import check_particle_properties
+from tools.validate.width_gate import (
+    analytic_scalar_lq_width,
+    compare_width,
+    find_partial_width,
+    parse_decays,
+    parse_external_params,
+    safe_eval_width,
+)
 
 SCHEMA_VERSION = "model-validation-1.1"
 
@@ -154,6 +162,14 @@ class ValidateModelTool(BaseTool):
         description="Run FeynRules symmetry checks (Hermiticity, kinetic/mass "
         "terms) during UFO generation and surface them as wl:* checks",
     )
+    width_gate: Optional[str] = RuntimeField(
+        default=None,
+        description="Optional JSON spec for an analytic decay-width cross-check, "
+        'e.g. {"particle":"S1","finals":["e__minus__","u"],"formula":"scalar_lq",'
+        '"mass_param":"MS1","coupling_param":"yRR11","rel_tol":0.02}. When set and '
+        "the UFO built, compares the UFO partial width to the closed form and "
+        "reports it as a width_gate:* check.",
+    )
     # ================================================================ #
 
     # ========================= State fields ========================= #
@@ -235,6 +251,10 @@ class ValidateModelTool(BaseTool):
                     )
                 except (json.JSONDecodeError, OSError):
                     pass
+            # Analytic decay-width gate (opt-in via width_gate spec): compare a
+            # UFO partial width to a textbook closed form to catch sign/norm errors.
+            if self.width_gate:
+                checks.append(self._width_gate_check(ufo_dir))
 
         # Merge FeynRules symmetry checks (gauge invariance / Hermiticity) parsed
         # from the Mathematica run into named wl:* checks.
@@ -263,3 +283,52 @@ class ValidateModelTool(BaseTool):
         if not ufo_ok and log_tail:
             result["feynrules_log"] = log_tail
         return json.dumps(result, indent=2)
+
+    def _width_gate_check(self, ufo_dir: str) -> dict:
+        """Compare a UFO partial width to a textbook closed form (opt-in).
+
+        Returns a single {name, passed, detail} check. Any spec/parse/eval
+        problem is reported as a failed check rather than raised, so a bad gate
+        request never turns the validation into a tool error.
+        """
+        analytic_formulas = {"scalar_lq": analytic_scalar_lq_width}
+        try:
+            spec = json.loads(self.width_gate)
+        except json.JSONDecodeError as e:
+            return {"name": "width_gate", "passed": False,
+                    "detail": f"invalid width_gate JSON: {e}"}
+
+        particle = spec.get("particle")
+        finals = tuple(spec.get("finals") or ())
+        formula = analytic_formulas.get(spec.get("formula"))
+        label = (
+            f"width_gate:{particle}->{'+'.join(finals)}" if particle and finals
+            else "width_gate"
+        )
+        if not (particle and finals and formula):
+            return {"name": label, "passed": False,
+                    "detail": "spec needs particle, finals, and a known formula "
+                    f"(one of {sorted(analytic_formulas)})"}
+        try:
+            params = parse_external_params(ufo_dir)
+            decays = parse_decays(ufo_dir)
+            expr = find_partial_width(decays, particle, finals)
+            if expr is None:
+                return {"name": label, "passed": False,
+                        "detail": f"no UFO partial width for {particle} -> {finals}"}
+            reference = safe_eval_width(expr, params)
+            m_val = params[spec["mass_param"]]
+            y_val = params[spec["coupling_param"]]
+            analytic = formula(m_val, y_val)
+            cmp = compare_width(analytic, reference, float(spec.get("rel_tol", 0.02)))
+        except (KeyError, OSError, ValueError, ZeroDivisionError) as e:
+            return {"name": label, "passed": False,
+                    "detail": f"width gate error: {e}"}
+        return {
+            "name": label,
+            "passed": bool(cmp["passed"]),
+            "detail": (
+                f"analytic {cmp['analytic']:.4g} vs UFO {cmp['reference']:.4g} GeV "
+                f"(rel_err {cmp['rel_err']:.2%}, tol {cmp['rel_tol']:.0%})"
+            ),
+        }

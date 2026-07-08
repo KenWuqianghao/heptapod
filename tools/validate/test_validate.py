@@ -165,6 +165,11 @@ def test_validate_live() -> bool:
     if not shutil.which(wolframscript_path) or feynrules_path in (None, "/path/to/FeynRules"):
         print("[⊘] Skipping: wolframscript/FeynRules not configured\n")
         return True
+    from tools.feynrules.wl_probe import wolframscript_activated
+
+    if not wolframscript_activated(wolframscript_path):
+        print("[⊘] Skipping: wolframscript not activated (no Wolfram license)\n")
+        return True
 
     from tools.frgen.frgen_tool import GenerateFeynRulesModelTool
     from tools.frgen.test_frgen import _s1_model
@@ -303,6 +308,57 @@ def test_width_gate_s1() -> bool:
     return True
 
 
+def test_validate_width_gate_wired() -> bool:
+    print(">> Testing ValidateModelTool width-gate wiring (S1 fixture, mocked UFO)...\n")
+    rel = _write_dummy_fr()
+    gate = json.dumps(
+        {
+            "particle": "S1",
+            "finals": ["e__minus__", "u"],
+            "formula": "scalar_lq",
+            "mass_param": "MS1",
+            "coupling_param": "yRR11",
+            "rel_tol": 0.02,
+        }
+    )
+    inst = mock.Mock()
+    inst._run.return_value = json.dumps({"ok": True, "output_dir": str(_UFO_FIXTURE)})
+    with mock.patch.object(VT, "FeynRulesToUFOTool", return_value=inst):
+        tool = ValidateModelTool(
+            model_path=rel,
+            feynrules_model_json=json.dumps(_S1_MODEL),
+            width_gate=gate,
+            base_directory=str(TEST_DIR),
+            feynrules_path="/fr",
+            wolframscript_path="wolframscript",
+        )
+        result = json.loads(tool._run())
+
+    gate_checks = [c for c in result["checks"] if c["name"].startswith("width_gate")]
+    assert gate_checks, result
+    assert gate_checks[0]["passed"] is True, gate_checks
+    assert "GeV" in gate_checks[0]["detail"], gate_checks
+
+    # A channel that isn't in the UFO must fail (not error out the whole run).
+    bad_gate = json.loads(gate)
+    bad_gate["finals"] = ["mu__minus__", "c"]
+    with mock.patch.object(VT, "FeynRulesToUFOTool", return_value=inst):
+        tool = ValidateModelTool(
+            model_path=rel,
+            feynrules_model_json=json.dumps(_S1_MODEL),
+            width_gate=json.dumps(bad_gate),
+            base_directory=str(TEST_DIR),
+            feynrules_path="/fr",
+            wolframscript_path="wolframscript",
+        )
+        bad_result = json.loads(tool._run())
+    bad_check = [c for c in bad_result["checks"] if c["name"].startswith("width_gate")][0]
+    assert bad_check["passed"] is False, bad_check
+    assert bad_result["passed"] is False, bad_result
+    print("[✓] Width-gate wiring test passed\n")
+    return True
+
+
 def test_validate_physics_checks_merged_mocked() -> bool:
     print(">> Testing ValidateModelTool merges wl:* + particle_props (mocked UFO)...\n")
     rel = _write_dummy_fr()
@@ -354,6 +410,7 @@ TESTS = [
     test_check_particle_properties,
     test_wl_checks_parser,
     test_width_gate_s1,
+    test_validate_width_gate_wired,
     test_validate_physics_checks_merged_mocked,
     test_validate_live,
 ]

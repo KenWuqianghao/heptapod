@@ -17,6 +17,11 @@ orchestral-ai>=1.5.0
 # even on lean subset installs.
 requests>=2.32.0
 
+# MCP transport SDK — required to serve tools over MCP (stdio/http) to Claude
+# Code / Codex / any MCP client. orchestral.mcp.server does `from mcp.server
+# import Server`, and scripts/serve_lagrangian_mcp.py hosts the toolkit over it.
+mcp>=1.0.0
+
 # Development Tools (Optional)
 # =============================
 # Uncomment these for development:

@@ -6,12 +6,15 @@
 
 Long-lived-particle (LLP) reach tools.
 
-Setting-agnostic tools for decay-in-volume LLP studies: sampling a
-weighted LLP flux from an analytic parent-flux kernel convolved with a
-declared 3-body production spectrum, and computing signal yields over a
-coupling grid with exact g^2 reweighting. The experimental setting
-(collider-forward vs beam-dump) lives entirely in the kernel YAML,
-geometry YAML, and n_int normalization — never in the tools.
+Setting- and model-agnostic tools for decay-in-volume LLP studies:
+sampling a weighted LLP flux from an analytic parent-flux kernel
+convolved with a DECLARED parent-rest-frame energy spectrum (a pinned
+data product — a table or a two-body delta — not a hard-coded
+amplitude), and computing signal yields over a lifetime grid (portal g
+reweighting or direct ctau) with exact reweighting. The experimental
+setting (collider-forward vs beam-dump) lives in the kernel YAML,
+geometry YAML, and n_int; the production physics lives in the spectrum
+data product — never in the tools.
 """
 
 from .flux_from_meson_decay import LLPFluxFromMesonDecayTool

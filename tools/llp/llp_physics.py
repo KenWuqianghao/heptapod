@@ -5,40 +5,55 @@
 # Please respect the MCnet Guidelines, see GUIDELINES for details.
 """
 """
-Shared physics for the `llp` bundle: analytic parent-flux kernels, the
-tree-level 3-body production density for M -> mu nu phi, decay-volume
-geometry, and the boost / decay-probability conventions used by
-LLPFluxFromMesonDecayTool and DecayInVolumeTool.
+Shared physics for the `llp` bundle: analytic parent-flux kernels, a
+declared parent-rest-frame LLP energy spectrum (a pinned data product,
+NOT a hard-coded amplitude), decay-volume geometry, and the boost /
+decay-probability conventions used by LLPFluxFromMesonDecayTool and
+DecayInVolumeTool.
 
-The bundle is setting-agnostic by construction: the collider-forward vs
-beam-dump choice lives entirely in the kernel YAML (parent mass, momentum
-and angular scales, per-interaction normalization) and the geometry YAML.
-Nothing in this module hard-codes a parent mass, a beam energy, or a
-detector location.
+The bundle is model- and setting-agnostic by construction:
+  - the collider-forward vs beam-dump choice lives entirely in the kernel
+    YAML (parent mass, momentum and angular scales, per-interaction
+    normalization) and the geometry YAML;
+  - the PRODUCTION PHYSICS (which LLP energies the parent decay yields)
+    lives entirely in the spectrum data product (`spectrum_spec`), so no
+    benchmark's ground-truth amplitude is baked into tool code. A `table`
+    spectrum (x, pdf) covers any declared 3-body radiation density; a
+    `two_body` spectrum (delta function in x) covers dark-photon-like
+    (pi0 -> gamma X) and dark-scalar-like (B -> K X) production.
+Nothing in this module hard-codes a parent mass, a beam energy, a
+detector location, or a matrix element.
 
 Conventions (declared, and mirrored from the validated reference):
   - Kernels parametrize d^2 N_M / (dp dtheta) per primary interaction for
     *decaying* parents only (the decay-before-absorption fraction is folded
     into n_per_int by whoever pins the kernel).
+  - The LLP energy in the parent rest frame is drawn from the declared
+    spectrum in x = 2 E*/m_parent; the LLP direction is isotropic in the
+    parent rest frame (spin-0 parent convention).
   - Event weights are g^2-stripped: w_i = n_per_int * kappa_M / n_samples,
     so N_sig(g) = N_int * g^2 * sum_i w_i * P_dec,i(g) * acc_i.
   - The LLP travels in a straight line from the primary vertex at its lab
     angle; the parent flight length is absorbed into the kernel.
-  - P_dec = exp(-L1/lam) - exp(-L2/lam), lam = beta*gamma*ctau,
-    ctau = hbar*c / (g^2 * width_ref).
+  - P_dec = exp(-L1/lam) - exp(-L2/lam), lam = beta*gamma*ctau. The
+    lifetime is set either by portal scaling
+    (ctau = hbar*c / (g^2 * width_ref)) or by a directly declared
+    ctau_grid_m (model-agnostic).
   - Two-track acceptance is evaluated at the MIDPOINT of the in-volume
-    segment (g-independent, preserving exact coupling reweighting).
+    segment (g-independent, preserving exact coupling reweighting), with
+    the two daughter masses declared (default mu mu).
 
-Attribution: the trace-form matrix element (msq_trace and helpers), the
-(x, c) kinematics (momenta_from_x_c, jacobian_x_c, x_domain,
-d2gamma_dx_dc, sample_x), the kernel and geometry loaders, and the
-rest-frame -> lab boost formula are adapted from the HEPbench reference
-ground-truth implementation, benchmarks/llp_forward/_shared/
-{kernels, production, pipeline}.py (HEPbench authors, GPL v3+), which
-these tools deliberately mirror convention-for-convention.
+Attribution: the kernel and geometry loaders and the rest-frame -> lab
+boost formula are adapted from the HEPbench reference ground-truth
+implementation, benchmarks/llp_forward/_shared/{kernels, pipeline}.py
+(HEPbench authors, GPL v3+). The production amplitude that used to live
+here has been removed on purpose: it now lives in the pinned spectrum
+data product, keeping the tools free of any benchmark's ground truth.
 """
 
+import csv
 import math
+import os
 
 import numpy as np
 import yaml
@@ -46,11 +61,6 @@ import yaml
 # hbar*c in GeV*m — the single constant tying the g^2-stripped reference
 # width to a lab-frame decay length.
 HBARC_M_GEV = 1.973269804e-16
-
-
-def mdot(p, q):
-    """Minkowski dot product of contravariant 4-vectors [E, px, py, pz]."""
-    return p[0] * q[0] - p[1] * q[1] - p[2] * q[2] - p[3] * q[3]
 
 
 # ---------------------------------------------------------------------------
@@ -119,139 +129,165 @@ class AnalyticKernel:
 
 
 # ---------------------------------------------------------------------------
-# production density for M(P) -> mu(p1) nu(p2) phi(p3), g^2-/C^2-stripped
-# (adapted from hepbench benchmarks/llp_forward/_shared/production.py)
+# parent-rest-frame LLP energy spectrum (a declared data product)
 # ---------------------------------------------------------------------------
-def _tr4(a, b, c, d, dots):
-    """Tr[slash(a) slash(b) slash(c) slash(d)] / 4."""
-    return dots[a, b] * dots[c, d] - dots[a, c] * dots[b, d] \
-        + dots[a, d] * dots[b, c]
+class LLPSpectrum:
+    """The parent-rest-frame LLP energy spectrum, declared as a pinned
+    data product rather than computed from a hard-coded amplitude.
+
+    The spectrum is expressed in the dimensionless energy fraction
+    x = 2 E* / m_parent (E* the LLP energy in the parent rest frame).
+    Two declared types are supported:
+
+    `type: table`
+        A tabulated density: columns `x` and `pdf` (the pdf may be
+        unnormalized; it is normalized on load). x is sampled by
+        inverse-CDF interpolation. This serves any declared 3-body
+        radiation density (e.g. M -> lepton nu phi): the ground truth
+        exports d(Br)/dx integrated over the other kinematics as the
+        table, one file per (parent, m_phi). Loadable from a CSV file
+        (header row `x,pdf`, optional `#` comment lines) or a YAML
+        mapping carrying `type: table` and either inline `x:`/`pdf:`
+        lists or a `csv:` path.
+
+    `type: two_body`
+        A delta-function spectrum from two-body kinematics
+        M -> phi + X, with the other daughter mass `m_other_gev`. x is
+        fixed at x0 = (m_parent^2 + m_phi^2 - m_other^2) / m_parent^2,
+        so every event carries the same E*. This serves dark-photon-like
+        (pi0 -> gamma X) and dark-scalar-like (B -> K X) production.
+        Declared as a YAML mapping with `type: two_body` and
+        `m_other_gev`.
+
+    Kinematic openness and the reported cutoff are type-dependent:
+      - two_body: open iff m_phi <= m_parent - m_other; cutoff is
+        m_parent - m_other.
+      - table: open iff the maximum tabulated x gives E* >= m_phi
+        (E*_max = x_max * m_parent / 2 >= m_phi); cutoff is the
+        E* implied by x_max, i.e. x_max * m_parent / 2.
+    """
+
+    def __init__(self, spec_type, *, x=None, pdf=None, m_other_gev=None,
+                 source=None):
+        self.type = spec_type
+        self.source = source
+        if spec_type == "table":
+            x = np.asarray(x, dtype=float)
+            pdf = np.asarray(pdf, dtype=float)
+            if x.ndim != 1 or pdf.shape != x.shape or len(x) < 2:
+                raise ValueError("table spectrum needs matching x and pdf "
+                                 "columns of length >= 2")
+            if np.any(pdf < 0.0):
+                raise ValueError("table spectrum pdf must be non-negative")
+            order = np.argsort(x)
+            self.x = x[order]
+            self.pdf = pdf[order]
+            if not np.any(self.pdf > 0.0):
+                raise ValueError("table spectrum pdf is identically zero")
+            self.x_max = float(self.x[-1])
+            self.x_min = float(self.x[0])
+            self.m_other = None
+            # inverse-CDF grid (trapezoidal cumulative integral)
+            dcdf = 0.5 * (self.pdf[1:] + self.pdf[:-1]) * np.diff(self.x)
+            cdf = np.concatenate([[0.0], np.cumsum(dcdf)])
+            self._cdf = cdf / cdf[-1]
+        elif spec_type == "two_body":
+            if m_other_gev is None or float(m_other_gev) < 0.0:
+                raise ValueError("two_body spectrum needs m_other_gev >= 0")
+            self.m_other = float(m_other_gev)
+            self.x = None
+            self.pdf = None
+            self.x_max = None
+            self.x_min = None
+            self._cdf = None
+        else:
+            raise ValueError(f"unknown spectrum type '{spec_type}' "
+                             "(expected 'table' or 'two_body')")
+
+    # ---- loaders ----
+    @classmethod
+    def from_path(cls, path):
+        """Load a spectrum from a CSV (table) or YAML (table/two_body)."""
+        lower = str(path).lower()
+        if lower.endswith(".csv"):
+            x, pdf = cls._read_csv(path)
+            return cls("table", x=x, pdf=pdf, source=str(path))
+        with open(path) as fh:
+            doc = yaml.safe_load(fh)
+        if not isinstance(doc, dict):
+            raise ValueError("spectrum YAML must be a mapping")
+        spec = doc.get("spectrum", doc)
+        stype = spec.get("type")
+        if stype == "two_body":
+            return cls("two_body", m_other_gev=spec.get("m_other_gev"),
+                       source=str(path))
+        if stype == "table":
+            if "csv" in spec:
+                csv_path = spec["csv"]
+                if not os.path.isabs(csv_path):
+                    csv_path = os.path.join(os.path.dirname(path), csv_path)
+                x, pdf = cls._read_csv(csv_path)
+            else:
+                x, pdf = spec.get("x"), spec.get("pdf")
+                if x is None or pdf is None:
+                    raise ValueError("table spectrum YAML needs inline "
+                                     "'x' and 'pdf' lists or a 'csv' path")
+            return cls("table", x=x, pdf=pdf, source=str(path))
+        raise ValueError("spectrum spec missing a valid 'type' "
+                         "(expected 'table' or 'two_body')")
+
+    @staticmethod
+    def _read_csv(path):
+        xs, ps = [], []
+        with open(path, newline="") as fh:
+            rows = list(csv.reader(fh))
+        header_seen = False
+        for row in rows:
+            if not row:
+                continue
+            first = row[0].strip()
+            if first.startswith("#"):
+                continue
+            if not header_seen and not _is_number(first):
+                header_seen = True  # column header line (x,pdf)
+                continue
+            header_seen = True
+            xs.append(float(row[0]))
+            ps.append(float(row[1]))
+        if len(xs) < 2:
+            raise ValueError(f"CSV spectrum {path} has < 2 data rows")
+        return np.asarray(xs, dtype=float), np.asarray(ps, dtype=float)
+
+    # ---- kinematics ----
+    def is_open(self, m_parent, m_phi):
+        """Whether the channel is kinematically open at this mass."""
+        if self.type == "two_body":
+            return m_phi < m_parent - self.m_other
+        # table: max tabulated x must reach the phi rest energy
+        return 0.5 * self.x_max * m_parent > m_phi
+
+    def cutoff_gev(self, m_parent):
+        """The reported kinematic cutoff (max open m_phi)."""
+        if self.type == "two_body":
+            return m_parent - self.m_other
+        return 0.5 * self.x_max * m_parent
+
+    def sample_x(self, m_parent, m_phi, n, rng):
+        """Draw n values of x = 2 E*/m_parent from the spectrum."""
+        if self.type == "two_body":
+            x0 = (m_parent * m_parent + m_phi * m_phi
+                  - self.m_other * self.m_other) / (m_parent * m_parent)
+            return np.full(n, x0, dtype=float)
+        u = rng.uniform(0.0, 1.0, n)
+        return np.interp(u, self._cdf, self.x)
 
 
-def _tr6(a, b, c, d, e, f, dots):
-    """Tr[slash(a)...slash(f)] / 4 by the standard recursion."""
-    return (dots[a, b] * _tr4(c, d, e, f, dots)
-            - dots[a, c] * _tr4(b, d, e, f, dots)
-            + dots[a, d] * _tr4(b, c, e, f, dots)
-            - dots[a, e] * _tr4(b, c, d, f, dots)
-            + dots[a, f] * _tr4(b, c, d, e, dots))
-
-
-def msq_trace(P, p1, p2, p3, m_mu, m_phi):
-    """Spin-summed |A|^2 at g = C = 1 for M -> mu nu phi (scalar radiated
-    off the muon leg), from the closed-form trace recursion.
-
-    T = 2 { Tr[slash(p1) slash(l) slash(P) slash(p2) slash(P) slash(l)]
-            + m^2 Tr[slash(P)  slash(p2) slash(P) slash(l)]
-            + m^2 Tr[slash(p1) slash(P)  slash(p2) slash(P)]
-            + m^2 Tr[slash(l)  slash(P)  slash(p2) slash(P)] },
-
-    with l = p1 + p3 and epsilon terms vanishing for three independent
-    momenta. Divide by D^2 with D = 2 p1.p3 + m_phi^2 (the muon
-    propagator). Validated against explicit Dirac spinors in the
-    reference implementation."""
-    l = p1 + p3
-    vecs = {"p1": p1, "p2": p2, "P": P, "l": l}
-    names = list(vecs)
-    dots = {}
-    for i in names:
-        for j in names:
-            dots[i, j] = mdot(vecs[i], vecs[j])
-    m2 = m_mu * m_mu
-    T = 2.0 * 4.0 * (
-        _tr6("p1", "l", "P", "p2", "P", "l", dots)
-        + m2 * _tr4("P", "p2", "P", "l", dots)
-        + m2 * _tr4("p1", "P", "p2", "P", dots)
-        + m2 * _tr4("l", "P", "p2", "P", dots)
-    )
-    D = 2.0 * mdot(p1, p3) + m_phi * m_phi
-    return T / (D * D)
-
-
-def momenta_from_x_c(mM, m_mu, m_phi, x, c):
-    """Parent-rest-frame momenta (P, p1, p2, p3) at (x, cos(theta*)).
-
-    x = 2 E_phi / mM; theta_star is the muon helicity angle in the
-    (mu nu) rest frame measured from the (mu nu) direction of flight
-    (i.e. from -p_phi). phi is placed along -z, the (mu nu) system
-    along +z, and the muon decayed in the x-z plane (azimuth is
-    physically irrelevant for a spin-0 parent)."""
-    E3 = 0.5 * x * mM
-    if E3 < m_phi:
-        raise ValueError("x below phi threshold")
-    p3mag = np.sqrt(E3 * E3 - m_phi * m_phi)
-    m12sq = mM * mM + m_phi * m_phi - 2.0 * mM * E3
-    if m12sq <= m_mu * m_mu:
-        raise ValueError("(x, c) outside Dalitz domain")
-    m12 = np.sqrt(m12sq)
-    # muon in the (mu nu) rest frame
-    Es = (m12sq + m_mu * m_mu) / (2.0 * m12)
-    ps = (m12sq - m_mu * m_mu) / (2.0 * m12)
-    # boost of the (mu nu) system in the parent frame (along +z)
-    E12 = mM - E3
-    gam = E12 / m12
-    gb = p3mag / m12  # gamma * beta
-    s = np.sqrt(max(1.0 - c * c, 0.0))
-    E1 = gam * Es + gb * ps * c
-    p1z = gam * ps * c + gb * Es
-    p1x = ps * s
-    p1 = np.array([E1, p1x, 0.0, p1z])
-    p3 = np.array([E3, 0.0, 0.0, -p3mag])
-    P = np.array([mM, 0.0, 0.0, 0.0])
-    p2 = P - p1 - p3
-    return P, p1, p2, p3
-
-
-def jacobian_x_c(mM, m_mu, m_phi, x):
-    """|d(m12^2, m23^2) / d(x, c)| at fixed x (c-independent).
-
-    m12^2 = mM^2 + m_phi^2 - x mM^2  ->  |dm12^2/dx| = mM^2.
-    m23^2 = mM^2 + m_mu^2 - 2 mM E1 with
-    E1 = gam Es + gb ps c              ->  |dm23^2/dc| = 2 mM gb ps."""
-    E3 = 0.5 * x * mM
-    p3mag = np.sqrt(max(E3 * E3 - m_phi * m_phi, 0.0))
-    m12sq = mM * mM + m_phi * m_phi - 2.0 * mM * E3
-    m12 = np.sqrt(max(m12sq, 0.0))
-    if m12 <= m_mu:
-        return 0.0
-    ps = (m12sq - m_mu * m_mu) / (2.0 * m12)
-    gb = p3mag / m12
-    return (mM * mM) * (2.0 * mM * gb * ps)
-
-
-def x_domain(mM, m_mu, m_phi):
-    """Physical range of x = 2 E_phi / mM."""
-    x_min = 2.0 * m_phi / mM
-    x_max = 1.0 + (m_phi * m_phi - m_mu * m_mu) / (mM * mM)
-    return x_min, x_max
-
-
-def d2gamma_dx_dc(mM, m_mu, m_phi, x, c):
-    """d^2Gamma/(dx dc) at g = C = 1 [PDG 50.22 + Jacobian]."""
+def _is_number(s):
     try:
-        P, p1, p2, p3 = momenta_from_x_c(mM, m_mu, m_phi, x, c)
-    except ValueError:
-        return 0.0
-    val = msq_trace(P, p1, p2, p3, m_mu, m_phi)
-    J = jacobian_x_c(mM, m_mu, m_phi, x)
-    return val * J / ((2.0 * np.pi) ** 3 * 32.0 * mM ** 3)
-
-
-def sample_x(mM, m_mu, m_phi, n, rng, n_grid=400):
-    """Draw x = 2E_phi/mM from the 1D marginal of the production
-    density via inverse-CDF on a fine grid (c integrated; the overall
-    orientation of the final state is isotropic for a spin-0 parent,
-    so only the x marginal matters for the phi flux)."""
-    x_lo, x_hi = x_domain(mM, m_mu, m_phi)
-    xs = np.linspace(x_lo + 1e-9, x_hi - 1e-9, n_grid)
-    cs = np.linspace(-1.0 + 1e-9, 1.0 - 1e-9, 60)
-    dens = np.array([
-        np.trapezoid([d2gamma_dx_dc(mM, m_mu, m_phi, x, c) for c in cs], cs)
-        for x in xs])
-    cdf = np.cumsum(dens)
-    cdf = np.concatenate([[0.0], cdf]) / cdf[-1]
-    grid = np.concatenate([[x_lo + 1e-9], xs])
-    return np.interp(rng.uniform(0.0, 1.0, n), cdf, grid)
+        float(s)
+        return True
+    except (TypeError, ValueError):
+        return False
 
 
 def boost_to_lab(estar, kstar, e_par, pvec_par, m_par):
@@ -326,18 +362,26 @@ def decay_probability(L1, L2, lam):
     return np.exp(-L1 / lam) - np.exp(-L2 / lam)
 
 
-def two_track_pass(p4_phi, vertex, m_phi, m_mu, geom, rng):
+def two_track_pass(p4_phi, vertex, m_phi, m1, m2, geom, rng):
     """g-independent two-track acceptance at the midpoint convention.
 
     p4_phi: (n, 4) lab four-momenta [E, px, py, pz]; vertex: (n, 3)
-    decay positions. Samples one isotropic phi -> mu mu decay per
-    event, boosts both muons to the lab, propagates straight lines to
-    z_det, and requires both to hit r < r_det moving forward."""
+    decay positions. Samples one isotropic two-body decay
+    phi -> d1(m1) d2(m2) per event, boosts both daughters to the lab,
+    propagates straight lines to z_det, and requires both to hit
+    r < r_det moving forward. m1 and m2 need not be equal (default use
+    is mu mu); the two daughters are back-to-back in the phi rest frame
+    with a common momentum magnitude but individual energies."""
     n = len(p4_phi)
-    if m_phi <= 2.0 * m_mu:
-        raise ValueError("phi -> mu mu closed: m_phi <= 2 m_mu")
-    pstar = np.sqrt(m_phi ** 2 / 4.0 - m_mu ** 2)
-    estar = m_phi / 2.0
+    if m_phi <= m1 + m2:
+        raise ValueError(
+            f"phi -> d1 d2 closed: m_phi <= m1 + m2 "
+            f"(m_phi={m_phi}, m1={m1}, m2={m2})")
+    # Kallen momentum: back-to-back |k*| for the two daughters.
+    lam = (m_phi ** 2 - (m1 + m2) ** 2) * (m_phi ** 2 - (m1 - m2) ** 2)
+    pstar = math.sqrt(lam) / (2.0 * m_phi)
+    estar1 = (m_phi ** 2 + m1 ** 2 - m2 ** 2) / (2.0 * m_phi)
+    estar2 = (m_phi ** 2 + m2 ** 2 - m1 ** 2) / (2.0 * m_phi)
     cth = rng.uniform(-1.0, 1.0, n)
     sth = np.sqrt(1.0 - cth ** 2)
     az = rng.uniform(0.0, 2.0 * np.pi, n)
@@ -345,7 +389,7 @@ def two_track_pass(p4_phi, vertex, m_phi, m_mu, geom, rng):
         [sth * np.cos(az), sth * np.sin(az), cth], axis=1)
     E, pvec = p4_phi[:, 0], p4_phi[:, 1:]
     ok = np.ones(n, dtype=bool)
-    for sign in (+1.0, -1.0):
+    for sign, estar in ((+1.0, estar1), (-1.0, estar2)):
         k = sign * kstar
         _, klab = boost_to_lab(estar, k, E, pvec, m_phi)
         forward = klab[:, 2] > 0.0

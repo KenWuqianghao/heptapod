@@ -22,15 +22,22 @@ WEIGHT_CONVENTION = "g2_stripped_per_primary_interaction"
 class LLPFluxFromMesonDecayTool(BaseTool):
     """
     Sample weighted LLP lab-frame events from an analytic parent-flux
-    kernel convolved with the declared 3-body production spectrum
-    M -> mu nu phi (a scalar phi radiated off the muon leg).
+    kernel convolved with a DECLARED parent-rest-frame energy spectrum.
 
     **Purpose:**
-    Produce the phi flux entering a decay-in-volume reach study: per-event
+    Produce the LLP flux entering a decay-in-volume reach study: per-event
     lab four-momenta with g^2-stripped weights, normalized per primary
-    interaction, ready for DecayInVolumeTool. One call handles one parent
-    channel (one kernel); run once per channel and concatenate the output
-    files for a multi-channel study.
+    interaction. The output records are the `events_path` input of
+    DecayInVolumeTool (this tool -> DecayInVolume is the pipeline). One
+    call handles one parent channel (one kernel + one spectrum); run once
+    per channel and concatenate the output files for a multi-channel
+    study.
+
+    **Model-agnostic by design:** the production physics is NOT baked into
+    this tool. Which LLP energies the parent decay yields is declared in
+    the `spectrum_spec` data product (see below), so the same tool serves
+    3-body radiation (M -> lepton nu X, a `table` spectrum) and two-body
+    production (pi0 -> gamma X, B -> K X, a `two_body` delta spectrum).
 
     **Inputs (runtime):**
     - kernel_spec: path to the kernel YAML (form `pexp_texp`), which carries
@@ -38,20 +45,30 @@ class LLPFluxFromMesonDecayTool(BaseTool):
       The kernel parametrizes d^2 N / (dp dtheta) of *decaying* parents per
       primary interaction (decay-before-absorption folded into n_per_int),
       so the collider vs beam-dump setting lives entirely in this file.
+    - spectrum_spec: path to the parent-rest-frame LLP energy spectrum data
+      product, in x = 2 E*/m_parent. Two declared types:
+        * `type: table` — a CSV (columns x, pdf; the pdf may be
+          unnormalized, `#` comment lines allowed) or a YAML mapping with
+          `type: table` and inline `x:`/`pdf:` lists or a `csv:` path. x is
+          sampled by inverse-CDF interpolation. This is the pinned 3-body
+          radiation density (one file per parent and m_phi).
+        * `type: two_body` — a YAML mapping with `type: two_body` and
+          `m_other_gev`, the other daughter's mass. x is then fixed by
+          two-body kinematics (a delta function), serving dark-photon-like
+          and dark-scalar-like production.
     - m_phi_gev: LLP mass in GeV.
-    - m_mu_gev: muon mass in GeV (default 0.1056584).
     - kappa: the declared branching coefficient at g = 1 for this channel,
-      i.e. Br(M -> mu nu phi) = g^2 * kappa (from the model card).
+      i.e. Br(M -> ... X) = g^2 * kappa (from the model card).
     - n_samples: number of Monte Carlo events to draw.
     - seed: RNG seed (deterministic output for fixed inputs).
     - output_path: where to write the event records (line-delimited JSON).
 
     **Behavior:**
     Samples the parent (p, theta, azimuth) exactly from the kernel shape;
-    draws x = 2 E_phi / m_M from the 1D marginal of the tree-level
-    production density (trace-form matrix element, mirrored from the
-    validated reference); takes the phi direction isotropic in the parent
-    rest frame (exact for a spin-0 parent); and boosts to the lab with
+    draws x = 2 E*/m_parent from the declared spectrum (inverse-CDF for a
+    table, the fixed two-body value for a two_body spectrum); takes the LLP
+    direction isotropic in the parent rest frame (exact for a spin-0
+    parent — the declared convention); and boosts to the lab with
     k_lab = k* + P [ (P.k*)/(M(E+M)) + E*/M ]. Each record carries the
     g^2-stripped per-event weight
 
@@ -60,9 +77,10 @@ class LLPFluxFromMesonDecayTool(BaseTool):
     so the physical yield is recovered downstream as
     N_sig(g) = N_int * g^2 * sum_i w_i * P_dec,i(g) * acc_i. A manifest
     JSON declaring this convention is written next to the events file.
-    If m_phi >= m_parent - m_mu the channel is kinematically closed: the
-    tool returns status ok with n_samples = 0 and the cutoff flagged
-    (empty events file + manifest are still written), not an error.
+    If the channel is kinematically closed (two_body: m_phi >= m_parent -
+    m_other; table: the maximum tabulated x cannot reach the LLP rest
+    energy), the tool returns status ok with n_samples = 0 and the cutoff
+    flagged (empty events file + manifest still written), not an error.
 
     **Output (JSON string):**
     - status: "ok" on success.
@@ -71,12 +89,13 @@ class LLPFluxFromMesonDecayTool(BaseTool):
       E, px, py, pz (GeV), theta_lab (rad), parent_channel,
       event_weight_g2_stripped.
     - manifest_path: manifest JSON declaring the weight convention and
-      all inputs (kernel, masses, kappa, seed, sum_weights).
+      all inputs (kernel, spectrum, mass, kappa, seed, sum_weights).
     - weight_convention: "g2_stripped_per_primary_interaction".
     - sum_weights: sum of event weights = n_per_int * kappa (0 above
-      the cutoff) — the g^2-stripped phi yield per primary interaction.
+      the cutoff) — the g^2-stripped LLP yield per primary interaction.
     - parent: parent name from the kernel spec.
-    - kinematic_cutoff_gev: m_parent - m_mu, the maximum open m_phi.
+    - spectrum_type: "table" or "two_body".
+    - kinematic_cutoff_gev: the maximum open m_phi for this channel.
     - above_kinematic_cutoff: true when the channel is closed.
     """
     # --------------------------- Runtime fields --------------------------- #
@@ -84,14 +103,16 @@ class LLPFluxFromMesonDecayTool(BaseTool):
         description="Path to the parent-flux kernel YAML (form 'pexp_texp'; "
                     "carries parent name, parent_mass_gev, n_per_int, "
                     "p0_gev, a, theta0_rad)")
+    spectrum_spec: str = RuntimeField(
+        description="Path to the parent-rest-frame LLP energy spectrum "
+                    "(x = 2 E*/m_parent). CSV table (columns x,pdf) or YAML "
+                    "with 'type: table' (x/pdf or csv:) or 'type: two_body' "
+                    "(m_other_gev)")
     m_phi_gev: float = RuntimeField(
         description="LLP (phi) mass in GeV")
-    m_mu_gev: float = RuntimeField(
-        default=0.1056584,
-        description="Muon mass in GeV (default 0.1056584)")
     kappa: float = RuntimeField(
         description="Declared branching coefficient at g = 1 for this "
-                    "channel: Br(M -> mu nu phi) = g^2 * kappa")
+                    "channel: Br(M -> ... X) = g^2 * kappa")
     n_samples: int = RuntimeField(
         description="Number of Monte Carlo events to sample")
     seed: int = RuntimeField(
@@ -125,11 +146,13 @@ class LLPFluxFromMesonDecayTool(BaseTool):
         from . import llp_physics as phys
 
         src = self._safe_path(self.kernel_spec)
+        spec_src = self._safe_path(self.spectrum_spec)
         dst = self._safe_path(self.output_path)
-        if not src or not dst:
+        if not src or not spec_src or not dst:
             return self.format_error(
                 error="Access Denied",
-                reason="kernel_spec or output_path escapes base_directory",
+                reason="kernel_spec, spectrum_spec or output_path escapes "
+                       "base_directory",
                 suggestion="Use relative paths inside base_directory")
         if not os.path.exists(src):
             return self.format_error(
@@ -137,6 +160,12 @@ class LLPFluxFromMesonDecayTool(BaseTool):
                 reason="kernel YAML not found",
                 context=f"path={self.kernel_spec}",
                 suggestion="Provide a valid kernel spec path")
+        if not os.path.exists(spec_src):
+            return self.format_error(
+                error="File Not Found",
+                reason="spectrum spec not found",
+                context=f"path={self.spectrum_spec}",
+                suggestion="Provide a valid spectrum_spec path")
 
         # ------------------------- load kernel ------------------------- #
         try:
@@ -150,20 +179,31 @@ class LLPFluxFromMesonDecayTool(BaseTool):
                            "parent_mass_gev, form: pexp_texp, and params "
                            "{n_per_int, p0_gev, a, theta0_rad}")
 
+        # ------------------------ load spectrum ------------------------ #
+        try:
+            spectrum = phys.LLPSpectrum.from_path(spec_src)
+        except Exception as e:
+            return self.format_error(
+                error="Spectrum Error",
+                reason=str(e),
+                context=f"path={self.spectrum_spec}",
+                suggestion="Spectrum must be a CSV (columns x,pdf) or a "
+                           "YAML with 'type: table' (x/pdf or csv:) or "
+                           "'type: two_body' (m_other_gev)")
+
         # --------------------- validate parameters --------------------- #
         m_phi = float(self.m_phi_gev)
-        m_mu = float(self.m_mu_gev)
         n = int(self.n_samples)
-        if m_phi <= 0.0 or m_mu <= 0.0:
+        if m_phi <= 0.0:
             return self.format_error(
                 error="Invalid Parameter",
-                reason=f"masses must be positive (m_phi={m_phi}, m_mu={m_mu})",
-                suggestion="Provide m_phi_gev > 0 and m_mu_gev > 0")
+                reason=f"m_phi must be positive (m_phi={m_phi})",
+                suggestion="Provide m_phi_gev > 0")
         if float(self.kappa) < 0.0:
             return self.format_error(
                 error="Invalid Parameter",
                 reason=f"kappa must be non-negative (kappa={self.kappa})",
-                suggestion="kappa is Br(M -> mu nu phi) at g = 1")
+                suggestion="kappa is Br(M -> ... X) at g = 1")
         if n <= 0:
             return self.format_error(
                 error="Invalid Parameter",
@@ -171,8 +211,8 @@ class LLPFluxFromMesonDecayTool(BaseTool):
                 suggestion="Provide n_samples >= 1")
 
         mM = kernel.parent_mass
-        cutoff = mM - m_mu
-        above_cutoff = m_phi >= cutoff
+        cutoff = float(spectrum.cutoff_gev(mM))
+        above_cutoff = not spectrum.is_open(mM, m_phi)
 
         base, _ = os.path.splitext(dst)
         manifest_path = base + ".manifest.json"
@@ -190,9 +230,9 @@ class LLPFluxFromMesonDecayTool(BaseTool):
                 # parent kinematics from the kernel (exact draws)
                 p_par, th_par, az_par = kernel.sample(n, rng)
                 e_par = np.sqrt(p_par ** 2 + mM ** 2)
-                # phi in the parent rest frame: energy from the x marginal
-                # of the production density, direction isotropic
-                x = phys.sample_x(mM, m_mu, m_phi, n, rng)
+                # phi in the parent rest frame: energy from the declared
+                # spectrum (x = 2 E*/m_parent), direction isotropic
+                x = spectrum.sample_x(mM, m_phi, n, rng)
                 estar = 0.5 * x * mM
                 pstar = np.sqrt(np.maximum(estar ** 2 - m_phi ** 2, 0.0))
                 cth = rng.uniform(-1.0, 1.0, n)
@@ -246,10 +286,11 @@ class LLPFluxFromMesonDecayTool(BaseTool):
             "events_path": os.path.relpath(dst, self.base_directory),
             "kernel_spec": os.path.relpath(src, self.base_directory),
             "kernel_name": kernel.name,
+            "spectrum_spec": os.path.relpath(spec_src, self.base_directory),
+            "spectrum_type": spectrum.type,
             "parent": kernel.parent,
             "parent_mass_gev": mM,
             "m_phi_gev": m_phi,
-            "m_mu_gev": m_mu,
             "kappa": float(self.kappa),
             "n_samples": n_written,
             "seed": int(self.seed),
@@ -269,6 +310,7 @@ class LLPFluxFromMesonDecayTool(BaseTool):
             "weight_convention": WEIGHT_CONVENTION,
             "sum_weights": sum_weights,
             "parent": kernel.parent,
+            "spectrum_type": spectrum.type,
             "kinematic_cutoff_gev": cutoff,
             "above_kinematic_cutoff": above_cutoff,
         }

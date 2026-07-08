@@ -25,16 +25,30 @@ CONVENTIONS = {
 
 class DecayInVolumeTool(BaseTool):
     """
-    Compute decay-in-volume LLP signal yields over a coupling grid with
-    built-in exact g^2 reweighting, from g^2-stripped weighted events.
+    Compute decay-in-volume LLP signal yields over a lifetime grid, from
+    g^2-stripped weighted events (LLPFluxFromMesonDecayTool output).
 
     **Purpose:**
-    Turn a phi flux sample (LLPFluxFromMesonDecayTool output; multiple
-    channels may be concatenated into one file) into N_sig(g) for every
-    coupling in g_grid — the convention-sensitive step of a reach study.
-    Because production scales as g^2, the total width as g^2, and the
-    kinematics are g-independent, one event set covers the whole g axis
-    exactly: N_sig(g) = N_int * g^2 * sum_i w_i * P_dec,i(g) * twotrack_i.
+    Turn an LLP flux sample (the `output_path` events of
+    LLPFluxFromMesonDecayTool; multiple channels may be concatenated into
+    one file) into the expected number of signal decays — the
+    convention-sensitive step of a reach study. Two mutually exclusive
+    lifetime modes are supported:
+
+    * **portal scaling** (`width_ref_gev` + `g_grid`): the model-card
+      convention where production scales as g^2, the total width as g^2,
+      and kinematics are g-independent, so one event set covers the whole
+      g axis exactly by reweighting:
+          N_sig(g) = N_int * g^2 * sum_i w_i * P_dec,i(g) * twotrack_i,
+      with ctau(g) = hbar*c / (g^2 * width_ref_gev). Yields are reported
+      per g.
+    * **direct lifetimes** (`ctau_grid_m`): a list of lab-frame ctau
+      values in meters, fully model-agnostic (no portal assumed). The
+      caller owns any coupling factors. Yields are reported per ctau as
+          N(ctau) = N_int * sum_i w_i * P_dec,i(ctau) * twotrack_i
+      with NO g^2 factor — the g^2-stripped weights are used verbatim.
+
+    Provide exactly one mode. `width_ref_gev`+`g_grid` XOR `ctau_grid_m`.
 
     **Inputs (runtime):**
     - events_path: line-delimited JSON events with per-record fields
@@ -46,15 +60,21 @@ class DecayInVolumeTool(BaseTool):
       cylindrical decay volume) and z_det_m, r_det_m (downstream detector
       plane), all in meters from the primary vertex. The geometry file,
       like the kernel, carries the entire experimental setting.
-    - m_phi_gev, m_mu_gev: LLP and muon masses in GeV.
-    - width_ref_gev: Gamma_tot(phi) at g = 1 (g^2-stripped reference
-      width); ctau(g) = hbar*c / (g^2 * width_ref_gev).
-    - g_grid: list of couplings at which to evaluate N_sig.
+    - m_phi_gev: LLP mass in GeV.
+    - daughter_masses_gev: the two visible-decay daughter masses in GeV
+      (length-2 list; default [0.1056584, 0.1056584] = mu mu). Used only
+      by the two-track acceptance; masses need not be equal.
+    - width_ref_gev: Gamma_tot(phi) at g = 1 in GeV (g^2-stripped
+      reference width) — portal-scaling mode.
+    - g_grid: list of couplings g at which to evaluate N_sig — portal
+      mode.
+    - ctau_grid_m: list of lab-frame ctau values in meters — direct
+      lifetime mode (mutually exclusive with width_ref_gev/g_grid).
     - n_int: number of primary interactions (sigma_inel * L_int for a
       collider setting, N_POT for a beam dump).
     - require_two_track: apply the two-track acceptance (default true).
       If false the acceptance factor is 1 and the audit column is null.
-    - seed: RNG seed for the isotropic phi -> mu mu decay sampling.
+    - seed: RNG seed for the isotropic two-body decay sampling.
     - output_path: where to write the yields table (JSON).
 
     **Behavior (declared conventions, mirrored from the validated
@@ -63,29 +83,31 @@ class DecayInVolumeTool(BaseTool):
       lab angle; the parent flight length is absorbed into the kernel
       (decaying-parents-only normalization).
     - In-volume segment [L1, L2] = intersection of the ray with the
-      on-axis cylinder; P_dec(g) = exp(-L1/lam) - exp(-L2/lam) with
-      lam = beta*gamma*ctau(g) and beta*gamma = |p|/m_phi.
+      on-axis cylinder; P_dec = exp(-L1/lam) - exp(-L2/lam) with
+      lam = beta*gamma*ctau and beta*gamma = |p|/m_phi.
     - Two-track acceptance at the decay-volume MIDPOINT convention
-      (g-independent, preserving exact reweighting): one isotropic
-      phi -> mu+ mu- decay is sampled per event at the midpoint of
-      [L1, L2], both muons are boosted to the lab and propagated to the
-      z_det plane, and both must satisfy r < r_det moving forward.
-    - Weights are g^2-stripped per primary interaction; the g^2 from
-      production is applied here, the g^2 in the lifetime enters through
-      P_dec.
+      (lifetime-independent, preserving exact reweighting): one isotropic
+      phi -> d1 d2 decay is sampled per event at the midpoint of
+      [L1, L2], both daughters are boosted to the lab and propagated to
+      the z_det plane, and both must satisfy r < r_det moving forward.
+    - Weights are g^2-stripped per primary interaction; in portal mode
+      the g^2 from production is applied here and the g^2 in the lifetime
+      enters through P_dec, while in ctau mode no g^2 is applied.
 
     **Output (JSON string):**
     - status: "ok" on success.
+    - lifetime_mode: "portal" or "ctau".
     - n_events: number of event records read.
     - n_pass_geometry: events whose ray intersects the decay volume.
     - n_pass_two_track: events passing geometry AND two-track acceptance
       (these are the contributing events).
-    - yields: [{g, n_sig}] over g_grid (expected signal decays).
-    - output_path: yields table JSON (per-g rows + conventions block).
+    - yields: portal mode -> [{g, n_sig}] over g_grid; ctau mode ->
+      [{ctau_m, n_sig}] over ctau_grid_m (expected signal decays).
+    - output_path: yields table JSON (per-point rows + conventions block).
     - audit_path: per-event audit file (line-delimited JSON) with
       event_id, parent_channel, event_weight_g2_stripped, beta_gamma,
       L1_m, L2_m, geom_pass, two_track_pass, plus p_decay and the
-      weighted contribution evaluated at g_ref = g_grid[0].
+      weighted contribution evaluated at the first grid point.
     - conventions: {two_track: "midpoint", weight: "g2_stripped"}.
     """
     # --------------------------- Runtime fields --------------------------- #
@@ -98,15 +120,28 @@ class DecayInVolumeTool(BaseTool):
                     "z_det_m, r_det_m in meters)")
     m_phi_gev: float = RuntimeField(
         description="LLP (phi) mass in GeV")
-    m_mu_gev: float = RuntimeField(
-        default=0.1056584,
-        description="Muon mass in GeV (default 0.1056584)")
+    daughter_masses_gev: List[float] = RuntimeField(
+        default=[0.1056584, 0.1056584],
+        description="The two visible-decay daughter masses in GeV "
+                    "(length 2; default [0.1056584, 0.1056584] = mu mu). "
+                    "Used by the two-track acceptance")
     width_ref_gev: float = RuntimeField(
-        description="Gamma_tot(phi) at g = 1 in GeV (g^2-stripped "
-                    "reference width for the ctau reweighting)")
+        default=0.0,
+        description="Portal mode: Gamma_tot(phi) at g = 1 in GeV "
+                    "(g^2-stripped reference width for ctau(g) = "
+                    "hbar*c/(g^2*width_ref_gev)). Pair with g_grid. "
+                    "Leave unset (0) for direct-lifetime mode")
     g_grid: List[float] = RuntimeField(
-        description="Couplings g at which to evaluate N_sig (exact "
-                    "reweighting: one event set covers the whole list)")
+        default=[],
+        description="Portal mode: couplings g at which to evaluate N_sig "
+                    "(exact reweighting: one event set covers the list). "
+                    "Pair with width_ref_gev. Leave empty for "
+                    "direct-lifetime mode")
+    ctau_grid_m: List[float] = RuntimeField(
+        default=[],
+        description="Direct-lifetime mode: lab-frame ctau values in "
+                    "meters (model-agnostic; no g^2 applied). Mutually "
+                    "exclusive with width_ref_gev/g_grid")
     n_int: float = RuntimeField(
         description="Number of primary interactions (sigma_inel * L_int "
                     "for a collider, N_POT for a beam dump)")
@@ -116,7 +151,7 @@ class DecayInVolumeTool(BaseTool):
                     "true)")
     seed: int = RuntimeField(
         default=1,
-        description="RNG seed for the isotropic phi -> mu mu decay "
+        description="RNG seed for the isotropic phi -> d1 d2 decay "
                     "sampling (default 1)")
     output_path: str = RuntimeField(
         description="Relative path for the yields table JSON (e.g. "
@@ -165,40 +200,88 @@ class DecayInVolumeTool(BaseTool):
 
         # --------------------- validate parameters --------------------- #
         m_phi = float(self.m_phi_gev)
-        m_mu = float(self.m_mu_gev)
-        wref = float(self.width_ref_gev)
+        dmasses = [float(m) for m in (self.daughter_masses_gev or [])]
         n_int = float(self.n_int)
-        g_grid = [float(g) for g in (self.g_grid or [])]
-        if m_phi <= 0.0 or m_mu <= 0.0:
+        if m_phi <= 0.0:
             return self.format_error(
                 error="Invalid Parameter",
-                reason=f"masses must be positive (m_phi={m_phi}, m_mu={m_mu})",
-                suggestion="Provide m_phi_gev > 0 and m_mu_gev > 0")
-        if wref <= 0.0:
+                reason=f"m_phi must be positive (m_phi={m_phi})",
+                suggestion="Provide m_phi_gev > 0")
+        if len(dmasses) != 2 or any(m < 0.0 for m in dmasses):
             return self.format_error(
                 error="Invalid Parameter",
-                reason=f"width_ref_gev must be positive (got {wref})",
-                suggestion="width_ref_gev is Gamma_tot at g = 1; for "
-                           "phi -> mu mu it vanishes at m_phi <= 2 m_mu, "
-                           "where no decay-in-volume signal exists")
-        if not g_grid or any(g <= 0.0 for g in g_grid):
-            return self.format_error(
-                error="Invalid Parameter",
-                reason="g_grid must be a non-empty list of positive couplings",
-                suggestion="Provide g_grid like [1e-6, 3e-6, 1e-5]")
+                reason=f"daughter_masses_gev must be two non-negative "
+                       f"masses (got {self.daughter_masses_gev})",
+                suggestion="Provide e.g. [0.1056584, 0.1056584] for mu mu")
+        m1, m2 = dmasses
         if n_int <= 0.0:
             return self.format_error(
                 error="Invalid Parameter",
                 reason=f"n_int must be positive (got {n_int})",
                 suggestion="n_int is the number of primary interactions")
-        if bool(self.require_two_track) and m_phi <= 2.0 * m_mu:
+
+        # ------------- lifetime mode: portal XOR direct ctau ----------- #
+        # Sentinels: width_ref_gev defaults to 0 and the grids to [] so
+        # each mode is detected by "was anything meaningful supplied".
+        wref_given = float(self.width_ref_gev or 0.0) > 0.0
+        g_given = bool(self.g_grid)
+        ctau_given = bool(self.ctau_grid_m)
+        has_portal = wref_given or g_given
+        has_ctau = ctau_given
+        if has_portal and has_ctau:
             return self.format_error(
                 error="Invalid Parameter",
-                reason=f"two-track acceptance requires m_phi > 2 m_mu "
-                       f"(m_phi={m_phi}, 2 m_mu={2.0 * m_mu})",
-                suggestion="phi -> mu mu is kinematically closed; check "
-                           "m_phi_gev / m_mu_gev or set require_two_track "
-                           "to false")
+                reason="lifetime mode is ambiguous: both portal "
+                       "(width_ref_gev/g_grid) and ctau_grid_m were given",
+                suggestion="Provide EITHER width_ref_gev + g_grid OR "
+                           "ctau_grid_m, not both")
+        if not has_portal and not has_ctau:
+            return self.format_error(
+                error="Invalid Parameter",
+                reason="no lifetime mode selected",
+                suggestion="Provide width_ref_gev + g_grid (portal) or "
+                           "ctau_grid_m (direct lifetimes)")
+
+        if has_portal:
+            lifetime_mode = "portal"
+            wref = float(self.width_ref_gev or 0.0)
+            g_grid = [float(g) for g in (self.g_grid or [])]
+            if wref <= 0.0:
+                return self.format_error(
+                    error="Invalid Parameter",
+                    reason=f"width_ref_gev must be positive (got {wref})",
+                    suggestion="width_ref_gev is Gamma_tot at g = 1; for "
+                               "phi -> mu mu it vanishes at m_phi <= 2 m_mu, "
+                               "where no decay-in-volume signal exists")
+            if not g_grid or any(g <= 0.0 for g in g_grid):
+                return self.format_error(
+                    error="Invalid Parameter",
+                    reason="g_grid must be a non-empty list of positive "
+                           "couplings",
+                    suggestion="Provide g_grid like [1e-6, 3e-6, 1e-5]")
+            # (label_key, label_value, ctau_m, prefactor)
+            points = [("g", g, phys.HBARC_M_GEV / (g * g * wref), g * g)
+                      for g in g_grid]
+        else:
+            lifetime_mode = "ctau"
+            wref = None
+            ctau_grid = [float(c) for c in (self.ctau_grid_m or [])]
+            if not ctau_grid or any(c <= 0.0 for c in ctau_grid):
+                return self.format_error(
+                    error="Invalid Parameter",
+                    reason="ctau_grid_m must be a non-empty list of "
+                           "positive lab-frame ctau values in meters",
+                    suggestion="Provide ctau_grid_m like [0.1, 1.0, 10.0]")
+            points = [("ctau_m", c, c, 1.0) for c in ctau_grid]
+
+        if bool(self.require_two_track) and m_phi <= m1 + m2:
+            return self.format_error(
+                error="Invalid Parameter",
+                reason=f"two-track acceptance requires m_phi > m1 + m2 "
+                       f"(m_phi={m_phi}, m1+m2={m1 + m2})",
+                suggestion="phi -> d1 d2 is kinematically closed; check "
+                           "m_phi_gev / daughter_masses_gev or set "
+                           "require_two_track to false")
 
         # -------------------------- load inputs ------------------------ #
         try:
@@ -240,16 +323,20 @@ class DecayInVolumeTool(BaseTool):
         base, _ = os.path.splitext(dst)
         audit_path = base + ".audit.jsonl"
         os.makedirs(os.path.dirname(dst) or ".", exist_ok=True)
-        g_ref = g_grid[0]
+        label_key = points[0][0]
+        ctau_ref = points[0][2]
+        pref_ref = points[0][3]
         n_events = len(p4_list)
 
         # ---------------- empty input: zero yields, not an error ------- #
         if n_events == 0:
-            yields = [{"g": g, "n_sig": 0.0} for g in g_grid]
+            yields = [{label_key: val, "n_sig": 0.0}
+                      for (_, val, _, _) in points]
             with open(audit_path, "w") as fh:
                 pass
             return self._write_outputs(dst, audit_path, yields, 0, 0, 0,
-                                       m_phi, m_mu, wref, n_int, g_ref)
+                                       m_phi, dmasses, wref, n_int,
+                                       lifetime_mode)
 
         # --------------------------- compute --------------------------- #
         try:
@@ -266,23 +353,22 @@ class DecayInVolumeTool(BaseTool):
             vertex = Lmid[:, None] * dirs
             if bool(self.require_two_track):
                 rng = np.random.default_rng(int(self.seed))
-                tt = phys.two_track_pass(p4, vertex, m_phi, m_mu, geom, rng)
+                tt = phys.two_track_pass(p4, vertex, m_phi, m1, m2, geom, rng)
             else:
                 tt = None
             keep = ok & tt if tt is not None else ok
-            # exact coupling-grid reweighting
+            # exact lifetime-grid reweighting (one event set covers all
+            # points; the prefactor is g^2 in portal mode, 1.0 in ctau)
             yields = []
-            for g in g_grid:
-                ctau = phys.HBARC_M_GEV / (g * g * wref)
+            for lkey, lval, ctau, pref in points:
                 lam = beta_gamma[keep] * ctau
                 pdec = phys.decay_probability(L1[keep], L2[keep], lam)
-                n_sig = n_int * g * g * float(np.sum(w[keep] * pdec))
-                yields.append({"g": g, "n_sig": n_sig})
-            # per-event audit columns at g_ref
-            ctau_ref = phys.HBARC_M_GEV / (g_ref * g_ref * wref)
+                n_sig = n_int * pref * float(np.sum(w[keep] * pdec))
+                yields.append({lkey: lval, "n_sig": n_sig})
+            # per-event audit columns at the first grid point
             pdec_ref = phys.decay_probability(
                 L1, L2, beta_gamma * ctau_ref)
-            contrib_ref = n_int * g_ref * g_ref * w * pdec_ref \
+            contrib_ref = n_int * pref_ref * w * pdec_ref \
                 * keep.astype(float)
             with open(audit_path, "w") as fh:
                 for i in range(n_events):
@@ -297,9 +383,8 @@ class DecayInVolumeTool(BaseTool):
                         "geom_pass": bool(ok[i]),
                         "two_track_pass": (bool(tt[i]) if tt is not None
                                            else None),
-                        "p_decay_at_g_ref": float(pdec_ref[i]),
-                        "weighted_contribution_at_g_ref":
-                            float(contrib_ref[i]),
+                        "p_decay_at_ref": float(pdec_ref[i]),
+                        "weighted_contribution": float(contrib_ref[i]),
                     }
                     fh.write(json.dumps(rec, separators=(",", ":")) + "\n")
             n_geo = int(np.sum(ok))
@@ -313,20 +398,21 @@ class DecayInVolumeTool(BaseTool):
                 suggestion="Check event four-momenta and geometry values")
 
         return self._write_outputs(dst, audit_path, yields, n_events,
-                                   n_geo, n_tt, m_phi, m_mu, wref, n_int,
-                                   g_ref)
+                                   n_geo, n_tt, m_phi, dmasses, wref, n_int,
+                                   lifetime_mode)
 
     def _write_outputs(self, dst, audit_path, yields, n_events, n_geo,
-                       n_tt, m_phi, m_mu, wref, n_int, g_ref) -> str:
+                       n_tt, m_phi, dmasses, wref, n_int,
+                       lifetime_mode) -> str:
         """Write the yields table and format the tool result JSON."""
         table = {
             "schema": YIELDS_SCHEMA_VERSION,
             "conventions": dict(CONVENTIONS),
+            "lifetime_mode": lifetime_mode,
             "m_phi_gev": m_phi,
-            "m_mu_gev": m_mu,
+            "daughter_masses_gev": list(dmasses),
             "width_ref_gev": wref,
             "n_int": n_int,
-            "g_ref": g_ref,
             "n_events": n_events,
             "n_pass_geometry": n_geo,
             "n_pass_two_track": n_tt,
@@ -336,6 +422,7 @@ class DecayInVolumeTool(BaseTool):
             json.dump(table, fh, indent=2)
         result = {
             "status": "ok",
+            "lifetime_mode": lifetime_mode,
             "n_events": n_events,
             "n_pass_geometry": n_geo,
             "n_pass_two_track": n_tt,

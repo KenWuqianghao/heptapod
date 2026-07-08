@@ -193,6 +193,147 @@ def test_validate_live() -> bool:
     return True
 
 
+_UFO_FIXTURE = REPO_ROOT / "tools" / "feynrules" / "test_files" / "models" / "S1_LQ_RR_UFO"
+_CHECKS_LOG = REPO_ROOT / "tools" / "feynrules" / "test_files" / "logs" / "checks_stdout_S1.log"
+
+_S1_MODEL = {
+    "particles": [
+        {
+            "spin_type": "S",
+            "class_index": 100,
+            "class_name": "S1",
+            "particle_name": "S1",
+            "self_conjugate": False,
+            "indices": ["Colour"],
+            "pdg": 9000005,
+            "quantum_numbers": {"Q": "-1/3"},
+        }
+    ]
+}
+
+
+def test_ufo_parser_particles() -> bool:
+    print(">> Testing UFO particles.py AST parsing...\n")
+    from fractions import Fraction
+
+    from tools.validate.ufo_parser import parse_particles
+
+    parts = parse_particles(str(_UFO_FIXTURE / "particles.py"))
+    by_name = {p.get("name"): p for p in parts}
+    assert len(parts) >= 20, len(parts)  # full SM + S1
+    s1 = by_name["S1"]
+    assert s1["pdg_code"] == 9000005, s1
+    assert s1["spin"] == 1 and s1["color"] == 3, s1
+    assert s1["charge"] == Fraction(-1, 3), s1["charge"]
+    # photon: spin 3 (2s+1), charge 0.
+    assert by_name["a"]["charge"] == Fraction(0), by_name["a"]
+    print("[✓] UFO particles parse test passed\n")
+    return True
+
+
+def test_check_particle_properties() -> bool:
+    print(">> Testing particle-property checks (spin/color/charge)...\n")
+    from tools.validate.ufo_parser import check_particle_properties
+
+    good = {c["name"]: c["passed"] for c in check_particle_properties(str(_UFO_FIXTURE), _S1_MODEL)}
+    assert good.get("particle_props:S1") is True, good
+
+    bad_model = json.loads(json.dumps(_S1_MODEL))
+    bad_model["particles"][0]["quantum_numbers"]["Q"] = "2/3"  # wrong charge
+    bad = {c["name"]: (c["passed"], c["detail"]) for c in check_particle_properties(str(_UFO_FIXTURE), bad_model)}
+    assert bad["particle_props:S1"][0] is False and "charge" in bad["particle_props:S1"][1], bad
+    print("[✓] Particle-property check test passed\n")
+    return True
+
+
+def test_wl_checks_parser() -> bool:
+    print(">> Testing FeynRules check-log parsing...\n")
+    from tools.feynrules.wl_checks import parse_check_blocks
+
+    log = _CHECKS_LOG.read_text()
+    checks = {c["name"]: c["passed"] for c in parse_check_blocks(log)}
+    assert checks == {"hermiticity": True, "kinetic_terms": True, "mass_spectrum": True}, checks
+
+    fail = parse_check_blocks(
+        "HEPTAPOD-CHECK-BEGIN: hermiticity\nThe Lagrangian is not hermitian.\n"
+        "HEPTAPOD-CHECK-END: hermiticity"
+    )
+    assert fail[0]["passed"] is False, fail
+    err = parse_check_blocks(
+        "HEPTAPOD-CHECK-BEGIN: mass_spectrum\nHEPTAPOD-CHECK-ERROR\nHEPTAPOD-CHECK-END: mass_spectrum"
+    )
+    assert err[0]["passed"] is False, err
+    assert parse_check_blocks("no sentinels here") == []
+    print("[✓] Check-log parser test passed\n")
+    return True
+
+
+def test_width_gate_s1() -> bool:
+    print(">> Testing analytic width gate on the S1 fixture...\n")
+    from tools.validate.width_gate import (
+        analytic_scalar_lq_width,
+        compare_width,
+        find_partial_width,
+        parse_decays,
+        parse_external_params,
+        safe_eval_width,
+    )
+
+    params = parse_external_params(str(_UFO_FIXTURE))
+    assert abs(params["MS1"] - 1500.0) < 1e-9 and abs(params["yRR11"] - 0.5) < 1e-9, params
+
+    decays = parse_decays(str(_UFO_FIXTURE))
+    expr = find_partial_width(decays, "S1", ("e__minus__", "u"))
+    assert expr is not None, "S1 -> e u partial width not found"
+
+    ufo_width = safe_eval_width(expr, params)
+    analytic = analytic_scalar_lq_width(params["MS1"], params["yRR11"])
+    cmp = compare_width(analytic, ufo_width, rel_tol=0.02)
+    assert cmp["passed"], cmp
+    assert 7.0 < analytic < 8.0, analytic  # |y|^2 m/16pi = 0.25*1500/16pi ~ 7.46
+
+    # Safe-eval rejects anything outside the whitelist.
+    for bad in ("__import__('os').system('x')", "MS1.__class__", "open('x')"):
+        try:
+            safe_eval_width(bad, params)
+            raise AssertionError(f"should have rejected: {bad}")
+        except ValueError:
+            pass
+    print(f"[✓] Width gate passed (analytic {analytic:.4f} vs UFO {ufo_width:.4f} GeV)\n")
+    return True
+
+
+def test_validate_physics_checks_merged_mocked() -> bool:
+    print(">> Testing ValidateModelTool merges wl:* + particle_props (mocked UFO)...\n")
+    rel = _write_dummy_fr()
+    inst = mock.Mock()
+    inst._run.return_value = json.dumps(
+        {
+            "ok": True,
+            "output_dir": str(_UFO_FIXTURE),
+            "checks": [
+                {"name": "hermiticity", "passed": True, "detail": "hermitian"},
+                {"name": "mass_spectrum", "passed": True, "detail": "ok"},
+            ],
+        }
+    )
+    with mock.patch.object(VT, "FeynRulesToUFOTool", return_value=inst):
+        tool = ValidateModelTool(
+            model_path=rel,
+            feynrules_model_json=json.dumps(_S1_MODEL),
+            base_directory=str(TEST_DIR),
+            feynrules_path="/fr",
+            wolframscript_path="wolframscript",
+        )
+        result = json.loads(tool._run())
+    names = {c["name"]: c["passed"] for c in result["checks"]}
+    assert names.get("wl:hermiticity") is True, names
+    assert names.get("particle_props:S1") is True, names
+    assert result["passed"] is True, result
+    print("[✓] Physics-checks merge test passed\n")
+    return True
+
+
 def cleanup_test_files() -> None:
     print("\n>> Cleaning up test files...\n")
     if TEST_DIR.exists():
@@ -209,6 +350,11 @@ TESTS = [
     test_validate_missing_model,
     test_validate_success_mocked,
     test_validate_failure_mocked,
+    test_ufo_parser_particles,
+    test_check_particle_properties,
+    test_wl_checks_parser,
+    test_width_gate_s1,
+    test_validate_physics_checks_merged_mocked,
     test_validate_live,
 ]
 

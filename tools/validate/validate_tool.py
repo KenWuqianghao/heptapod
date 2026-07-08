@@ -22,8 +22,9 @@ from orchestral.tools.base.tool import BaseTool
 from orchestral.tools.base.field_utils import RuntimeField, StateField
 
 from tools.feynrules import FeynRulesToUFOTool
+from tools.validate.ufo_parser import check_particle_properties
 
-SCHEMA_VERSION = "model-validation-1.0"
+SCHEMA_VERSION = "model-validation-1.1"
 
 EXPECTED_UFO_FILES = [
     "__init__.py",
@@ -148,6 +149,11 @@ class ValidateModelTool(BaseTool):
     timeout_sec: Optional[int] = RuntimeField(
         default=1800, description="Timeout for the Mathematica run (seconds)"
     )
+    physics_checks: Optional[bool] = RuntimeField(
+        default=True,
+        description="Run FeynRules symmetry checks (Hermiticity, kinetic/mass "
+        "terms) during UFO generation and surface them as wl:* checks",
+    )
     # ================================================================ #
 
     # ========================= State fields ========================= #
@@ -188,16 +194,19 @@ class ValidateModelTool(BaseTool):
             model_path=self.model_path,
             output_dir=self.output_dir or "UFO_validate",
             timeout_sec=self.timeout_sec or 1800,
+            run_checks=bool(self.physics_checks),
         )
         raw = ufo_tool._run()
 
         checks: List[dict] = []
         ufo_dir: Optional[str] = None
+        wl_checks: List[dict] = []
         log_tail = ""
         try:
             ufo_res = json.loads(raw)
             ufo_ok = bool(ufo_res.get("ok"))
             ufo_dir = ufo_res.get("output_dir")
+            wl_checks = ufo_res.get("checks") or []
         except json.JSONDecodeError:
             # FeynRulesToUFOTool returns a plain-string format_error on failure.
             ufo_ok = False
@@ -215,6 +224,28 @@ class ValidateModelTool(BaseTool):
             checks.extend(check_ufo_files(ufo_dir))
             if expected_names:
                 checks.extend(check_particles_present(ufo_dir, expected_names))
+            # Deep, property-level particle checks (spin/color/charge) from the
+            # generated UFO vs the declared FeynRulesModel.
+            if self.feynrules_model_json:
+                try:
+                    checks.extend(
+                        check_particle_properties(
+                            ufo_dir, json.loads(self.feynrules_model_json)
+                        )
+                    )
+                except (json.JSONDecodeError, OSError):
+                    pass
+
+        # Merge FeynRules symmetry checks (gauge invariance / Hermiticity) parsed
+        # from the Mathematica run into named wl:* checks.
+        for c in wl_checks:
+            checks.append(
+                {
+                    "name": f"wl:{c.get('name', 'check')}",
+                    "passed": bool(c.get("passed")),
+                    "detail": c.get("detail", ""),
+                }
+            )
 
         passed = all(c["passed"] for c in checks) and ufo_ok
 

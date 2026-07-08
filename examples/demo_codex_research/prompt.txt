@@ -1,0 +1,18 @@
+You are demonstrating LITERATURE-DRIVEN agentic model building for particle physicists, using the "heptapod" MCP server. Available tools include: Inspiresearch, Inspirepaper (INSPIRE-HEP literature), Arxivsearch, Arxivsource, Fetchpaperpdf, Extractpapertext (arXiv), Extractlagrangian, Generatefeynrulesmodel (DETERMINISTIC FeynRules .fr generator), and Audittrail (provenance ledger).
+
+GOAL: Build a FeynRules model for the scalar leptoquark S1, grounded in the actual literature — and record your research trail.
+
+Work autonomously, end to end:
+
+1. RESEARCH THE LITERATURE (this is the point — actually call the tools):
+   - Use `Inspiresearch` AND `Arxivsearch` to find the key reference(s) defining the scalar leptoquark S1 ~ (3, 1, -1/3) and its right-handed up-quark / charged-lepton Yukawa coupling. Try a couple of queries (e.g. "scalar leptoquark S1", "leptoquark S1 R2 review", "leptoquark standard model extension").
+   - Report the top hits you actually got back: paper titles, arXiv IDs, and (from INSPIRE) citation counts where available. Briefly say which reference is the canonical/most-cited one for S1 and why.
+   - Record it: call `Audittrail` action="record", stage="search", status="ok", summary=<one line>, data=<JSON string with the queries you ran and the arXiv IDs you found>.
+
+2. CONFIRM (optional but preferred): fetch the chosen reference's source or abstract with `Arxivsource` (or `Fetchpaperpdf` + `Extractpapertext`) and confirm the S1 quantum numbers (colour triplet, weak singlet, Q = -1/3) and the right-handed Yukawa interaction.
+
+3. EXTRACT + GENERATE: read `tools/frgen/frmodel.py` for the FeynRulesModel schema (numeric physics values are STRINGS; S1 is a COMPLEX colour-triplet scalar, self_conjugate=false, spin_type "S", indices ["Colour"], Q="-1/3", mass MS1="1500.", External right-handed Yukawa coupling yRR; treat it as an SM add-on: gauge_groups empty, Colour needs no index declaration). Call `Generatefeynrulesmodel` with your `model_json` and output_path="model/S1_research.fr". If it returns a validation error, fix and retry (up to 5 attempts). Do NOT hand-write the .fr. Record `Audittrail` stage="extract" and stage="generate_fr" (status "ok", data with fr_path).
+
+4. Call `Audittrail` action="render" and keep the markdown.
+
+5. REPORT clearly: (a) the literature you found (titles + arXiv IDs + citations + which is canonical and why), (b) the final Generatefeynrulesmodel result JSON, (c) the FULL contents of model/S1_research.fr, (d) the rendered audit-trail markdown.

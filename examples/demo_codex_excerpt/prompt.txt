@@ -1,0 +1,19 @@
+You are demonstrating AGENTIC LAGRANGIAN EXTRACTION for a physicist, using the "heptapod" MCP server. Key tools: `heptapod.Generatefeynrulesmodel` (DETERMINISTIC FeynRules .fr generator — input: a JSON string `model_json` conforming to the FeynRulesModel schema, plus `output_path`; it validates and either writes a .fr and returns status "ok", or returns a validation error) and `heptapod.Audittrail` (provenance ledger — action="record" with stage/status/summary/data(JSON string); action="render").
+
+Do this autonomously, end to end:
+
+1. LEARN THE SCHEMA: read `tools/frgen/frmodel.py` (the pydantic FeynRulesModel — note required vs optional fields; ALL numeric physics values are STRINGS, e.g. charge "-1/3", mass "1500."). Skim `tools/feynrules/test_files/models/S1_LQ_RR.fr` for conventions. Standard SM indices such as Colour do NOT need declaring (SM.fr provides them).
+
+2. EXTRACT this paper excerpt into a FeynRulesModel (as a BSM add-on on the SM: leave gauge_groups empty, reuse SM fields):
+"We add to the Standard Model a scalar leptoquark S1 transforming as (3, 1, -1/3) under SU(3)c x SU(2)L x U(1)Y. It is a colour triplet, weak singlet, with electric charge Q = -1/3. We take its mass to be MS1 = 1500 GeV. The relevant interaction is a right-handed Yukawa coupling yRR between S1, a right-handed up quark and a right-handed charged lepton, giving the decay S1 -> e- u and QCD pair production pp -> S1 S1~."
+Capture faithfully: S1 is a COMPLEX scalar (self_conjugate=false; distinct antiparticle), spin_type "S", colour triplet (indices include "Colour"), electric charge Q="-1/3", mass parameter MS1="1500.", and an External right-handed Yukawa coupling parameter yRR.
+
+3. GENERATE (with a repair loop): call `heptapod.Generatefeynrulesmodel` with your `model_json` (a JSON string) and `output_path`="model/S1_codex.fr". If it returns a validation error instead of status "ok", READ the error, FIX your model_json, and retry — up to 5 attempts. This repair loop is the point: you (the harness) fix until the deterministic tool accepts it. Do NOT hand-write the .fr.
+
+4. RECORD PROVENANCE: call `heptapod.Audittrail` action="record" after extraction (stage "extract") and after a successful generate (stage "generate_fr", status "ok", data including the fr_path). Then call `heptapod.Audittrail` action="render" and keep its markdown.
+
+5. REPORT clearly:
+   (a) how many generate attempts it took and what you fixed;
+   (b) the final Generatefeynrulesmodel result JSON (verbatim);
+   (c) the FULL contents of the generated model/S1_codex.fr (read the file and paste it);
+   (d) the rendered audit-trail markdown.

@@ -259,6 +259,20 @@ def _make_nda_toolkit_tools(base_dir: str) -> list:
     ]
 
 
+def _make_llp_tools(base_dir: str) -> list:
+    """LLP reach tools -- flux convolution and decay-in-volume propagation.
+
+    Pure Python + numpy + yaml; no external software. The collider vs
+    beam-dump setting lives entirely in the kernel/geometry data products
+    the tools consume, so the same group serves both.
+    """
+    from tools.llp import LLPFluxFromMesonDecayTool, DecayInVolumeTool
+    return [
+        _named(LLPFluxFromMesonDecayTool(base_directory=base_dir), "LLPFluxFromMesonDecay"),
+        _named(DecayInVolumeTool(base_directory=base_dir),         "DecayInVolume"),
+    ]
+
+
 # ================================================================== #
 # ======================== Group Registry ========================== #
 # ================================================================== #
@@ -269,6 +283,7 @@ TOOL_GROUPS: dict[str, Callable[[str], list]] = {
     "nda":              _make_nda_tools,
     "units":            _make_units_tools,
     "analysis":         _make_analysis_tools,
+    "llp":              _make_llp_tools,
     "event_gen":        _make_event_gen_tools,
     "feynrules":        _make_feynrules_tools,
     "eda":              _make_eda_tools,
@@ -277,7 +292,7 @@ TOOL_GROUPS: dict[str, Callable[[str], list]] = {
 }
 
 # Groups that work out of the box (no external software)
-LIGHTWEIGHT_GROUPS = ["pdg", "inspire", "nda", "units"]
+LIGHTWEIGHT_GROUPS = ["pdg", "inspire", "nda", "units", "llp"]
 
 
 def get_available_groups(base_dir: str | None = None) -> list[str]:

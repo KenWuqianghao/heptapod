@@ -39,14 +39,19 @@ class DecayInVolumeTool(BaseTool):
       convention where production scales as g^2, the total width as g^2,
       and kinematics are g-independent, so one event set covers the whole
       g axis exactly by reweighting:
-          N_sig(g) = N_int * g^2 * sum_i w_i * P_dec,i(g) * twotrack_i,
+          N_sig(g) = N_int * g^2 * BR_vis * sum_i w_i * P_dec,i(g) * twotrack_i,
       with ctau(g) = hbar*c / (g^2 * width_ref_gev). Yields are reported
       per g.
     * **direct lifetimes** (`ctau_grid_m`): a list of lab-frame ctau
       values in meters, fully model-agnostic (no portal assumed). The
       caller owns any coupling factors. Yields are reported per ctau as
-          N(ctau) = N_int * sum_i w_i * P_dec,i(ctau) * twotrack_i
+          N(ctau) = N_int * BR_vis * sum_i w_i * P_dec,i(ctau) * twotrack_i
       with NO g^2 factor — the g^2-stripped weights are used verbatim.
+
+    In both modes the lifetime is set by the TOTAL width, while the yield
+    carries the visible branching ratio `br_visible` (default 1.0): the
+    LLP may decay to channels other than the detected one without living
+    any longer. Set br_visible < 1 for a partially-visible LLP.
 
     Provide exactly one mode. `width_ref_gev`+`g_grid` XOR `ctau_grid_m`.
 
@@ -145,6 +150,14 @@ class DecayInVolumeTool(BaseTool):
     n_int: float = RuntimeField(
         description="Number of primary interactions (sigma_inel * L_int "
                     "for a collider, N_POT for a beam dump)")
+    br_visible: float = RuntimeField(
+        default=1.0,
+        description="Branching ratio of the LLP into the detected visible "
+                    "final state (the two daughters). The lifetime is set "
+                    "by the TOTAL width (via width_ref_gev / ctau), while "
+                    "the yield is scaled by this visible fraction. Default "
+                    "1.0 (single visible channel); set < 1 when the LLP "
+                    "has other decay modes")
     require_two_track: bool = RuntimeField(
         default=True,
         description="Apply the midpoint two-track acceptance (default "
@@ -202,11 +215,17 @@ class DecayInVolumeTool(BaseTool):
         m_phi = float(self.m_phi_gev)
         dmasses = [float(m) for m in (self.daughter_masses_gev or [])]
         n_int = float(self.n_int)
+        br_vis = float(self.br_visible)
         if m_phi <= 0.0:
             return self.format_error(
                 error="Invalid Parameter",
                 reason=f"m_phi must be positive (m_phi={m_phi})",
                 suggestion="Provide m_phi_gev > 0")
+        if not (0.0 <= br_vis <= 1.0):
+            return self.format_error(
+                error="Invalid Parameter",
+                reason=f"br_visible must be in [0, 1] (got {br_vis})",
+                suggestion="br_visible is the visible-channel branching ratio")
         if len(dmasses) != 2 or any(m < 0.0 for m in dmasses):
             return self.format_error(
                 error="Invalid Parameter",
@@ -363,7 +382,7 @@ class DecayInVolumeTool(BaseTool):
             for lkey, lval, ctau, pref in points:
                 lam = beta_gamma[keep] * ctau
                 pdec = phys.decay_probability(L1[keep], L2[keep], lam)
-                n_sig = n_int * pref * float(np.sum(w[keep] * pdec))
+                n_sig = n_int * pref * br_vis * float(np.sum(w[keep] * pdec))
                 yields.append({lkey: lval, "n_sig": n_sig})
             # per-event audit columns at the first grid point
             pdec_ref = phys.decay_probability(

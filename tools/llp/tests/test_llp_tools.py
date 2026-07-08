@@ -504,6 +504,48 @@ def test_unequal_daughters():
     return True
 
 
+def test_br_visible_scales_yield():
+    """br_visible multiplies the yield linearly, independent of lifetime."""
+    print(">> Testing visible branching-ratio yield scaling...\n")
+    _setup_inputs()
+
+    flux = _run_flux(output_path="flux/phi_K_br.jsonl", n_samples=20000,
+                     seed=42)
+    assert flux["status"] == "ok"
+    wref = _width_ref(M_PHI, M_MU)
+    common = dict(base_directory=base_directory,
+                  events_path="flux/phi_K_br.jsonl",
+                  geometry_path="geometry.yaml", m_phi_gev=M_PHI,
+                  daughter_masses_gev=[M_MU, M_MU], width_ref_gev=wref,
+                  g_grid=[1e-7, 1e-6], n_int=N_INT, seed=11)
+
+    full = DecayInVolumeTool(**common, br_visible=1.0,
+                             output_path="yields/br_full.json")
+    full._setup()
+    y_full = json.loads(full._run())["yields"]
+
+    half = DecayInVolumeTool(**common, br_visible=0.5,
+                             output_path="yields/br_half.json")
+    half._setup()
+    y_half = json.loads(half._run())["yields"]
+
+    # Default is 1.0 (backward compatible); 0.5 halves every yield exactly
+    # (same lifetime -> same P_dec and acceptance, only the prefactor moves).
+    for rf, rh in zip(y_full, y_half):
+        assert abs(rh["n_sig"] / rf["n_sig"] - 0.5) < 1e-12, (rf, rh)
+    print("[OK] br_visible=0.5 halves the yield; default 1.0 unchanged")
+
+    # out-of-range is rejected
+    bad = DecayInVolumeTool(**common, br_visible=1.5,
+                            output_path="yields/br_bad.json")
+    bad._setup()
+    assert "br_visible" in bad._run()
+    print("[OK] br_visible outside [0,1] rejected")
+
+    print("\nAll br_visible tests passed! [OK]\n")
+    return True
+
+
 def test_g4_scaling():
     """Weak-coupling g^4 gate: N(3g)/N(g) = 81 within ~2%."""
     print(">> Testing exact g^4 weak-coupling scaling (r = 3)...\n")
@@ -600,6 +642,7 @@ def main():
         test_decay_in_volume,
         test_ctau_mode,
         test_unequal_daughters,
+        test_br_visible_scales_yield,
         test_g4_scaling,
         test_empty_events,
     ]

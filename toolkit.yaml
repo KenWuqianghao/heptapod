@@ -1,5 +1,5 @@
 name: heptapod
-version: 2.2.0
+version: 2.3.0
 description: An open-source agentic toolkit for high-energy physics.
 author: Tony Menzo
 license: GPL-3.0
@@ -64,6 +64,13 @@ bundles:
   mg5:
     requires: [mg5_path]
     deps: [six]
+
+  # ── long-lived-particle reach studies ────────────────────────────
+  # Pure python + numpy + yaml; no external HEP software and no config
+  # gating. The experimental setting (collider-forward vs beam-dump) is
+  # carried entirely by the kernel/geometry YAML inputs, not the tools.
+  llp:
+    deps: [numpy>=2.3.5, pyyaml>=6.0]
 
   # ── diagram analysis (NDA) ───────────────────────────────────────
   nda:
@@ -227,6 +234,17 @@ tools:
     name: InspireSearchTool
     description: Search INSPIRE HEP for physics papers.
     bundle: inspire
+  - module: tools.llp.decay_in_volume
+    name: DecayInVolumeTool
+    description: Compute decay-in-volume LLP yields over a coupling grid
+      with exact g^2 reweighting and midpoint two-track acceptance.
+    bundle: llp
+  - module: tools.llp.flux_from_meson_decay
+    name: LLPFluxFromMesonDecayTool
+    description: Sample weighted LLP lab-frame events from an analytic
+      parent-flux kernel convolved with the declared 3-body production
+      spectrum.
+    bundle: llp
   - module: tools.mg5.mg5
     name: MadGraphFromRunCardTool
     description: Run MadGraph5_aMC@NLO to generate parton-level events given a

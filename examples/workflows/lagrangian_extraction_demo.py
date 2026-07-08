@@ -132,11 +132,26 @@ LLM = GPT()          # or Claude(), Gemini(), Groq()
 # LLM = get_vllm()   # self-hosted OpenAI-compatible server
 # LLM = get_litellm()
 
+# Demo addendum: keeps the live run on a single (cloud) LLM. If no local
+# extraction model is configured, the driving agent extracts the Lagrangian
+# itself into the FeynRulesModel JSON and calls GenerateFeynRulesModelTool
+# directly instead of ExtractLagrangianTool (which spins its own provider) —
+# so the whole run is visible in the UI and needs no Ollama.
+DEMO_ADDENDUM = """
+
+## Demo note
+Keep the run tight and narrated. If a local extraction model is not configured,
+do NOT call ExtractLagrangianTool: instead read the paper text yourself and
+produce the FeynRulesModel JSON directly, then call GenerateFeynRulesModelTool
+and ValidateModelTool. Announce each tool call in one short sentence before you
+make it so the audience can follow the pipeline.
+"""
+
 agent = Agent(
     llm=LLM,
     tools=tools,
     tool_hooks=hooks,
-    system_prompt=LAGRANGIAN_EXTRACTION_PROMPT,
+    system_prompt=LAGRANGIAN_EXTRACTION_PROMPT + DEMO_ADDENDUM,
     debug=False,
 )
 

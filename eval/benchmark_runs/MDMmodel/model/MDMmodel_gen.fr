@@ -24,7 +24,7 @@ M$Parameters = {
     Value -> 0.33,
     BlockName -> MDMINPUTS,
     OrderBlock -> 1,
-    TeX -> \[Eta],
+    TeX -> "\\[Eta]",
     Description -> "v/f for one T field in the Minimal Dilaton Model"
   },
   ts == {
@@ -32,7 +32,7 @@ M$Parameters = {
     Value -> -0.23,
     BlockName -> MDMINPUTS,
     OrderBlock -> 2,
-    TeX -> Subscript[tan\[Theta],S],
+    TeX -> "Subscript[tan\\[Theta],S]",
     Description -> "tangent of scalar mixing angle theta_S"
   },
   sl == {
@@ -40,36 +40,8 @@ M$Parameters = {
     Value -> 0.12,
     BlockName -> MDMINPUTS,
     OrderBlock -> 3,
-    TeX -> Subscript[sin\[Theta],L],
+    TeX -> "Subscript[sin\\[Theta],L]",
     Description -> "sine of left-handed top-partner mixing angle theta_L"
-  },
-  MsDM == {
-    ParameterType -> External,
-    Value -> 173.2,
-    BlockName -> MASS,
-    OrderBlock -> 6000011,
-    Description -> "dilaton mass"
-  },
-  MTP == {
-    ParameterType -> External,
-    Value -> 1670.3,
-    BlockName -> MASS,
-    OrderBlock -> 6000001,
-    Description -> "top-partner mass"
-  },
-  WsDM == {
-    ParameterType -> External,
-    Value -> 1.,
-    BlockName -> DECAY,
-    OrderBlock -> 6000011,
-    Description -> "dilaton width"
-  },
-  WTP == {
-    ParameterType -> External,
-    Value -> 37.8,
-    BlockName -> DECAY,
-    OrderBlock -> 6000001,
-    Description -> "top-partner width"
   },
   vevf == {
     ParameterType -> Internal,
@@ -80,64 +52,64 @@ M$Parameters = {
   ss == {
     ParameterType -> Internal,
     Value -> ts/Sqrt[1 + ts^2],
-    TeX -> Subscript[sin\[Theta],S],
+    TeX -> "Subscript[sin\\[Theta],S]",
     Description -> "sine of scalar mixing angle"
   },
   cs == {
     ParameterType -> Internal,
     Value -> 1/Sqrt[1 + ts^2],
-    TeX -> Subscript[cos\[Theta],S],
+    TeX -> "Subscript[cos\\[Theta],S]",
     Description -> "cosine of scalar mixing angle"
   },
   cl == {
     ParameterType -> Internal,
     Value -> Sqrt[1 - sl^2],
-    TeX -> Subscript[cos\[Theta],L],
+    TeX -> "Subscript[cos\\[Theta],L]",
     Description -> "cosine of left-handed top-partner mixing angle"
   },
   sr == {
     ParameterType -> Internal,
     Value -> MT sl/(MTP cl),
-    TeX -> Subscript[sin\[Theta],R],
+    TeX -> "Subscript[sin\\[Theta],R]",
     Description -> "right-handed top-partner mixing angle in the mtp >> mt limit"
   },
   cr == {
     ParameterType -> Internal,
     Value -> 1,
-    TeX -> Subscript[cos\[Theta],R],
+    TeX -> "Subscript[cos\\[Theta],R]",
     Description -> "cosine of right-handed top-partner mixing angle"
   },
   dkappa == {
     ParameterType -> Internal,
     Value -> Abs[Mh^2 - MsDM^2]/vev^2 Abs[eta ts]/(1 + ts^2),
     InteractionOrder -> {QED, 2},
-    TeX -> \[Kappa],
+    TeX -> "\\[Kappa]",
     Description -> "S^2 |H|^2 scalar portal coupling"
   },
   dlamh == {
     ParameterType -> Internal,
     Value -> Abs[Mh^2 - MsDM^2]/vev^2 (Abs[(Mh^2 + MsDM^2)/(Mh^2 - MsDM^2)] + Abs[2 cs ss]/(2 cs ss) (cs^2 - ss^2)),
     InteractionOrder -> {QED, 2},
-    TeX -> Subscript[\[Lambda],H],
+    TeX -> "Subscript[\\[Lambda],H]",
     Description -> "Higgs quartic coupling in the MDM potential"
   },
   dlams == {
     ParameterType -> Internal,
     Value -> 3 Abs[Mh^2 - MsDM^2]/(2 vevf^2) (Abs[(Mh^2 + MsDM^2)/(Mh^2 - MsDM^2)] - Abs[2 cs ss]/(2 cs ss) (cs^2 - ss^2)),
     InteractionOrder -> {QED, 2},
-    TeX -> Subscript[\[Lambda],S],
+    TeX -> "Subscript[\\[Lambda],S]",
     Description -> "dilaton quartic coupling"
   },
   muS2 == {
     ParameterType -> Internal,
     Value -> -dlams/6 vevf^2 - dkappa vev^2/2,
-    TeX -> Superscript[Subscript[m,S],2],
+    TeX -> "Superscript[Subscript[m,S],2]",
     Description -> "quadratic S potential coefficient"
   },
   muH2 == {
     ParameterType -> Internal,
     Value -> -dkappa vevf^2/2 - dlamh vev^2/4,
-    TeX -> Superscript[Subscript[m,H],2],
+    TeX -> "Superscript[Subscript[m,H],2]",
     Description -> "quadratic Higgs potential coefficient"
   },
   yp == {
@@ -145,7 +117,7 @@ M$Parameters = {
     Value -> Sqrt[2]/vev MTP sl,
     InteractionOrder -> {QED, 1},
     ParameterName -> yp,
-    TeX -> Superscript[y,\[Prime]],
+    TeX -> "Superscript[y,\\[Prime]]",
     Description -> "Yukawa coupling y' between T_R and q3L.H"
   },
   Mdltn == {

@@ -20,17 +20,6 @@ M$InteractionOrderLimit = {{NP, 2}};
 FeynmanGauge = False;
 
 M$Parameters = {
-  MV1 == {
-    ParameterType -> External,
-    Value -> 1500.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 9000047,
-    InteractionOrder -> {NP, 0},
-    ParameterName -> MV1,
-    TeX -> M_{V_1},
-    Description -> "Mass of the top-philic color-singlet vector resonance V1"
-  },
   ct == {
     ParameterType -> External,
     Value -> 2.,
@@ -39,7 +28,7 @@ M$Parameters = {
     OrderBlock -> 1,
     InteractionOrder -> {NP, 1},
     ParameterName -> ct,
-    TeX -> c_t,
+    TeX -> "c_t",
     Description -> "Overall V1 coupling strength to top quarks"
   },
   thetaV1 == {
@@ -50,7 +39,7 @@ M$Parameters = {
     OrderBlock -> 2,
     InteractionOrder -> {NP, 0},
     ParameterName -> thetaV1,
-    TeX -> \theta,
+    TeX -> "\\theta",
     Description -> "Chirality angle tan(theta)=cR/cL for the V1 top coupling"
   },
   cL == {
@@ -58,7 +47,7 @@ M$Parameters = {
     ComplexParameter -> False,
     InteractionOrder -> {NP, 1},
     Definitions -> {cL -> ct Cos[thetaV1]},
-    TeX -> c_L,
+    TeX -> "c_L",
     Description -> "Left-handed V1 top coupling"
   },
   cR == {
@@ -66,14 +55,14 @@ M$Parameters = {
     ComplexParameter -> False,
     InteractionOrder -> {NP, 1},
     Definitions -> {cR -> ct Sin[thetaV1]},
-    TeX -> c_R,
+    TeX -> "c_R",
     Description -> "Right-handed V1 top coupling"
   },
   WV1 == {
     ParameterType -> Internal,
     ComplexParameter -> False,
     Definitions -> {WV1 :> If[NumericalValue[MV1] > 2 NumericalValue[MT], (ct^2 MV1)/(8 Pi) Sqrt[1 - 4 MT^2/MV1^2] (1 - MT^2/MV1^2 (1 - 3 Sin[2 thetaV1])), 0]},
-    TeX -> \Gamma_{V_1},
+    TeX -> "\\Gamma_{V_1}",
     Description -> "Tree-level V1 width into top-antitop"
   }
 };

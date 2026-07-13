@@ -65,8 +65,49 @@ def _indices(names: Sequence[str]) -> str:
     return "{" + ", ".join(f"Index[{n}]" for n in names) + "}"
 
 
+# FeynRules QuantumNumbers holds only additive (U(1)-type) charges. Colour/SU2/
+# etc. are REPRESENTATION labels fixed by a field's Indices, not quantum numbers;
+# if left in QuantumNumbers, FeynRules emits an unevaluated `Colour[field]` into
+# the UFO's particles.py, which MadGraph rejects with "name 'Colour' is not
+# defined". Drop these reserved index/representation names.
+_REP_LABELS = {
+    "Colour", "Color", "Sextet", "Gluon", "Generation", "Spin", "Lorentz",
+    "SU2", "SU2W", "SU2L", "SU2D", "SU2R",
+}
+
+
+def _additive_qns(d: dict) -> dict:
+    return {k: v for k, v in d.items() if k not in _REP_LABELS}
+
+
+def _reserved_mass_width_names(particles) -> set:
+    """Mass/width parameter names FeynRules auto-declares from particle Mass/Width
+    specs. Declaring them again in M$Parameters double-defines the name in the UFO
+    (MadGraph InvalidModel), so the renderer drops those duplicates."""
+    names: set = set()
+    for p in particles or []:
+        for spec in (getattr(p, "mass", None), getattr(p, "width", None)):
+            if spec is None:
+                continue
+            if getattr(spec, "sym", None):
+                names.add(spec.sym)
+            for sub, _val in (getattr(spec, "members", None) or []):
+                names.add(sub)
+    return names
+
+
+def _is_internal_param(p) -> bool:
+    """Internal/derived parameters carry a formula (Definitions) that FeynRules
+    cannot auto-create from a particle Mass/Width spec, so they must stay in
+    M$Parameters even when named like a mass/width (e.g. a computed decay width
+    Width -> {WV1, Internal}). Only plain External duplicates are dropped."""
+    if getattr(p, "definitions", None):
+        return True
+    return "internal" in str(getattr(p, "parameter_type", "")).lower()
+
+
 def _qn(d: dict) -> str:
-    return "{" + ", ".join(f"{k} -> {v}" for k, v in d.items()) + "}"
+    return "{" + ", ".join(f"{k} -> {v}" for k, v in _additive_qns(d).items()) + "}"
 
 
 def _interaction_order(t: Tuple[str, int]) -> str:
@@ -192,7 +233,10 @@ def _render_parameter(p: Parameter) -> str:
             "AllowSummation",
             _bool(p.allow_summation) if p.allow_summation is not None else None,
         ),
-        ("TeX", p.tex),
+        # TeX is a LaTeX label; render it as a quoted Mathematica string with
+        # backslashes escaped ("\\Gamma_U"), else a raw value like \Gamma_U is a
+        # Mathematica syntax error that aborts the whole M$Parameters block.
+        ("TeX", _quote(p.tex) if p.tex else None),
         ("Description", _quote(p.description) if p.description else None),
     ]
     return f"  {p.name} == " + _assoc(pairs, indent="    ")
@@ -215,7 +259,8 @@ def _render_particle(p: ParticleClass) -> str:
         ("FlavorIndex", p.flavor_index),
         ("Mass", _mass(p.mass) if p.mass else None),
         ("Width", _mass(p.width) if p.width else None),
-        ("QuantumNumbers", _qn(p.quantum_numbers) if p.quantum_numbers else None),
+        ("QuantumNumbers",
+         _qn(p.quantum_numbers) if _additive_qns(p.quantum_numbers or {}) else None),
         ("PDG", _pdg(p.pdg) if p.pdg is not None else None),
         ("ParticleName", _name_field(p.particle_name) if p.particle_name else None),
         (
@@ -275,7 +320,15 @@ def render_model(model: FeynRulesModel) -> str:
     if model.gauge_groups:
         sections.append(render_gauge_groups(model.gauge_groups))
     if model.parameters:
-        sections.append(render_parameters(model.parameters))
+        # FeynRules auto-declares the mass/width parameters named in each
+        # particle's Mass/Width spec. Re-declaring them in M$Parameters makes the
+        # UFO define the name twice, which MadGraph rejects ("name X define
+        # multiple time"). Drop those duplicates; keep genuine couplings.
+        reserved = _reserved_mass_width_names(model.particles)
+        params = [p for p in model.parameters
+                  if p.name not in reserved or _is_internal_param(p)]
+        if params:
+            sections.append(render_parameters(params))
     if model.particles:
         sections.append(render_classes(model.particles))
     for field, expr in model.gauge_xi:

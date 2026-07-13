@@ -24,7 +24,7 @@ M$Parameters = {
     OrderBlock -> 1,
     InteractionOrder -> {NP, 1},
     ParameterName -> kRquark,
-    TeX -> \kappa_R^q,
+    TeX -> "\\kappa_R^q",
     Description -> "Overall normalization of right-handed WR/ZR quark couplings"
   },
   kRlepton == {
@@ -35,108 +35,8 @@ M$Parameters = {
     OrderBlock -> 2,
     InteractionOrder -> {NP, 1},
     ParameterName -> kRlepton,
-    TeX -> \kappa_R^\ell,
+    TeX -> "\\kappa_R^\\ell",
     Description -> "Overall normalization of right-handed WR/ZR lepton couplings"
-  },
-  MWR == {
-    ParameterType -> External,
-    Value -> 3000.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 9900024,
-    ParameterName -> MWR,
-    TeX -> M_{W_R},
-    Description -> "Right-handed charged gauge boson mass"
-  },
-  MZR == {
-    ParameterType -> External,
-    Value -> 5070.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 9900032,
-    ParameterName -> MZR,
-    TeX -> M_{Z_R},
-    Description -> "Right-handed neutral gauge boson mass"
-  },
-  MN1 == {
-    ParameterType -> External,
-    Value -> 173.3,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 9900012,
-    ParameterName -> MN1,
-    TeX -> M_{N_1},
-    Description -> "Heavy Majorana neutrino N1 mass"
-  },
-  MN2 == {
-    ParameterType -> External,
-    Value -> 1.*^12,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 9900014,
-    ParameterName -> MN2,
-    TeX -> M_{N_2},
-    Description -> "Heavy Majorana neutrino N2 mass"
-  },
-  MN3 == {
-    ParameterType -> External,
-    Value -> 1.*^12,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 9900016,
-    ParameterName -> MN3,
-    TeX -> M_{N_3},
-    Description -> "Heavy Majorana neutrino N3 mass"
-  },
-  WWR == {
-    ParameterType -> External,
-    Value -> 84.3,
-    ComplexParameter -> False,
-    BlockName -> DECAY,
-    OrderBlock -> 9900024,
-    ParameterName -> WWR,
-    TeX -> \Gamma_{W_R},
-    Description -> "Right-handed charged gauge boson width"
-  },
-  WZR == {
-    ParameterType -> External,
-    Value -> 114.,
-    ComplexParameter -> False,
-    BlockName -> DECAY,
-    OrderBlock -> 9900032,
-    ParameterName -> WZR,
-    TeX -> \Gamma_{Z_R},
-    Description -> "Right-handed neutral gauge boson width"
-  },
-  WN1 == {
-    ParameterType -> External,
-    Value -> 2.12*^-8,
-    ComplexParameter -> False,
-    BlockName -> DECAY,
-    OrderBlock -> 9900012,
-    ParameterName -> WN1,
-    TeX -> \Gamma_{N_1},
-    Description -> "Heavy Majorana neutrino N1 width"
-  },
-  WN2 == {
-    ParameterType -> External,
-    Value -> 0.,
-    ComplexParameter -> False,
-    BlockName -> DECAY,
-    OrderBlock -> 9900014,
-    ParameterName -> WN2,
-    TeX -> \Gamma_{N_2},
-    Description -> "Heavy Majorana neutrino N2 width"
-  },
-  WN3 == {
-    ParameterType -> External,
-    Value -> 0.,
-    ComplexParameter -> False,
-    BlockName -> DECAY,
-    OrderBlock -> 9900016,
-    ParameterName -> WN3,
-    TeX -> \Gamma_{N_3},
-    Description -> "Heavy Majorana neutrino N3 width"
   },
   CKMR == {
     ParameterType -> External,
@@ -145,7 +45,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> CKMR,
     ParameterName -> CKMR,
-    TeX -> V^{\prime}_{CKM},
+    TeX -> "V^{\\prime}_{CKM}",
     Description -> "Right-handed CKM matrix, diagonal default"
   },
   YR == {
@@ -155,7 +55,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> HNUMIX,
     ParameterName -> YR,
-    TeX -> Y_{\ell N},
+    TeX -> "Y_{\\ell N}",
     Description -> "Heavy-neutrino/right-handed-lepton mixing, diagonal default"
   },
   XL == {
@@ -165,7 +65,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> LNUMIX,
     ParameterName -> XL,
-    TeX -> X_{\ell \nu},
+    TeX -> "X_{\\ell \\nu}",
     Description -> "Light-neutrino/right-handed-lepton mixing, zero default"
   },
   gWRq == {
@@ -173,28 +73,28 @@ M$Parameters = {
     Value -> kRquark*ee/(Sqrt[2]*sw),
     ComplexParameter -> False,
     InteractionOrder -> {NP, 1},
-    TeX -> g_{W_R q}
+    TeX -> "g_{W_R q}"
   },
   gWRl == {
     ParameterType -> Internal,
     Value -> kRlepton*ee/(Sqrt[2]*sw),
     ComplexParameter -> False,
     InteractionOrder -> {NP, 1},
-    TeX -> g_{W_R \ell}
+    TeX -> "g_{W_R \\ell}"
   },
   gZRq == {
     ParameterType -> Internal,
     Value -> -kRquark*(ee/sw)*Sqrt[1 - (sw/(cw*kRquark))^2],
     ComplexParameter -> False,
     InteractionOrder -> {NP, 1},
-    TeX -> g_{Z_R q}
+    TeX -> "g_{Z_R q}"
   },
   gZRl == {
     ParameterType -> Internal,
     Value -> -kRlepton*(ee/sw)*Sqrt[1 - (sw/(cw*kRlepton))^2],
     ComplexParameter -> False,
     InteractionOrder -> {NP, 1},
-    TeX -> g_{Z_R \ell}
+    TeX -> "g_{Z_R \\ell}"
   },
   gZRuL == {
     ParameterType -> Internal,

@@ -15,16 +15,6 @@ M$Information = {
 M$InteractionOrderHierarchy = {{NP, 1}, {QCD, 2}, {QED, 3}};
 
 M$Parameters = {
-  MWp == {
-    ParameterType -> External,
-    Value -> 1000.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 9900024,
-    ParameterName -> MWp,
-    TeX -> M_{W'},
-    Description -> "W-prime mass"
-  },
   gWpL == {
     ParameterType -> External,
     Value -> 0.653,
@@ -33,7 +23,7 @@ M$Parameters = {
     OrderBlock -> 1,
     InteractionOrder -> {NP, 1},
     ParameterName -> gWpL,
-    TeX -> g_L,
+    TeX -> "g_L",
     Description -> "Left-handed W-prime gauge coupling"
   },
   gWpR == {
@@ -44,7 +34,7 @@ M$Parameters = {
     OrderBlock -> 2,
     InteractionOrder -> {NP, 1},
     ParameterName -> gWpR,
-    TeX -> g_R,
+    TeX -> "g_R",
     Description -> "Right-handed W-prime gauge coupling"
   },
   zetaWp == {
@@ -54,7 +44,7 @@ M$Parameters = {
     BlockName -> WPRIME,
     OrderBlock -> 3,
     ParameterName -> zetaWp,
-    TeX -> \zeta,
+    TeX -> "\\zeta",
     Description -> "W-Wprime left-right mixing angle"
   },
   omegaWp == {
@@ -64,18 +54,8 @@ M$Parameters = {
     BlockName -> WPRIME,
     OrderBlock -> 4,
     ParameterName -> omegaWp,
-    TeX -> \omega,
+    TeX -> "\\omega",
     Description -> "CP-violating phase in the right-handed W-prime coupling"
-  },
-  MvR == {
-    ParameterType -> External,
-    Value -> 100.,
-    ComplexParameter -> False,
-    BlockName -> WPRIME,
-    OrderBlock -> 5,
-    ParameterName -> MvR,
-    TeX -> m_{\nu_R},
-    Description -> "Right-handed neutrino mass"
   },
   VpLQ == {
     ParameterType -> External,
@@ -85,7 +65,7 @@ M$Parameters = {
     BlockName -> VPLQ,
     InteractionOrder -> {NP, 1},
     ParameterName -> VpLQ,
-    TeX -> V^{L,q},
+    TeX -> "V^{L,q}",
     Description -> "Left-handed generalized CKM matrix for W-prime quark couplings"
   },
   VpRQ == {
@@ -96,7 +76,7 @@ M$Parameters = {
     BlockName -> VPRQ,
     InteractionOrder -> {NP, 1},
     ParameterName -> VpRQ,
-    TeX -> V^{R,q},
+    TeX -> "V^{R,q}",
     Description -> "Right-handed generalized CKM matrix for W-prime quark couplings"
   },
   VpLL == {
@@ -107,7 +87,7 @@ M$Parameters = {
     BlockName -> VPLL,
     InteractionOrder -> {NP, 1},
     ParameterName -> VpLL,
-    TeX -> V^{L,\ell},
+    TeX -> "V^{L,\\ell}",
     Description -> "Left-handed generalized lepton mixing matrix for W-prime couplings"
   },
   VpRL == {
@@ -118,7 +98,7 @@ M$Parameters = {
     BlockName -> VPRL,
     InteractionOrder -> {NP, 1},
     ParameterName -> VpRL,
-    TeX -> V^{R,\ell},
+    TeX -> "V^{R,\\ell}",
     Description -> "Right-handed generalized lepton mixing matrix for W-prime couplings"
   }
 };

@@ -34,7 +34,7 @@ M$Parameters = {
     BlockName -> S0PARAMS,
     InteractionOrder -> {QS0, 1},
     ParameterName -> s0scalar,
-    TeX -> Subscript[s0, scalar],
+    TeX -> "Subscript[s0, scalar]",
     Description -> "S0 scalar coupling"
   },
   s0axial == {
@@ -43,21 +43,21 @@ M$Parameters = {
     BlockName -> S0PARAMS,
     InteractionOrder -> {QS0, 1},
     ParameterName -> s0axial,
-    TeX -> Subscript[s0, axial],
+    TeX -> "Subscript[s0, axial]",
     Description -> "S0 axial coupling"
   },
   s0fusionScalar == {
     ParameterType -> Internal,
     InteractionOrder -> {QS0, 1},
     Definitions -> {s0fusionScalar :> If[NumericalValue[MS0] > 2 NumericalValue[MT], -s0scalar gs^2/(12 Pi^2 vev) sertHeavy[(2 MT/MS0)^2], -s0scalar gs^2/(12 Pi^2 vev) sertLight[(2 MT/MS0)^2]]},
-    TeX -> Subscript[s0, fusionScalar],
+    TeX -> "Subscript[s0, fusionScalar]",
     Description -> "S0 effective coupling due to gluon fusion, scalar"
   },
   s0fusionAxial == {
     ParameterType -> Internal,
     InteractionOrder -> {QS0, 1},
     Definitions -> {s0fusionAxial :> If[NumericalValue[MS0] > 2 NumericalValue[MT], -s0axial gs^2/(8 Pi^2 vev) serpHeavy[(2 MT/MS0)^2], -s0axial gs^2/(8 Pi^2 vev) serpLight[(2 MT/MS0)^2]]},
-    TeX -> Subscript[s0, fusionAxial],
+    TeX -> "Subscript[s0, fusionAxial]",
     Description -> "S0 effective coupling due to gluon fusion, axial"
   },
   WS0 == {
@@ -71,7 +71,7 @@ M$Parameters = {
     BlockName -> O0PARAMS,
     InteractionOrder -> {QO0, 1},
     ParameterName -> o0scalar,
-    TeX -> Subscript[o0, scalar],
+    TeX -> "Subscript[o0, scalar]",
     Description -> "O0 scalar coupling"
   },
   o0axial == {
@@ -80,21 +80,21 @@ M$Parameters = {
     BlockName -> O0PARAMS,
     InteractionOrder -> {QO0, 1},
     ParameterName -> o0axial,
-    TeX -> Subscript[o0, axial],
+    TeX -> "Subscript[o0, axial]",
     Description -> "O0 axial coupling"
   },
   o0fusionScalar == {
     ParameterType -> Internal,
     InteractionOrder -> {QO0, 1},
     Definitions -> {o0fusionScalar :> If[NumericalValue[MO0] > 2 NumericalValue[MT], -o0scalar gs^2/(12 Pi^2 vev) sertHeavy[(2 MT/MO0)^2], -o0scalar gs^2/(12 Pi^2 vev) sertLight[(2 MT/MO0)^2]]},
-    TeX -> Subscript[o0, fusionScalar],
+    TeX -> "Subscript[o0, fusionScalar]",
     Description -> "O0 effective coupling due to gluon fusion, scalar"
   },
   o0fusionAxial == {
     ParameterType -> Internal,
     InteractionOrder -> {QO0, 1},
     Definitions -> {o0fusionAxial :> If[NumericalValue[MO0] > 2 NumericalValue[MT], -o0axial gs^2/(8 Pi^2 vev) serpHeavy[(2 MT/MO0)^2], -o0axial gs^2/(8 Pi^2 vev) serpLight[(2 MT/MO0)^2]]},
-    TeX -> Subscript[o0, fusionAxial],
+    TeX -> "Subscript[o0, fusionAxial]",
     Description -> "O0 effective coupling due to gluon fusion, axial"
   },
   WO0 == {
@@ -108,7 +108,7 @@ M$Parameters = {
     BlockName -> S1PARAMS,
     InteractionOrder -> {QS1, 1},
     ParameterName -> s1uright,
-    TeX -> Subscript[s1, ur],
+    TeX -> "Subscript[s1, ur]",
     Description -> "S1 right up quark coupling"
   },
   s1uleft == {
@@ -117,7 +117,7 @@ M$Parameters = {
     BlockName -> S1PARAMS,
     InteractionOrder -> {QS1, 1},
     ParameterName -> s1uleft,
-    TeX -> Subscript[s1, ul],
+    TeX -> "Subscript[s1, ul]",
     Description -> "S1 left up quark coupling"
   },
   s1dright == {
@@ -126,7 +126,7 @@ M$Parameters = {
     BlockName -> S1PARAMS,
     InteractionOrder -> {QS1, 1},
     ParameterName -> s1dright,
-    TeX -> Subscript[s1, dr],
+    TeX -> "Subscript[s1, dr]",
     Description -> "S1 right down quark coupling"
   },
   s1dleft == {
@@ -135,7 +135,7 @@ M$Parameters = {
     BlockName -> S1PARAMS,
     InteractionOrder -> {QS1, 1},
     ParameterName -> s1dleft,
-    TeX -> Subscript[s1, dl],
+    TeX -> "Subscript[s1, dl]",
     Description -> "S1 left down quark coupling"
   },
   s1eright == {
@@ -144,7 +144,7 @@ M$Parameters = {
     BlockName -> S1PARAMS,
     InteractionOrder -> {QS1, 1},
     ParameterName -> s1eright,
-    TeX -> Subscript[s1, er],
+    TeX -> "Subscript[s1, er]",
     Description -> "S1 right electron coupling"
   },
   s1eleft == {
@@ -153,7 +153,7 @@ M$Parameters = {
     BlockName -> S1PARAMS,
     InteractionOrder -> {QS1, 1},
     ParameterName -> s1eleft,
-    TeX -> Subscript[s1, el],
+    TeX -> "Subscript[s1, el]",
     Description -> "S1 left electron coupling"
   },
   s1nu == {
@@ -162,7 +162,7 @@ M$Parameters = {
     BlockName -> S1PARAMS,
     InteractionOrder -> {QS1, 1},
     ParameterName -> s1nu,
-    TeX -> Subscript[s1, v],
+    TeX -> "Subscript[s1, v]",
     Description -> "S1 neutrino coupling"
   },
   WS1 == {
@@ -176,7 +176,7 @@ M$Parameters = {
     BlockName -> O1PARAMS,
     InteractionOrder -> {QO1, 1},
     ParameterName -> o1uright,
-    TeX -> Subscript[o1, ur],
+    TeX -> "Subscript[o1, ur]",
     Description -> "O1 right up quark coupling"
   },
   o1uleft == {
@@ -185,7 +185,7 @@ M$Parameters = {
     BlockName -> O1PARAMS,
     InteractionOrder -> {QO1, 1},
     ParameterName -> o1uleft,
-    TeX -> Subscript[o1, ul],
+    TeX -> "Subscript[o1, ul]",
     Description -> "O1 left up quark coupling"
   },
   o1dright == {
@@ -194,7 +194,7 @@ M$Parameters = {
     BlockName -> O1PARAMS,
     InteractionOrder -> {QO1, 1},
     ParameterName -> o1dright,
-    TeX -> Subscript[o1, dr],
+    TeX -> "Subscript[o1, dr]",
     Description -> "O1 right down quark coupling"
   },
   o1dleft == {
@@ -203,7 +203,7 @@ M$Parameters = {
     BlockName -> O1PARAMS,
     InteractionOrder -> {QO1, 1},
     ParameterName -> o1dleft,
-    TeX -> Subscript[o1, dl],
+    TeX -> "Subscript[o1, dl]",
     Description -> "O1 left down quark coupling"
   },
   WO1 == {

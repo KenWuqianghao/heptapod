@@ -30,10 +30,10 @@
       "field_precision": 0.385,
       "field_recall": 0.132,
       "qn_f1": 0.196,
-      "param_jaccard": 0.088,
+      "param_jaccard": 0.063,
       "n_params": {
         "reference": 92,
-        "generated": 57
+        "generated": 42
       },
       "detail": {
         "missed": [
@@ -325,10 +325,10 @@
       "field_precision": 0.857,
       "field_recall": 0.375,
       "qn_f1": 0.471,
-      "param_jaccard": 0.262,
+      "param_jaccard": 0.276,
       "n_params": {
         "reference": 97,
-        "generated": 57
+        "generated": 51
       },
       "detail": {
         "missed": [
@@ -428,7 +428,7 @@
       "param_jaccard": 0.0,
       "n_params": {
         "reference": 4,
-        "generated": 4
+        "generated": 2
       },
       "detail": {
         "missed": [],
@@ -454,10 +454,10 @@
       "field_precision": 0.6,
       "field_recall": 0.75,
       "qn_f1": 0.889,
-      "param_jaccard": 0.032,
+      "param_jaccard": 0.042,
       "n_params": {
         "reference": 11,
-        "generated": 21
+        "generated": 14
       },
       "detail": {
         "missed": [
@@ -492,10 +492,10 @@
       "field_precision": 1.0,
       "field_recall": 1.0,
       "qn_f1": 1.0,
-      "param_jaccard": 0.189,
+      "param_jaccard": 0.259,
       "n_params": {
         "reference": 17,
-        "generated": 27
+        "generated": 17
       },
       "detail": {
         "missed": [],
@@ -521,10 +521,10 @@
       "field_precision": 1.0,
       "field_recall": 0.333,
       "qn_f1": 0.5,
-      "param_jaccard": 0.023,
+      "param_jaccard": 0.026,
       "n_params": {
         "reference": 61,
-        "generated": 27
+        "generated": 17
       },
       "detail": {
         "missed": [
@@ -625,10 +625,10 @@
       "field_precision": 0.833,
       "field_recall": 0.5,
       "qn_f1": 0.75,
-      "param_jaccard": 0.032,
+      "param_jaccard": 0.019,
       "n_params": {
         "reference": 42,
-        "generated": 23
+        "generated": 13
       },
       "detail": {
         "missed": [
@@ -671,10 +671,10 @@
       "field_precision": 0.714,
       "field_recall": 0.556,
       "qn_f1": 0.625,
-      "param_jaccard": 0.34,
+      "param_jaccard": 0.372,
       "n_params": {
         "reference": 43,
-        "generated": 20
+        "generated": 16
       },
       "detail": {
         "missed": [
@@ -838,10 +838,10 @@
       "field_precision": 1.0,
       "field_recall": 1.0,
       "qn_f1": 1.0,
-      "param_jaccard": 0.692,
+      "param_jaccard": 1.0,
       "n_params": {
         "reference": 18,
-        "generated": 26
+        "generated": 18
       },
       "detail": {
         "missed": [],
@@ -1024,7 +1024,7 @@
       "param_jaccard": 0.0,
       "n_params": {
         "reference": 2,
-        "generated": 6
+        "generated": 5
       },
       "detail": {
         "missed": [],
@@ -1050,10 +1050,10 @@
       "field_precision": 1.0,
       "field_recall": 1.0,
       "qn_f1": 1.0,
-      "param_jaccard": 0.8,
+      "param_jaccard": 1.0,
       "n_params": {
         "reference": 8,
-        "generated": 10
+        "generated": 8
       },
       "detail": {
         "missed": [],
@@ -1082,7 +1082,7 @@
       "param_jaccard": 0.0,
       "n_params": {
         "reference": 114,
-        "generated": 35
+        "generated": 23
       },
       "detail": {
         "missed": [
@@ -1145,7 +1145,7 @@
       "param_jaccard": 0.0,
       "n_params": {
         "reference": 20,
-        "generated": 45
+        "generated": 39
       },
       "detail": {
         "missed": [
@@ -1256,7 +1256,7 @@
       "param_jaccard": 0.0,
       "n_params": {
         "reference": 8,
-        "generated": 10
+        "generated": 8
       },
       "detail": {
         "missed": [],
@@ -1291,10 +1291,10 @@
       "field_precision": 1.0,
       "field_recall": 0.333,
       "qn_f1": 0.468,
-      "param_jaccard": 0.109,
+      "param_jaccard": 0.165,
       "n_params": {
         "reference": 97,
-        "generated": 66
+        "generated": 16
       },
       "detail": {
         "missed": [
@@ -1590,7 +1590,7 @@
       "param_jaccard": 0.0,
       "n_params": {
         "reference": 16,
-        "generated": 24
+        "generated": 12
       },
       "detail": {
         "missed": [
@@ -1665,10 +1665,10 @@
       "field_precision": 0.444,
       "field_recall": 1.0,
       "qn_f1": 0.615,
-      "param_jaccard": 0.053,
+      "param_jaccard": 0.043,
       "n_params": {
         "reference": 32,
-        "generated": 28
+        "generated": 17
       },
       "detail": {
         "missed": [],

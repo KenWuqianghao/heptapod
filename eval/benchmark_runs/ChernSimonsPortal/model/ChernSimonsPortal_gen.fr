@@ -18,22 +18,6 @@ M$InteractionOrderLimit = {{NP, 99}};
 FeynmanGauge = False;
 
 M$Parameters = {
-  Mxb == {
-    ParameterType -> External,
-    Value -> 1.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 1234567,
-    Description -> "Mass of the Chern-Simons portal X boson"
-  },
-  Wxb == {
-    ParameterType -> External,
-    Value -> 1.,
-    ComplexParameter -> False,
-    BlockName -> DECAY,
-    OrderBlock -> 1234567,
-    Description -> "Width of the Chern-Simons portal X boson"
-  },
   c1 == {
     ParameterType -> External,
     Value -> 0.001,

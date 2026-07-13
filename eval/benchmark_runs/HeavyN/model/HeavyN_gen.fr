@@ -23,7 +23,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> NUMIXING,
     OrderBlock -> 1,
-    TeX -> Subscript[V,eN1],
+    TeX -> "Subscript[V,eN1]",
     Description -> "Mixing between electron-neutrino flavor state and N1 mass state"
   },
   VeN2 == {
@@ -32,7 +32,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> NUMIXING,
     OrderBlock -> 2,
-    TeX -> Subscript[V,eN2],
+    TeX -> "Subscript[V,eN2]",
     Description -> "Mixing between electron-neutrino flavor state and N2 mass state"
   },
   VeN3 == {
@@ -41,7 +41,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> NUMIXING,
     OrderBlock -> 3,
-    TeX -> Subscript[V,eN3],
+    TeX -> "Subscript[V,eN3]",
     Description -> "Mixing between electron-neutrino flavor state and N3 mass state"
   },
   VmuN1 == {
@@ -50,7 +50,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> NUMIXING,
     OrderBlock -> 4,
-    TeX -> Subscript[V,muN1],
+    TeX -> "Subscript[V,muN1]",
     Description -> "Mixing between muon-neutrino flavor state and N1 mass state"
   },
   VmuN2 == {
@@ -59,7 +59,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> NUMIXING,
     OrderBlock -> 5,
-    TeX -> Subscript[V,muN2],
+    TeX -> "Subscript[V,muN2]",
     Description -> "Mixing between muon-neutrino flavor state and N2 mass state"
   },
   VmuN3 == {
@@ -68,7 +68,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> NUMIXING,
     OrderBlock -> 6,
-    TeX -> Subscript[V,muN3],
+    TeX -> "Subscript[V,muN3]",
     Description -> "Mixing between muon-neutrino flavor state and N3 mass state"
   },
   VtaN1 == {
@@ -77,7 +77,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> NUMIXING,
     OrderBlock -> 7,
-    TeX -> Subscript[V,taN1],
+    TeX -> "Subscript[V,taN1]",
     Description -> "Mixing between tau-neutrino flavor state and N1 mass state"
   },
   VtaN2 == {
@@ -86,7 +86,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> NUMIXING,
     OrderBlock -> 8,
-    TeX -> Subscript[V,taN2],
+    TeX -> "Subscript[V,taN2]",
     Description -> "Mixing between tau-neutrino flavor state and N2 mass state"
   },
   VtaN3 == {
@@ -95,7 +95,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> NUMIXING,
     OrderBlock -> 9,
-    TeX -> Subscript[V,taN3],
+    TeX -> "Subscript[V,taN3]",
     Description -> "Mixing between tau-neutrino flavor state and N3 mass state"
   },
   gN == {
@@ -103,7 +103,7 @@ M$Parameters = {
     ComplexParameter -> False,
     InteractionOrder -> {NP, 1},
     Definitions -> {gN -> ee/sw},
-    TeX -> Subscript[g,N],
+    TeX -> "Subscript[g,N]",
     Description -> "Weak coupling used in heavy-neutrino interactions, equal to ee/sw"
   }
 };

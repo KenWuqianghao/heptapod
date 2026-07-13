@@ -27,26 +27,8 @@ M$Parameters = {
     OrderBlock -> 1,
     InteractionOrder -> {NP, 1},
     ParameterName -> thT,
-    TeX -> \theta_T,
+    TeX -> "\\theta_T",
     Description -> "t-tprime mixing angle for the vector-like up-type singlet"
-  },
-  MTP == {
-    ParameterType -> External,
-    Value -> 600.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 6000006,
-    ParameterName -> MTP,
-    Description -> "vector-like up-type tprime mass"
-  },
-  WTP == {
-    ParameterType -> External,
-    Value -> 1.,
-    ComplexParameter -> False,
-    BlockName -> DECAY,
-    OrderBlock -> 6000006,
-    ParameterName -> WTP,
-    Description -> "vector-like up-type tprime width"
   },
   lamT == {
     ParameterType -> External,
@@ -56,7 +38,7 @@ M$Parameters = {
     OrderBlock -> 1,
     InteractionOrder -> {NP, 1},
     ParameterName -> lamT,
-    TeX -> \lambda_T,
+    TeX -> "\\lambda_T",
     Description -> "SM top Yukawa coefficient in the tprime singlet weak-eigenstate Lagrangian"
   },
   lamTp == {
@@ -67,7 +49,7 @@ M$Parameters = {
     OrderBlock -> 2,
     InteractionOrder -> {NP, 1},
     ParameterName -> lamTp,
-    TeX -> \lambda'_T,
+    TeX -> "\\lambda'_T",
     Description -> "Yukawa coupling between the SM third-generation doublet and tprime_R^0"
   },
   MT0 == {
@@ -97,26 +79,8 @@ M$Parameters = {
     OrderBlock -> 2,
     InteractionOrder -> {NP, 1},
     ParameterName -> thB,
-    TeX -> \theta_B,
+    TeX -> "\\theta_B",
     Description -> "b-bprime mixing angle for the analogous vector-like down-type singlet"
-  },
-  MBP == {
-    ParameterType -> External,
-    Value -> 600.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 6000007,
-    ParameterName -> MBP,
-    Description -> "vector-like down-type bprime mass"
-  },
-  WBP == {
-    ParameterType -> External,
-    Value -> 1.,
-    ComplexParameter -> False,
-    BlockName -> DECAY,
-    OrderBlock -> 6000007,
-    ParameterName -> WBP,
-    Description -> "vector-like down-type bprime width"
   },
   lamB == {
     ParameterType -> External,
@@ -126,7 +90,7 @@ M$Parameters = {
     OrderBlock -> 3,
     InteractionOrder -> {NP, 1},
     ParameterName -> lamB,
-    TeX -> \lambda_B,
+    TeX -> "\\lambda_B",
     Description -> "bottom Yukawa coefficient in the bprime singlet weak-eigenstate Lagrangian"
   },
   lamBp == {
@@ -137,7 +101,7 @@ M$Parameters = {
     OrderBlock -> 4,
     InteractionOrder -> {NP, 1},
     ParameterName -> lamBp,
-    TeX -> \lambda'_B,
+    TeX -> "\\lambda'_B",
     Description -> "Yukawa coupling between the SM third-generation doublet and bprime_R^0"
   },
   MB0 == {
@@ -167,7 +131,7 @@ M$Parameters = {
     OrderBlock -> 1,
     InteractionOrder -> {NP, 1},
     ParameterName -> thU4,
-    TeX -> \theta_u,
+    TeX -> "\\theta_u",
     Description -> "fourth-generation 3-4 up-sector mixing angle"
   },
   thV4 == {
@@ -178,7 +142,7 @@ M$Parameters = {
     OrderBlock -> 2,
     InteractionOrder -> {NP, 1},
     ParameterName -> thV4,
-    TeX -> \theta_v,
+    TeX -> "\\theta_v",
     Description -> "fourth-generation 2-4 mixing angle"
   },
   thW4 == {
@@ -189,80 +153,8 @@ M$Parameters = {
     OrderBlock -> 3,
     InteractionOrder -> {NP, 1},
     ParameterName -> thW4,
-    TeX -> \theta_w,
+    TeX -> "\\theta_w",
     Description -> "fourth-generation 1-4 mixing angle"
-  },
-  MT4 == {
-    ParameterType -> External,
-    Value -> 600.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 7000006,
-    ParameterName -> MT4,
-    Description -> "fourth-generation up-type quark mass"
-  },
-  WT4 == {
-    ParameterType -> External,
-    Value -> 1.,
-    ComplexParameter -> False,
-    BlockName -> DECAY,
-    OrderBlock -> 7000006,
-    ParameterName -> WT4,
-    Description -> "fourth-generation up-type quark width"
-  },
-  MB4 == {
-    ParameterType -> External,
-    Value -> 600.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 7000007,
-    ParameterName -> MB4,
-    Description -> "fourth-generation down-type quark mass"
-  },
-  WB4 == {
-    ParameterType -> External,
-    Value -> 1.,
-    ComplexParameter -> False,
-    BlockName -> DECAY,
-    OrderBlock -> 7000007,
-    ParameterName -> WB4,
-    Description -> "fourth-generation down-type quark width"
-  },
-  MN4 == {
-    ParameterType -> External,
-    Value -> 100.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 7000012,
-    ParameterName -> MN4,
-    Description -> "fourth-generation neutral lepton mass"
-  },
-  WN4 == {
-    ParameterType -> External,
-    Value -> 1.,
-    ComplexParameter -> False,
-    BlockName -> DECAY,
-    OrderBlock -> 7000012,
-    ParameterName -> WN4,
-    Description -> "fourth-generation neutral lepton width"
-  },
-  ME4 == {
-    ParameterType -> External,
-    Value -> 100.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 7000011,
-    ParameterName -> ME4,
-    Description -> "fourth-generation charged lepton mass"
-  },
-  WE4 == {
-    ParameterType -> External,
-    Value -> 1.,
-    ComplexParameter -> False,
-    BlockName -> DECAY,
-    OrderBlock -> 7000011,
-    ParameterName -> WE4,
-    Description -> "fourth-generation charged lepton width"
   },
   sT == {
     ParameterType -> Internal,

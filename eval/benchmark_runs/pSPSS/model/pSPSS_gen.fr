@@ -27,7 +27,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> PSPSS,
     OrderBlock -> 1,
-    TeX -> Subscript[m,M],
+    TeX -> "Subscript[m,M]",
     Description -> "pSPSS heavy-neutrino Majorana mass parameter"
   },
   deltaM == {
@@ -36,7 +36,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> PSPSS,
     OrderBlock -> 2,
-    TeX -> \[CapitalDelta]m,
+    TeX -> "\\[CapitalDelta]m",
     Description -> "pSPSS heavy-neutrino mass splitting"
   },
   theta1 == {
@@ -46,7 +46,7 @@ M$Parameters = {
     BlockName -> PSPSS,
     OrderBlock -> 3,
     InteractionOrder -> {NP, 1},
-    TeX -> Subscript[\[Theta],e],
+    TeX -> "Subscript[\\[Theta],e]",
     Description -> "electron active-sterile mixing parameter"
   },
   theta2 == {
@@ -56,7 +56,7 @@ M$Parameters = {
     BlockName -> PSPSS,
     OrderBlock -> 4,
     InteractionOrder -> {NP, 1},
-    TeX -> Subscript[\[Theta],\[Mu]],
+    TeX -> "Subscript[\\[Theta],\\[Mu]]",
     Description -> "muon active-sterile mixing parameter"
   },
   theta3 == {
@@ -66,7 +66,7 @@ M$Parameters = {
     BlockName -> PSPSS,
     OrderBlock -> 5,
     InteractionOrder -> {NP, 1},
-    TeX -> Subscript[\[Theta],\[Tau]],
+    TeX -> "Subscript[\\[Theta],\\[Tau]]",
     Description -> "tau active-sterile mixing parameter"
   },
   damping == {

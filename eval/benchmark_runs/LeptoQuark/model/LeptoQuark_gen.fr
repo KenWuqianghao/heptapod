@@ -17,66 +17,6 @@ M$InteractionOrderHierarchy = {{QCD, 1}, {NP, 1}, {QED, 2}};
 FeynmanGauge = False;
 
 M$Parameters = {
-  MVLQ == {
-    ParameterType -> External,
-    Value -> 3000.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 42,
-    ParameterName -> MVLQ,
-    TeX -> M_U,
-    Description -> "Vector leptoquark U1 mass"
-  },
-  WVLQ == {
-    ParameterType -> External,
-    Value -> 600.,
-    ComplexParameter -> False,
-    BlockName -> DECAY,
-    OrderBlock -> 42,
-    ParameterName -> WVLQ,
-    TeX -> \Gamma_U,
-    Description -> "Vector leptoquark U1 width"
-  },
-  MZp == {
-    ParameterType -> External,
-    Value -> 3000.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 43,
-    ParameterName -> MZp,
-    TeX -> M_{Z'},
-    Description -> "Zprime mass"
-  },
-  WZp == {
-    ParameterType -> External,
-    Value -> 600.,
-    ComplexParameter -> False,
-    BlockName -> DECAY,
-    OrderBlock -> 43,
-    ParameterName -> WZp,
-    TeX -> \Gamma_{Z'},
-    Description -> "Zprime width"
-  },
-  MGp == {
-    ParameterType -> External,
-    Value -> 4000.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 44,
-    ParameterName -> MGp,
-    TeX -> M_{G'},
-    Description -> "Coloron mass"
-  },
-  WGp == {
-    ParameterType -> External,
-    Value -> 800.,
-    ComplexParameter -> False,
-    BlockName -> DECAY,
-    OrderBlock -> 44,
-    ParameterName -> WGp,
-    TeX -> \Gamma_{G'},
-    Description -> "Coloron width"
-  },
   gU == {
     ParameterType -> External,
     Value -> 3.0,
@@ -85,7 +25,7 @@ M$Parameters = {
     OrderBlock -> 1,
     InteractionOrder -> {NP, 1},
     ParameterName -> gU,
-    TeX -> g_U,
+    TeX -> "g_U",
     Description -> "Overall U1 leptoquark coupling strength"
   },
   betaL33 == {
@@ -96,7 +36,7 @@ M$Parameters = {
     OrderBlock -> 2,
     InteractionOrder -> {NP, 0},
     ParameterName -> betaL33,
-    TeX -> \beta^L_{33},
+    TeX -> "\\beta^L_{33}",
     Description -> "U1 left-handed b tau coupling"
   },
   betaRd33 == {
@@ -107,7 +47,7 @@ M$Parameters = {
     OrderBlock -> 3,
     InteractionOrder -> {NP, 0},
     ParameterName -> betaRd33,
-    TeX -> \beta^R_{33},
+    TeX -> "\\beta^R_{33}",
     Description -> "U1 right-handed b tau coupling"
   },
   betaL23 == {
@@ -118,7 +58,7 @@ M$Parameters = {
     OrderBlock -> 4,
     InteractionOrder -> {NP, 0},
     ParameterName -> betaL23,
-    TeX -> \beta^L_{23},
+    TeX -> "\\beta^L_{23}",
     Description -> "U1 left-handed s tau coupling"
   },
   betaL32 == {
@@ -129,7 +69,7 @@ M$Parameters = {
     OrderBlock -> 5,
     InteractionOrder -> {NP, 0},
     ParameterName -> betaL32,
-    TeX -> \beta^L_{32},
+    TeX -> "\\beta^L_{32}",
     Description -> "U1 left-handed b mu coupling"
   },
   kappaU == {
@@ -140,7 +80,7 @@ M$Parameters = {
     OrderBlock -> 6,
     InteractionOrder -> {NP, 0},
     ParameterName -> kappaU,
-    TeX -> \kappa_U,
+    TeX -> "\\kappa_U",
     Description -> "Non-minimal U1 coupling to gluons"
   },
   kappaUtilde == {
@@ -151,7 +91,7 @@ M$Parameters = {
     OrderBlock -> 7,
     InteractionOrder -> {NP, 0},
     ParameterName -> kappaUtilde,
-    TeX -> \tilde{\kappa}_U,
+    TeX -> "\\tilde{\\kappa}_U",
     Description -> "Non-minimal U1 coupling to hypercharge"
   },
   gZp == {
@@ -162,7 +102,7 @@ M$Parameters = {
     OrderBlock -> 1,
     InteractionOrder -> {NP, 1},
     ParameterName -> gZp,
-    TeX -> g_{Z'},
+    TeX -> "g_{Z'}",
     Description -> "Overall Zprime coupling strength"
   },
   zetaq33 == {
@@ -173,7 +113,7 @@ M$Parameters = {
     OrderBlock -> 2,
     InteractionOrder -> {NP, 0},
     ParameterName -> zetaq33,
-    TeX -> \zeta^q_{33},
+    TeX -> "\\zeta^q_{33}",
     Description -> "Zprime left-handed third-generation quark coupling"
   },
   zetal33 == {
@@ -184,7 +124,7 @@ M$Parameters = {
     OrderBlock -> 3,
     InteractionOrder -> {NP, 0},
     ParameterName -> zetal33,
-    TeX -> \zeta^\ell_{33},
+    TeX -> "\\zeta^\\ell_{33}",
     Description -> "Zprime left-handed third-generation lepton coupling"
   },
   zetaRu33 == {
@@ -195,7 +135,7 @@ M$Parameters = {
     OrderBlock -> 4,
     InteractionOrder -> {NP, 0},
     ParameterName -> zetaRu33,
-    TeX -> \zeta^u_{33},
+    TeX -> "\\zeta^u_{33}",
     Description -> "Zprime right-handed top coupling"
   },
   zetaRd33 == {
@@ -206,7 +146,7 @@ M$Parameters = {
     OrderBlock -> 5,
     InteractionOrder -> {NP, 0},
     ParameterName -> zetaRd33,
-    TeX -> \zeta^d_{33},
+    TeX -> "\\zeta^d_{33}",
     Description -> "Zprime right-handed bottom coupling"
   },
   zetaRe33 == {
@@ -217,7 +157,7 @@ M$Parameters = {
     OrderBlock -> 6,
     InteractionOrder -> {NP, 0},
     ParameterName -> zetaRe33,
-    TeX -> \zeta^e_{33},
+    TeX -> "\\zeta^e_{33}",
     Description -> "Zprime right-handed tau coupling"
   },
   zetaqll == {
@@ -228,7 +168,7 @@ M$Parameters = {
     OrderBlock -> 7,
     InteractionOrder -> {NP, 0},
     ParameterName -> zetaqll,
-    TeX -> \zeta^q_{ll},
+    TeX -> "\\zeta^q_{ll}",
     Description -> "Zprime left-handed light-quark coupling"
   },
   zetal22 == {
@@ -239,7 +179,7 @@ M$Parameters = {
     OrderBlock -> 8,
     InteractionOrder -> {NP, 0},
     ParameterName -> zetal22,
-    TeX -> \zeta^\ell_{22},
+    TeX -> "\\zeta^\\ell_{22}",
     Description -> "Zprime left-handed muon-doublet coupling"
   },
   zetal23 == {
@@ -250,7 +190,7 @@ M$Parameters = {
     OrderBlock -> 9,
     InteractionOrder -> {NP, 0},
     ParameterName -> zetal23,
-    TeX -> \zeta^\ell_{23},
+    TeX -> "\\zeta^\\ell_{23}",
     Description -> "Zprime left-handed mu-tau flavour-violating coupling"
   },
   zetaRull == {
@@ -261,7 +201,7 @@ M$Parameters = {
     OrderBlock -> 10,
     InteractionOrder -> {NP, 0},
     ParameterName -> zetaRull,
-    TeX -> \zeta^u_{ll},
+    TeX -> "\\zeta^u_{ll}",
     Description -> "Zprime right-handed light up-quark coupling"
   },
   zetaRdll == {
@@ -272,7 +212,7 @@ M$Parameters = {
     OrderBlock -> 11,
     InteractionOrder -> {NP, 0},
     ParameterName -> zetaRdll,
-    TeX -> \zeta^d_{ll},
+    TeX -> "\\zeta^d_{ll}",
     Description -> "Zprime right-handed light down-quark coupling"
   },
   zetaRe22 == {
@@ -283,7 +223,7 @@ M$Parameters = {
     OrderBlock -> 12,
     InteractionOrder -> {NP, 0},
     ParameterName -> zetaRe22,
-    TeX -> \zeta^e_{22},
+    TeX -> "\\zeta^e_{22}",
     Description -> "Zprime right-handed muon coupling"
   },
   gGp == {
@@ -294,7 +234,7 @@ M$Parameters = {
     OrderBlock -> 1,
     InteractionOrder -> {NP, 1},
     ParameterName -> gGp,
-    TeX -> g_{G'},
+    TeX -> "g_{G'}",
     Description -> "Overall coloron coupling strength"
   },
   kappaq33 == {
@@ -305,7 +245,7 @@ M$Parameters = {
     OrderBlock -> 2,
     InteractionOrder -> {NP, 0},
     ParameterName -> kappaq33,
-    TeX -> \kappa^q_{33},
+    TeX -> "\\kappa^q_{33}",
     Description -> "Coloron left-handed third-generation quark coupling"
   },
   kappaRu33 == {
@@ -316,7 +256,7 @@ M$Parameters = {
     OrderBlock -> 3,
     InteractionOrder -> {NP, 0},
     ParameterName -> kappaRu33,
-    TeX -> \kappa^u_{33},
+    TeX -> "\\kappa^u_{33}",
     Description -> "Coloron right-handed top coupling"
   },
   kappaRd33 == {
@@ -327,7 +267,7 @@ M$Parameters = {
     OrderBlock -> 4,
     InteractionOrder -> {NP, 0},
     ParameterName -> kappaRd33,
-    TeX -> \kappa^d_{33},
+    TeX -> "\\kappa^d_{33}",
     Description -> "Coloron right-handed bottom coupling"
   },
   kappaqll == {
@@ -338,7 +278,7 @@ M$Parameters = {
     OrderBlock -> 5,
     InteractionOrder -> {NP, 0},
     ParameterName -> kappaqll,
-    TeX -> \kappa^q_{ll},
+    TeX -> "\\kappa^q_{ll}",
     Description -> "Coloron left-handed light-quark coupling"
   },
   kappaRull == {
@@ -349,7 +289,7 @@ M$Parameters = {
     OrderBlock -> 6,
     InteractionOrder -> {NP, 0},
     ParameterName -> kappaRull,
-    TeX -> \kappa^u_{ll},
+    TeX -> "\\kappa^u_{ll}",
     Description -> "Coloron right-handed light up-quark coupling"
   },
   kappaRdll == {
@@ -360,7 +300,7 @@ M$Parameters = {
     OrderBlock -> 7,
     InteractionOrder -> {NP, 0},
     ParameterName -> kappaRdll,
-    TeX -> \kappa^d_{ll},
+    TeX -> "\\kappa^d_{ll}",
     Description -> "Coloron right-handed light down-quark coupling"
   },
   kappaG1 == {
@@ -371,7 +311,7 @@ M$Parameters = {
     OrderBlock -> 8,
     InteractionOrder -> {NP, 0},
     ParameterName -> kappaG1,
-    TeX -> \kappa_{G'},
+    TeX -> "\\kappa_{G'}",
     Description -> "Coloron kinetic mixing with the gluon field strength"
   },
   kappaG2 == {
@@ -382,7 +322,7 @@ M$Parameters = {
     OrderBlock -> 9,
     InteractionOrder -> {NP, 0},
     ParameterName -> kappaG2,
-    TeX -> \tilde{\kappa}_{G'},
+    TeX -> "\\tilde{\\kappa}_{G'}",
     Description -> "Non-minimal coloron coupling to gluons"
   },
   newCKM == {
@@ -391,7 +331,7 @@ M$Parameters = {
     Indices -> {Index[Generation], Index[Generation]},
     ComplexParameter -> True,
     Unitary -> True,
-    TeX -> V_{CKM}',
+    TeX -> "V_{CKM}'",
     Description -> "CKM matrix in the down-aligned basis"
   },
   betaL == {
@@ -401,7 +341,7 @@ M$Parameters = {
     ComplexParameter -> True,
     InteractionOrder -> {NP, 0},
     Definitions -> {betaL[1,2] :> 0, betaL[i_?NumericQ,1] :> 0, betaL[2,2] -> 0},
-    TeX -> \beta_L,
+    TeX -> "\\beta_L",
     Description -> "U1 left-handed coupling matrix"
   },
   betaRd == {
@@ -411,7 +351,7 @@ M$Parameters = {
     ComplexParameter -> False,
     InteractionOrder -> {NP, 0},
     Definitions -> {betaRd[1,j_?NumericQ] :> 0, betaRd[i_?NumericQ,1] :> 0, betaRd[2,i_?NumericQ] :> 0, betaRd[i_?NumericQ,2] :> 0},
-    TeX -> \beta_R^d,
+    TeX -> "\\beta_R^d",
     Description -> "U1 right-handed down-lepton coupling matrix"
   },
   zetaq == {
@@ -422,7 +362,7 @@ M$Parameters = {
     InteractionOrder -> {NP, 0},
     Definitions -> {zetaq[i_?NumericQ,j_?NumericQ] :> 0 /; (i =!= j)},
     Hermitian -> True,
-    TeX -> \zeta_q,
+    TeX -> "\\zeta_q",
     Description -> "Zprime left-handed quark coupling matrix"
   },
   zetal == {
@@ -433,7 +373,7 @@ M$Parameters = {
     InteractionOrder -> {NP, 0},
     Definitions -> {zetal[i_?NumericQ,1] :> 0, zetal[1,i_?NumericQ] :> 0},
     Hermitian -> True,
-    TeX -> \zeta_\ell,
+    TeX -> "\\zeta_\\ell",
     Description -> "Zprime left-handed lepton coupling matrix"
   },
   zetaRu == {
@@ -444,7 +384,7 @@ M$Parameters = {
     InteractionOrder -> {NP, 0},
     Definitions -> {zetaRu[i_?NumericQ,j_?NumericQ] :> 0 /; (i =!= j)},
     Hermitian -> True,
-    TeX -> \zeta_u,
+    TeX -> "\\zeta_u",
     Description -> "Zprime right-handed up-quark coupling matrix"
   },
   zetaRd == {
@@ -455,7 +395,7 @@ M$Parameters = {
     InteractionOrder -> {NP, 0},
     Definitions -> {zetaRd[i_?NumericQ,j_?NumericQ] :> 0 /; (i =!= j)},
     Hermitian -> True,
-    TeX -> \zeta_d,
+    TeX -> "\\zeta_d",
     Description -> "Zprime right-handed down-quark coupling matrix"
   },
   zetaRe == {
@@ -466,7 +406,7 @@ M$Parameters = {
     InteractionOrder -> {NP, 0},
     Definitions -> {zetaRe[i_?NumericQ,j_?NumericQ] :> 0 /; (i =!= j), zetaRe[1,1] :> 0},
     Hermitian -> True,
-    TeX -> \zeta_e,
+    TeX -> "\\zeta_e",
     Description -> "Zprime right-handed charged-lepton coupling matrix"
   },
   kappaL == {
@@ -477,7 +417,7 @@ M$Parameters = {
     InteractionOrder -> {NP, 0},
     Definitions -> {kappaL[i_?NumericQ,j_?NumericQ] :> 0 /; (i =!= j)},
     Hermitian -> True,
-    TeX -> \kappa_q,
+    TeX -> "\\kappa_q",
     Description -> "Coloron left-handed quark coupling matrix"
   },
   kappaRu == {
@@ -488,7 +428,7 @@ M$Parameters = {
     InteractionOrder -> {NP, 0},
     Definitions -> {kappaRu[i_?NumericQ,j_?NumericQ] :> 0 /; (i =!= j)},
     Hermitian -> True,
-    TeX -> \kappa_u,
+    TeX -> "\\kappa_u",
     Description -> "Coloron right-handed up-quark coupling matrix"
   },
   kappaRd == {
@@ -499,7 +439,7 @@ M$Parameters = {
     InteractionOrder -> {NP, 0},
     Definitions -> {kappaRd[i_?NumericQ,j_?NumericQ] :> 0 /; (i =!= j)},
     Hermitian -> True,
-    TeX -> \kappa_d,
+    TeX -> "\\kappa_d",
     Description -> "Coloron right-handed down-quark coupling matrix"
   }
 };
@@ -511,7 +451,7 @@ M$ClassesDescription = {
     Indices -> {Index[Colour]},
     Mass -> {MVLQ, 3000.},
     Width -> {WVLQ, 600.},
-    QuantumNumbers -> {Q -> 2/3, Y -> 2/3, Colour -> 3, SU2 -> 1, LeptonNumber -> -1},
+    QuantumNumbers -> {Q -> 2/3, Y -> 2/3, LeptonNumber -> -1},
     PDG -> 42,
     ParticleName -> "VLQ",
     AntiParticleName -> "VLQ~",
@@ -524,7 +464,7 @@ M$ClassesDescription = {
     ClassName -> U,
     SelfConjugate -> False,
     Indices -> {Index[Colour]},
-    QuantumNumbers -> {Q -> 2/3, Y -> 2/3, Colour -> 3, SU2 -> 1},
+    QuantumNumbers -> {Q -> 2/3, Y -> 2/3},
     Unphysical -> True,
     Definitions -> {U[mu_,cc_] -> VLQ[mu,cc]}
   },
@@ -533,7 +473,7 @@ M$ClassesDescription = {
     SelfConjugate -> True,
     Mass -> {MZp, 3000.},
     Width -> {WZp, 600.},
-    QuantumNumbers -> {Q -> 0, Y -> 0, Colour -> 1, SU2 -> 1},
+    QuantumNumbers -> {Q -> 0, Y -> 0},
     PDG -> 43,
     ParticleName -> "Zp",
     FullName -> "Zprime",
@@ -547,7 +487,7 @@ M$ClassesDescription = {
     Indices -> {Index[Gluon]},
     Mass -> {MGp, 4000.},
     Width -> {WGp, 800.},
-    QuantumNumbers -> {Q -> 0, Y -> 0, Colour -> 8, SU2 -> 1},
+    QuantumNumbers -> {Q -> 0, Y -> 0},
     PDG -> 44,
     ParticleName -> "Gp",
     FullName -> "Color-octet coloron",

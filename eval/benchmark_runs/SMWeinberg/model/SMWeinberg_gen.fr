@@ -20,7 +20,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> NUPHYSICS,
     OrderBlock -> 1,
-    TeX -> \[CapitalLambda],
+    TeX -> "\\[CapitalLambda]",
     Description -> "EFT cutoff scale [GeV]"
   },
   Cee == {
@@ -29,7 +29,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> NUPHYSICS,
     OrderBlock -> 2,
-    TeX -> Subscript[C,ee],
+    TeX -> "Subscript[C,ee]",
     Description -> "Cee Wilson coefficient"
   },
   Cem == {
@@ -38,7 +38,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> NUPHYSICS,
     OrderBlock -> 3,
-    TeX -> Subscript[C,e\[Mu]],
+    TeX -> "Subscript[C,e\\[Mu]]",
     Description -> "Cemu Wilson coefficient"
   },
   Cet == {
@@ -47,7 +47,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> NUPHYSICS,
     OrderBlock -> 4,
-    TeX -> Subscript[C,e\[Tau]],
+    TeX -> "Subscript[C,e\\[Tau]]",
     Description -> "Cetau Wilson coefficient"
   },
   Cmm == {
@@ -56,7 +56,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> NUPHYSICS,
     OrderBlock -> 5,
-    TeX -> Subscript[C,\[Mu]\[Mu]],
+    TeX -> "Subscript[C,\\[Mu]\\[Mu]]",
     Description -> "Cmumu Wilson coefficient"
   },
   Cmt == {
@@ -65,7 +65,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> NUPHYSICS,
     OrderBlock -> 6,
-    TeX -> Subscript[C,\[Mu]\[Tau]],
+    TeX -> "Subscript[C,\\[Mu]\\[Tau]]",
     Description -> "Cmutau Wilson coefficient"
   },
   Ctt == {
@@ -74,14 +74,14 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> NUPHYSICS,
     OrderBlock -> 7,
-    TeX -> Subscript[C,\[Tau]\[Tau]],
+    TeX -> "Subscript[C,\\[Tau]\\[Tau]]",
     Description -> "Ctautau Wilson coefficient"
   },
   mN1 == {
     ParameterType -> Internal,
     Value -> vev*vev*Abs[Cee+Cem+Cet+Cmm+Cmt+Ctt]/Lambda,
     ComplexParameter -> False,
-    TeX -> Subscript[m,"N"],
+    TeX -> "Subscript[m,\"N\"]",
     Description -> "Auxiliary Majorana-neutrino mass mN = |sum C5| v^2/Lambda [GeV]"
   }
 };

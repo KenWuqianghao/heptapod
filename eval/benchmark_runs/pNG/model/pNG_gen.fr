@@ -31,7 +31,7 @@ M$Parameters = {
     OrderBlock -> 1,
     InteractionOrder -> {QED, -1},
     ParameterName -> vs,
-    TeX -> Subscript[v,s],
+    TeX -> "Subscript[v,s]",
     Description -> "Second scalar VEV (GeV)"
   },
   theta == {
@@ -40,58 +40,58 @@ M$Parameters = {
     BlockName -> PNGINPUTS,
     OrderBlock -> 2,
     ParameterName -> theta,
-    TeX -> theta,
+    TeX -> "theta",
     Description -> "Mixing angle between the CP-even scalars"
   },
   ct == {
     ParameterType -> Internal,
     Value -> Cos[theta],
-    TeX -> Cos[theta],
+    TeX -> "Cos[theta]",
     Description -> "Cosine of theta"
   },
   st == {
     ParameterType -> Internal,
     Value -> Sin[theta],
-    TeX -> Sin[theta],
+    TeX -> "Sin[theta]",
     Description -> "Sine of theta"
   },
   lambdaP == {
     ParameterType -> Internal,
     Value -> ((Mh ct)^2 + (Mh2 st)^2)/(vh^2),
     InteractionOrder -> {QED, 2},
-    TeX -> Subscript[lambda,Phi],
+    TeX -> "Subscript[lambda,Phi]",
     Description -> "Higgs quartic coupling"
   },
   lambdaS == {
     ParameterType -> Internal,
     Value -> ((Mh st)^2 + (Mh2 ct)^2)/(vs^2),
     InteractionOrder -> {QED, 2},
-    TeX -> Subscript[lambda,S],
+    TeX -> "Subscript[lambda,S]",
     Description -> "Singlet scalar quartic coupling"
   },
   lambdaPS == {
     ParameterType -> Internal,
     Value -> ((Mh2^2 - Mh^2) st ct)/(vh vs),
     InteractionOrder -> {QED, 2},
-    TeX -> Subscript[lambda,Phi S],
+    TeX -> "Subscript[lambda,Phi S]",
     Description -> "Higgs portal coupling"
   },
   muSpsq == {
     ParameterType -> Internal,
     Value -> mX^2,
-    TeX -> Subscript[mu,S]^prime^2,
+    TeX -> "Subscript[mu,S]^prime^2",
     Description -> "Soft U(1)-breaking mass-squared parameter"
   },
   muPsq == {
     ParameterType -> Internal,
     Value -> lambdaP vh^2 + lambdaPS vs^2,
-    TeX -> Subscript[mu,Phi]^2,
+    TeX -> "Subscript[mu,Phi]^2",
     Description -> "Higgs bare mass squared"
   },
   muSsq == {
     ParameterType -> Internal,
     Value -> lambdaS vs^2 + lambdaPS vh^2 - muSpsq,
-    TeX -> Subscript[mu,S]^2,
+    TeX -> "Subscript[mu,S]^2",
     Description -> "Singlet bare mass squared"
   }
 };

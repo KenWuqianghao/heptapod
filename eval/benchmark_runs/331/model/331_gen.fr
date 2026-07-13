@@ -47,7 +47,7 @@ M$Parameters = {
     OrderBlock -> 1,
     InteractionOrder -> {NP, 0},
     ParameterName -> beta331,
-    TeX -> \\beta,
+    TeX -> "\\\\beta",
     Description -> "331 embedding parameter beta; benchmark values are +/-Sqrt[3], +/-1/Sqrt[3]"
   },
   v1 == {
@@ -58,7 +58,7 @@ M$Parameters = {
     OrderBlock -> 2,
     InteractionOrder -> {NP, 0},
     ParameterName -> v1,
-    TeX -> v_1,
+    TeX -> "v_1",
     Description -> "rho triplet vacuum expectation value"
   },
   v2 == {
@@ -67,7 +67,7 @@ M$Parameters = {
     ComplexParameter -> False,
     InteractionOrder -> {NP, 0},
     ParameterName -> v2,
-    TeX -> v_2,
+    TeX -> "v_2",
     Description -> "eta triplet vacuum expectation value, with v1^2+v2^2=vev^2"
   },
   v3 == {
@@ -78,7 +78,7 @@ M$Parameters = {
     OrderBlock -> 3,
     InteractionOrder -> {NP, 1},
     ParameterName -> v3,
-    TeX -> v_3,
+    TeX -> "v_3",
     Description -> "chi triplet vacuum expectation value"
   },
   f331 == {
@@ -89,7 +89,7 @@ M$Parameters = {
     OrderBlock -> 4,
     InteractionOrder -> {NP, 1},
     ParameterName -> f331,
-    TeX -> f,
+    TeX -> "f",
     Description -> "dimensionful trilinear scalar potential parameter"
   },
   k331 == {
@@ -98,7 +98,7 @@ M$Parameters = {
     ComplexParameter -> False,
     InteractionOrder -> {NP, 0},
     ParameterName -> k331,
-    TeX -> k,
+    TeX -> "k",
     Description -> "dimensionless ratio f/v3"
   },
   QY331 == {
@@ -107,7 +107,7 @@ M$Parameters = {
     ComplexParameter -> False,
     InteractionOrder -> {NP, 0},
     ParameterName -> QY331,
-    TeX -> Q_Y,
+    TeX -> "Q_Y",
     Description -> "electric charge of Y boson and H^QY scalar"
   },
   QV331 == {
@@ -116,7 +116,7 @@ M$Parameters = {
     ComplexParameter -> False,
     InteractionOrder -> {NP, 0},
     ParameterName -> QV331,
-    TeX -> Q_V,
+    TeX -> "Q_V",
     Description -> "electric charge of V boson and H^QV scalar"
   },
   QD331 == {
@@ -125,7 +125,7 @@ M$Parameters = {
     ComplexParameter -> False,
     InteractionOrder -> {NP, 0},
     ParameterName -> QD331,
-    TeX -> Q_D,
+    TeX -> "Q_D",
     Description -> "electric charge of D and S exotic quarks"
   },
   QT331 == {
@@ -134,7 +134,7 @@ M$Parameters = {
     ComplexParameter -> False,
     InteractionOrder -> {NP, 0},
     ParameterName -> QT331,
-    TeX -> Q_T,
+    TeX -> "Q_T",
     Description -> "electric charge of T exotic quark"
   },
   QE331 == {
@@ -143,7 +143,7 @@ M$Parameters = {
     ComplexParameter -> False,
     InteractionOrder -> {NP, 0},
     ParameterName -> QE331,
-    TeX -> Q_E,
+    TeX -> "Q_E",
     Description -> "electric charge of heavy leptons"
   },
   lam1 == {
@@ -154,7 +154,7 @@ M$Parameters = {
     OrderBlock -> 1,
     InteractionOrder -> {NP, 2},
     ParameterName -> lam1,
-    TeX -> \\lambda_1,
+    TeX -> "\\\\lambda_1",
     Description -> "rho quartic scalar coupling"
   },
   lam2 == {
@@ -165,7 +165,7 @@ M$Parameters = {
     OrderBlock -> 2,
     InteractionOrder -> {NP, 2},
     ParameterName -> lam2,
-    TeX -> \\lambda_2,
+    TeX -> "\\\\lambda_2",
     Description -> "eta quartic scalar coupling"
   },
   lam3 == {
@@ -176,7 +176,7 @@ M$Parameters = {
     OrderBlock -> 3,
     InteractionOrder -> {NP, 2},
     ParameterName -> lam3,
-    TeX -> \\lambda_3,
+    TeX -> "\\\\lambda_3",
     Description -> "chi quartic scalar coupling"
   },
   lam12 == {
@@ -187,7 +187,7 @@ M$Parameters = {
     OrderBlock -> 4,
     InteractionOrder -> {NP, 2},
     ParameterName -> lam12,
-    TeX -> \\lambda_{12},
+    TeX -> "\\\\lambda_{12}",
     Description -> "rho-eta scalar quartic coupling"
   },
   lam13 == {
@@ -198,7 +198,7 @@ M$Parameters = {
     OrderBlock -> 5,
     InteractionOrder -> {NP, 2},
     ParameterName -> lam13,
-    TeX -> \\lambda_{13},
+    TeX -> "\\\\lambda_{13}",
     Description -> "rho-chi scalar quartic coupling"
   },
   lam23 == {
@@ -209,7 +209,7 @@ M$Parameters = {
     OrderBlock -> 6,
     InteractionOrder -> {NP, 2},
     ParameterName -> lam23,
-    TeX -> \\lambda_{23},
+    TeX -> "\\\\lambda_{23}",
     Description -> "eta-chi scalar quartic coupling"
   },
   lamp12 == {
@@ -220,7 +220,7 @@ M$Parameters = {
     OrderBlock -> 7,
     InteractionOrder -> {NP, 2},
     ParameterName -> lamp12,
-    TeX -> \\lambda'_{12},
+    TeX -> "\\\\lambda'_{12}",
     Description -> "rho-eta primed quartic scalar coupling"
   },
   lamp13 == {
@@ -231,7 +231,7 @@ M$Parameters = {
     OrderBlock -> 8,
     InteractionOrder -> {NP, 2},
     ParameterName -> lamp13,
-    TeX -> \\lambda'_{13},
+    TeX -> "\\\\lambda'_{13}",
     Description -> "rho-chi primed quartic scalar coupling"
   },
   lamp23 == {
@@ -242,7 +242,7 @@ M$Parameters = {
     OrderBlock -> 9,
     InteractionOrder -> {NP, 2},
     ParameterName -> lamp23,
-    TeX -> \\lambda'_{23},
+    TeX -> "\\\\lambda'_{23}",
     Description -> "eta-chi primed quartic scalar coupling"
   },
   mu1sq == {
@@ -253,7 +253,7 @@ M$Parameters = {
     OrderBlock -> 10,
     InteractionOrder -> {NP, 2},
     ParameterName -> mu1sq,
-    TeX -> \\mu_1^2,
+    TeX -> "\\\\mu_1^2",
     Description -> "rho scalar potential mass-squared parameter"
   },
   mu2sq == {
@@ -264,7 +264,7 @@ M$Parameters = {
     OrderBlock -> 11,
     InteractionOrder -> {NP, 2},
     ParameterName -> mu2sq,
-    TeX -> \\mu_2^2,
+    TeX -> "\\\\mu_2^2",
     Description -> "eta scalar potential mass-squared parameter"
   },
   mu3sq == {
@@ -275,7 +275,7 @@ M$Parameters = {
     OrderBlock -> 12,
     InteractionOrder -> {NP, 2},
     ParameterName -> mu3sq,
-    TeX -> \\mu_3^2,
+    TeX -> "\\\\mu_3^2",
     Description -> "chi scalar potential mass-squared parameter"
   },
   s12 == {
@@ -284,7 +284,7 @@ M$Parameters = {
     ComplexParameter -> False,
     InteractionOrder -> {NP, 0},
     ParameterName -> s12,
-    TeX -> s_{12},
+    TeX -> "s_{12}",
     Description -> "charged scalar mixing sine in eta-rho sector"
   },
   c12 == {
@@ -293,7 +293,7 @@ M$Parameters = {
     ComplexParameter -> False,
     InteractionOrder -> {NP, 0},
     ParameterName -> c12,
-    TeX -> c_{12},
+    TeX -> "c_{12}",
     Description -> "charged scalar mixing cosine in eta-rho sector"
   },
   s13 == {
@@ -302,7 +302,7 @@ M$Parameters = {
     ComplexParameter -> False,
     InteractionOrder -> {NP, 0},
     ParameterName -> s13,
-    TeX -> s_{13},
+    TeX -> "s_{13}",
     Description -> "charged scalar mixing sine in chi-rho sector"
   },
   c13 == {
@@ -311,7 +311,7 @@ M$Parameters = {
     ComplexParameter -> False,
     InteractionOrder -> {NP, 0},
     ParameterName -> c13,
-    TeX -> c_{13},
+    TeX -> "c_{13}",
     Description -> "charged scalar mixing cosine in chi-rho sector"
   },
   s23 == {
@@ -320,7 +320,7 @@ M$Parameters = {
     ComplexParameter -> False,
     InteractionOrder -> {NP, 0},
     ParameterName -> s23,
-    TeX -> s_{23},
+    TeX -> "s_{23}",
     Description -> "charged scalar mixing sine in chi-eta sector"
   },
   c23 == {
@@ -329,7 +329,7 @@ M$Parameters = {
     ComplexParameter -> False,
     InteractionOrder -> {NP, 0},
     ParameterName -> c23,
-    TeX -> c_{23},
+    TeX -> "c_{23}",
     Description -> "charged scalar mixing cosine in chi-eta sector"
   },
   a0 == {
@@ -338,7 +338,7 @@ M$Parameters = {
     ComplexParameter -> False,
     InteractionOrder -> {NP, 0},
     ParameterName -> a0,
-    TeX -> a_0,
+    TeX -> "a_0",
     Description -> "331 neutral gauge shorthand from Appendix A"
   },
   ap == {
@@ -347,7 +347,7 @@ M$Parameters = {
     ComplexParameter -> False,
     InteractionOrder -> {NP, 0},
     ParameterName -> ap,
-    TeX -> a_+,
+    TeX -> "a_+",
     Description -> "331 charge shorthand Sqrt[3] beta + 1"
   },
   am == {
@@ -356,7 +356,7 @@ M$Parameters = {
     ComplexParameter -> False,
     InteractionOrder -> {NP, 0},
     ParameterName -> am,
-    TeX -> a_-,
+    TeX -> "a_-",
     Description -> "331 charge shorthand Sqrt[3] beta - 1"
   },
   bp == {
@@ -365,7 +365,7 @@ M$Parameters = {
     ComplexParameter -> False,
     InteractionOrder -> {NP, 0},
     ParameterName -> bp,
-    TeX -> b_+,
+    TeX -> "b_+",
     Description -> "331 charge shorthand Sqrt[3] beta + 2"
   },
   bm == {
@@ -374,173 +374,8 @@ M$Parameters = {
     ComplexParameter -> False,
     InteractionOrder -> {NP, 0},
     ParameterName -> bm,
-    TeX -> b_-,
+    TeX -> "b_-",
     Description -> "331 charge shorthand Sqrt[3] beta - 2"
-  },
-  MH2 == {
-    ParameterType -> External,
-    Value -> 1500.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 9000002,
-    InteractionOrder -> {NP, 1},
-    ParameterName -> MH2,
-    TeX -> M_{H_2},
-    Description -> "mass of CP-even neutral scalar H2"
-  },
-  MH3 == {
-    ParameterType -> External,
-    Value -> 2000.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 9000003,
-    InteractionOrder -> {NP, 1},
-    ParameterName -> MH3,
-    TeX -> M_{H_3},
-    Description -> "mass of CP-even neutral scalar H3"
-  },
-  MH0 == {
-    ParameterType -> External,
-    Value -> 1500.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 9000004,
-    InteractionOrder -> {NP, 1},
-    ParameterName -> MH0,
-    TeX -> M_{H_0},
-    Description -> "mass of CP-odd neutral scalar H0"
-  },
-  MHp == {
-    ParameterType -> External,
-    Value -> 1500.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 9000005,
-    InteractionOrder -> {NP, 1},
-    ParameterName -> MHp,
-    TeX -> M_{H^+},
-    Description -> "mass of singly charged scalar H+"
-  },
-  MHQY == {
-    ParameterType -> External,
-    Value -> 1400.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 9000006,
-    InteractionOrder -> {NP, 1},
-    ParameterName -> MHQY,
-    TeX -> M_{H^{Q_Y}},
-    Description -> "mass of scalar with electric charge QY"
-  },
-  MHQV == {
-    ParameterType -> External,
-    Value -> 1300.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 9000007,
-    InteractionOrder -> {NP, 1},
-    ParameterName -> MHQV,
-    TeX -> M_{H^{Q_V}},
-    Description -> "mass of scalar with electric charge QV"
-  },
-  MZp == {
-    ParameterType -> External,
-    Value -> 4000.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 9000010,
-    InteractionOrder -> {NP, 1},
-    ParameterName -> MZp,
-    TeX -> M_{Z'},
-    Description -> "mass of the new neutral gauge boson Z'"
-  },
-  MY == {
-    ParameterType -> External,
-    Value -> 1000.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 9000011,
-    InteractionOrder -> {NP, 1},
-    ParameterName -> MY,
-    TeX -> M_Y,
-    Description -> "mass of the new charged gauge boson Y"
-  },
-  MV == {
-    ParameterType -> External,
-    Value -> 1000.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 9000012,
-    InteractionOrder -> {NP, 1},
-    ParameterName -> MV,
-    TeX -> M_V,
-    Description -> "mass of the new charged gauge boson V"
-  },
-  MD == {
-    ParameterType -> External,
-    Value -> 1000.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 9000021,
-    InteractionOrder -> {NP, 1},
-    ParameterName -> MD,
-    TeX -> M_D,
-    Description -> "mass of exotic quark D"
-  },
-  MSq == {
-    ParameterType -> External,
-    Value -> 1000.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 9000022,
-    InteractionOrder -> {NP, 1},
-    ParameterName -> MSq,
-    TeX -> M_S,
-    Description -> "mass of exotic quark S"
-  },
-  MT == {
-    ParameterType -> External,
-    Value -> 1000.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 9000023,
-    InteractionOrder -> {NP, 1},
-    ParameterName -> MT,
-    TeX -> M_T,
-    Description -> "mass of exotic quark T"
-  },
-  MEe == {
-    ParameterType -> External,
-    Value -> 1000.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 9000031,
-    InteractionOrder -> {NP, 1},
-    ParameterName -> MEe,
-    TeX -> M_{E_e},
-    Description -> "mass of heavy lepton Ee"
-  },
-  MEmu == {
-    ParameterType -> External,
-    Value -> 1000.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 9000032,
-    InteractionOrder -> {NP, 1},
-    ParameterName -> MEmu,
-    TeX -> M_{E_\\mu},
-    Description -> "mass of heavy lepton Emu"
-  },
-  MEtau == {
-    ParameterType -> External,
-    Value -> 1000.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 9000033,
-    InteractionOrder -> {NP, 1},
-    ParameterName -> MEtau,
-    TeX -> M_{E_\\tau},
-    Description -> "mass of heavy lepton Etau"
   },
   U331 == {
     ParameterType -> External,
@@ -549,7 +384,7 @@ M$Parameters = {
     BlockName -> U331,
     InteractionOrder -> {NP, 0},
     ParameterName -> U331,
-    TeX -> U,
+    TeX -> "U",
     Description -> "CP-even neutral scalar rotation matrix"
   },
   O331 == {
@@ -559,7 +394,7 @@ M$Parameters = {
     BlockName -> O331,
     InteractionOrder -> {NP, 0},
     ParameterName -> O331,
-    TeX -> O,
+    TeX -> "O",
     Description -> "CP-odd neutral scalar rotation matrix"
   },
   yU331 == {
@@ -569,7 +404,7 @@ M$Parameters = {
     BlockName -> YU331,
     InteractionOrder -> {NP, 1},
     ParameterName -> yU331,
-    TeX -> y^u,
+    TeX -> "y^u",
     Description -> "up-type quark Yukawa matrix"
   },
   yD331 == {
@@ -579,7 +414,7 @@ M$Parameters = {
     BlockName -> YD331,
     InteractionOrder -> {NP, 1},
     ParameterName -> yD331,
-    TeX -> y^d,
+    TeX -> "y^d",
     Description -> "down-type quark Yukawa matrix"
   },
   yJ331 == {
@@ -589,7 +424,7 @@ M$Parameters = {
     BlockName -> YJ331,
     InteractionOrder -> {NP, 1},
     ParameterName -> yJ331,
-    TeX -> y^J,
+    TeX -> "y^J",
     Description -> "Yukawa matrix for D and S exotic quarks"
   },
   yT331 == {
@@ -600,7 +435,7 @@ M$Parameters = {
     OrderBlock -> 33,
     InteractionOrder -> {NP, 1},
     ParameterName -> yT331,
-    TeX -> y^J_{33},
+    TeX -> "y^J_{33}",
     Description -> "Yukawa coupling for T exotic quark"
   },
   yE331 == {
@@ -610,7 +445,7 @@ M$Parameters = {
     BlockName -> YE331,
     InteractionOrder -> {NP, 1},
     ParameterName -> yE331,
-    TeX -> y^E,
+    TeX -> "y^E",
     Description -> "heavy lepton Yukawa matrix"
   },
   yL331 == {
@@ -620,7 +455,7 @@ M$Parameters = {
     BlockName -> YL331,
     InteractionOrder -> {NP, 1},
     ParameterName -> yL331,
-    TeX -> y^e,
+    TeX -> "y^e",
     Description -> "charged lepton Yukawa matrix"
   }
 };

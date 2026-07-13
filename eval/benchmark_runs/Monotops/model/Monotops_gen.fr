@@ -27,7 +27,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> A0FC,
     InteractionOrder -> {MT1, 1},
-    TeX -> Subsuperscript[A,FC,0],
+    TeX -> "Subsuperscript[A,FC,0]",
     Description -> "FCNC scalar quark-quark couplings"
   },
   B0FC == {
@@ -37,7 +37,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> B0FC,
     InteractionOrder -> {MT1, 1},
-    TeX -> Subsuperscript[B,FC,0],
+    TeX -> "Subsuperscript[B,FC,0]",
     Description -> "FCNC pseudoscalar quark-quark couplings"
   },
   A1FC == {
@@ -47,7 +47,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> A1FC,
     InteractionOrder -> {MT2, 1},
-    TeX -> Subsuperscript[A,FC,1],
+    TeX -> "Subsuperscript[A,FC,1]",
     Description -> "FCNC vector quark-quark couplings"
   },
   B1FC == {
@@ -57,7 +57,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> B1FC,
     InteractionOrder -> {MT2, 1},
-    TeX -> Subsuperscript[B,FC,1],
+    TeX -> "Subsuperscript[B,FC,1]",
     Description -> "FCNC pseudovector quark-quark couplings"
   },
   A12S == {
@@ -67,7 +67,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> A12S,
     InteractionOrder -> {MT3, 1},
-    TeX -> Subsuperscript[A,S,12],
+    TeX -> "Subsuperscript[A,S,12]",
     Description -> "Colored scalar resonance couplings to quark-FMET"
   },
   B12S == {
@@ -77,7 +77,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> B12S,
     InteractionOrder -> {MT3, 1},
-    TeX -> Subsuperscript[B,S,12],
+    TeX -> "Subsuperscript[B,S,12]",
     Description -> "Colored scalar resonance couplings to quark-FMET"
   },
   tA12S == {
@@ -87,7 +87,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> tA12S,
     InteractionOrder -> {MT3, 1},
-    TeX -> Subsuperscript[tA,S,12],
+    TeX -> "Subsuperscript[tA,S,12]",
     Description -> "t-channel and u-channel scalar couplings to d-FMET"
   },
   tB12S == {
@@ -97,7 +97,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> tB12S,
     InteractionOrder -> {MT3, 1},
-    TeX -> Subsuperscript[tB,S,12],
+    TeX -> "Subsuperscript[tB,S,12]",
     Description -> "t-channel and u-channel pseudoscalar couplings to d-FMET"
   },
   AQS == {
@@ -107,7 +107,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> AQS,
     InteractionOrder -> {MT3, 1},
-    TeX -> Subsuperscript[A,RS,Q],
+    TeX -> "Subsuperscript[A,RS,Q]",
     Description -> "Colored scalar resonance couplings to down-type quarks"
   },
   BQS == {
@@ -117,7 +117,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> BQS,
     InteractionOrder -> {MT3, 1},
-    TeX -> Subsuperscript[B,RS,Q],
+    TeX -> "Subsuperscript[B,RS,Q]",
     Description -> "Colored scalar pseudoscalar couplings to down-type quarks"
   },
   tAQS == {
@@ -127,7 +127,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> tAQS,
     InteractionOrder -> {MT3, 1},
-    TeX -> Subsuperscript[tA,RS,Q],
+    TeX -> "Subsuperscript[tA,RS,Q]",
     Description -> "Additional scalar four-fermion couplings to d-u"
   },
   tBQS == {
@@ -137,7 +137,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> tBQS,
     InteractionOrder -> {MT3, 1},
-    TeX -> Subsuperscript[tB,RS,Q],
+    TeX -> "Subsuperscript[tB,RS,Q]",
     Description -> "Additional scalar four-fermion axial couplings to d-u"
   },
   A12V == {
@@ -147,7 +147,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> A12V,
     InteractionOrder -> {MT4, 1},
-    TeX -> Subsuperscript[A,V,12],
+    TeX -> "Subsuperscript[A,V,12]",
     Description -> "Colored vector resonance couplings to quark-FMET"
   },
   B12V == {
@@ -157,7 +157,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> B12V,
     InteractionOrder -> {MT4, 1},
-    TeX -> Subsuperscript[B,V,12],
+    TeX -> "Subsuperscript[B,V,12]",
     Description -> "Colored vector axial couplings to quark-FMET"
   },
   AQV == {
@@ -167,7 +167,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> AQV,
     InteractionOrder -> {MT4, 1},
-    TeX -> Subsuperscript[A,RV,Q],
+    TeX -> "Subsuperscript[A,RV,Q]",
     Description -> "Colored vector resonance couplings to down-type quarks"
   },
   BQV == {
@@ -177,7 +177,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> BQV,
     InteractionOrder -> {MT4, 1},
-    TeX -> Subsuperscript[B,RV,Q],
+    TeX -> "Subsuperscript[B,RV,Q]",
     Description -> "Colored vector axial couplings to down-type quarks"
   }
 };
@@ -188,7 +188,7 @@ M$ClassesDescription = {
     SelfConjugate -> True,
     Mass -> {MFM, 50},
     Width -> {WFM, 10},
-    QuantumNumbers -> {Q -> 0, Y -> 0, SU2 -> 1, ColourRep -> 1},
+    QuantumNumbers -> {Q -> 0, Y -> 0, ColourRep -> 1},
     PDG -> 9000003,
     ParticleName -> "fmet",
     FullName -> "Invisible Majorana fermion",
@@ -201,7 +201,7 @@ M$ClassesDescription = {
     SelfConjugate -> True,
     Mass -> {MVM, 50.},
     Width -> {WVM, 10.},
-    QuantumNumbers -> {Q -> 0, Y -> 0, SU2 -> 1, ColourRep -> 1},
+    QuantumNumbers -> {Q -> 0, Y -> 0, ColourRep -> 1},
     PDG -> 9000002,
     ParticleName -> "vmet",
     FullName -> "Invisible neutral vector",
@@ -215,7 +215,7 @@ M$ClassesDescription = {
     Indices -> {Index[Colour]},
     Mass -> {MVC, 500},
     Width -> {WVC, 10},
-    QuantumNumbers -> {Q -> 2/3, Y -> 2/3, SU2 -> 1, ColourRep -> 3},
+    QuantumNumbers -> {Q -> 2/3, Y -> 2/3, ColourRep -> 3},
     PDG -> 9000005,
     ParticleName -> "vc",
     AntiParticleName -> "vc~",
@@ -229,7 +229,7 @@ M$ClassesDescription = {
     SelfConjugate -> True,
     Mass -> {MSM, 50},
     Width -> {WSM, 10.},
-    QuantumNumbers -> {Q -> 0, Y -> 0, SU2 -> 1, ColourRep -> 1},
+    QuantumNumbers -> {Q -> 0, Y -> 0, ColourRep -> 1},
     PDG -> 9000001,
     ParticleName -> "smet",
     FullName -> "Invisible neutral scalar",
@@ -243,7 +243,7 @@ M$ClassesDescription = {
     Indices -> {Index[Colour]},
     Mass -> {MSC, 1000},
     Width -> {WSC, 10.},
-    QuantumNumbers -> {Q -> 2/3, Y -> 2/3, SU2 -> 1, ColourRep -> 3},
+    QuantumNumbers -> {Q -> 2/3, Y -> 2/3, ColourRep -> 3},
     PDG -> 9000004,
     ParticleName -> "phic",
     AntiParticleName -> "phic~",
@@ -258,7 +258,7 @@ M$ClassesDescription = {
     Indices -> {Index[Colour]},
     Mass -> {tMSC, 1000},
     Width -> {tWSC, 10.},
-    QuantumNumbers -> {Q -> -1/3, Y -> -1/3, SU2 -> 1, ColourRep -> 3},
+    QuantumNumbers -> {Q -> -1/3, Y -> -1/3, ColourRep -> 3},
     PDG -> 9000006,
     ParticleName -> "tphic",
     AntiParticleName -> "tphic~",

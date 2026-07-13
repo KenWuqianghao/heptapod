@@ -26,7 +26,7 @@ M$Parameters = {
     OrderBlock -> 1,
     InteractionOrder -> {NP, 1},
     ParameterName -> gX,
-    TeX -> g_X,
+    TeX -> "g_X",
     Description -> "U(1)X gauge coupling g'"
   },
   xH == {
@@ -36,7 +36,7 @@ M$Parameters = {
     BlockName -> GENERALU1,
     OrderBlock -> 2,
     ParameterName -> xH,
-    TeX -> x_H,
+    TeX -> "x_H",
     Description -> "U(1)X charge parameter of the SM Higgs doublet direction"
   },
   xPhi == {
@@ -46,108 +46,8 @@ M$Parameters = {
     BlockName -> GENERALU1,
     OrderBlock -> 3,
     ParameterName -> xPhi,
-    TeX -> x_\Phi,
+    TeX -> "x_\\Phi",
     Description -> "U(1)X charge normalization parameter"
-  },
-  MZp == {
-    ParameterType -> External,
-    Value -> 7500.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 32,
-    ParameterName -> MZp,
-    TeX -> M_{Z'},
-    Description -> "Zprime mass"
-  },
-  WZp == {
-    ParameterType -> External,
-    Value -> 10.,
-    ComplexParameter -> False,
-    BlockName -> DECAY,
-    OrderBlock -> 32,
-    ParameterName -> WZp,
-    TeX -> \Gamma_{Z'},
-    Description -> "Zprime width"
-  },
-  mPhiX == {
-    ParameterType -> External,
-    Value -> 1000.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 9000001,
-    ParameterName -> mPhiX,
-    TeX -> m_\phi,
-    Description -> "Physical U(1)X Higgs scalar mass"
-  },
-  WPhiX == {
-    ParameterType -> External,
-    Value -> 1.,
-    ComplexParameter -> False,
-    BlockName -> DECAY,
-    OrderBlock -> 9000001,
-    ParameterName -> WPhiX,
-    TeX -> \Gamma_\phi,
-    Description -> "Physical U(1)X Higgs scalar width"
-  },
-  mN1 == {
-    ParameterType -> External,
-    Value -> 10000.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 9900012,
-    ParameterName -> mN1,
-    TeX -> m_{N_1},
-    Description -> "Heavy right-handed neutrino N1 mass"
-  },
-  mN2 == {
-    ParameterType -> External,
-    Value -> 10000.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 9900014,
-    ParameterName -> mN2,
-    TeX -> m_{N_2},
-    Description -> "Heavy right-handed neutrino N2 mass"
-  },
-  mN3 == {
-    ParameterType -> External,
-    Value -> 10000.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 9900016,
-    ParameterName -> mN3,
-    TeX -> m_{N_3},
-    Description -> "Heavy right-handed neutrino N3 mass"
-  },
-  WN1 == {
-    ParameterType -> External,
-    Value -> 1.,
-    ComplexParameter -> False,
-    BlockName -> DECAY,
-    OrderBlock -> 9900012,
-    ParameterName -> WN1,
-    TeX -> \Gamma_{N_1},
-    Description -> "Heavy right-handed neutrino N1 width"
-  },
-  WN2 == {
-    ParameterType -> External,
-    Value -> 1.,
-    ComplexParameter -> False,
-    BlockName -> DECAY,
-    OrderBlock -> 9900014,
-    ParameterName -> WN2,
-    TeX -> \Gamma_{N_2},
-    Description -> "Heavy right-handed neutrino N2 width"
-  },
-  WN3 == {
-    ParameterType -> External,
-    Value -> 1.,
-    ComplexParameter -> False,
-    BlockName -> DECAY,
-    OrderBlock -> 9900016,
-    ParameterName -> WN3,
-    TeX -> \Gamma_{N_3},
-    Description -> "Heavy right-handed neutrino N3 width"
   },
   lamPhi == {
     ParameterType -> External,
@@ -156,7 +56,7 @@ M$Parameters = {
     BlockName -> GENERALU1,
     OrderBlock -> 4,
     ParameterName -> lamPhi,
-    TeX -> \lambda_\Phi,
+    TeX -> "\\lambda_\\Phi",
     Description -> "Singlet scalar quartic coupling"
   },
   lamHP == {
@@ -166,7 +66,7 @@ M$Parameters = {
     BlockName -> GENERALU1,
     OrderBlock -> 5,
     ParameterName -> lamHP,
-    TeX -> \lambda',
+    TeX -> "\\lambda'",
     Description -> "Higgs portal coupling lambda prime"
   },
   mPhi2 == {
@@ -176,7 +76,7 @@ M$Parameters = {
     BlockName -> GENERALU1,
     OrderBlock -> 6,
     ParameterName -> mPhi2,
-    TeX -> m_\Phi^2,
+    TeX -> "m_\\Phi^2",
     Description -> "Quadratic singlet scalar potential parameter"
   },
   vPhi == {
@@ -184,63 +84,63 @@ M$Parameters = {
     Value -> MZp/(2*gX),
     ComplexParameter -> False,
     ParameterName -> vPhi,
-    TeX -> v_\Phi,
+    TeX -> "v_\\Phi",
     Description -> "U(1)X breaking vacuum expectation value in the vPhi >> vev approximation"
   },
   qQLX == {
     ParameterType -> Internal,
     Value -> xH/6 + xPhi/3,
     ComplexParameter -> False,
-    TeX -> q^Q_X,
+    TeX -> "q^Q_X",
     Description -> "U(1)X charge of left-handed quark doublets"
   },
   qURX == {
     ParameterType -> Internal,
     Value -> 2*xH/3 + xPhi/3,
     ComplexParameter -> False,
-    TeX -> q^u_X,
+    TeX -> "q^u_X",
     Description -> "U(1)X charge of right-handed up quarks"
   },
   qDRX == {
     ParameterType -> Internal,
     Value -> -xH/3 + xPhi/3,
     ComplexParameter -> False,
-    TeX -> q^d_X,
+    TeX -> "q^d_X",
     Description -> "U(1)X charge of right-handed down quarks"
   },
   qLLX == {
     ParameterType -> Internal,
     Value -> -xH/2 - xPhi,
     ComplexParameter -> False,
-    TeX -> q^L_X,
+    TeX -> "q^L_X",
     Description -> "U(1)X charge of left-handed lepton doublets"
   },
   qERX == {
     ParameterType -> Internal,
     Value -> -xH - xPhi,
     ComplexParameter -> False,
-    TeX -> q^e_X,
+    TeX -> "q^e_X",
     Description -> "U(1)X charge of right-handed charged leptons"
   },
   qNRX == {
     ParameterType -> Internal,
     Value -> -xPhi,
     ComplexParameter -> False,
-    TeX -> q^N_X,
+    TeX -> "q^N_X",
     Description -> "U(1)X charge of right-handed neutrinos"
   },
   qHX == {
     ParameterType -> Internal,
     Value -> -xH/2,
     ComplexParameter -> False,
-    TeX -> q^H_X,
+    TeX -> "q^H_X",
     Description -> "U(1)X charge of the SM Higgs doublet"
   },
   qPhiX == {
     ParameterType -> Internal,
     Value -> 2*xPhi,
     ComplexParameter -> False,
-    TeX -> q^\Phi_X,
+    TeX -> "q^\\Phi_X",
     Description -> "U(1)X charge of the singlet scalar Phi"
   },
   yNu == {
@@ -249,7 +149,7 @@ M$Parameters = {
     Indices -> {Index[Generation], Index[Generation]},
     ComplexParameter -> False,
     BlockName -> YNU,
-    TeX -> Y_\nu,
+    TeX -> "Y_\\nu",
     Description -> "Dirac neutrino Yukawa matrix"
   },
   yN == {
@@ -257,7 +157,7 @@ M$Parameters = {
     Value -> {yN[1] -> Sqrt[2]*mN1/vPhi, yN[2] -> Sqrt[2]*mN2/vPhi, yN[3] -> Sqrt[2]*mN3/vPhi},
     Indices -> {Index[Generation]},
     ComplexParameter -> False,
-    TeX -> Y_N,
+    TeX -> "Y_N",
     Description -> "Diagonal Majorana Yukawa couplings of right-handed neutrinos"
   }
 };
@@ -268,7 +168,7 @@ M$ClassesDescription = {
     SelfConjugate -> True,
     Mass -> {MZp, 7500.},
     Width -> {WZp, 10.},
-    QuantumNumbers -> {Q -> 0, Y -> 0, Colour -> 1, SU2 -> 1},
+    QuantumNumbers -> {Q -> 0, Y -> 0},
     PDG -> 32,
     ParticleName -> "Zp",
     FullName -> "Zprime",
@@ -284,7 +184,7 @@ M$ClassesDescription = {
     FlavorIndex -> Generation,
     Mass -> {mN, {mN1, 10000.}, {mN2, 10000.}, {mN3, 10000.}},
     Width -> {WN, {WN1, 1.}, {WN2, 1.}, {WN3, 1.}},
-    QuantumNumbers -> {Q -> 0, Y -> 0, Colour -> 1, SU2 -> 1, X -> -xPhi},
+    QuantumNumbers -> {Q -> 0, Y -> 0, X -> -xPhi},
     PDG -> {9900012, 9900014, 9900016},
     ParticleName -> {"N1", "N2", "N3"},
     FullName -> {"RH neutrino 1", "RH neutrino 2", "RH neutrino 3"},
@@ -297,7 +197,7 @@ M$ClassesDescription = {
     SelfConjugate -> True,
     Mass -> {mPhiX, 1000.},
     Width -> {WPhiX, 1.},
-    QuantumNumbers -> {Q -> 0, Y -> 0, Colour -> 1, SU2 -> 1},
+    QuantumNumbers -> {Q -> 0, Y -> 0},
     PDG -> 9000001,
     ParticleName -> "phiX",
     FullName -> "U1X Higgs scalar",
@@ -310,7 +210,7 @@ M$ClassesDescription = {
     SelfConjugate -> True,
     Mass -> {MZp, 7500.},
     Width -> {WZp, 10.},
-    QuantumNumbers -> {Q -> 0, Y -> 0, Colour -> 1, SU2 -> 1},
+    QuantumNumbers -> {Q -> 0, Y -> 0},
     PDG -> 9000002,
     ParticleName -> "GZp",
     FullName -> "Zprime Goldstone",
@@ -322,7 +222,7 @@ M$ClassesDescription = {
   S[104] == {
     ClassName -> PhiX,
     SelfConjugate -> False,
-    QuantumNumbers -> {Q -> 0, Y -> 0, Colour -> 1, SU2 -> 1, X -> 2*xPhi},
+    QuantumNumbers -> {Q -> 0, Y -> 0, X -> 2*xPhi},
     Unphysical -> True,
     Definitions -> {PhiX[] -> (vPhi + phiX + I GZp)/Sqrt[2]}
   }

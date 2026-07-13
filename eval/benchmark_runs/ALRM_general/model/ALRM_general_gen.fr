@@ -31,7 +31,7 @@ M$Parameters = {
     BlockName -> SMINPUTS,
     OrderBlock -> 5,
     ParameterName -> tb,
-    TeX -> t_\beta,
+    TeX -> "t_\\beta",
     Description -> "tan beta = k/vL"
   },
   gR == {
@@ -41,7 +41,7 @@ M$Parameters = {
     OrderBlock -> 6,
     InteractionOrder -> {NP, 1},
     ParameterName -> gR,
-    TeX -> g_R
+    TeX -> "g_R"
   },
   vevp == {
     ParameterType -> External,
@@ -49,7 +49,7 @@ M$Parameters = {
     BlockName -> SMINPUTS,
     OrderBlock -> 7,
     ParameterName -> vevp,
-    TeX -> v'
+    TeX -> "v'"
   },
   lam2 == {
     ParameterType -> External,
@@ -57,7 +57,7 @@ M$Parameters = {
     BlockName -> HPOTINPUTS,
     OrderBlock -> 1,
     ParameterName -> lam2,
-    TeX -> \lambda_2
+    TeX -> "\\lambda_2"
   },
   lam3 == {
     ParameterType -> External,
@@ -65,7 +65,7 @@ M$Parameters = {
     BlockName -> HPOTINPUTS,
     OrderBlock -> 2,
     ParameterName -> lam3,
-    TeX -> \lambda_3
+    TeX -> "\\lambda_3"
   },
   alp1 == {
     ParameterType -> External,
@@ -73,7 +73,7 @@ M$Parameters = {
     BlockName -> HPOTINPUTS,
     OrderBlock -> 3,
     ParameterName -> alp1,
-    TeX -> \alpha_1
+    TeX -> "\\alpha_1"
   },
   alp2 == {
     ParameterType -> External,
@@ -81,7 +81,7 @@ M$Parameters = {
     BlockName -> HPOTINPUTS,
     OrderBlock -> 4,
     ParameterName -> alp2,
-    TeX -> \alpha_2
+    TeX -> "\\alpha_2"
   },
   alp3 == {
     ParameterType -> External,
@@ -89,7 +89,7 @@ M$Parameters = {
     BlockName -> HPOTINPUTS,
     OrderBlock -> 5,
     ParameterName -> alp3,
-    TeX -> \alpha_3
+    TeX -> "\\alpha_3"
   },
   kap == {
     ParameterType -> External,
@@ -97,7 +97,7 @@ M$Parameters = {
     BlockName -> HPOTINPUTS,
     OrderBlock -> 6,
     ParameterName -> kap,
-    TeX -> \kappa
+    TeX -> "\\kappa"
   },
   Ghgg == {
     ParameterType -> External,
@@ -106,7 +106,7 @@ M$Parameters = {
     OrderBlock -> 1,
     InteractionOrder -> {NP, 1},
     ParameterName -> Ghgg,
-    TeX -> a_H^g
+    TeX -> "a_H^g"
   },
   Ghaa == {
     ParameterType -> External,
@@ -115,7 +115,7 @@ M$Parameters = {
     OrderBlock -> 2,
     InteractionOrder -> {NP, 1},
     ParameterName -> Ghaa,
-    TeX -> a_H^\gamma
+    TeX -> "a_H^\\gamma"
   },
   Mve == {
     ParameterType -> External,
@@ -137,48 +137,6 @@ M$Parameters = {
     BlockName -> MASS,
     OrderBlock -> 16,
     ParameterName -> Mvt
-  },
-  Mne == {
-    ParameterType -> External,
-    Value -> 750.,
-    BlockName -> MASS,
-    OrderBlock -> 6000012,
-    ParameterName -> Mne
-  },
-  Mnm == {
-    ParameterType -> External,
-    Value -> 900.,
-    BlockName -> MASS,
-    OrderBlock -> 6000014,
-    ParameterName -> Mnm
-  },
-  Mnt == {
-    ParameterType -> External,
-    Value -> 1000.,
-    BlockName -> MASS,
-    OrderBlock -> 6000016,
-    ParameterName -> Mnt
-  },
-  MDP == {
-    ParameterType -> External,
-    Value -> 1500.,
-    BlockName -> MASS,
-    OrderBlock -> 6000001,
-    ParameterName -> MDP
-  },
-  MSP == {
-    ParameterType -> External,
-    Value -> 1700.,
-    BlockName -> MASS,
-    OrderBlock -> 6000003,
-    ParameterName -> MSP
-  },
-  MBP == {
-    ParameterType -> External,
-    Value -> 2000.,
-    BlockName -> MASS,
-    OrderBlock -> 6000005,
-    ParameterName -> MBP
   },
   CKMlam == {
     ParameterType -> External,

@@ -28,7 +28,7 @@ M$Parameters = {
     OrderBlock -> 1,
     InteractionOrder -> {NP, 1},
     ParameterName -> g1p,
-    TeX -> g'_1,
+    TeX -> "g'_1",
     Description -> "U(1)_{B-L} gauge coupling"
   },
   gtilde == {
@@ -39,7 +39,7 @@ M$Parameters = {
     OrderBlock -> 2,
     InteractionOrder -> {NP, 1},
     ParameterName -> gtilde,
-    TeX -> \tilde{g},
+    TeX -> "\\tilde{g}",
     Description -> "U(1)_Y-U(1)_{B-L} gauge mixing, set to zero in the minimal model"
   },
   sa == {
@@ -50,113 +50,8 @@ M$Parameters = {
     OrderBlock -> 3,
     InteractionOrder -> {NP, 1},
     ParameterName -> sa,
-    TeX -> \sin\alpha,
+    TeX -> "\\sin\\alpha",
     Description -> "Higgs-singlet mixing sine"
-  },
-  MZp == {
-    ParameterType -> External,
-    Value -> 1000.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 32,
-    InteractionOrder -> {NP, 1},
-    ParameterName -> MZp,
-    TeX -> M_{Z'},
-    Description -> "Mass of the B-L gauge boson"
-  },
-  WZp == {
-    ParameterType -> External,
-    Value -> Automatic,
-    ComplexParameter -> False,
-    BlockName -> DECAY,
-    OrderBlock -> 32,
-    ParameterName -> WZp,
-    TeX -> \Gamma_{Z'},
-    Description -> "Width of the B-L gauge boson"
-  },
-  MH2 == {
-    ParameterType -> External,
-    Value -> 200.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 35,
-    InteractionOrder -> {NP, 1},
-    ParameterName -> MH2,
-    TeX -> M_{h_2},
-    Description -> "Mass of the second neutral Higgs mass eigenstate"
-  },
-  WH2 == {
-    ParameterType -> External,
-    Value -> Automatic,
-    ComplexParameter -> False,
-    BlockName -> DECAY,
-    OrderBlock -> 35,
-    ParameterName -> WH2,
-    TeX -> \Gamma_{h_2},
-    Description -> "Width of the second neutral Higgs mass eigenstate"
-  },
-  MN1 == {
-    ParameterType -> External,
-    Value -> 200.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 9900012,
-    InteractionOrder -> {NP, 1},
-    ParameterName -> MN1,
-    TeX -> M_{N_1},
-    Description -> "Heavy Majorana neutrino mass, generation 1"
-  },
-  MN2 == {
-    ParameterType -> External,
-    Value -> 200.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 9900014,
-    InteractionOrder -> {NP, 1},
-    ParameterName -> MN2,
-    TeX -> M_{N_2},
-    Description -> "Heavy Majorana neutrino mass, generation 2"
-  },
-  MN3 == {
-    ParameterType -> External,
-    Value -> 200.,
-    ComplexParameter -> False,
-    BlockName -> MASS,
-    OrderBlock -> 9900016,
-    InteractionOrder -> {NP, 1},
-    ParameterName -> MN3,
-    TeX -> M_{N_3},
-    Description -> "Heavy Majorana neutrino mass, generation 3"
-  },
-  WN1 == {
-    ParameterType -> External,
-    Value -> Automatic,
-    ComplexParameter -> False,
-    BlockName -> DECAY,
-    OrderBlock -> 9900012,
-    ParameterName -> WN1,
-    TeX -> \Gamma_{N_1},
-    Description -> "Heavy Majorana neutrino width, generation 1"
-  },
-  WN2 == {
-    ParameterType -> External,
-    Value -> Automatic,
-    ComplexParameter -> False,
-    BlockName -> DECAY,
-    OrderBlock -> 9900014,
-    ParameterName -> WN2,
-    TeX -> \Gamma_{N_2},
-    Description -> "Heavy Majorana neutrino width, generation 2"
-  },
-  WN3 == {
-    ParameterType -> External,
-    Value -> Automatic,
-    ComplexParameter -> False,
-    BlockName -> DECAY,
-    OrderBlock -> 9900016,
-    ParameterName -> WN3,
-    TeX -> \Gamma_{N_3},
-    Description -> "Heavy Majorana neutrino width, generation 3"
   },
   VLN == {
     ParameterType -> External,
@@ -165,7 +60,7 @@ M$Parameters = {
     ComplexParameter -> False,
     BlockName -> VLNMIX,
     ParameterName -> VLN,
-    TeX -> V_{lN},
+    TeX -> "V_{lN}",
     Description -> "Active-sterile neutrino mixing matrix"
   },
   alpha == {
@@ -173,7 +68,7 @@ M$Parameters = {
     Value -> ArcSin[sa],
     ComplexParameter -> False,
     ParameterName -> alpha,
-    TeX -> \alpha,
+    TeX -> "\\alpha",
     Description -> "Higgs-singlet mixing angle"
   },
   ca == {
@@ -181,7 +76,7 @@ M$Parameters = {
     Value -> Cos[alpha],
     ComplexParameter -> False,
     ParameterName -> ca,
-    TeX -> \cos\alpha,
+    TeX -> "\\cos\\alpha",
     Description -> "Cosine of the Higgs-singlet mixing angle"
   },
   xBL == {
@@ -189,7 +84,7 @@ M$Parameters = {
     Value -> MZp/(2*g1p),
     ComplexParameter -> False,
     ParameterName -> xBL,
-    TeX -> x,
+    TeX -> "x",
     Description -> "B-L breaking vacuum expectation value"
   },
   lambda1BL == {
@@ -197,7 +92,7 @@ M$Parameters = {
     Value -> (MH^2*ca^2 + MH2^2*sa^2)/(2*vev^2),
     ComplexParameter -> False,
     ParameterName -> lambda1BL,
-    TeX -> \lambda_1,
+    TeX -> "\\lambda_1",
     Description -> "Doublet quartic reconstructed from physical scalar masses and mixing"
   },
   lambda2BL == {
@@ -205,7 +100,7 @@ M$Parameters = {
     Value -> (MH^2*sa^2 + MH2^2*ca^2)/(2*xBL^2),
     ComplexParameter -> False,
     ParameterName -> lambda2BL,
-    TeX -> \lambda_2,
+    TeX -> "\\lambda_2",
     Description -> "Singlet quartic reconstructed from physical scalar masses and mixing"
   },
   lambda3BL == {
@@ -214,7 +109,7 @@ M$Parameters = {
     ComplexParameter -> False,
     InteractionOrder -> {NP, 2},
     ParameterName -> lambda3BL,
-    TeX -> \lambda_3,
+    TeX -> "\\lambda_3",
     Description -> "Higgs portal quartic reconstructed from physical scalar masses and mixing"
   },
   muChi2 == {
@@ -222,7 +117,7 @@ M$Parameters = {
     Value -> -lambda2BL*xBL^2 - lambda3BL*vev^2/2,
     ComplexParameter -> False,
     ParameterName -> muChi2,
-    TeX -> \mu_\chi^2,
+    TeX -> "\\mu_\\chi^2",
     Description -> "Singlet quadratic potential parameter from the minimum condition"
   },
   yM == {
@@ -231,7 +126,7 @@ M$Parameters = {
     Indices -> {Index[Generation], Index[Generation]},
     ComplexParameter -> False,
     ParameterName -> yM,
-    TeX -> y_M,
+    TeX -> "y_M",
     Description -> "Majorana Yukawa matrix for right-handed neutrinos"
   },
   ynu == {
@@ -240,7 +135,7 @@ M$Parameters = {
     Indices -> {Index[Generation], Index[Generation]},
     ComplexParameter -> False,
     ParameterName -> ynu,
-    TeX -> y_\nu,
+    TeX -> "y_\\nu",
     Description -> "Neutrino Dirac Yukawa matrix"
   }
 };

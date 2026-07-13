@@ -17,69 +17,6 @@ M$InteractionOrderHierarchy = {{QCD, 1}, {DMS, 2}, {DMV, 2}, {QED, 2}};
 M$InteractionOrderLimit = {{DMS, 2}, {DMV, 2}};
 
 M$Parameters = {
-  MXr == {
-    ParameterType -> External,
-    Value -> 10.,
-    BlockName -> MASS,
-    OrderBlock -> 5000511,
-    ParameterName -> MXr,
-    TeX -> M_{X_r},
-    Description -> "real scalar dark matter mass"
-  },
-  MXc == {
-    ParameterType -> External,
-    Value -> 10.,
-    BlockName -> MASS,
-    OrderBlock -> 5000512,
-    ParameterName -> MXc,
-    TeX -> M_{X_c},
-    Description -> "complex scalar dark matter mass"
-  },
-  MXd == {
-    ParameterType -> External,
-    Value -> 10.,
-    BlockName -> MASS,
-    OrderBlock -> 5000521,
-    ParameterName -> MXd,
-    TeX -> M_{X_d},
-    Description -> "Dirac dark matter mass"
-  },
-  MY0 == {
-    ParameterType -> External,
-    Value -> 1000.,
-    BlockName -> MASS,
-    OrderBlock -> 5000002,
-    ParameterName -> MY0,
-    TeX -> M_{Y_0},
-    Description -> "spin-0 mediator mass"
-  },
-  MY1 == {
-    ParameterType -> External,
-    Value -> 1000.,
-    BlockName -> MASS,
-    OrderBlock -> 5000003,
-    ParameterName -> MY1,
-    TeX -> M_{Y_1},
-    Description -> "spin-1 mediator mass"
-  },
-  WY0 == {
-    ParameterType -> External,
-    Value -> 10.,
-    BlockName -> DECAY,
-    OrderBlock -> 5000002,
-    ParameterName -> WY0,
-    TeX -> \Gamma_{Y_0},
-    Description -> "spin-0 mediator width"
-  },
-  WY1 == {
-    ParameterType -> External,
-    Value -> 10.,
-    BlockName -> DECAY,
-    OrderBlock -> 5000003,
-    ParameterName -> WY1,
-    TeX -> \Gamma_{Y_1},
-    Description -> "spin-1 mediator width"
-  },
   gSXr == {
     ParameterType -> External,
     Value -> 0.,
@@ -87,7 +24,7 @@ M$Parameters = {
     OrderBlock -> 1,
     InteractionOrder -> {DMS, 1},
     ParameterName -> gSXr,
-    TeX -> g_{S X_r},
+    TeX -> "g_{S X_r}",
     Description -> "real scalar DM coupling to Y0"
   },
   gSXc == {
@@ -97,7 +34,7 @@ M$Parameters = {
     OrderBlock -> 2,
     InteractionOrder -> {DMS, 1},
     ParameterName -> gSXc,
-    TeX -> g_{S X_c},
+    TeX -> "g_{S X_c}",
     Description -> "complex scalar DM coupling to Y0"
   },
   gSXd == {
@@ -107,7 +44,7 @@ M$Parameters = {
     OrderBlock -> 3,
     InteractionOrder -> {DMS, 1},
     ParameterName -> gSXd,
-    TeX -> g^S_{DM},
+    TeX -> "g^S_{DM}",
     Description -> "Dirac DM scalar coupling to Y0"
   },
   gPXd == {
@@ -117,7 +54,7 @@ M$Parameters = {
     OrderBlock -> 4,
     InteractionOrder -> {DMS, 1},
     ParameterName -> gPXd,
-    TeX -> g^P_{DM},
+    TeX -> "g^P_{DM}",
     Description -> "Dirac DM pseudoscalar coupling to Y0"
   },
   gSt == {
@@ -127,7 +64,7 @@ M$Parameters = {
     OrderBlock -> 5,
     InteractionOrder -> {DMS, 1},
     ParameterName -> gSt,
-    TeX -> g^S_t,
+    TeX -> "g^S_t",
     Description -> "top scalar coupling to Y0"
   },
   gPt == {
@@ -137,7 +74,7 @@ M$Parameters = {
     OrderBlock -> 6,
     InteractionOrder -> {DMS, 1},
     ParameterName -> gPt,
-    TeX -> g^P_t,
+    TeX -> "g^P_t",
     Description -> "top pseudoscalar coupling to Y0"
   },
   Lambda == {
@@ -146,7 +83,7 @@ M$Parameters = {
     BlockName -> DMINPUTS,
     OrderBlock -> 7,
     ParameterName -> Lambda,
-    TeX -> \Lambda,
+    TeX -> "\\Lambda",
     Description -> "cutoff scale for effective gluon coupling"
   },
   gSg == {
@@ -156,7 +93,7 @@ M$Parameters = {
     OrderBlock -> 8,
     InteractionOrder -> {DMS, 1},
     ParameterName -> gSg,
-    TeX -> g^S_g,
+    TeX -> "g^S_g",
     Description -> "effective scalar gluon coupling to Y0"
   },
   gPg == {
@@ -166,7 +103,7 @@ M$Parameters = {
     OrderBlock -> 9,
     InteractionOrder -> {DMS, 1},
     ParameterName -> gPg,
-    TeX -> g^P_g,
+    TeX -> "g^P_g",
     Description -> "effective pseudoscalar gluon coupling to Y0"
   },
   gVXc == {
@@ -176,7 +113,7 @@ M$Parameters = {
     OrderBlock -> 10,
     InteractionOrder -> {DMV, 1},
     ParameterName -> gVXc,
-    TeX -> g_{V X_c},
+    TeX -> "g_{V X_c}",
     Description -> "complex scalar DM derivative coupling to Y1"
   },
   gVXd == {
@@ -186,7 +123,7 @@ M$Parameters = {
     OrderBlock -> 11,
     InteractionOrder -> {DMV, 1},
     ParameterName -> gVXd,
-    TeX -> g^V_{DM},
+    TeX -> "g^V_{DM}",
     Description -> "Dirac DM vector coupling to Y1"
   },
   gAXd == {
@@ -196,7 +133,7 @@ M$Parameters = {
     OrderBlock -> 12,
     InteractionOrder -> {DMV, 1},
     ParameterName -> gAXd,
-    TeX -> g^A_{DM},
+    TeX -> "g^A_{DM}",
     Description -> "Dirac DM axial-vector coupling to Y1"
   },
   gVt == {
@@ -206,7 +143,7 @@ M$Parameters = {
     OrderBlock -> 13,
     InteractionOrder -> {DMV, 1},
     ParameterName -> gVt,
-    TeX -> g^V_t,
+    TeX -> "g^V_t",
     Description -> "top vector coupling to Y1"
   },
   gAt == {
@@ -216,7 +153,7 @@ M$Parameters = {
     OrderBlock -> 14,
     InteractionOrder -> {DMV, 1},
     ParameterName -> gAt,
-    TeX -> g^A_t,
+    TeX -> "g^A_t",
     Description -> "top axial-vector coupling to Y1; bottom axial coupling is fixed to -gAt"
   }
 };

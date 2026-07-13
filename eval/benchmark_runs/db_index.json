@@ -1,0 +1,1252 @@
+{
+  "categories": {
+    "StandardModel": [
+      "StandardModel"
+    ],
+    "SimpleExtensions": [
+      "331",
+      "yyALP",
+      "ALRM_general",
+      "ALRM",
+      "topBSM",
+      "ChernSimonsPortal",
+      "Octet_tcgg",
+      "modcolorS_trip",
+      "DMsimp",
+      "DY-SM",
+      "EffLRSM",
+      "FourFermionbbll",
+      "FourFermionFCNCtqll",
+      "FourFermionttll",
+      "FourthGeneration",
+      "GeneralU1",
+      "GeorgiMachacekModel",
+      "2HDM",
+      "HeavyScalarED",
+      "HeavyN",
+      "HNLs",
+      "HAHM",
+      "HECO",
+      "Hillmodel",
+      "InertDoublet",
+      "kkg_FV",
+      "FICPLHC",
+      "LQDM",
+      "B-L-SM",
+      "MDMmodel",
+      "MinimalLeptonPortalDM",
+      "MLFVtIIIseesaw",
+      "MonopoleDY",
+      "Monotops",
+      "pNG",
+      "ScotoSinglet",
+      "2IDM3N",
+      "Sextets",
+      "368sextets",
+      "SLQrules",
+      "StandardModelScalars",
+      "pSPSS",
+      "SMWeinberg",
+      "TopHeavyRes",
+      "Top-Philic-Zprime",
+      "Triplets",
+      "TypeIIISeeSaw",
+      "VLQ",
+      "VecLepQrk",
+      "LeptoQuark",
+      "Wprime"
+    ],
+    "SusyModels": [
+      "MSSM",
+      "NMSSM",
+      "RPVMSSM",
+      "RMSSM",
+      "goldstino",
+      "MSSMD"
+    ],
+    "ExtraDimModels": [
+      "2GravitonsSM",
+      "kkg_FV",
+      "HeavyScalarED",
+      "ThreeSiteModel",
+      "MUED",
+      "LED",
+      "CHEIDI",
+      "RSmodel"
+    ],
+    "EffectiveModels": [
+      "ALPsEFT",
+      "AnomalousGaugeCoupling",
+      "BSMCharacterisation",
+      "dim6top",
+      "NLSM",
+      "EFTmassbasis",
+      "4topEFT",
+      "EWdim6",
+      "YqHEFT",
+      "HiggsTopCurrents",
+      "FCHiggs",
+      "GeneralFCNTop",
+      "FCNC4F",
+      "HiggsCharacterisation",
+      "HEL",
+      "HiggsEffectiveTheory",
+      "ThreeSiteModel",
+      "NJLComposite",
+      "NTGC",
+      "SILH",
+      "TechniColor",
+      "TFCNC",
+      "SMEFT",
+      "SMEFT_BGFM",
+      "TopBNV",
+      "TopEffTh",
+      "TopFCNC",
+      "VLC_LN"
+    ],
+    "MiscellaneousModels": [
+      "ThreeSiteModel"
+    ],
+    "NLOModels": [
+      "HiggsCharacterisation",
+      "SMWeinberg"
+    ]
+  },
+  "models": [
+    {
+      "page": "StandardModel",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/StandardModel",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/StandardModel/SM.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/StandardModel/SM_old.fr"
+      ],
+      "arxiv_ids": [],
+      "category": "StandardModel"
+    },
+    {
+      "page": "331",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/331",
+      "title": null,
+      "fr_urls": [
+        "http://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/331/331.fr",
+        "http://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/331/331_-1.fr",
+        "http://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/331/331_-3.fr",
+        "http://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/331/331_1.fr",
+        "http://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/331/331_3.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/331/331.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/331/331_-1.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/331/331_-3.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/331/331_1.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/331/331_3.fr"
+      ],
+      "arxiv_ids": [
+        "1611.09337"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "yyALP",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/yyALP",
+      "title": null,
+      "fr_urls": [],
+      "arxiv_ids": [],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "ALRM_general",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/ALRM_general",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/ALRM_general/ALRM_BF_uni_v2.fr"
+      ],
+      "arxiv_ids": [
+        "1911.12883"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "ALRM",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/ALRM",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/ALRM/ALRM_LO.fr"
+      ],
+      "arxiv_ids": [],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "topBSM",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/topBSM",
+      "title": "Annex",
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/topBSM/thu.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/topBSM/topBSM.fr"
+      ],
+      "arxiv_ids": [
+        "1305.7386"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "ChernSimonsPortal",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/ChernSimonsPortal",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/ChernSimonsPortal/Chern-Simons-Portal.fr",
+        "https://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/ChernSimonsPortal/Chern-Simons-Portal.fr"
+      ],
+      "arxiv_ids": [
+        "0901.0639",
+        "1504.04855",
+        "1903.11918"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "Octet_tcgg",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/Octet_tcgg",
+      "title": "A Coloron Model with a Decay to a Single Top Quark",
+      "fr_urls": [],
+      "arxiv_ids": [
+        "1409.7607",
+        "1412.3094"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "modcolorS_trip",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/modcolorS_trip",
+      "title": "A Color Triplet Model with Decay to Top and Bottom Quark",
+      "fr_urls": [],
+      "arxiv_ids": [
+        "1409.7607",
+        "1010.4309"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "DMsimp",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/DMsimp",
+      "title": "DMsimp: Simplified dark matter models",
+      "fr_urls": [
+        "http://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/DMsimp/dm_s_spin0.fr",
+        "http://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/DMsimp/dm_s_spin0_ew.fr",
+        "http://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/DMsimp/dm_s_spin1.fr",
+        "http://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/DMsimp/dm_s_spin1_ew.fr",
+        "http://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/DMsimp/dm_s_spin2.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/DMsimp/dm_s_spin0.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/DMsimp/dm_s_spin0_ew.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/DMsimp/dm_s_spin1.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/DMsimp/dm_s_spin1_ew.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/DMsimp/dm_s_spin2.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/DMsimp/edm_s_spin0.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/DMsimp/edm_s_spin1.fr",
+        "https://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/DMsimp/edm_s_spin0.fr",
+        "https://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/DMsimp/edm_s_spin1.fr"
+      ],
+      "arxiv_ids": [
+        "1508.00564",
+        "1508.05327",
+        "1509.05785",
+        "1605.09359",
+        "1701.07008",
+        "1703.05703",
+        "1703.08087",
+        "1811.08002",
+        "1106.6199"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "DY-SM",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/DY-SM",
+      "title": null,
+      "fr_urls": [],
+      "arxiv_ids": [
+        "1107.5830"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "EffLRSM",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/EffLRSM",
+      "title": "Effective Left-Right Symmetric Model at NLO in QCD",
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/EffLRSM/effLRSM.fr",
+        "https://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/EffLRSM/effLRSM.fr"
+      ],
+      "arxiv_ids": [
+        "1610.08985",
+        "1607.03504",
+        "0901.3589"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "FourFermionbbll",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/FourFermionbbll",
+      "title": null,
+      "fr_urls": [],
+      "arxiv_ids": [],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "FourFermionFCNCtqll",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/FourFermionFCNCtqll",
+      "title": null,
+      "fr_urls": [],
+      "arxiv_ids": [
+        "2101.05286"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "FourFermionttll",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/FourFermionttll",
+      "title": null,
+      "fr_urls": [],
+      "arxiv_ids": [
+        "2111.13711"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "FourthGeneration",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/FourthGeneration",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/FourthGeneration/4Gen.fr"
+      ],
+      "arxiv_ids": [],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "GeneralU1",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/GeneralU1",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/GeneralU1/U1XGeneric.fr"
+      ],
+      "arxiv_ids": [
+        "2104.10902",
+        "1908.09838",
+        "1710.03377",
+        "1811.04291"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "GeorgiMachacekModel",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/GeorgiMachacekModel",
+      "title": null,
+      "fr_urls": [],
+      "arxiv_ids": [
+        "1404.2640"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "2HDM",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/2HDM",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/2HDM/2HDMtbsbma.fr"
+      ],
+      "arxiv_ids": [],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "HeavyScalarED",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/HeavyScalarED",
+      "title": "Heavy Scalar Effective Model",
+      "fr_urls": [],
+      "arxiv_ids": [
+        "1404.6367",
+        "1506.08007"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "HeavyN",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/HeavyN",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/HeavyN/heavyN.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/HeavyN/heavyN_Dirac.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/HeavyN/heavyN_vSMEFTdim6.fr",
+        "https://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/HeavyN/heavyN.fr",
+        "https://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/HeavyN/heavyN_Dirac.fr",
+        "https://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/HeavyN/heavyN_vSMEFTdim6.fr"
+      ],
+      "arxiv_ids": [
+        "1602.06957",
+        "1812.08750",
+        "2105.11462",
+        "1606.00947",
+        "1802.02965",
+        "1806.10905",
+        "1411.7305",
+        "1805.09335",
+        "0901.3589",
+        "2008.01092"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "HNLs",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/HNLs",
+      "title": "Heavy Neutral Leptons and interactions with mesons",
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/HNLs/effective_HeavyN_Dirac.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/HNLs/effective_HeavyN_Majorana.fr",
+        "https://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/HNLs/effective_HeavyN_Dirac.fr",
+        "https://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/HNLs/effective_HeavyN_Majorana.fr"
+      ],
+      "arxiv_ids": [
+        "2007.03701"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "HAHM",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/HAHM",
+      "title": null,
+      "fr_urls": [],
+      "arxiv_ids": [
+        "1412.0018",
+        "1312.4992"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "HECO",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/HECO",
+      "title": null,
+      "fr_urls": [],
+      "arxiv_ids": [
+        "2310.17452",
+        "2412.19001"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "Hillmodel",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/Hillmodel",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/Hillmodel/HillModel.fr"
+      ],
+      "arxiv_ids": [],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "InertDoublet",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/InertDoublet",
+      "title": "The Inert Doublet Model",
+      "fr_urls": [],
+      "arxiv_ids": [
+        "1303.3010",
+        "1503.07367"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "kkg_FV",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/kkg_FV",
+      "title": "A Kaluza-Klein Gluon Model with FCNC Decay to a Single Top Quark",
+      "fr_urls": [],
+      "arxiv_ids": [
+        "1409.7607",
+        "1412.3094"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "FICPLHC",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/FICPLHC",
+      "title": "LHC-friendly minimal freeze-in models with a charged parent",
+      "fr_urls": [],
+      "arxiv_ids": [
+        "1803.10379",
+        "1811.05478"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "LQDM",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/LQDM",
+      "title": null,
+      "fr_urls": [],
+      "arxiv_ids": [
+        "2002.12220",
+        "2111.08027"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "B-L-SM",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/B-L-SM",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/B-L-SM/B-L-N_4.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/B-L-SM/B-L.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/B-L-SM/B-L_4.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/B-L-SM/minimal_Zp.fr"
+      ],
+      "arxiv_ids": [
+        "1811.11452",
+        "1804.04075"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "MDMmodel",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/MDMmodel",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/MDMmodel/MDM.fr"
+      ],
+      "arxiv_ids": [
+        "1311.6661"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "MinimalLeptonPortalDM",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/MinimalLeptonPortalDM",
+      "title": null,
+      "fr_urls": [],
+      "arxiv_ids": [
+        "2006.01348",
+        "2301.12524"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "MLFVtIIIseesaw",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/MLFVtIIIseesaw",
+      "title": null,
+      "fr_urls": [],
+      "arxiv_ids": [
+        "1708.08456",
+        "1108.0661"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "MonopoleDY",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/MonopoleDY",
+      "title": null,
+      "fr_urls": [],
+      "arxiv_ids": [
+        "1808.08942"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "Monotops",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/Monotops",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/Monotops/monotops.fr"
+      ],
+      "arxiv_ids": [
+        "1106.6199"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "pNG",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/pNG",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/pNG/SM_with_pNG.fr"
+      ],
+      "arxiv_ids": [
+        "1912.04008",
+        "1708.02253"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "ScotoSinglet",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/ScotoSinglet",
+      "title": null,
+      "fr_urls": [],
+      "arxiv_ids": [
+        "2010.05937"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "2IDM3N",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/2IDM3N",
+      "title": null,
+      "fr_urls": [],
+      "arxiv_ids": [
+        "2208.00500"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "Sextets",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/Sextets",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/Sextets/SextetDiquarks.fr"
+      ],
+      "arxiv_ids": [
+        "0909.2666"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "368sextets",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/368sextets",
+      "title": "Standard Model + an array of color-sextet fields",
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/368sextets/368sextets.fr"
+      ],
+      "arxiv_ids": [
+        "2110.11359",
+        "0909.2666"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "SLQrules",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/SLQrules",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/SLQrules/SLQrules.2.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/SLQrules/SLQrules.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/SLQrules/SM.fr",
+        "https://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/SLQrules/SLQrules.fr",
+        "https://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/SLQrules/SM.fr"
+      ],
+      "arxiv_ids": [
+        "2105.04844"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "StandardModelScalars",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/StandardModelScalars",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/StandardModelScalars/SMScalars.fr"
+      ],
+      "arxiv_ids": [],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "pSPSS",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/pSPSS",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/pSPSS/pSPSS.fr"
+      ],
+      "arxiv_ids": [
+        "2210.10738",
+        "2212.00562",
+        "2308.07297",
+        "2307.06208"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "SMWeinberg",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/SMWeinberg",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/SMWeinberg/sm.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/SMWeinberg/weinberg_NLO.fr",
+        "https://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/SMWeinberg/sm.fr",
+        "https://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/SMWeinberg/weinberg_NLO.fr"
+      ],
+      "arxiv_ids": [
+        "2012.09882",
+        "2011.02547"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "TopHeavyRes",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/TopHeavyRes",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/TopHeavyRes/4topEFT.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/TopHeavyRes/PseudoScalarOctet.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/TopHeavyRes/PseudoScalarSinglet.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/TopHeavyRes/ScalarOctet.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/TopHeavyRes/ScalarSinglet.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/TopHeavyRes/VectorOctet.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/TopHeavyRes/VectorSinglet.fr"
+      ],
+      "arxiv_ids": [
+        "1805.10835",
+        "2104.09512"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "Top-Philic-Zprime",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/Top-Philic-Zprime",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/Top-Philic-Zprime/Top_Philic.fr"
+      ],
+      "arxiv_ids": [
+        "1604.07421",
+        "1410.6099"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "Triplets",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/Triplets",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/Triplets/SextetDiquarks.2.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/Triplets/SextetDiquarks.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/Triplets/TripletDiquarks.fr"
+      ],
+      "arxiv_ids": [
+        "0909.2666"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "TypeIIISeeSaw",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/TypeIIISeeSaw",
+      "title": "Type III Seesaw",
+      "fr_urls": [
+        "http://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/TypeIIISeeSaw/typeIIIseesaw1.1.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/TypeIIISeeSaw/typeIIIseesaw1.0.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/TypeIIISeeSaw/typeIIIseesaw1.1.fr"
+      ],
+      "arxiv_ids": [
+        "0803.0481",
+        "1107.3463",
+        "0805.1613"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "VLQ",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/VLQ",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/VLQ/VLQ.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/VLQ/VLQ_Chromomagnetic.fr"
+      ],
+      "arxiv_ids": [
+        "hep-ph/0607115",
+        "hep-ph/0703031"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "VecLepQrk",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/VecLepQrk",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/VecLepQrk/1.5TeVLQModel.fr"
+      ],
+      "arxiv_ids": [],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "LeptoQuark",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/LeptoQuark",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/LeptoQuark/VLferm.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/LeptoQuark/Zprime.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/LeptoQuark/coloron.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/LeptoQuark/vector_LQ.fr"
+      ],
+      "arxiv_ids": [
+        "1901.10480",
+        "1808.00942",
+        "2103.16558"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "Wprime",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/Wprime",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/Wprime/weff.fr"
+      ],
+      "arxiv_ids": [
+        "hep-ph/0207290",
+        "1208.4858"
+      ],
+      "category": "SimpleExtensions"
+    },
+    {
+      "page": "MSSM",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/MSSM",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/MSSM/mssm.fr"
+      ],
+      "arxiv_ids": [],
+      "category": "SusyModels"
+    },
+    {
+      "page": "NMSSM",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/NMSSM",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/NMSSM/nmssm.fr"
+      ],
+      "arxiv_ids": [],
+      "category": "SusyModels"
+    },
+    {
+      "page": "RPVMSSM",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/RPVMSSM",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/RPVMSSM/rpvmssm.fr"
+      ],
+      "arxiv_ids": [],
+      "category": "SusyModels"
+    },
+    {
+      "page": "RMSSM",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/RMSSM",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/RMSSM/mrssm.fr"
+      ],
+      "arxiv_ids": [],
+      "category": "SusyModels"
+    },
+    {
+      "page": "goldstino",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/goldstino",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/goldstino/gldgrv.fr"
+      ],
+      "arxiv_ids": [],
+      "category": "SusyModels"
+    },
+    {
+      "page": "MSSMD",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/MSSMD",
+      "title": "MSSMD Model",
+      "fr_urls": [
+        "http://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/MSSMD/MSSMD.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/MSSMD/MSSMD.fr"
+      ],
+      "arxiv_ids": [
+        "1812.00380"
+      ],
+      "category": "SusyModels"
+    },
+    {
+      "page": "2GravitonsSM",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/2GravitonsSM",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/2GravitonsSM/2GravitonsSM.fr",
+        "https://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/2GravitonsSM/2GravitonsSM.fr"
+      ],
+      "arxiv_ids": [],
+      "category": "ExtraDimModels"
+    },
+    {
+      "page": "ThreeSiteModel",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/ThreeSiteModel",
+      "title": null,
+      "fr_urls": [],
+      "arxiv_ids": [],
+      "category": "ExtraDimModels"
+    },
+    {
+      "page": "MUED",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/MUED",
+      "title": null,
+      "fr_urls": [],
+      "arxiv_ids": [],
+      "category": "ExtraDimModels"
+    },
+    {
+      "page": "LED",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/LED",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/LED/LED.fr"
+      ],
+      "arxiv_ids": [],
+      "category": "ExtraDimModels"
+    },
+    {
+      "page": "CHEIDI",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/CHEIDI",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/CHEIDI/HEIDI.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/CHEIDI/HEIDI_bundle.fr"
+      ],
+      "arxiv_ids": [
+        "1010.3251",
+        "hep-ph/9704448"
+      ],
+      "category": "ExtraDimModels"
+    },
+    {
+      "page": "RSmodel",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/RSmodel",
+      "title": null,
+      "fr_urls": [
+        "http://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/RSmodel/RS.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/RSmodel/RS.fr"
+      ],
+      "arxiv_ids": [],
+      "category": "ExtraDimModels"
+    },
+    {
+      "page": "ALPsEFT",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/ALPsEFT",
+      "title": null,
+      "fr_urls": [],
+      "arxiv_ids": [
+        "1701.05379"
+      ],
+      "category": "EffectiveModels"
+    },
+    {
+      "page": "AnomalousGaugeCoupling",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/AnomalousGaugeCoupling",
+      "title": null,
+      "fr_urls": [
+        "http://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/AnomalousGaugeCoupling/quartic.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/AnomalousGaugeCoupling/quartic.fr"
+      ],
+      "arxiv_ids": [
+        "hep-ph/9805229",
+        "hep-ph/0606118",
+        "hep-ph/0009262",
+        "hep-ph/0310141",
+        "1604.03555"
+      ],
+      "category": "EffectiveModels"
+    },
+    {
+      "page": "BSMCharacterisation",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/BSMCharacterisation",
+      "title": null,
+      "fr_urls": [
+        "http://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/BSMCharacterisation/BSMC_v2.2.fr",
+        "http://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/BSMCharacterisation/SM_BSMC.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/BSMCharacterisation/BSMC_v2.1.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/BSMCharacterisation/BSMC_v2.2.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/BSMCharacterisation/MB.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/BSMCharacterisation/SM_BSMC.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/BSMCharacterisation/SM_MB.fr"
+      ],
+      "arxiv_ids": [
+        "1508.05895"
+      ],
+      "category": "EffectiveModels"
+    },
+    {
+      "page": "dim6top",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/dim6top",
+      "title": "A complete top-quark EFT implementation",
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/dim6top/dim6top.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/dim6top/dim6top_each_coupling_order.fr"
+      ],
+      "arxiv_ids": [
+        "1802.07237",
+        "1906.12310"
+      ],
+      "category": "EffectiveModels"
+    },
+    {
+      "page": "NLSM",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/NLSM",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/NLSM/ChiPT.fr"
+      ],
+      "arxiv_ids": [],
+      "category": "EffectiveModels"
+    },
+    {
+      "page": "EFTmassbasis",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/EFTmassbasis",
+      "title": null,
+      "fr_urls": [],
+      "arxiv_ids": [],
+      "category": "EffectiveModels"
+    },
+    {
+      "page": "4topEFT",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/4topEFT",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/4topEFT/4topEFT.fr"
+      ],
+      "arxiv_ids": [],
+      "category": "EffectiveModels"
+    },
+    {
+      "page": "EWdim6",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/EWdim6",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/EWdim6/EWdim6.fr"
+      ],
+      "arxiv_ids": [
+        "1205.4231"
+      ],
+      "category": "EffectiveModels"
+    },
+    {
+      "page": "YqHEFT",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/YqHEFT",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/YqHEFT/YqHEFT.2.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/YqHEFT/YqHEFT.fr"
+      ],
+      "arxiv_ids": [
+        "2011.09551",
+        "2205.09449"
+      ],
+      "category": "EffectiveModels"
+    },
+    {
+      "page": "HiggsTopCurrents",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/HiggsTopCurrents",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/HiggsTopCurrents/HiggsTopCurrents.fr"
+      ],
+      "arxiv_ids": [
+        "1511.03674"
+      ],
+      "category": "EffectiveModels"
+    },
+    {
+      "page": "FCHiggs",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/FCHiggs",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/FCHiggs/thu.fr"
+      ],
+      "arxiv_ids": [],
+      "category": "EffectiveModels"
+    },
+    {
+      "page": "GeneralFCNTop",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/GeneralFCNTop",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/GeneralFCNTop/topFCNC.fr"
+      ],
+      "arxiv_ids": [
+        "0811.3842",
+        "0904.2387"
+      ],
+      "category": "EffectiveModels"
+    },
+    {
+      "page": "FCNC4F",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/FCNC4F",
+      "title": null,
+      "fr_urls": [],
+      "arxiv_ids": [],
+      "category": "EffectiveModels"
+    },
+    {
+      "page": "HiggsCharacterisation",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/HiggsCharacterisation",
+      "title": null,
+      "fr_urls": [
+        "http://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/HiggsCharacterisation/HC.fr",
+        "http://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/HiggsCharacterisation/SM_HC.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/HiggsCharacterisation/HC.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/HiggsCharacterisation/HiggsCharacterisation.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/HiggsCharacterisation/HiggsCharacterization.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/HiggsCharacterisation/SM_HC.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/HiggsCharacterisation/SM_HC3.fr"
+      ],
+      "arxiv_ids": [
+        "1306.6464",
+        "1307.5607",
+        "1311.1829",
+        "1407.5089",
+        "1504.00611",
+        "1505.07081",
+        "1607.05862"
+      ],
+      "category": "EffectiveModels"
+    },
+    {
+      "page": "HEL",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/HEL",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/HEL/HEL.fr"
+      ],
+      "arxiv_ids": [
+        "1310.5150"
+      ],
+      "category": "EffectiveModels"
+    },
+    {
+      "page": "HiggsEffectiveTheory",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/HiggsEffectiveTheory",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/HiggsEffectiveTheory/HiggsEffective.fr"
+      ],
+      "arxiv_ids": [],
+      "category": "EffectiveModels"
+    },
+    {
+      "page": "NJLComposite",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/NJLComposite",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/NJLComposite/NJL_MODEL_LQ.fr",
+        "https://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/NJLComposite/NJL_MODEL_LQ.fr"
+      ],
+      "arxiv_ids": [
+        "2311.18472"
+      ],
+      "category": "EffectiveModels"
+    },
+    {
+      "page": "NTGC",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/NTGC",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/NTGC/NTGC.fr"
+      ],
+      "arxiv_ids": [],
+      "category": "EffectiveModels"
+    },
+    {
+      "page": "SILH",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/SILH",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/SILH/SILH.2.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/SILH/SILH.fr"
+      ],
+      "arxiv_ids": [],
+      "category": "EffectiveModels"
+    },
+    {
+      "page": "TechniColor",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/TechniColor",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/TechniColor/HiggsEffective.fr",
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/TechniColor/MWT_101030.fr"
+      ],
+      "arxiv_ids": [
+        "hep-ph/0405209",
+        "0706.1696",
+        "0809.0793",
+        "hep-ph/0406200",
+        "hep-ph/0505059",
+        "hep-ph/0611341",
+        "0911.0931"
+      ],
+      "category": "EffectiveModels"
+    },
+    {
+      "page": "TFCNC",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/TFCNC",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/TFCNC/TFCNC.fr"
+      ],
+      "arxiv_ids": [],
+      "category": "EffectiveModels"
+    },
+    {
+      "page": "SMEFT",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/SMEFT",
+      "title": null,
+      "fr_urls": [],
+      "arxiv_ids": [
+        "1709.06492",
+        "2012.11343",
+        "1008.4884",
+        "hep-ph/0207036",
+        "1802.07237",
+        "1712.05298"
+      ],
+      "category": "EffectiveModels"
+    },
+    {
+      "page": "SMEFT_BGFM",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/SMEFT_BGFM",
+      "title": "The SMEFT gauge fixed using the background field method.",
+      "fr_urls": [],
+      "arxiv_ids": [
+        "1803.08001",
+        "2010.15852",
+        "2010.08451",
+        "2005.00059"
+      ],
+      "category": "EffectiveModels"
+    },
+    {
+      "page": "TopBNV",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/TopBNV",
+      "title": "Top-quark baryon number violation",
+      "fr_urls": [],
+      "arxiv_ids": [
+        "1107.3805"
+      ],
+      "category": "EffectiveModels"
+    },
+    {
+      "page": "TopEffTh",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/TopEffTh",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/TopEffTh/TopEffTh.fr"
+      ],
+      "arxiv_ids": [],
+      "category": "EffectiveModels"
+    },
+    {
+      "page": "TopFCNC",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/TopFCNC",
+      "title": null,
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/TopFCNC/TopEFTFCNC.fr"
+      ],
+      "arxiv_ids": [],
+      "category": "EffectiveModels"
+    },
+    {
+      "page": "VLC_LN",
+      "url": "https://cp3.irmp.ucl.ac.be/projects/feynrules/wiki/VLC_LN",
+      "title": "Vector Like Confinement Model",
+      "fr_urls": [
+        "https://cp3.irmp.ucl.ac.be/projects/feynrules/raw-attachment/wiki/VLC_LN/VLC.fr"
+      ],
+      "arxiv_ids": [
+        "1508.01112",
+        "1805.12578"
+      ],
+      "category": "EffectiveModels"
+    }
+  ]
+}

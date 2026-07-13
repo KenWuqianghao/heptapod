@@ -1,0 +1,14 @@
+You are benchmarking automated extraction of a BSM physics model from its paper, to be compared against the physicist's own FeynRules implementation.
+
+MODEL: VLC_LN (EffectiveModels) — FeynRules DB entry based on arXiv:1508.01112.
+PAPER: full text at "eval/benchmark_runs/VLC_LN/text/1508.01112.txt" (read it with sed/cat; it is authoritative).
+SCHEMA: read tools/frgen/frmodel.py (pydantic FeynRulesModel).
+
+TASK — extract the COMPLETE new-physics content:
+1. Read the paper. Identify EVERY new particle beyond the Standard Model: spin (S/F/V), colour rep (singlet/triplet/sextet/octet), SU(2) rep, electric charge Q and/or hypercharge Y, mass parameter. COMPLETENESS IS SCORED — a model with several new states (multiplets, mass eigenstates, generations) must include all of them as separate ParticleClass entries (or class_members).
+2. Identify the new coupling/mass/mixing parameters (External unless clearly derived).
+3. Include the main new-physics lagrangian_terms (verbatim Mathematica strings, FeynRules idioms).
+
+SCHEMA RULES: all numeric physics values are STRINGS ("-1/3", "1500."); SM add-on => gauge_groups []; indices Colour/Gluon/Generation/SU2D/SU2W need NO declaration; any OTHER index (e.g. a colour-sextet index, a new-generation index) NEEDS an index_decls entry (range_kind "NoUnfold", correct size); every particle needs a unique class_index; self_conjugate=false for complex fields (distinct antiparticle), true for real/Majorana fields.
+
+OUTPUT: your FINAL message must contain exactly one fenced code block tagged json containing ONLY the FeynRulesModel JSON object (no commentary inside the fences). Set model_name to "VLC_LN_gen".

@@ -1,0 +1,11 @@
+You are benchmarking automated FeynRules model extraction against a physicist's reference implementation. Use the "heptapod" MCP server (tools: Generatefeynrulesmodel [deterministic .fr generator], Audittrail, plus literature tools).
+
+MODEL: SM extended by a singlet scalar sector coupling only to the Higgs ('the minimal non-minimal Standard Model'), van der Bij, hep-ph/0603082.
+PAPER: the full paper text is already fetched locally at "text/hep-ph_0603082.txt" — read it with your shell (sed/cat). It is authoritative; you need not hit the network.
+
+Do this end to end:
+1. Read the paper text and identify EVERY new particle this model adds to the Standard Model. For each new field record: spin (scalar/fermion/vector), colour representation (singlet / triplet / sextet / octet), SU(2) representation, and electric charge Q and/or hypercharge Y. Then identify the new coupling/mass parameters.
+2. Read tools/frgen/frmodel.py for the FeynRulesModel schema. Rules: numeric values are STRINGS ("-1/3","1500."); treat this as an SM add-on (gauge_groups empty); standard SM indices Colour/Generation/SU2D/SU2W need NO declaration, but a non-SM colour rep (e.g. a colour SEXTET) DOES need an index_decls entry (name it e.g. "Sextet", range NoUnfold, size 6).
+3. Call Generatefeynrulesmodel with your model_json and output_path "model/SMScalars.fr". COMPLETENESS of the new-field content and correct quantum numbers is what is scored against the reference. If a validation error is returned, read it, fix the JSON, and retry (up to 6 attempts). Do NOT hand-write the .fr.
+4. Record Audittrail events for stage "extract" and stage "generate_fr", then action="render".
+5. Report: how many new fields and parameters you encoded, and the final .fr contents.

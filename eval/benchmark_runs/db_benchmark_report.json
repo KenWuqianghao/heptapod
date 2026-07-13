@@ -1,0 +1,1704 @@
+{
+  "aggregate": {
+    "n_scored": 28,
+    "n_extraction_failed": 0,
+    "n_validation_failed": 0,
+    "mean_field_f1": 0.748,
+    "mean_field_precision": 0.811,
+    "mean_field_recall": 0.748,
+    "mean_qn_f1": 0.774,
+    "median_field_f1": 0.857,
+    "perfect_f1": 12
+  },
+  "rows": [
+    {
+      "page": "331",
+      "category": "SimpleExtensions",
+      "arxiv": "1611.09337",
+      "reference_fr": "eval/reference_cache/331/331.fr",
+      "n_ref_new_fields": 38,
+      "generated_fr": "eval/benchmark_runs/331/model/331_gen.fr",
+      "status": "scored",
+      "sm_subtracted": true,
+      "fields": {
+        "reference": 38,
+        "generated": 13,
+        "reference_raw": 58,
+        "generated_raw": 13
+      },
+      "field_f1": 0.196,
+      "field_precision": 0.385,
+      "field_recall": 0.132,
+      "qn_f1": 0.196,
+      "param_jaccard": 0.088,
+      "n_params": {
+        "reference": 92,
+        "generated": 57
+      },
+      "detail": {
+        "missed": [
+          [
+            "F",
+            "singlet",
+            [
+              "Q",
+              "-1/2+Sqrt[3] beta/2"
+            ]
+          ],
+          [
+            "F",
+            "singlet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "F",
+            "singlet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "F",
+            "singlet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "F",
+            "triplet",
+            [
+              "Q",
+              "1/6+Sqrt[3] beta/2"
+            ]
+          ],
+          [
+            "F",
+            "triplet",
+            [
+              "Q",
+              "1/6-Sqrt[3] beta/2"
+            ]
+          ],
+          [
+            "F",
+            "triplet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "F",
+            "triplet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "F",
+            "triplet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "F",
+            "triplet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "F",
+            "triplet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "F",
+            "triplet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "F",
+            "triplet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "F",
+            "triplet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "S",
+            "singlet",
+            [
+              "Q",
+              "-1/2-Sqrt[3] beta/2"
+            ]
+          ],
+          [
+            "S",
+            "singlet",
+            [
+              "Q",
+              "-1/2-Sqrt[3] beta/2"
+            ]
+          ],
+          [
+            "S",
+            "singlet",
+            [
+              "Q",
+              "1/2-Sqrt[3] beta/2"
+            ]
+          ],
+          [
+            "S",
+            "singlet",
+            [
+              "Q",
+              "1/2-Sqrt[3] beta/2"
+            ]
+          ],
+          [
+            "U",
+            "singlet",
+            [
+              "Q",
+              "-1/2+Sqrt[3] beta/2"
+            ]
+          ],
+          [
+            "U",
+            "singlet",
+            [
+              "Q",
+              "-1/2-Sqrt[3] beta/2"
+            ]
+          ],
+          [
+            "U",
+            "singlet",
+            [
+              "Q",
+              "1/2+Sqrt[3] beta/2"
+            ]
+          ],
+          [
+            "U",
+            "singlet",
+            [
+              "Q",
+              "1/2-Sqrt[3] beta/2"
+            ]
+          ],
+          [
+            "U",
+            "singlet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "V",
+            "singlet",
+            [
+              "Q",
+              "-1/2-Sqrt[3] beta/2"
+            ]
+          ],
+          [
+            "V",
+            "singlet",
+            [
+              "Q",
+              "1/2-Sqrt[3] beta/2"
+            ]
+          ]
+        ],
+        "extra": [
+          [
+            "F",
+            "singlet",
+            [
+              "Q",
+              "-1/2 + Sqrt[3]*beta331/2"
+            ]
+          ],
+          [
+            "F",
+            "triplet",
+            [
+              "Q",
+              "1/6 + Sqrt[3]*beta331/2"
+            ]
+          ],
+          [
+            "F",
+            "triplet",
+            [
+              "Q",
+              "1/6 - Sqrt[3]*beta331/2"
+            ]
+          ],
+          [
+            "F",
+            "triplet",
+            [
+              "Q",
+              "1/6 - Sqrt[3]*beta331/2"
+            ]
+          ],
+          [
+            "S",
+            "singlet",
+            [
+              "Q",
+              "(Sqrt[3]*beta331 + 1)/2"
+            ]
+          ],
+          [
+            "S",
+            "singlet",
+            [
+              "Q",
+              "(Sqrt[3]*beta331 - 1)/2"
+            ]
+          ],
+          [
+            "V",
+            "singlet",
+            [
+              "Q",
+              "(Sqrt[3]*beta331 + 1)/2"
+            ]
+          ],
+          [
+            "V",
+            "singlet",
+            [
+              "Q",
+              "(Sqrt[3]*beta331 - 1)/2"
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "page": "ALRM_general",
+      "category": "SimpleExtensions",
+      "arxiv": "1911.12883",
+      "reference_fr": "eval/reference_cache/ALRM_general/ALRM_BF_uni_v2.fr",
+      "n_ref_new_fields": 16,
+      "generated_fr": "eval/benchmark_runs/ALRM_general/model/ALRM_general_gen.fr",
+      "status": "scored",
+      "sm_subtracted": true,
+      "fields": {
+        "reference": 16,
+        "generated": 7,
+        "reference_raw": 30,
+        "generated_raw": 7
+      },
+      "field_f1": 0.522,
+      "field_precision": 0.857,
+      "field_recall": 0.375,
+      "qn_f1": 0.471,
+      "param_jaccard": 0.262,
+      "n_params": {
+        "reference": 97,
+        "generated": 57
+      },
+      "detail": {
+        "missed": [
+          [
+            "F",
+            "triplet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "F",
+            "triplet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "F",
+            "triplet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "F",
+            "triplet",
+            [
+              "neutral",
+              "0"
+            ]
+          ]
+        ],
+        "extra": [
+          [
+            "S",
+            "singlet",
+            [
+              "Q",
+              "1"
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "page": "topBSM",
+      "category": "SimpleExtensions",
+      "arxiv": "1305.7386",
+      "reference_fr": "eval/reference_cache/topBSM/topBSM.fr",
+      "n_ref_new_fields": 5,
+      "generated_fr": "eval/benchmark_runs/topBSM/model/topBSM_gen.fr",
+      "status": "scored",
+      "sm_subtracted": false,
+      "fields": {
+        "reference": 5,
+        "generated": 5,
+        "reference_raw": 5,
+        "generated_raw": 5
+      },
+      "field_f1": 1.0,
+      "field_precision": 1.0,
+      "field_recall": 1.0,
+      "qn_f1": 1.0,
+      "param_jaccard": 1.0,
+      "n_params": {
+        "reference": 23,
+        "generated": 23
+      },
+      "detail": {
+        "missed": [],
+        "extra": []
+      }
+    },
+    {
+      "page": "ChernSimonsPortal",
+      "category": "SimpleExtensions",
+      "arxiv": "0901.0639",
+      "reference_fr": "eval/reference_cache/ChernSimonsPortal/Chern-Simons-Portal.fr",
+      "n_ref_new_fields": 1,
+      "generated_fr": "eval/benchmark_runs/ChernSimonsPortal/model/ChernSimonsPortal_gen.fr",
+      "status": "scored",
+      "sm_subtracted": false,
+      "fields": {
+        "reference": 1,
+        "generated": 1,
+        "reference_raw": 1,
+        "generated_raw": 1
+      },
+      "field_f1": 1.0,
+      "field_precision": 1.0,
+      "field_recall": 1.0,
+      "qn_f1": 1.0,
+      "param_jaccard": 0.0,
+      "n_params": {
+        "reference": 4,
+        "generated": 4
+      },
+      "detail": {
+        "missed": [],
+        "extra": []
+      }
+    },
+    {
+      "page": "DMsimp",
+      "category": "SimpleExtensions",
+      "arxiv": "1508.00564",
+      "reference_fr": "eval/reference_cache/DMsimp/dm_s_spin2.fr",
+      "n_ref_new_fields": 4,
+      "generated_fr": "eval/benchmark_runs/DMsimp/model/DMsimp_gen.fr",
+      "status": "scored",
+      "sm_subtracted": false,
+      "fields": {
+        "reference": 4,
+        "generated": 5,
+        "reference_raw": 4,
+        "generated_raw": 5
+      },
+      "field_f1": 0.667,
+      "field_precision": 0.6,
+      "field_recall": 0.75,
+      "qn_f1": 0.889,
+      "param_jaccard": 0.032,
+      "n_params": {
+        "reference": 11,
+        "generated": 21
+      },
+      "detail": {
+        "missed": [
+          [
+            "T",
+            "singlet",
+            [
+              "neutral",
+              "0"
+            ]
+          ]
+        ],
+        "extra": []
+      }
+    },
+    {
+      "page": "EffLRSM",
+      "category": "SimpleExtensions",
+      "arxiv": "1610.08985",
+      "reference_fr": "eval/reference_cache/EffLRSM/effLRSM.fr",
+      "n_ref_new_fields": 3,
+      "generated_fr": "eval/benchmark_runs/EffLRSM/model/EffLRSM_gen.fr",
+      "status": "scored",
+      "sm_subtracted": false,
+      "fields": {
+        "reference": 3,
+        "generated": 3,
+        "reference_raw": 3,
+        "generated_raw": 3
+      },
+      "field_f1": 1.0,
+      "field_precision": 1.0,
+      "field_recall": 1.0,
+      "qn_f1": 1.0,
+      "param_jaccard": 0.189,
+      "n_params": {
+        "reference": 17,
+        "generated": 27
+      },
+      "detail": {
+        "missed": [],
+        "extra": []
+      }
+    },
+    {
+      "page": "GeneralU1",
+      "category": "SimpleExtensions",
+      "arxiv": "2104.10902",
+      "reference_fr": "eval/reference_cache/GeneralU1/U1XGeneric.fr",
+      "n_ref_new_fields": 15,
+      "generated_fr": "eval/benchmark_runs/GeneralU1/model/GeneralU1_gen.fr",
+      "status": "scored",
+      "sm_subtracted": true,
+      "fields": {
+        "reference": 15,
+        "generated": 5,
+        "reference_raw": 41,
+        "generated_raw": 5
+      },
+      "field_f1": 0.5,
+      "field_precision": 1.0,
+      "field_recall": 0.333,
+      "qn_f1": 0.5,
+      "param_jaccard": 0.023,
+      "n_params": {
+        "reference": 61,
+        "generated": 27
+      },
+      "detail": {
+        "missed": [
+          [
+            "U",
+            "singlet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "U",
+            "singlet",
+            [
+              "neutral",
+              "0"
+            ]
+          ]
+        ],
+        "extra": []
+      }
+    },
+    {
+      "page": "HeavyN",
+      "category": "SimpleExtensions",
+      "arxiv": "1602.06957",
+      "reference_fr": "eval/reference_cache/HeavyN/heavyN.fr",
+      "n_ref_new_fields": 3,
+      "generated_fr": "eval/benchmark_runs/HeavyN/model/HeavyN_gen.fr",
+      "status": "scored",
+      "sm_subtracted": false,
+      "fields": {
+        "reference": 3,
+        "generated": 3,
+        "reference_raw": 3,
+        "generated_raw": 3
+      },
+      "field_f1": 1.0,
+      "field_precision": 1.0,
+      "field_recall": 1.0,
+      "qn_f1": 1.0,
+      "param_jaccard": 1.0,
+      "n_params": {
+        "reference": 10,
+        "generated": 10
+      },
+      "detail": {
+        "missed": [],
+        "extra": []
+      }
+    },
+    {
+      "page": "HNLs",
+      "category": "SimpleExtensions",
+      "arxiv": "2007.03701",
+      "reference_fr": "eval/reference_cache/HNLs/effective_HeavyN_Dirac.fr",
+      "n_ref_new_fields": 21,
+      "generated_fr": "eval/benchmark_runs/HNLs/model/HNLs_gen.fr",
+      "status": "scored",
+      "sm_subtracted": true,
+      "fields": {
+        "reference": 21,
+        "generated": 22,
+        "reference_raw": 47,
+        "generated_raw": 22
+      },
+      "field_f1": 0.977,
+      "field_precision": 0.955,
+      "field_recall": 1.0,
+      "qn_f1": 0.977,
+      "param_jaccard": 0.242,
+      "n_params": {
+        "reference": 128,
+        "generated": 31
+      },
+      "detail": {
+        "missed": [],
+        "extra": []
+      }
+    },
+    {
+      "page": "B-L-SM",
+      "category": "SimpleExtensions",
+      "arxiv": "1811.11452",
+      "reference_fr": "eval/reference_cache/B-L-SM/B-L.fr",
+      "n_ref_new_fields": 10,
+      "generated_fr": "eval/benchmark_runs/B-L-SM/model/B-L-SM_gen.fr",
+      "status": "scored",
+      "sm_subtracted": true,
+      "fields": {
+        "reference": 10,
+        "generated": 6,
+        "reference_raw": 30,
+        "generated_raw": 6
+      },
+      "field_f1": 0.625,
+      "field_precision": 0.833,
+      "field_recall": 0.5,
+      "qn_f1": 0.75,
+      "param_jaccard": 0.032,
+      "n_params": {
+        "reference": 42,
+        "generated": 23
+      },
+      "detail": {
+        "missed": [
+          [
+            "U",
+            "singlet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "U",
+            "singlet",
+            [
+              "neutral",
+              "0"
+            ]
+          ]
+        ],
+        "extra": []
+      }
+    },
+    {
+      "page": "MDMmodel",
+      "category": "SimpleExtensions",
+      "arxiv": "1311.6661",
+      "reference_fr": "eval/reference_cache/MDMmodel/MDM.fr",
+      "n_ref_new_fields": 9,
+      "generated_fr": "eval/benchmark_runs/MDMmodel/model/MDMmodel_gen.fr",
+      "status": "scored",
+      "sm_subtracted": true,
+      "fields": {
+        "reference": 9,
+        "generated": 7,
+        "reference_raw": 35,
+        "generated_raw": 7
+      },
+      "field_f1": 0.625,
+      "field_precision": 0.714,
+      "field_recall": 0.556,
+      "qn_f1": 0.625,
+      "param_jaccard": 0.34,
+      "n_params": {
+        "reference": 43,
+        "generated": 20
+      },
+      "detail": {
+        "missed": [
+          [
+            "F",
+            "triplet",
+            [
+              "Y",
+              "1/6"
+            ]
+          ],
+          [
+            "F",
+            "triplet",
+            [
+              "Y",
+              "2/3"
+            ]
+          ],
+          [
+            "F",
+            "triplet",
+            [
+              "Y",
+              "2/3"
+            ]
+          ],
+          [
+            "F",
+            "triplet",
+            [
+              "Y",
+              "2/3"
+            ]
+          ]
+        ],
+        "extra": [
+          [
+            "S",
+            "singlet",
+            [
+              "Y",
+              "1/2"
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "page": "Monotops",
+      "category": "SimpleExtensions",
+      "arxiv": "1106.6199",
+      "reference_fr": "eval/reference_cache/Monotops/monotops.fr",
+      "n_ref_new_fields": 6,
+      "generated_fr": "eval/benchmark_runs/Monotops/model/Monotops_gen.fr",
+      "status": "scored",
+      "sm_subtracted": false,
+      "fields": {
+        "reference": 6,
+        "generated": 6,
+        "reference_raw": 6,
+        "generated_raw": 6
+      },
+      "field_f1": 1.0,
+      "field_precision": 1.0,
+      "field_recall": 1.0,
+      "qn_f1": 1.0,
+      "param_jaccard": 1.0,
+      "n_params": {
+        "reference": 16,
+        "generated": 16
+      },
+      "detail": {
+        "missed": [],
+        "extra": []
+      }
+    },
+    {
+      "page": "pNG",
+      "category": "SimpleExtensions",
+      "arxiv": "1912.04008",
+      "reference_fr": "eval/reference_cache/pNG/SM_with_pNG.fr",
+      "n_ref_new_fields": 3,
+      "generated_fr": "eval/benchmark_runs/pNG/model/pNG_gen.fr",
+      "status": "scored",
+      "sm_subtracted": true,
+      "fields": {
+        "reference": 3,
+        "generated": 4,
+        "reference_raw": 29,
+        "generated_raw": 4
+      },
+      "field_f1": 0.857,
+      "field_precision": 0.75,
+      "field_recall": 1.0,
+      "qn_f1": 0.857,
+      "param_jaccard": 0.27,
+      "n_params": {
+        "reference": 37,
+        "generated": 10
+      },
+      "detail": {
+        "missed": [],
+        "extra": [
+          [
+            "S",
+            "singlet",
+            [
+              "Y",
+              "1/2"
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "page": "Sextets",
+      "category": "SimpleExtensions",
+      "arxiv": "0909.2666",
+      "reference_fr": "eval/reference_cache/Sextets/SextetDiquarks.fr",
+      "n_ref_new_fields": 3,
+      "generated_fr": "eval/benchmark_runs/Sextets/model/Sextets_gen.fr",
+      "status": "scored",
+      "sm_subtracted": false,
+      "fields": {
+        "reference": 3,
+        "generated": 3,
+        "reference_raw": 3,
+        "generated_raw": 3
+      },
+      "field_f1": 1.0,
+      "field_precision": 1.0,
+      "field_recall": 1.0,
+      "qn_f1": 1.0,
+      "param_jaccard": 1.0,
+      "n_params": {
+        "reference": 24,
+        "generated": 24
+      },
+      "detail": {
+        "missed": [],
+        "extra": []
+      }
+    },
+    {
+      "page": "368sextets",
+      "category": "SimpleExtensions",
+      "arxiv": "2110.11359",
+      "reference_fr": "eval/reference_cache/368sextets/368sextets.fr",
+      "n_ref_new_fields": 4,
+      "generated_fr": "eval/benchmark_runs/368sextets/model/368sextets_gen.fr",
+      "status": "scored",
+      "sm_subtracted": false,
+      "fields": {
+        "reference": 4,
+        "generated": 4,
+        "reference_raw": 4,
+        "generated_raw": 4
+      },
+      "field_f1": 1.0,
+      "field_precision": 1.0,
+      "field_recall": 1.0,
+      "qn_f1": 1.0,
+      "param_jaccard": 0.692,
+      "n_params": {
+        "reference": 18,
+        "generated": 26
+      },
+      "detail": {
+        "missed": [],
+        "extra": []
+      }
+    },
+    {
+      "page": "SLQrules",
+      "category": "SimpleExtensions",
+      "arxiv": "2105.04844",
+      "reference_fr": "eval/reference_cache/SLQrules/SLQrules.fr",
+      "n_ref_new_fields": 14,
+      "generated_fr": "eval/benchmark_runs/SLQrules/model/SLQrules_gen.fr",
+      "status": "scored",
+      "sm_subtracted": false,
+      "fields": {
+        "reference": 14,
+        "generated": 9,
+        "reference_raw": 14,
+        "generated_raw": 9
+      },
+      "field_f1": 0.783,
+      "field_precision": 1.0,
+      "field_recall": 0.643,
+      "qn_f1": 0.783,
+      "param_jaccard": 0.19,
+      "n_params": {
+        "reference": 103,
+        "generated": 85
+      },
+      "detail": {
+        "missed": [
+          [
+            "S",
+            "triplet",
+            [
+              "Y",
+              "-1/3"
+            ]
+          ],
+          [
+            "S",
+            "triplet",
+            [
+              "Y",
+              "-1/3"
+            ]
+          ],
+          [
+            "S",
+            "triplet",
+            [
+              "Y",
+              "-4/3"
+            ]
+          ],
+          [
+            "S",
+            "triplet",
+            [
+              "Y",
+              "1/6"
+            ]
+          ],
+          [
+            "S",
+            "triplet",
+            [
+              "Y",
+              "7/6"
+            ]
+          ]
+        ],
+        "extra": []
+      }
+    },
+    {
+      "page": "pSPSS",
+      "category": "SimpleExtensions",
+      "arxiv": "2210.10738",
+      "reference_fr": "eval/reference_cache/pSPSS/pSPSS.fr",
+      "n_ref_new_fields": 6,
+      "generated_fr": "eval/benchmark_runs/pSPSS/model/pSPSS_gen.fr",
+      "status": "scored",
+      "sm_subtracted": true,
+      "fields": {
+        "reference": 6,
+        "generated": 3,
+        "reference_raw": 32,
+        "generated_raw": 3
+      },
+      "field_f1": 0.222,
+      "field_precision": 0.333,
+      "field_recall": 0.167,
+      "qn_f1": 0.667,
+      "param_jaccard": 0.208,
+      "n_params": {
+        "reference": 45,
+        "generated": 13
+      },
+      "detail": {
+        "missed": [
+          [
+            "S",
+            "singlet",
+            [
+              "Y",
+              "1/2"
+            ]
+          ]
+        ],
+        "extra": [
+          [
+            "W",
+            "singlet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "W",
+            "singlet",
+            [
+              "neutral",
+              "0"
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "page": "SMWeinberg",
+      "category": "SimpleExtensions",
+      "arxiv": "2012.09882",
+      "reference_fr": "eval/reference_cache/SMWeinberg/weinberg_NLO.fr",
+      "n_ref_new_fields": 1,
+      "generated_fr": "eval/benchmark_runs/SMWeinberg/model/SMWeinberg_gen.fr",
+      "status": "scored",
+      "sm_subtracted": false,
+      "fields": {
+        "reference": 1,
+        "generated": 1,
+        "reference_raw": 1,
+        "generated_raw": 1
+      },
+      "field_f1": 1.0,
+      "field_precision": 1.0,
+      "field_recall": 1.0,
+      "qn_f1": 1.0,
+      "param_jaccard": 1.0,
+      "n_params": {
+        "reference": 8,
+        "generated": 8
+      },
+      "detail": {
+        "missed": [],
+        "extra": []
+      }
+    },
+    {
+      "page": "Top-Philic-Zprime",
+      "category": "SimpleExtensions",
+      "arxiv": "1604.07421",
+      "reference_fr": "eval/reference_cache/Top-Philic-Zprime/Top_Philic.fr",
+      "n_ref_new_fields": 1,
+      "generated_fr": "eval/benchmark_runs/Top-Philic-Zprime/model/Top-Philic-Zprime_gen.fr",
+      "status": "scored",
+      "sm_subtracted": false,
+      "fields": {
+        "reference": 1,
+        "generated": 1,
+        "reference_raw": 1,
+        "generated_raw": 1
+      },
+      "field_f1": 1.0,
+      "field_precision": 1.0,
+      "field_recall": 1.0,
+      "qn_f1": 1.0,
+      "param_jaccard": 0.0,
+      "n_params": {
+        "reference": 2,
+        "generated": 6
+      },
+      "detail": {
+        "missed": [],
+        "extra": []
+      }
+    },
+    {
+      "page": "Triplets",
+      "category": "SimpleExtensions",
+      "arxiv": "0909.2666",
+      "reference_fr": "eval/reference_cache/Triplets/TripletDiquarks.fr",
+      "n_ref_new_fields": 1,
+      "generated_fr": "eval/benchmark_runs/Triplets/model/Triplets_gen.fr",
+      "status": "scored",
+      "sm_subtracted": false,
+      "fields": {
+        "reference": 1,
+        "generated": 1,
+        "reference_raw": 1,
+        "generated_raw": 1
+      },
+      "field_f1": 1.0,
+      "field_precision": 1.0,
+      "field_recall": 1.0,
+      "qn_f1": 1.0,
+      "param_jaccard": 0.8,
+      "n_params": {
+        "reference": 8,
+        "generated": 10
+      },
+      "detail": {
+        "missed": [],
+        "extra": []
+      }
+    },
+    {
+      "page": "VLQ",
+      "category": "SimpleExtensions",
+      "arxiv": "hep-ph/0607115",
+      "reference_fr": "eval/reference_cache/VLQ/VLQ.fr",
+      "n_ref_new_fields": 4,
+      "generated_fr": "eval/benchmark_runs/VLQ/model/VLQ_gen.fr",
+      "status": "scored",
+      "sm_subtracted": true,
+      "fields": {
+        "reference": 4,
+        "generated": 6,
+        "reference_raw": 24,
+        "generated_raw": 6
+      },
+      "field_f1": 0.4,
+      "field_precision": 0.333,
+      "field_recall": 0.5,
+      "qn_f1": 0.0,
+      "param_jaccard": 0.0,
+      "n_params": {
+        "reference": 114,
+        "generated": 35
+      },
+      "detail": {
+        "missed": [
+          [
+            "F",
+            "triplet",
+            [
+              "Q",
+              "-4/3"
+            ]
+          ],
+          [
+            "F",
+            "triplet",
+            [
+              "Q",
+              "5/3"
+            ]
+          ]
+        ],
+        "extra": [
+          [
+            "F",
+            "singlet",
+            [
+              "Q",
+              "-1"
+            ]
+          ],
+          [
+            "F",
+            "singlet",
+            [
+              "Y",
+              "-1/2"
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "page": "LeptoQuark",
+      "category": "SimpleExtensions",
+      "arxiv": "1901.10480",
+      "reference_fr": "eval/reference_cache/LeptoQuark/VLferm.fr",
+      "n_ref_new_fields": 6,
+      "generated_fr": "eval/benchmark_runs/LeptoQuark/model/LeptoQuark_gen.fr",
+      "status": "scored",
+      "sm_subtracted": false,
+      "fields": {
+        "reference": 6,
+        "generated": 4,
+        "reference_raw": 6,
+        "generated_raw": 4
+      },
+      "field_f1": 0.0,
+      "field_precision": 0.0,
+      "field_recall": 0.0,
+      "qn_f1": 0.4,
+      "param_jaccard": 0.0,
+      "n_params": {
+        "reference": 20,
+        "generated": 45
+      },
+      "detail": {
+        "missed": [
+          [
+            "F",
+            "singlet",
+            [
+              "Q",
+              "-1"
+            ]
+          ],
+          [
+            "F",
+            "singlet",
+            [
+              "Y",
+              "-1/2"
+            ]
+          ],
+          [
+            "F",
+            "singlet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "F",
+            "triplet",
+            [
+              "Q",
+              "-1/3"
+            ]
+          ],
+          [
+            "F",
+            "triplet",
+            [
+              "Q",
+              "2/3"
+            ]
+          ],
+          [
+            "F",
+            "triplet",
+            [
+              "Y",
+              "1/6"
+            ]
+          ]
+        ],
+        "extra": [
+          [
+            "V",
+            "octet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "V",
+            "singlet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "V",
+            "triplet",
+            [
+              "Q",
+              "2/3"
+            ]
+          ],
+          [
+            "V",
+            "triplet",
+            [
+              "Q",
+              "2/3"
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "page": "Wprime",
+      "category": "SimpleExtensions",
+      "arxiv": "hep-ph/0207290",
+      "reference_fr": "eval/reference_cache/Wprime/weff.fr",
+      "n_ref_new_fields": 1,
+      "generated_fr": "eval/benchmark_runs/Wprime/model/Wprime_gen.fr",
+      "status": "scored",
+      "sm_subtracted": false,
+      "fields": {
+        "reference": 1,
+        "generated": 2,
+        "reference_raw": 1,
+        "generated_raw": 2
+      },
+      "field_f1": 0.667,
+      "field_precision": 0.5,
+      "field_recall": 1.0,
+      "qn_f1": 0.667,
+      "param_jaccard": 0.0,
+      "n_params": {
+        "reference": 8,
+        "generated": 10
+      },
+      "detail": {
+        "missed": [],
+        "extra": [
+          [
+            "F",
+            "singlet",
+            [
+              "neutral",
+              "0"
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "page": "MSSMD",
+      "category": "SusyModels",
+      "arxiv": "1812.00380",
+      "reference_fr": "eval/reference_cache/MSSMD/MSSMD.fr",
+      "n_ref_new_fields": 39,
+      "generated_fr": "eval/benchmark_runs/MSSMD/model/MSSMD_gen.fr",
+      "status": "scored",
+      "sm_subtracted": true,
+      "fields": {
+        "reference": 39,
+        "generated": 13,
+        "reference_raw": 60,
+        "generated_raw": 13
+      },
+      "field_f1": 0.5,
+      "field_precision": 1.0,
+      "field_recall": 0.333,
+      "qn_f1": 0.468,
+      "param_jaccard": 0.109,
+      "n_params": {
+        "reference": 97,
+        "generated": 66
+      },
+      "detail": {
+        "missed": [
+          [
+            "S",
+            "singlet",
+            [
+              "Y",
+              "-1/2"
+            ]
+          ],
+          [
+            "S",
+            "singlet",
+            [
+              "Y",
+              "-1/2"
+            ]
+          ],
+          [
+            "S",
+            "singlet",
+            [
+              "Y",
+              "1"
+            ]
+          ],
+          [
+            "S",
+            "triplet",
+            [
+              "Y",
+              "-2/3"
+            ]
+          ],
+          [
+            "S",
+            "triplet",
+            [
+              "Y",
+              "1/3"
+            ]
+          ],
+          [
+            "S",
+            "triplet",
+            [
+              "Y",
+              "1/6"
+            ]
+          ],
+          [
+            "W",
+            "octet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "W",
+            "octet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "W",
+            "singlet",
+            [
+              "Q",
+              "-1"
+            ]
+          ],
+          [
+            "W",
+            "singlet",
+            [
+              "Q",
+              "1"
+            ]
+          ],
+          [
+            "W",
+            "singlet",
+            [
+              "Y",
+              "-1/2"
+            ]
+          ],
+          [
+            "W",
+            "singlet",
+            [
+              "Y",
+              "-1/2"
+            ]
+          ],
+          [
+            "W",
+            "singlet",
+            [
+              "Y",
+              "1"
+            ]
+          ],
+          [
+            "W",
+            "singlet",
+            [
+              "Y",
+              "1/2"
+            ]
+          ],
+          [
+            "W",
+            "singlet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "W",
+            "singlet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "W",
+            "singlet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "W",
+            "singlet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "W",
+            "singlet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "W",
+            "singlet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "W",
+            "singlet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "W",
+            "triplet",
+            [
+              "Y",
+              "-2/3"
+            ]
+          ],
+          [
+            "W",
+            "triplet",
+            [
+              "Y",
+              "1/3"
+            ]
+          ],
+          [
+            "W",
+            "triplet",
+            [
+              "Y",
+              "1/6"
+            ]
+          ],
+          [
+            "W",
+            "triplet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "W",
+            "triplet",
+            [
+              "neutral",
+              "0"
+            ]
+          ]
+        ],
+        "extra": []
+      }
+    },
+    {
+      "page": "CHEIDI",
+      "category": "ExtraDimModels",
+      "arxiv": "1010.3251",
+      "reference_fr": "eval/reference_cache/CHEIDI/HEIDI.fr",
+      "n_ref_new_fields": 1,
+      "generated_fr": "eval/benchmark_runs/CHEIDI/model/CHEIDI_gen.fr",
+      "status": "scored",
+      "sm_subtracted": false,
+      "fields": {
+        "reference": 1,
+        "generated": 1,
+        "reference_raw": 1,
+        "generated_raw": 1
+      },
+      "field_f1": 1.0,
+      "field_precision": 1.0,
+      "field_recall": 1.0,
+      "qn_f1": 1.0,
+      "param_jaccard": 0.222,
+      "n_params": {
+        "reference": 2,
+        "generated": 9
+      },
+      "detail": {
+        "missed": [],
+        "extra": []
+      }
+    },
+    {
+      "page": "HiggsCharacterisation",
+      "category": "EffectiveModels",
+      "arxiv": "1306.6464",
+      "reference_fr": "eval/reference_cache/HiggsCharacterisation/HiggsCharacterisation.fr",
+      "n_ref_new_fields": 3,
+      "generated_fr": "eval/benchmark_runs/HiggsCharacterisation/model/HiggsCharacterisation_gen.fr",
+      "status": "scored",
+      "sm_subtracted": false,
+      "fields": {
+        "reference": 3,
+        "generated": 3,
+        "reference_raw": 3,
+        "generated_raw": 3
+      },
+      "field_f1": 1.0,
+      "field_precision": 1.0,
+      "field_recall": 1.0,
+      "qn_f1": 1.0,
+      "param_jaccard": 0.921,
+      "n_params": {
+        "reference": 62,
+        "generated": 59
+      },
+      "detail": {
+        "missed": [],
+        "extra": []
+      }
+    },
+    {
+      "page": "NJLComposite",
+      "category": "EffectiveModels",
+      "arxiv": "2311.18472",
+      "reference_fr": "eval/reference_cache/NJLComposite/NJL_MODEL_LQ.fr",
+      "n_ref_new_fields": 18,
+      "generated_fr": "eval/benchmark_runs/NJLComposite/model/NJLComposite_gen.fr",
+      "status": "scored",
+      "sm_subtracted": false,
+      "fields": {
+        "reference": 18,
+        "generated": 12,
+        "reference_raw": 18,
+        "generated_raw": 12
+      },
+      "field_f1": 0.8,
+      "field_precision": 1.0,
+      "field_recall": 0.667,
+      "qn_f1": 0.8,
+      "param_jaccard": 0.0,
+      "n_params": {
+        "reference": 16,
+        "generated": 24
+      },
+      "detail": {
+        "missed": [
+          [
+            "S",
+            "triplet",
+            [
+              "Y",
+              "1/6"
+            ]
+          ],
+          [
+            "S",
+            "triplet",
+            [
+              "Y",
+              "1/6"
+            ]
+          ],
+          [
+            "S",
+            "triplet",
+            [
+              "Y",
+              "1/6"
+            ]
+          ],
+          [
+            "S",
+            "triplet",
+            [
+              "Y",
+              "7/6"
+            ]
+          ],
+          [
+            "S",
+            "triplet",
+            [
+              "Y",
+              "7/6"
+            ]
+          ],
+          [
+            "S",
+            "triplet",
+            [
+              "Y",
+              "7/6"
+            ]
+          ]
+        ],
+        "extra": []
+      }
+    },
+    {
+      "page": "VLC_LN",
+      "category": "EffectiveModels",
+      "arxiv": "1508.01112",
+      "reference_fr": "eval/reference_cache/VLC_LN/VLC.fr",
+      "n_ref_new_fields": 4,
+      "generated_fr": "eval/benchmark_runs/VLC_LN/model/VLC_LN_gen.fr",
+      "status": "scored",
+      "sm_subtracted": true,
+      "fields": {
+        "reference": 4,
+        "generated": 9,
+        "reference_raw": 30,
+        "generated_raw": 9
+      },
+      "field_f1": 0.615,
+      "field_precision": 0.444,
+      "field_recall": 1.0,
+      "qn_f1": 0.615,
+      "param_jaccard": 0.053,
+      "n_params": {
+        "reference": 32,
+        "generated": 28
+      },
+      "detail": {
+        "missed": [],
+        "extra": [
+          [
+            "F",
+            "singlet",
+            [
+              "Y",
+              "-1/2"
+            ]
+          ],
+          [
+            "F",
+            "singlet",
+            [
+              "neutral",
+              "0"
+            ]
+          ],
+          [
+            "S",
+            "singlet",
+            [
+              "Y",
+              "1/2"
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,645 @@
+{
+  "funnel": {
+    "listed": 91,
+    "g1_fr": 63,
+    "g2_paper": 39,
+    "g3_parses": 39,
+    "g4_has_fields": 28
+  },
+  "candidates": [
+    {
+      "page": "331",
+      "category": "SimpleExtensions",
+      "arxiv_id": "1611.09337",
+      "all_arxiv": [
+        "1611.09337"
+      ],
+      "reference_fr": "eval/reference_cache/331/331.fr",
+      "n_ref_classes": 58,
+      "n_new_fields": 38,
+      "n_ref_params": 93
+    },
+    {
+      "page": "ALRM_general",
+      "category": "SimpleExtensions",
+      "arxiv_id": "1911.12883",
+      "all_arxiv": [
+        "1911.12883"
+      ],
+      "reference_fr": "eval/reference_cache/ALRM_general/ALRM_BF_uni_v2.fr",
+      "n_ref_classes": 30,
+      "n_new_fields": 16,
+      "n_ref_params": 97
+    },
+    {
+      "page": "topBSM",
+      "category": "SimpleExtensions",
+      "arxiv_id": "1305.7386",
+      "all_arxiv": [
+        "1305.7386"
+      ],
+      "reference_fr": "eval/reference_cache/topBSM/topBSM.fr",
+      "n_ref_classes": 5,
+      "n_new_fields": 5,
+      "n_ref_params": 23
+    },
+    {
+      "page": "ChernSimonsPortal",
+      "category": "SimpleExtensions",
+      "arxiv_id": "0901.0639",
+      "all_arxiv": [
+        "0901.0639",
+        "1504.04855",
+        "1903.11918"
+      ],
+      "reference_fr": "eval/reference_cache/ChernSimonsPortal/Chern-Simons-Portal.fr",
+      "n_ref_classes": 1,
+      "n_new_fields": 1,
+      "n_ref_params": 4
+    },
+    {
+      "page": "DMsimp",
+      "category": "SimpleExtensions",
+      "arxiv_id": "1508.00564",
+      "all_arxiv": [
+        "1508.00564",
+        "1508.05327",
+        "1509.05785",
+        "1605.09359",
+        "1701.07008",
+        "1703.05703",
+        "1703.08087",
+        "1811.08002",
+        "1106.6199"
+      ],
+      "reference_fr": "eval/reference_cache/DMsimp/dm_s_spin2.fr",
+      "n_ref_classes": 4,
+      "n_new_fields": 4,
+      "n_ref_params": 11
+    },
+    {
+      "page": "EffLRSM",
+      "category": "SimpleExtensions",
+      "arxiv_id": "1610.08985",
+      "all_arxiv": [
+        "1610.08985",
+        "1607.03504",
+        "0901.3589"
+      ],
+      "reference_fr": "eval/reference_cache/EffLRSM/effLRSM.fr",
+      "n_ref_classes": 3,
+      "n_new_fields": 3,
+      "n_ref_params": 17
+    },
+    {
+      "page": "GeneralU1",
+      "category": "SimpleExtensions",
+      "arxiv_id": "2104.10902",
+      "all_arxiv": [
+        "2104.10902",
+        "1908.09838",
+        "1710.03377",
+        "1811.04291"
+      ],
+      "reference_fr": "eval/reference_cache/GeneralU1/U1XGeneric.fr",
+      "n_ref_classes": 41,
+      "n_new_fields": 15,
+      "n_ref_params": 61
+    },
+    {
+      "page": "HeavyN",
+      "category": "SimpleExtensions",
+      "arxiv_id": "1602.06957",
+      "all_arxiv": [
+        "1602.06957",
+        "1812.08750",
+        "2105.11462",
+        "1606.00947",
+        "1802.02965",
+        "1806.10905",
+        "1411.7305",
+        "1805.09335",
+        "0901.3589",
+        "2008.01092"
+      ],
+      "reference_fr": "eval/reference_cache/HeavyN/heavyN.fr",
+      "n_ref_classes": 3,
+      "n_new_fields": 3,
+      "n_ref_params": 10
+    },
+    {
+      "page": "HNLs",
+      "category": "SimpleExtensions",
+      "arxiv_id": "2007.03701",
+      "all_arxiv": [
+        "2007.03701"
+      ],
+      "reference_fr": "eval/reference_cache/HNLs/effective_HeavyN_Dirac.fr",
+      "n_ref_classes": 47,
+      "n_new_fields": 21,
+      "n_ref_params": 128
+    },
+    {
+      "page": "B-L-SM",
+      "category": "SimpleExtensions",
+      "arxiv_id": "1811.11452",
+      "all_arxiv": [
+        "1811.11452",
+        "1804.04075"
+      ],
+      "reference_fr": "eval/reference_cache/B-L-SM/B-L.fr",
+      "n_ref_classes": 30,
+      "n_new_fields": 10,
+      "n_ref_params": 42
+    },
+    {
+      "page": "MDMmodel",
+      "category": "SimpleExtensions",
+      "arxiv_id": "1311.6661",
+      "all_arxiv": [
+        "1311.6661"
+      ],
+      "reference_fr": "eval/reference_cache/MDMmodel/MDM.fr",
+      "n_ref_classes": 35,
+      "n_new_fields": 9,
+      "n_ref_params": 43
+    },
+    {
+      "page": "Monotops",
+      "category": "SimpleExtensions",
+      "arxiv_id": "1106.6199",
+      "all_arxiv": [
+        "1106.6199"
+      ],
+      "reference_fr": "eval/reference_cache/Monotops/monotops.fr",
+      "n_ref_classes": 6,
+      "n_new_fields": 6,
+      "n_ref_params": 16
+    },
+    {
+      "page": "pNG",
+      "category": "SimpleExtensions",
+      "arxiv_id": "1912.04008",
+      "all_arxiv": [
+        "1912.04008",
+        "1708.02253"
+      ],
+      "reference_fr": "eval/reference_cache/pNG/SM_with_pNG.fr",
+      "n_ref_classes": 29,
+      "n_new_fields": 3,
+      "n_ref_params": 37
+    },
+    {
+      "page": "Sextets",
+      "category": "SimpleExtensions",
+      "arxiv_id": "0909.2666",
+      "all_arxiv": [
+        "0909.2666"
+      ],
+      "reference_fr": "eval/reference_cache/Sextets/SextetDiquarks.fr",
+      "n_ref_classes": 3,
+      "n_new_fields": 3,
+      "n_ref_params": 24
+    },
+    {
+      "page": "368sextets",
+      "category": "SimpleExtensions",
+      "arxiv_id": "2110.11359",
+      "all_arxiv": [
+        "2110.11359",
+        "0909.2666"
+      ],
+      "reference_fr": "eval/reference_cache/368sextets/368sextets.fr",
+      "n_ref_classes": 4,
+      "n_new_fields": 4,
+      "n_ref_params": 18
+    },
+    {
+      "page": "SLQrules",
+      "category": "SimpleExtensions",
+      "arxiv_id": "2105.04844",
+      "all_arxiv": [
+        "2105.04844"
+      ],
+      "reference_fr": "eval/reference_cache/SLQrules/SLQrules.fr",
+      "n_ref_classes": 14,
+      "n_new_fields": 14,
+      "n_ref_params": 103
+    },
+    {
+      "page": "pSPSS",
+      "category": "SimpleExtensions",
+      "arxiv_id": "2210.10738",
+      "all_arxiv": [
+        "2210.10738",
+        "2212.00562",
+        "2308.07297",
+        "2307.06208"
+      ],
+      "reference_fr": "eval/reference_cache/pSPSS/pSPSS.fr",
+      "n_ref_classes": 32,
+      "n_new_fields": 6,
+      "n_ref_params": 45
+    },
+    {
+      "page": "SMWeinberg",
+      "category": "SimpleExtensions",
+      "arxiv_id": "2012.09882",
+      "all_arxiv": [
+        "2012.09882",
+        "2011.02547"
+      ],
+      "reference_fr": "eval/reference_cache/SMWeinberg/weinberg_NLO.fr",
+      "n_ref_classes": 1,
+      "n_new_fields": 1,
+      "n_ref_params": 8
+    },
+    {
+      "page": "Top-Philic-Zprime",
+      "category": "SimpleExtensions",
+      "arxiv_id": "1604.07421",
+      "all_arxiv": [
+        "1604.07421",
+        "1410.6099"
+      ],
+      "reference_fr": "eval/reference_cache/Top-Philic-Zprime/Top_Philic.fr",
+      "n_ref_classes": 1,
+      "n_new_fields": 1,
+      "n_ref_params": 2
+    },
+    {
+      "page": "Triplets",
+      "category": "SimpleExtensions",
+      "arxiv_id": "0909.2666",
+      "all_arxiv": [
+        "0909.2666"
+      ],
+      "reference_fr": "eval/reference_cache/Triplets/TripletDiquarks.fr",
+      "n_ref_classes": 1,
+      "n_new_fields": 1,
+      "n_ref_params": 8
+    },
+    {
+      "page": "VLQ",
+      "category": "SimpleExtensions",
+      "arxiv_id": "hep-ph/0607115",
+      "all_arxiv": [
+        "hep-ph/0607115",
+        "hep-ph/0703031"
+      ],
+      "reference_fr": "eval/reference_cache/VLQ/VLQ.fr",
+      "n_ref_classes": 24,
+      "n_new_fields": 4,
+      "n_ref_params": 114
+    },
+    {
+      "page": "LeptoQuark",
+      "category": "SimpleExtensions",
+      "arxiv_id": "1901.10480",
+      "all_arxiv": [
+        "1901.10480",
+        "1808.00942",
+        "2103.16558"
+      ],
+      "reference_fr": "eval/reference_cache/LeptoQuark/VLferm.fr",
+      "n_ref_classes": 6,
+      "n_new_fields": 6,
+      "n_ref_params": 20
+    },
+    {
+      "page": "Wprime",
+      "category": "SimpleExtensions",
+      "arxiv_id": "hep-ph/0207290",
+      "all_arxiv": [
+        "hep-ph/0207290",
+        "1208.4858"
+      ],
+      "reference_fr": "eval/reference_cache/Wprime/weff.fr",
+      "n_ref_classes": 1,
+      "n_new_fields": 1,
+      "n_ref_params": 8
+    },
+    {
+      "page": "MSSMD",
+      "category": "SusyModels",
+      "arxiv_id": "1812.00380",
+      "all_arxiv": [
+        "1812.00380"
+      ],
+      "reference_fr": "eval/reference_cache/MSSMD/MSSMD.fr",
+      "n_ref_classes": 60,
+      "n_new_fields": 39,
+      "n_ref_params": 97
+    },
+    {
+      "page": "CHEIDI",
+      "category": "ExtraDimModels",
+      "arxiv_id": "1010.3251",
+      "all_arxiv": [
+        "1010.3251",
+        "hep-ph/9704448"
+      ],
+      "reference_fr": "eval/reference_cache/CHEIDI/HEIDI.fr",
+      "n_ref_classes": 1,
+      "n_new_fields": 1,
+      "n_ref_params": 2
+    },
+    {
+      "page": "HiggsCharacterisation",
+      "category": "EffectiveModels",
+      "arxiv_id": "1306.6464",
+      "all_arxiv": [
+        "1306.6464",
+        "1307.5607",
+        "1311.1829",
+        "1407.5089",
+        "1504.00611",
+        "1505.07081",
+        "1607.05862"
+      ],
+      "reference_fr": "eval/reference_cache/HiggsCharacterisation/HiggsCharacterisation.fr",
+      "n_ref_classes": 3,
+      "n_new_fields": 3,
+      "n_ref_params": 62
+    },
+    {
+      "page": "NJLComposite",
+      "category": "EffectiveModels",
+      "arxiv_id": "2311.18472",
+      "all_arxiv": [
+        "2311.18472"
+      ],
+      "reference_fr": "eval/reference_cache/NJLComposite/NJL_MODEL_LQ.fr",
+      "n_ref_classes": 18,
+      "n_new_fields": 18,
+      "n_ref_params": 16
+    },
+    {
+      "page": "VLC_LN",
+      "category": "EffectiveModels",
+      "arxiv_id": "1508.01112",
+      "all_arxiv": [
+        "1508.01112",
+        "1805.12578"
+      ],
+      "reference_fr": "eval/reference_cache/VLC_LN/VLC.fr",
+      "n_ref_classes": 30,
+      "n_new_fields": 4,
+      "n_ref_params": 32
+    }
+  ],
+  "gated_out": [
+    {
+      "page": "StandardModel",
+      "gate": "no_arxiv_paper"
+    },
+    {
+      "page": "yyALP",
+      "gate": "no_fr_attachment"
+    },
+    {
+      "page": "ALRM",
+      "gate": "no_arxiv_paper"
+    },
+    {
+      "page": "Octet_tcgg",
+      "gate": "no_fr_attachment"
+    },
+    {
+      "page": "modcolorS_trip",
+      "gate": "no_fr_attachment"
+    },
+    {
+      "page": "DY-SM",
+      "gate": "no_fr_attachment"
+    },
+    {
+      "page": "FourFermionbbll",
+      "gate": "no_fr_attachment"
+    },
+    {
+      "page": "FourFermionFCNCtqll",
+      "gate": "no_fr_attachment"
+    },
+    {
+      "page": "FourFermionttll",
+      "gate": "no_fr_attachment"
+    },
+    {
+      "page": "FourthGeneration",
+      "gate": "no_arxiv_paper"
+    },
+    {
+      "page": "GeorgiMachacekModel",
+      "gate": "no_fr_attachment"
+    },
+    {
+      "page": "2HDM",
+      "gate": "no_arxiv_paper"
+    },
+    {
+      "page": "HeavyScalarED",
+      "gate": "no_fr_attachment"
+    },
+    {
+      "page": "HAHM",
+      "gate": "no_fr_attachment"
+    },
+    {
+      "page": "HECO",
+      "gate": "no_fr_attachment"
+    },
+    {
+      "page": "Hillmodel",
+      "gate": "no_arxiv_paper"
+    },
+    {
+      "page": "InertDoublet",
+      "gate": "no_fr_attachment"
+    },
+    {
+      "page": "kkg_FV",
+      "gate": "no_fr_attachment"
+    },
+    {
+      "page": "FICPLHC",
+      "gate": "no_fr_attachment"
+    },
+    {
+      "page": "LQDM",
+      "gate": "no_fr_attachment"
+    },
+    {
+      "page": "MinimalLeptonPortalDM",
+      "gate": "no_fr_attachment"
+    },
+    {
+      "page": "MLFVtIIIseesaw",
+      "gate": "no_fr_attachment"
+    },
+    {
+      "page": "MonopoleDY",
+      "gate": "no_fr_attachment"
+    },
+    {
+      "page": "ScotoSinglet",
+      "gate": "no_fr_attachment"
+    },
+    {
+      "page": "2IDM3N",
+      "gate": "no_fr_attachment"
+    },
+    {
+      "page": "StandardModelScalars",
+      "gate": "no_arxiv_paper"
+    },
+    {
+      "page": "TopHeavyRes",
+      "gate": "no_new_fields (operator-only or pure-SM content)"
+    },
+    {
+      "page": "TypeIIISeeSaw",
+      "gate": "no_new_fields (operator-only or pure-SM content)"
+    },
+    {
+      "page": "VecLepQrk",
+      "gate": "no_arxiv_paper"
+    },
+    {
+      "page": "MSSM",
+      "gate": "no_arxiv_paper"
+    },
+    {
+      "page": "NMSSM",
+      "gate": "no_arxiv_paper"
+    },
+    {
+      "page": "RPVMSSM",
+      "gate": "no_arxiv_paper"
+    },
+    {
+      "page": "RMSSM",
+      "gate": "no_arxiv_paper"
+    },
+    {
+      "page": "goldstino",
+      "gate": "no_arxiv_paper"
+    },
+    {
+      "page": "2GravitonsSM",
+      "gate": "no_arxiv_paper"
+    },
+    {
+      "page": "ThreeSiteModel",
+      "gate": "no_fr_attachment"
+    },
+    {
+      "page": "MUED",
+      "gate": "no_fr_attachment"
+    },
+    {
+      "page": "LED",
+      "gate": "no_arxiv_paper"
+    },
+    {
+      "page": "RSmodel",
+      "gate": "no_arxiv_paper"
+    },
+    {
+      "page": "ALPsEFT",
+      "gate": "no_fr_attachment"
+    },
+    {
+      "page": "AnomalousGaugeCoupling",
+      "gate": "no_new_fields (operator-only or pure-SM content)"
+    },
+    {
+      "page": "BSMCharacterisation",
+      "gate": "no_new_fields (operator-only or pure-SM content)"
+    },
+    {
+      "page": "dim6top",
+      "gate": "no_new_fields (operator-only or pure-SM content)"
+    },
+    {
+      "page": "NLSM",
+      "gate": "no_arxiv_paper"
+    },
+    {
+      "page": "EFTmassbasis",
+      "gate": "no_fr_attachment"
+    },
+    {
+      "page": "4topEFT",
+      "gate": "no_arxiv_paper"
+    },
+    {
+      "page": "EWdim6",
+      "gate": "no_new_fields (operator-only or pure-SM content)"
+    },
+    {
+      "page": "YqHEFT",
+      "gate": "no_new_fields (operator-only or pure-SM content)"
+    },
+    {
+      "page": "HiggsTopCurrents",
+      "gate": "no_new_fields (operator-only or pure-SM content)"
+    },
+    {
+      "page": "FCHiggs",
+      "gate": "no_arxiv_paper"
+    },
+    {
+      "page": "GeneralFCNTop",
+      "gate": "no_new_fields (operator-only or pure-SM content)"
+    },
+    {
+      "page": "FCNC4F",
+      "gate": "no_fr_attachment"
+    },
+    {
+      "page": "HEL",
+      "gate": "no_new_fields (operator-only or pure-SM content)"
+    },
+    {
+      "page": "HiggsEffectiveTheory",
+      "gate": "no_arxiv_paper"
+    },
+    {
+      "page": "NTGC",
+      "gate": "no_arxiv_paper"
+    },
+    {
+      "page": "SILH",
+      "gate": "no_arxiv_paper"
+    },
+    {
+      "page": "TechniColor",
+      "gate": "no_new_fields (operator-only or pure-SM content)"
+    },
+    {
+      "page": "TFCNC",
+      "gate": "no_arxiv_paper"
+    },
+    {
+      "page": "SMEFT",
+      "gate": "no_fr_attachment"
+    },
+    {
+      "page": "SMEFT_BGFM",
+      "gate": "no_fr_attachment"
+    },
+    {
+      "page": "TopBNV",
+      "gate": "no_fr_attachment"
+    },
+    {
+      "page": "TopEffTh",
+      "gate": "no_arxiv_paper"
+    },
+    {
+      "page": "TopFCNC",
+      "gate": "no_arxiv_paper"
+    }
+  ]
+}

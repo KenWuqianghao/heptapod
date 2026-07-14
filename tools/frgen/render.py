@@ -114,16 +114,26 @@ def _interaction_order(t: Tuple[str, int]) -> str:
     return f"{{{t[0]}, {t[1]}}}"
 
 
+def _mw_value(v):
+    """Normalize a mass/width value. FeynRules' ``Automatic`` width is computed
+    only when AddDecays is on — which is off for us (broken on Wolfram >=15), so
+    it leaks the literal ``Automatic`` into the UFO and MadGraph fails with
+    ``name 'Automatic' is not defined``. Emit a numeric placeholder instead;
+    MadGraph's compute_widths recovers the real width from the model."""
+    return "1." if str(v).strip().lower() == "automatic" else v
+
+
 def _mass(m: MassSpec) -> str:
     if m.massless:
         return "0"
     if m.members:
         parts = [m.sym]
         for sub, val in m.members:
+            val = _mw_value(val)
             parts.append(f"{{{sub}, {val}}}" if val is not None else f"{{{sub}}}")
         return "{" + ", ".join(parts) + "}"
     if m.value is not None:
-        return f"{{{m.sym}, {m.value}}}"
+        return f"{{{m.sym}, {_mw_value(m.value)}}}"
     return f"{{{m.sym}}}"
 
 

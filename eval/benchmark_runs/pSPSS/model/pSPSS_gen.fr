@@ -134,7 +134,7 @@ M$ClassesDescription = {
     Indices -> {Index[HNL]},
     FlavorIndex -> HNL,
     Mass -> {MN, {Mn4, Internal}, {Mn5, Internal}},
-    Width -> {WN, {Wn4, Automatic}, {Wn5, Automatic}},
+    Width -> {WN, {Wn4, 1.}, {Wn5, 1.}},
     QuantumNumbers -> {Q -> 0, Y -> 0},
     PDG -> {9900012, 9900014},
     ParticleName -> {"n4", "n5"},

@@ -170,12 +170,22 @@ class ValidateModelTool(BaseTool):
         "the UFO built, compares the UFO partial width to the closed form and "
         "reports it as a width_gate:* check.",
     )
+    madgraph_check: Optional[bool] = RuntimeField(
+        default=False,
+        description="Import the generated UFO into MadGraph5 (import model) and "
+        "report whether it loads, as a madgraph:import check. Surfaces the real "
+        "MadGraph error (undefined symbol, duplicate name, bad syntax) so an agent "
+        "can repair the model. Requires mg5_path to be configured.",
+    )
     # ================================================================ #
 
     # ========================= State fields ========================= #
     base_directory: str = StateField(description="Base sandbox directory")
     feynrules_path: str = StateField(description="Path to FeynRules installation root")
     wolframscript_path: str = StateField(description="Command/path to wolframscript")
+    mg5_path: Optional[str] = StateField(
+        default="", description="MG5_aMC install dir (for the optional MadGraph check)"
+    )
     # ================================================================ #
 
     def _run(self) -> str:
@@ -255,6 +265,9 @@ class ValidateModelTool(BaseTool):
             # UFO partial width to a textbook closed form to catch sign/norm errors.
             if self.width_gate:
                 checks.append(self._width_gate_check(ufo_dir))
+            # Full-chain: does the UFO actually load in MadGraph? (opt-in)
+            if self.madgraph_check and self.mg5_path:
+                checks.append(self._madgraph_import_check(ufo_dir))
 
         # Merge FeynRules symmetry checks (gauge invariance / Hermiticity) parsed
         # from the Mathematica run into named wl:* checks.
@@ -332,3 +345,50 @@ class ValidateModelTool(BaseTool):
                 f"(rel_err {cmp['rel_err']:.2%}, tol {cmp['rel_tol']:.0%})"
             ),
         }
+
+    def _madgraph_import_check(self, ufo_dir: str) -> dict:
+        """Import the UFO into MadGraph5 and report whether it loads. On failure,
+        surface MadGraph's real diagnostic (from MG5_debug, not the misleading
+        object_library.py wrapper) so an agent can repair the model."""
+        import re
+        import subprocess
+        import tempfile
+
+        mg5 = os.path.join(self.mg5_path, "bin", "mg5_aMC")
+        if not os.path.isfile(mg5):
+            return {"name": "madgraph:import", "passed": False,
+                    "detail": f"mg5_aMC not found under mg5_path ({self.mg5_path})"}
+        work = tempfile.mkdtemp(prefix="mg5imp_")
+        cmd = os.path.join(work, "cmd.txt")
+        with open(cmd, "w", encoding="utf-8") as fh:
+            fh.write(f"import model {ufo_dir}\ndisplay particles\n")
+        try:
+            p = subprocess.run([mg5, cmd], capture_output=True, text=True,
+                               timeout=300, stdin=subprocess.DEVNULL, cwd=work)
+            out = (p.stdout or "") + "\n" + (p.stderr or "")
+        except subprocess.TimeoutExpired:
+            return {"name": "madgraph:import", "passed": False, "detail": "MadGraph import timed out"}
+        loaded = re.search(r"Current model contains (\d+) particles", out)
+        fatal = ("Traceback (most recent call last)" in out or "InvalidCmd" in out
+                 or re.search(r'Command ".*" interrupted with error', out))
+        if loaded and not fatal:
+            return {"name": "madgraph:import", "passed": True,
+                    "detail": f"UFO loaded in MadGraph ({loaded.group(1)} particles)"}
+        # Prefer the real error from MG5_debug over the object_library.py wrapper.
+        real = ""
+        dbg = os.path.join(work, "MG5_debug")
+        text = ""
+        try:
+            if os.path.isfile(dbg):
+                text = open(dbg, encoding="utf-8", errors="replace").read()
+        except OSError:
+            text = ""
+        for m in re.finditer(r"(?:models\.\S*Error|NameError|SyntaxError|InvalidModel|KeyError|ValueError)\s*:\s*(.+)",
+                             text + "\n" + out):
+            cand = m.group(1).strip()
+            if "object_library.py, line 268" not in cand:
+                real = cand
+                break
+        return {"name": "madgraph:import", "passed": False,
+                "detail": ("MadGraph rejected the UFO: " + real) if real
+                else "MadGraph did not load the model (see UFO parameters/couplings/lorentz)"}

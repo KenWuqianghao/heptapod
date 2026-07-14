@@ -108,7 +108,7 @@ M$ClassesDescription = {
     ClassName -> Wp,
     SelfConjugate -> False,
     Mass -> {MWp, 1000.},
-    Width -> {WWp, Automatic},
+    Width -> {WWp, 1.},
     QuantumNumbers -> {Q -> 1},
     PDG -> 9900024,
     ParticleName -> "W+prime",

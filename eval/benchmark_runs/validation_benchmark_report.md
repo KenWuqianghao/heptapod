@@ -6,34 +6,34 @@ Each agent-generated `.fr` (from the field-content benchmark) is compiled to a U
 
 | Model | Lag symbol | Compile | Herm | Kin | Mass | UFO parts | MG5 load | LNV | secs | Status |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 331 | LScalarFermion331 | ✗ | — | — | — | — | — | — | 7.4 | compile_failed |
-| ALRM_general | LeffALRM | ✓ | ✓ | ✓ | ✓ | 40 | ✗ | ✗ | 37.7 | compiled |
-| topBSM | LO1 | ✓ | ✓ | ✓ | ✓ | 29 | ✓ | ✗ | 25.8 | compiled |
-| ChernSimonsPortal | LChernSimonsPortalBroken | ✓ | ✓ | ✓ | ✓ | 25 | ✓ | ✗ | 23.7 | compiled |
-| DMsimp | L1DM | ✓ | ✓ | ✓ | ✓ | 29 | ✓ | ✗ | 35.1 | compiled |
-| EffLRSM | LBSM | ✓ | ✓ | ✓ | ✓ | 29 | ✗ | ✗ | 296.6 | compiled |
-| GeneralU1 | LGeneralU1 | ✗ | — | — | — | — | — | — | 7.2 | compile_failed |
-| HeavyN | LFull | ✓ | ✓ | ✓ | ✓ | 27 | ✓ | ✓ | 126.3 | compiled |
-| HNLs | LHadrSemileptonic | ✗ | — | — | — | — | — | — | 7.0 | compile_failed |
-| B-L-SM | LBSM | ✓ | ✗ | ✗ | ✗ | 30 | ✗ | ✗ | 70.8 | compiled |
-| MDMmodel | LMDMNP | ✓ | ✗ | ✓ | ✓ | 26 | ✓ | ✗ | 50.9 | compiled |
-| Monotops | LMono | ✓ | ✓ | ✓ | ✓ | 30 | ✓ | ✗ | 69.4 | compiled |
-| pNG | LScalarPng | ✓ | ✓ | ✓ | ✓ | 24 | ✓ | ✗ | 34.5 | compiled |
-| Sextets | LSextet | ✓ | ✓ | ✓ | ✓ | 27 | ✓ | ✗ | 57.4 | compiled |
-| 368sextets | LSextet | ✓ | ✓ | ✓ | ✓ | 28 | ✗ | ✗ | 160.1 | compiled |
-| SLQrules | LBSM | ✗ | — | — | — | — | — | — | 6.9 | compile_failed |
-| pSPSS | LpSPSS | ✓ | ✗ | ✓ | ✓ | 26 | ✗ | ✗ | 213.1 | compiled |
-| SMWeinberg | LFull | ✓ | ✓ | ✓ | ✓ | 25 | ✓ | ✓ | 117.2 | compiled |
-| Top-Philic-Zprime | LBSM | ✓ | ✓ | ✓ | ✓ | 25 | ✓ | ✗ | 24.8 | compiled |
-| Triplets | LTrip | ✓ | ✓ | ✓ | ✓ | 25 | ✓ | ✗ | 31.4 | compiled |
-| VLQ | L4Mass | ✓ | ✓ | ✓ | ✓ | 30 | ✓ | ✗ | 24.7 | compiled |
-| LeptoQuark | LLeptoQuark | ✓ | ✓ | ✓ | ✓ | 27 | ✓ | ✗ | 42.9 | compiled |
-| Wprime | LBSM | ✓ | ✓ | ✓ | ✓ | 28 | ✓ | ✗ | 85.7 | compiled |
-| MSSMD | Lag | ✓ | ✓ | ✓ | ✓ | 58 | ✗ | ✗ | 42.5 | compiled |
-| CHEIDI | LHEIDIggHeavyTop | ✓ | ✓ | ✓ | ✓ | 34 | ✗ | ✗ | 26.2 | compiled |
-| HiggsCharacterisation | LHCNP | ✓ | ✓ | ✓ | ✓ | 27 | ✓ | ✗ | 40.9 | compiled |
-| NJLComposite | LBSM | ✓ | ✓ | ✓ | ✓ | 36 | ✓ | ✗ | 41.6 | compiled |
-| VLC_LN | LVLCNP | ✗ | — | — | — | — | — | — | 420.0 | compile_timeout |
+| 331 | LScalarFermion331 | ✗ | — | — | — | — | — | — | 9.2 | compile_failed |
+| ALRM_general | LeffALRM | ✓ | ✓ | ✓ | ✓ | 40 | ✗ | ✗ | 60.4 | compiled |
+| topBSM | LO1 | ✓ | ✓ | ✓ | ✓ | 29 | ✓ | ✗ | 34.3 | compiled |
+| ChernSimonsPortal | LChernSimonsPortalBroken | ✓ | ✓ | ✓ | ✓ | 25 | ✓ | ✗ | 29.4 | compiled |
+| DMsimp | L1DM | ✓ | ✓ | ✓ | ✓ | 29 | ✓ | ✗ | 42.4 | compiled |
+| EffLRSM | LBSM | ✓ | ✓ | ✓ | ✓ | 29 | ✗ | ✗ | 366.2 | compiled |
+| GeneralU1 | LGeneralU1 | ✗ | — | — | — | — | — | — | 8.3 | compile_failed |
+| HeavyN | LFull | ✓ | ✓ | ✓ | ✓ | 27 | ✓ | ✓ | 128.5 | compiled |
+| HNLs | LHadrSemileptonic | ✗ | — | — | — | — | — | — | 5.9 | compile_failed |
+| B-L-SM | LBSM | ✓ | ✗ | ✗ | ✗ | 30 | ✗ | ✗ | 67.7 | compiled |
+| MDMmodel | LMDMNP | ✓ | ✗ | ✓ | ✓ | 26 | ✓ | ✗ | 48.5 | compiled |
+| Monotops | LMono | ✓ | ✓ | ✓ | ✓ | 30 | ✓ | ✗ | 66.2 | compiled |
+| pNG | LScalarPng | ✓ | ✓ | ✓ | ✓ | 24 | ✓ | ✗ | 33.6 | compiled |
+| Sextets | LSextet | ✓ | ✓ | ✓ | ✓ | 27 | ✓ | ✗ | 55.1 | compiled |
+| 368sextets | LSextet | ✓ | ✓ | ✓ | ✓ | 28 | ✗ | ✗ | 159.6 | compiled |
+| SLQrules | LBSM | ✗ | — | — | — | — | — | — | 6.6 | compile_failed |
+| pSPSS | LpSPSS | ✓ | ✗ | ✓ | ✓ | 26 | ✗ | ✗ | 212.2 | compiled |
+| SMWeinberg | LFull | ✓ | ✓ | ✓ | ✓ | 25 | ✓ | ✓ | 116.0 | compiled |
+| Top-Philic-Zprime | LBSM | ✓ | ✓ | ✓ | ✓ | 25 | ✓ | ✗ | 24.3 | compiled |
+| Triplets | LTrip | ✓ | ✓ | ✓ | ✓ | 25 | ✓ | ✗ | 29.8 | compiled |
+| VLQ | L4Mass | ✓ | ✓ | ✓ | ✓ | 30 | ✓ | ✗ | 23.6 | compiled |
+| LeptoQuark | LLeptoQuark | ✓ | ✓ | ✓ | ✓ | 27 | ✓ | ✗ | 40.7 | compiled |
+| Wprime | LBSM | ✓ | ✓ | ✓ | ✓ | 28 | ✓ | ✗ | 82.5 | compiled |
+| MSSMD | Lag | ✓ | ✓ | ✓ | ✓ | 58 | ✗ | ✗ | 40.7 | compiled |
+| CHEIDI | LHEIDIggHeavyTop | ✓ | ✓ | ✓ | ✓ | 34 | ✗ | ✗ | 25.2 | compiled |
+| HiggsCharacterisation | LHCNP | ✓ | ✓ | ✓ | ✓ | 27 | ✓ | ✗ | 40.0 | compiled |
+| NJLComposite | LBSM | ✓ | ✓ | ✓ | ✓ | 36 | ✓ | ✗ | 41.1 | compiled |
+| VLC_LN | LVLCNP | ✗ | — | — | — | — | — | — | 600.1 | compile_timeout |
 
 ## Notes
 - `Compile` = FeynRules `WriteUFO` produced `particles.py` and printed Done.

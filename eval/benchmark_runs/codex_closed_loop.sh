@@ -4,9 +4,12 @@
 # editing the model until it passes (compile + Hermiticity/kinetic/mass +
 # MadGraph import).
 #
-# Runs Codex in --full-auto (workspace-write sandbox, no approval prompts) so the
-# agent can call the MCP write-tools unattended. Launch it yourself — an agent
-# harness won't start an autonomous Codex loop on your behalf.
+# Runs Codex with --dangerously-bypass-approvals-and-sandbox. This is REQUIRED:
+# Codex CLI 0.143.0 cancels MCP tool calls ("user cancelled MCP tool call") under
+# every other mode, including --full-auto (approval=never + workspace-write) — the
+# bypass flag is the only one that lets the agent call the heptapod MCP write-tools
+# unattended. Run this yourself in a terminal you trust; a supervised agent harness
+# will refuse to launch Codex with approvals/sandbox off.
 #
 # Usage:
 #   ./codex_closed_loop.sh demo          # seed a deliberately non-Hermitian S1 and let Codex fix it
@@ -60,7 +63,7 @@ echo "[loop] working dir: $WD"
 echo "[loop] target: $MODEL"
 cd "$WD"
 HEPTAPOD_BASE_DIR="$WD" codex exec \
-  --cd "$WD" --skip-git-repo-check --full-auto \
+  --cd "$WD" --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox \
   --model gpt-5.5 -c 'model_reasoning_effort="medium"' \
   "$(cat "$WD/prompt.txt")"
 echo "[loop] done. Final model: $WD/$MODEL"

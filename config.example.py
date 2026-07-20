@@ -71,3 +71,14 @@ wolframscript_path = "/path/to/wolframscript"
 # MadGraph5_aMC PATH.
 # Example: "/path/to/MG5_aMC_v3.6.6"
 mg5_path = "/path/to/MG5_aMC"
+# ============================================================ #
+# ============== Reverse-check blank-slate agent ============= #
+# ============================================================ #
+
+# Command template for the independent reconstruction agent used by the
+# `reverselagrangian` tool. Tokens: {output} -> file the engine writes its
+# final message to; {prompt} -> the prompt (appended as the last argument
+# when the token is absent). Any CLI agent works, e.g.:
+#   codex:  "codex exec --sandbox read-only --skip-git-repo-check --model gpt-5.5 -c model_reasoning_effort=medium --output-last-message {output}"
+#   claude: "claude -p {prompt}"
+blank_agent_cmd = "codex exec --sandbox read-only --skip-git-repo-check --model gpt-5.5 -c model_reasoning_effort=medium --output-last-message {output}"

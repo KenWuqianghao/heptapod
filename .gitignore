@@ -58,6 +58,10 @@ examples/demo_codex_research/pdfs/
 # point VBENCH_OUT outside the repo). The .json/.md report IS tracked.
 /eval/benchmark_runs/vbench*/
 
+# Background-job scratch (spec/status/log/result per job) — runtime state,
+# written under whatever base_directory the tools run with.
+.jobs/
+
 # DB benchmark: third-party papers (re-fetched by db_run_prep.py) and bulky
 # raw event streams (codex_out.md keeps the extraction evidence).
 eval/benchmark_runs/*/pdfs/

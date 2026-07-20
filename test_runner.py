@@ -379,6 +379,14 @@ def main():
             "script": REPO_ROOT / "tools" / "validate" / "test_validate.py",
             "description": "Model validation (UFO file/particle checks, .fr -> UFO compile)"
         },
+        "jobs": {
+            "script": REPO_ROOT / "tools" / "jobs" / "test_jobs.py",
+            "description": "Background jobs (submit/poll/result, whitelist, detached runner)"
+        },
+        "reverse": {
+            "script": REPO_ROOT / "tools" / "reverse" / "test_reverse.py",
+            "description": "Reverse Lagrangian check (sanitizer, blank agent, review package)"
+        },
         "eval": {
             "script": REPO_ROOT / "eval" / "test_eval.py",
             "description": "Benchmark harness (deterministic scoring, mocked pipeline run)"

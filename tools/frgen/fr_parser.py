@@ -264,3 +264,35 @@ def parse_fr(text: str) -> Dict[str, Any]:
 def parse_fr_file(path: str) -> Dict[str, Any]:
     with open(path, "r", encoding="utf-8", errors="replace") as fh:
         return parse_fr(fh.read())
+
+
+_LAGRANGIAN_STMT_RE = re.compile(
+    r"^\s*([A-Za-z][A-Za-z0-9]*)\s*(:=|=)\s*(.+)$", re.DOTALL
+)
+
+# Top-level assignments that are FeynRules declarations, not Lagrangian terms.
+# M$... blocks self-exclude via the name regex ($ not allowed); these are the
+# bare-name declarations that would otherwise slip through.
+_NON_LAGRANGIAN_NAMES = {"FeynmanGauge", "IndexRange", "IndexStyle", "GaugeXi"}
+
+
+def parse_lagrangian_terms(text: str) -> List[Dict[str, str]]:
+    """Extract top-level Lagrangian assignments from a ``.fr`` file.
+
+    Returns ``[{"name": "LkinS1", "op": "=", "expression": "<verbatim RHS>"}]``
+    for every top-level ``Name := rhs;`` / ``Name = rhs;`` statement.
+    ``M$...`` blocks are excluded by the name pattern; ``;`` inside
+    ``Block[{...}, ...]`` bodies never splits because ``split_top_level``
+    tracks bracket depth. Complements :func:`parse_fr`, which deliberately
+    only reads the declaration blocks.
+    """
+    terms: List[Dict[str, str]] = []
+    for stmt in split_top_level(strip_fr_comments(text), ";"):
+        m = _LAGRANGIAN_STMT_RE.match(stmt)
+        if not m:
+            continue
+        name, op, rhs = m.group(1), m.group(2), m.group(3).strip()
+        if name in _NON_LAGRANGIAN_NAMES or not rhs:
+            continue
+        terms.append({"name": name, "op": op, "expression": rhs})
+    return terms

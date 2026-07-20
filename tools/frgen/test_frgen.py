@@ -120,7 +120,11 @@ def test_render_roundtrip() -> bool:
         "ClassName -> S1",
         "SelfConjugate -> False",
         "Mass -> {MS1, 1500.}",
-        "Width -> {W1, Automatic}",
+        # Automatic widths are rendered as a numeric placeholder: FeynRules
+        # only resolves Automatic when AddDecays is on (broken on Wolfram
+        # >=15), otherwise the literal leaks into the UFO and MadGraph fails
+        # with "name 'Automatic' is not defined". See render._mw_value.
+        "Width -> {W1, 1.}",
         "QuantumNumbers -> {Q -> -1/3}",
         "Indices -> {Index[Colour]}",
         'ParticleName -> "S1"',

@@ -51,6 +51,12 @@ _STATE_KEYS = (
     "wolframscript_path",
     "mg5_path",
     "cache_enabled",
+    "blank_agent_cmd",
+)
+
+_DEFAULT_BLANK_AGENT_CMD = (
+    "codex exec --sandbox read-only --skip-git-repo-check --model gpt-5.5 "
+    "-c model_reasoning_effort=medium --output-last-message {output}"
 )
 
 
@@ -61,6 +67,10 @@ def _load_config() -> dict:
         "wolframscript_path": "",
         "mg5_path": "",
         "cache_enabled": False,
+        # real default, not "" — _instantiate passes every _STATE_KEYS entry
+        # found in model_fields, so an empty string would clobber the tool's
+        # own StateField default.
+        "blank_agent_cmd": _DEFAULT_BLANK_AGENT_CMD,
     }
     try:
         import config as _c  # user's gitignored config.py at repo root
@@ -69,7 +79,7 @@ def _load_config() -> dict:
                 cfg[k] = getattr(_c, k)
     except Exception:  # noqa: BLE001 — config.py is optional
         pass
-    for k in ("feynrules_path", "wolframscript_path", "mg5_path"):
+    for k in ("feynrules_path", "wolframscript_path", "mg5_path", "blank_agent_cmd"):
         v = os.environ.get(k.upper())
         if v:
             cfg[k] = v

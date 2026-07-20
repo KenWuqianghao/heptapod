@@ -120,6 +120,10 @@ class ValidateModelTool(BaseTool):
     """
     Validate a FeynRules .fr model by compiling it to a UFO and checking it.
 
+    Runs take minutes (Wolfram compile; MadGraph import when enabled). From
+    an MCP agent, prefer submitjob(tool_name="validatemodel", ...) and poll
+    jobstatus so the channel is never blocked.
+
     Runs FeynRulesToUFOTool on the .fr, then reports structured pass/fail checks:
       - ufo_generation: did the .fr compile to a UFO (Mathematica/FeynRules)?
       - ufo_file:<name>: are the expected UFO python files present?

@@ -86,7 +86,9 @@ MISSION — from paper to a human-reviewable, validated FeynRules model:
    - the validation verdict and every repair you made (with the check that
      motivated it),
    - the reverse-check summary (any disagreements it flagged),
-   - the ABSOLUTE path to reverse/${ARXIV_ID}/REVIEW.md,
+   - the ABSOLUTE path to the compiled review PDF reported by the
+     reverselagrangian result (review_package, normally
+     reverse/${ARXIV_ID}/REVIEW.pdf; REVIEW.md if PDF compilation failed),
    - the sentence: "Human review required — the physics verdict belongs to
      the reviewer."
    Do NOT declare the physics correct yourself.
@@ -98,6 +100,6 @@ HEPTAPOD_BASE_DIR="$WD" codex exec \
   "$(cat "$WD/prompt.txt")"
 rc=$?
 echo "[e2e] codex exit: $rc"
-echo "[e2e] review package (if reached): $WD/reverse/${ARXIV_ID}/REVIEW.md"
+echo "[e2e] review package (if reached): $WD/reverse/${ARXIV_ID}/REVIEW.pdf"
 echo "[e2e] audit ledger: $WD/audit.json"
 exit $rc

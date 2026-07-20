@@ -1,0 +1,81 @@
+
+
+
+M$ModelName = "ANON-MODEL";
+
+
+M$InteractionOrderHierarchy = {{QCD, 1}, {QED, 2}, {NP, 1}};
+
+FeynmanGauge = True;
+
+M$Parameters = {
+  VeN1 == {
+    ParameterType -> External,
+    Value -> 1.0,
+    ComplexParameter -> False,
+    BlockName -> NUMIXING,
+    OrderBlock -> 1,
+    TeX -> "Subscript[V,eN1]",
+    Description -> ""
+  },
+  VmuN1 == {
+    ParameterType -> External,
+    Value -> 0.0,
+    ComplexParameter -> False,
+    BlockName -> NUMIXING,
+    OrderBlock -> 2,
+    TeX -> "Subscript[V,muN1]",
+    Description -> ""
+  },
+  VtaN1 == {
+    ParameterType -> External,
+    Value -> 0.0,
+    ComplexParameter -> False,
+    BlockName -> NUMIXING,
+    OrderBlock -> 3,
+    TeX -> "Subscript[V,taN1]",
+    Description -> ""
+  },
+  gN == {
+    ParameterType -> Internal,
+    InteractionOrder -> {NP, 1},
+    Definitions -> {gN -> ee/sw},
+    TeX -> "Subscript[g,N]",
+    Description -> ""
+  }
+};
+
+M$ClassesDescription = {
+  F[131] == {
+    ClassName -> N1,
+    SelfConjugate -> True,
+    Mass -> {mN1, 300.},
+    Width -> {WN1, 0.303},
+    PDG -> {9900012},
+    ParticleName -> "N1",
+    FullName -> "",
+    PropagatorLabel -> "N1",
+    PropagatorType -> Straight,
+    PropagatorArrow -> False
+  }
+};
+
+LNKin := I/2 N1bar[s1].Ga[v,s1,s2].del[N1[s2],v] - 1/2 mN1 N1bar[s1] N1[s1];
+
+LNCCbare := gN/Sqrt[2] * (VeN1 * N1bar.W[m].ProjM[m].e + VmuN1 * N1bar.W[m].ProjM[m].mu + VtaN1 * N1bar.W[m].ProjM[m].ta);
+
+LNCC := LNCCbare + HC[LNCCbare];
+
+LNNCBare := 1/2 * gN/cw * (VeN1 * N1bar.Z[m].ProjM[m].ve + VmuN1 * N1bar.Z[m].ProjM[m].vm + VtaN1 * N1bar.Z[m].ProjM[m].vt);
+
+LNNC := LNNCBare + HC[LNNCBare];
+
+LNHbare := - gN*mN1/(2*MW) * (VeN1 * N1bar.ProjM.ve H + VmuN1 * N1bar.ProjM.vm H + VtaN1 * N1bar.ProjM.vt H);
+
+LNH := LNHbare + HC[LNHbare];
+
+LNGbare := I * gN*mN1/(2*MW) * (VeN1 * vebar.ProjP.N1 G0 + VmuN1 * vmbar.ProjP.N1 G0 + VtaN1 * vtbar.ProjP.N1 G0) + I * gN*mN1/(Sqrt[2]*MW) * (VeN1 * ebar.ProjP.N1 GPbar + VmuN1 * mubar.ProjP.N1 GPbar + VtaN1 * tabar.ProjP.N1 GPbar);
+
+LNG := LNGbare + HC[LNGbare];
+
+LBSM := LNKin + LNCC + LNNC + LNH + LNG;

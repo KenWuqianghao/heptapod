@@ -150,11 +150,20 @@ def test_tool_full_with_fake_engine() -> bool:
     ok &= [t["name"] for t in res["lagrangian_terms"]] == \
           ["LkinS1", "L1YukRRNonHC", "L1YukRR", "LBSM"]
     ok &= len(res["agent_runs"]) == 2
-    for rel in ("sanitized_fr", "reconstruction", "crosscheck", "review_package"):
+    for rel in ("sanitized_fr", "reconstruction", "crosscheck",
+                "review_package", "review_markdown_source"):
         ok &= res[rel] is not None and os.path.isfile(os.path.join(base, res[rel]))
-    review = open(os.path.join(base, res["review_package"])).read()
+    review = open(os.path.join(base, res["review_markdown_source"])).read()
     ok &= "Physicist sign-off" in review and "LkinS1" in review
     ok &= "S1_LQ_RR" in review  # original name revealed to the human, not the agent
+    # deliverable is the compiled PDF when a converter exists, else the md
+    if res["review_package"].endswith(".pdf"):
+        with open(os.path.join(base, res["review_package"]), "rb") as fh:
+            ok &= fh.read(5) == b"%PDF-"
+        ok &= res["review_pdf_error"] is None
+    else:
+        ok &= res["review_pdf_error"] is not None
+        print("    [i] no pandoc/xelatex — PDF fallback path exercised")
     san = open(os.path.join(base, res["sanitized_fr"])).read()
     ok &= "ANON-MODEL" in san and "Menzo" not in san
     # audit trail landed
@@ -225,10 +234,46 @@ def test_crosscheck_dir_isolation() -> bool:
     return ok
 
 
+def test_pdf_build() -> bool:
+    from tools.reverse.pdf_build import _find_binary, compile_review_pdf
+    base = _base()
+    md = os.path.join(base, "doc.md")
+    with open(md, "w") as fh:
+        fh.write(
+            "# Review\n\nInline \\(x^2\\) and display math:\n\n"
+            "\\[ \\Gamma = \\frac{|y|^2 M}{16\\pi} \\]\n\n"
+            "| term | verdict |\n|---|---|\n| \\(P_L\\) coupling | agree |\n\n"
+            "```mathematica\n"
+            "L1YukRRNonHC := yRR11 * anti[CC[uR]][sp, 1, aa].lR[sp, 1] "
+            "* HC[S1][aa];\n"
+            "```\n"
+        )
+    ok = True
+    # every failure mode is structured, never an exception
+    r = compile_review_pdf(md, pandoc="/no/such/pandoc")
+    ok &= (not r["ok"]) and "pandoc" in r["error"]
+    r = compile_review_pdf(md, engine="/no/such/xelatex")
+    ok &= (not r["ok"]) and "xelatex" in r["error"]
+    r = compile_review_pdf(os.path.join(base, "missing.md"))
+    ok &= (not r["ok"]) and "not found" in r["error"]
+    # real compile when the toolchain is installed
+    if _find_binary("pandoc") and _find_binary("xelatex"):
+        r = compile_review_pdf(md)
+        ok &= r["ok"] and r["error"] is None
+        with open(r["pdf_path"], "rb") as fh:
+            ok &= fh.read(5) == b"%PDF-"
+        ok &= os.path.getsize(r["pdf_path"]) > 5000
+    else:
+        print("    [i] pandoc/xelatex not installed — live compile skipped")
+    print(f"[{'✓' if ok else '✗'}] test_pdf_build")
+    return ok
+
+
 TESTS = [
     test_sanitizer_s1,
     test_sanitizer_edge_cases,
     test_parse_lagrangian_terms,
+    test_pdf_build,
     test_blank_agent_modes,
     test_tool_full_with_fake_engine,
     test_tool_partial_on_engine_failure,

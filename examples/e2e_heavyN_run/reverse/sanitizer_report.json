@@ -1,0 +1,9 @@
+{
+  "original_model_name": "SM_HeavyN_1602_06957",
+  "anon_model_name": "ANON-MODEL",
+  "information_blocks_removed": 1,
+  "prose_values_scrubbed": 5,
+  "sha256_original": "2de2aad94f434a45055bc059b0b0262e1424a76ac17200bb965c860cfe5b4913",
+  "sha256_sanitized": "4ba3736ddbf50f71922980fb1b60dadaa0d4f131683d8d6ac73f7772c7fd89c8",
+  "blindness_scope": "blank slate w.r.t. paper, authors, model name, comments and prose labels \u2014 NOT w.r.t. field/parameter symbol names, which are kept so the reviewer can map the reconstruction back"
+}

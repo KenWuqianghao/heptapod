@@ -1,0 +1,386 @@
+Reading additional input from stdin...
+OpenAI Codex v0.143.0
+--------
+workdir: /private/var/folders/pf/fm0v0g_52r754cfv3r4lqv980000gn/T/reverse_recon_jo5b_6cv
+model: gpt-5.5
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: medium
+reasoning summaries: none
+session id: 019f7f3e-753d-71a0-9d91-3ff10aea77db
+--------
+user
+You are given a single FeynRules model file `sanitized.fr` in your working directory. All metadata (model name, authors, comments, prose labels) has been removed; you have NO other context about where this model comes from. Do not guess a published model name — work only from the file's content.
+
+Reconstruct the physics it encodes, as a markdown document with:
+
+1. **Lagrangian (LaTeX).** Every Lagrangian term in standard physics notation, one display equation per term, each labeled with the `.fr` symbol it came from (e.g. `LkinS1`). Expand FeynRules idioms (DC covariant derivatives, FS field strengths, Ga gamma matrices, HC hermitian conjugate, CC charge conjugation, ProjP/ProjM chiral projectors) into conventional notation. State the covariant derivative's gauge content explicitly.
+
+2. **Field table.** For every new particle class: symbol, spin, SU(3) rep, SU(2) rep (if declared), U(1) charge or hypercharge, self-conjugate or not, mass symbol and value if numeric.
+
+3. **Parameters.** For every new external parameter: symbol, what it multiplies in the Lagrangian, and its physical meaning (coupling, mass, mixing angle, ...).
+
+4. **Physics summary.** Two or three sentences: what kind of model is this (what new states, what interactions), and what processes it would mediate.
+
+Be precise about chirality, conjugation and index contractions — a physicist will check your reconstruction term by term. Your final message must be the complete markdown document and nothing else.
+
+codex
+I’ll read the FeynRules file directly and map each declared class, parameter, and Lagrangian symbol back to conventional notation. Then I’ll cross-check the index structures so the final document is term-by-term rather than a guessed model label.
+exec
+/bin/zsh -lc 'wc -l sanitized.fr' in /private/var/folders/pf/fm0v0g_52r754cfv3r4lqv980000gn/T/reverse_recon_jo5b_6cv
+ succeeded in 0ms:
+      81 sanitized.fr
+
+exec
+/bin/zsh -lc 'pwd && rg --files' in /private/var/folders/pf/fm0v0g_52r754cfv3r4lqv980000gn/T/reverse_recon_jo5b_6cv
+ succeeded in 0ms:
+/private/var/folders/pf/fm0v0g_52r754cfv3r4lqv980000gn/T/reverse_recon_jo5b_6cv
+sanitized.fr
+
+codex
+The file is small enough to inspect fully. I’m going to read it in one pass, then pull out the class and parameter declarations separately for a clean reconstruction.
+exec
+/bin/zsh -lc 'nl -ba sanitized.fr' in /private/var/folders/pf/fm0v0g_52r754cfv3r4lqv980000gn/T/reverse_recon_jo5b_6cv
+ succeeded in 0ms:
+     1	
+     2	
+     3	
+     4	M$ModelName = "ANON-MODEL";
+     5	
+     6	
+     7	M$InteractionOrderHierarchy = {{QCD, 1}, {QED, 2}, {NP, 1}};
+     8	
+     9	FeynmanGauge = True;
+    10	
+    11	M$Parameters = {
+    12	  VeN1 == {
+    13	    ParameterType -> External,
+    14	    Value -> 1.0,
+    15	    ComplexParameter -> False,
+    16	    BlockName -> NUMIXING,
+    17	    OrderBlock -> 1,
+    18	    TeX -> "Subscript[V,eN1]",
+    19	    Description -> ""
+    20	  },
+    21	  VmuN1 == {
+    22	    ParameterType -> External,
+    23	    Value -> 0.0,
+    24	    ComplexParameter -> False,
+    25	    BlockName -> NUMIXING,
+    26	    OrderBlock -> 2,
+    27	    TeX -> "Subscript[V,muN1]",
+    28	    Description -> ""
+    29	  },
+    30	  VtaN1 == {
+    31	    ParameterType -> External,
+    32	    Value -> 0.0,
+    33	    ComplexParameter -> False,
+    34	    BlockName -> NUMIXING,
+    35	    OrderBlock -> 3,
+    36	    TeX -> "Subscript[V,taN1]",
+    37	    Description -> ""
+    38	  },
+    39	  gN == {
+    40	    ParameterType -> Internal,
+    41	    InteractionOrder -> {NP, 1},
+    42	    Definitions -> {gN -> ee/sw},
+    43	    TeX -> "Subscript[g,N]",
+    44	    Description -> ""
+    45	  }
+    46	};
+    47	
+    48	M$ClassesDescription = {
+    49	  F[131] == {
+    50	    ClassName -> N1,
+    51	    SelfConjugate -> True,
+    52	    Mass -> {mN1, 300.},
+    53	    Width -> {WN1, 0.303},
+    54	    PDG -> {9900012},
+    55	    ParticleName -> "N1",
+    56	    FullName -> "",
+    57	    PropagatorLabel -> "N1",
+    58	    PropagatorType -> Straight,
+    59	    PropagatorArrow -> False
+    60	  }
+    61	};
+    62	
+    63	LNKin := I/2 N1bar[s1].Ga[v,s1,s2].del[N1[s2],v] - 1/2 mN1 N1bar[s1] N1[s1];
+    64	
+    65	LNCCbare := gN/Sqrt[2] * (VeN1 * N1bar.W[m].ProjM[m].e + VmuN1 * N1bar.W[m].ProjM[m].mu + VtaN1 * N1bar.W[m].ProjM[m].ta);
+    66	
+    67	LNCC := LNCCbare + HC[LNCCbare];
+    68	
+    69	LNNCBare := 1/2 * gN/cw * (VeN1 * N1bar.Z[m].ProjM[m].ve + VmuN1 * N1bar.Z[m].ProjM[m].vm + VtaN1 * N1bar.Z[m].ProjM[m].vt);
+    70	
+    71	LNNC := LNNCBare + HC[LNNCBare];
+    72	
+    73	LNHbare := - gN*mN1/(2*MW) * (VeN1 * N1bar.ProjM.ve H + VmuN1 * N1bar.ProjM.vm H + VtaN1 * N1bar.ProjM.vt H);
+    74	
+    75	LNH := LNHbare + HC[LNHbare];
+    76	
+    77	LNGbare := I * gN*mN1/(2*MW) * (VeN1 * vebar.ProjP.N1 G0 + VmuN1 * vmbar.ProjP.N1 G0 + VtaN1 * vtbar.ProjP.N1 G0) + I * gN*mN1/(Sqrt[2]*MW) * (VeN1 * ebar.ProjP.N1 GPbar + VmuN1 * mubar.ProjP.N1 GPbar + VtaN1 * tabar.ProjP.N1 GPbar);
+    78	
+    79	LNG := LNGbare + HC[LNGbare];
+    80	
+    81	LBSM := LNKin + LNCC + LNNC + LNH + LNG;
+
+exec
+/bin/zsh -lc "rg -n \"M\\"'$ClassesDescription|M'"\\"'$Parameters|Lag|L[A-Za-z0-9]+|ClassName|QuantumNumbers|Indices|SelfConjugate|Mass|Width" sanitized.fr' in /private/var/folders/pf/fm0v0g_52r754cfv3r4lqv980000gn/T/reverse_recon_jo5b_6cv
+ succeeded in 0ms:
+50:    ClassName -> N1,
+51:    SelfConjugate -> True,
+52:    Mass -> {mN1, 300.},
+53:    Width -> {WN1, 0.303},
+57:    PropagatorLabel -> "N1",
+63:LNKin := I/2 N1bar[s1].Ga[v,s1,s2].del[N1[s2],v] - 1/2 mN1 N1bar[s1] N1[s1];
+65:LNCCbare := gN/Sqrt[2] * (VeN1 * N1bar.W[m].ProjM[m].e + VmuN1 * N1bar.W[m].ProjM[m].mu + VtaN1 * N1bar.W[m].ProjM[m].ta);
+67:LNCC := LNCCbare + HC[LNCCbare];
+69:LNNCBare := 1/2 * gN/cw * (VeN1 * N1bar.Z[m].ProjM[m].ve + VmuN1 * N1bar.Z[m].ProjM[m].vm + VtaN1 * N1bar.Z[m].ProjM[m].vt);
+71:LNNC := LNNCBare + HC[LNNCBare];
+73:LNHbare := - gN*mN1/(2*MW) * (VeN1 * N1bar.ProjM.ve H + VmuN1 * N1bar.ProjM.vm H + VtaN1 * N1bar.ProjM.vt H);
+75:LNH := LNHbare + HC[LNHbare];
+77:LNGbare := I * gN*mN1/(2*MW) * (VeN1 * vebar.ProjP.N1 G0 + VmuN1 * vmbar.ProjP.N1 G0 + VtaN1 * vtbar.ProjP.N1 G0) + I * gN*mN1/(Sqrt[2]*MW) * (VeN1 * ebar.ProjP.N1 GPbar + VmuN1 * mubar.ProjP.N1 GPbar + VtaN1 * tabar.ProjP.N1 GPbar);
+79:LNG := LNGbare + HC[LNGbare];
+81:LBSM := LNKin + LNCC + LNNC + LNH + LNG;
+
+codex
+# Reconstructed Physics From `sanitized.fr`
+
+## Lagrangian
+
+The model adds one self-conjugate Majorana fermion \(N_1\). No gauge quantum numbers or indices are declared for \(N_1\), so it is a Standard Model gauge singlet:
+\[
+D_\mu N_1=\partial_\mu N_1,
+\]
+with no \(SU(3)_c\), \(SU(2)_L\), or \(U(1)_Y\) gauge connection acting on it.
+
+### `LNKin`
+
+\[
+\mathcal{L}_{\texttt{LNKin}}
+=
+\frac{i}{2}\,\overline{N_1}\gamma^\mu \partial_\mu N_1
+-
+\frac{1}{2}\,m_{N_1}\,\overline{N_1}N_1 .
+\]
+
+The factors of \(1/2\) are the standard normalization for a self-conjugate Majorana fermion.
+
+### `LNCCbare`
+
+With \(P_L\equiv (1-\gamma^5)/2\),
+
+\[
+\mathcal{L}_{\texttt{LNCCbare}}
+=
+\frac{g_N}{\sqrt{2}}
+\left[
+V_{eN_1}\,\overline{N_1}\gamma^\mu P_L e\,W^+_\mu
++
+V_{\mu N_1}\,\overline{N_1}\gamma^\mu P_L \mu\,W^+_\mu
++
+V_{\tau N_1}\,\overline{N_1}\gamma^\mu P_L \tau\,W^+_\mu
+\right].
+\]
+
+### `LNCC`
+
+\[
+\mathcal{L}_{\texttt{LNCC}}
+=
+\mathcal{L}_{\texttt{LNCCbare}}
++
+\mathrm{h.c.}
+\]
+
+Equivalently,
+
+\[
+\mathcal{L}_{\texttt{LNCC}}
+=
+\frac{g_N}{\sqrt{2}}
+\sum_{\ell=e,\mu,\tau}
+V_{\ell N_1}\,
+\overline{N_1}\gamma^\mu P_L \ell\,W^+_\mu
++
+\frac{g_N}{\sqrt{2}}
+\sum_{\ell=e,\mu,\tau}
+V_{\ell N_1}\,
+\overline{\ell}\gamma^\mu P_L N_1\,W^-_\mu ,
+\]
+where the \(V_{\ell N_1}\) are real external parameters in the file.
+
+### `LNNCBare`
+
+\[
+\mathcal{L}_{\texttt{LNNCBare}}
+=
+\frac{1}{2}\frac{g_N}{c_W}
+\left[
+V_{eN_1}\,\overline{N_1}\gamma^\mu P_L \nu_e\,Z_\mu
++
+V_{\mu N_1}\,\overline{N_1}\gamma^\mu P_L \nu_\mu\,Z_\mu
++
+V_{\tau N_1}\,\overline{N_1}\gamma^\mu P_L \nu_\tau\,Z_\mu
+\right].
+\]
+
+### `LNNC`
+
+\[
+\mathcal{L}_{\texttt{LNNC}}
+=
+\mathcal{L}_{\texttt{LNNCBare}}
++
+\mathrm{h.c.}
+\]
+
+Equivalently,
+
+\[
+\mathcal{L}_{\texttt{LNNC}}
+=
+\frac{g_N}{2c_W}
+\sum_{\ell=e,\mu,\tau}
+V_{\ell N_1}\,
+\overline{N_1}\gamma^\mu P_L \nu_\ell\,Z_\mu
++
+\frac{g_N}{2c_W}
+\sum_{\ell=e,\mu,\tau}
+V_{\ell N_1}\,
+\overline{\nu_\ell}\gamma^\mu P_L N_1\,Z_\mu .
+\]
+
+### `LNHbare`
+
+\[
+\mathcal{L}_{\texttt{LNHbare}}
+=
+-
+\frac{g_N m_{N_1}}{2M_W}
+\left[
+V_{eN_1}\,\overline{N_1}P_L\nu_e\,H
++
+V_{\mu N_1}\,\overline{N_1}P_L\nu_\mu\,H
++
+V_{\tau N_1}\,\overline{N_1}P_L\nu_\tau\,H
+\right].
+\]
+
+### `LNH`
+
+\[
+\mathcal{L}_{\texttt{LNH}}
+=
+\mathcal{L}_{\texttt{LNHbare}}
++
+\mathrm{h.c.}
+\]
+
+Equivalently,
+
+\[
+\mathcal{L}_{\texttt{LNH}}
+=
+-
+\frac{g_N m_{N_1}}{2M_W}
+\sum_{\ell=e,\mu,\tau}
+V_{\ell N_1}\,
+\overline{N_1}P_L\nu_\ell\,H
+-
+\frac{g_N m_{N_1}}{2M_W}
+\sum_{\ell=e,\mu,\tau}
+V_{\ell N_1}\,
+\overline{\nu_\ell}P_R N_1\,H .
+\]
+
+### `LNGbare`
+
+With \(P_R\equiv (1+\gamma^5)/2\),
+
+\[
+\mathcal{L}_{\texttt{LNGbare}}
+=
+i\,\frac{g_N m_{N_1}}{2M_W}
+\left[
+V_{eN_1}\,\overline{\nu_e}P_R N_1\,G^0
++
+V_{\mu N_1}\,\overline{\nu_\mu}P_R N_1\,G^0
++
+V_{\tau N_1}\,\overline{\nu_\tau}P_R N_1\,G^0
+\right]
+\]
+
+\[
+\qquad
++
+i\,\frac{g_N m_{N_1}}{\sqrt{2}M_W}
+\left[
+V_{eN_1}\,\overline{e}P_R N_1\,G^-
++
+V_{\mu N_1}\,\overline{\mu}P_R N_1\,G^-
++
+V_{\tau N_1}\,\overline{\tau}P_R N_1\,G^-
+\right].
+\]
+
+Here `G0` is the neutral Goldstone boson and `GPbar` is the negatively charged Goldstone boson \(G^-\).
+
+### `LNG`
+
+\[
+\mathcal{L}_{\texttt{LNG}}
+=
+\mathcal{L}_{\texttt{LNGbare}}
++
+\mathrm{h.c.}
+\]
+
+That is, it also contains the conjugate \(G^0\) and \(G^+\) interactions implied by hermitian conjugation.
+
+### `LBSM`
+
+\[
+\mathcal{L}_{\texttt{LBSM}}
+=
+\mathcal{L}_{\texttt{LNKin}}
++
+\mathcal{L}_{\texttt{LNCC}}
++
+\mathcal{L}_{\texttt{LNNC}}
++
+\mathcal{L}_{\texttt{LNH}}
++
+\mathcal{L}_{\texttt{LNG}} .
+\]
+
+## Field Table
+
+| Symbol | Spin | \(SU(3)_c\) rep | \(SU(2)_L\) rep | \(U(1)\) charge / hypercharge | Self-conjugate | Mass |
+|---|---:|---:|---:|---:|---|---|
+| `N1` | \(1/2\) | singlet | singlet | \(0\) | yes | `mN1 = 300.` |
+
+The file declares no color, weak-isospin, or abelian quantum number for `N1`; the interactions therefore treat it as a neutral gauge-singlet Majorana fermion coupled through mixing-like parameters to Standard Model leptons.
+
+## Parameters
+
+| Symbol | Type | Value | Multiplies | Physical meaning |
+|---|---|---:|---|---|
+| `VeN1` | external, real | `1.0` | \(N_1\)-electron-flavor charged-current, neutral-current, Higgs, and Goldstone terms | Mixing/coupling coefficient between \(N_1\) and electron-flavor leptons |
+| `VmuN1` | external, real | `0.0` | \(N_1\)-muon-flavor charged-current, neutral-current, Higgs, and Goldstone terms | Mixing/coupling coefficient between \(N_1\) and muon-flavor leptons |
+| `VtaN1` | external, real | `0.0` | \(N_1\)-tau-flavor charged-current, neutral-current, Higgs, and Goldstone terms | Mixing/coupling coefficient between \(N_1\) and tau-flavor leptons |
+
+The internal parameter is
+
+\[
+g_N = \frac{e}{s_W},
+\]
+
+so the new interactions use the Standard Model weak \(SU(2)_L\) coupling normalization.
+
+## Physics Summary
+
+The file encodes a single neutral Majorana fermion \(N_1\), a gauge singlet with mass \(m_{N_1}=300\), coupled to Standard Model leptons through flavor-dependent real coefficients \(V_{eN_1}\), \(V_{\mu N_1}\), and \(V_{\tau N_1}\). It has charged-current interactions with \(W^\pm\ell^\mp\), neutral-current interactions with \(Z\nu_\ell\), Higgs interactions with \(H\nu_\ell\), and the corresponding Feynman-gauge Goldstone interactions. This mediates production and decay channels such as \(W^\ast\to \ell N_1\), \(N_1\to \ell W\), \(N_1\to \nu Z\), and \(N_1\to \nu H\), with Majorana self-conjugacy allowing lepton-number-violating charged-lepton signatures.
+tokens used
+14,050

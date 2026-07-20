@@ -52,6 +52,11 @@ wolframscript_path = "/Applications/Wolfram.app/Contents/MacOS/wolframscript"
 feynrules_path = "/Users/kenwu/hep/FeynRules_v2.3.49"   # dir containing FeynRules.m + Models/
 mg5_path       = "/Users/kenwu/hep/MG5_aMC_v3.6.6"       # dir containing bin/mg5_aMC
 
+# The reverselagrangian tool compiles its review package to a LaTeX PDF
+# (REVIEW.pdf) when `pandoc` + `xelatex` are installed (brew install pandoc;
+# MacTeX or TeX Live). Without them it falls back to REVIEW.md and reports
+# review_pdf_error — nothing else breaks.
+
 # --- LLM for extraction (ExtractLagrangianTool). Pick ONE path ---
 # Local open model (recommended for reproducibility):
 ollama_host  = None                 # localhost:11434

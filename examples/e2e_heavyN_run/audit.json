@@ -1,0 +1,256 @@
+{
+  "schema": "audit-1.0",
+  "created": "2026-07-20T11:09:44+00:00",
+  "events": [
+    {
+      "seq": 1,
+      "ts": "2026-07-20T11:09:44+00:00",
+      "stage": "fetch",
+      "status": "ok",
+      "summary": "Fetched arXiv LaTeX source for 1602.06957 into text/1602.06957_source.tex",
+      "data": {
+        "arxiv_id": "1602.06957",
+        "tex_path": "text/1602.06957_source.tex",
+        "source_type": "tar",
+        "main_tex": "source/1602.06957/heavyNnlo_arXiv02.tex"
+      }
+    },
+    {
+      "seq": 2,
+      "ts": "2026-07-20T11:11:03+00:00",
+      "stage": "generate",
+      "status": "ok",
+      "summary": "Generated initial one-heavy-neutrino FeynRules add-on model at model/1602.06957.fr",
+      "data": {
+        "model_path": "model/1602.06957.fr",
+        "new_fields": [
+          {
+            "name": "N",
+            "spin": "1/2",
+            "su3": "1",
+            "su2": "1",
+            "hypercharge": "0",
+            "electric_charge": "0",
+            "mass": "mN",
+            "width": "WN",
+            "self_conjugate": true
+          }
+        ],
+        "parameters": [
+          "VeN",
+          "VmuN",
+          "VtaN",
+          "gN=ee/sw"
+        ],
+        "lagrangian_terms": [
+          "LNKin",
+          "LNCC(+HC)",
+          "LNNC(+HC)",
+          "LNH(+HC)",
+          "LNG(+HC)"
+        ]
+      }
+    },
+    {
+      "seq": 3,
+      "ts": "2026-07-20T11:11:05+00:00",
+      "stage": "job_submit",
+      "status": "ok",
+      "summary": "submitted validatemodel as job_20260720_111105_63653d",
+      "data": {
+        "job_id": "job_20260720_111105_63653d",
+        "tool": "validatemodel"
+      }
+    },
+    {
+      "seq": 4,
+      "ts": "2026-07-20T11:11:17+00:00",
+      "stage": "job",
+      "status": "ok",
+      "summary": "validatemodel job job_20260720_111105_63653d finished",
+      "data": {
+        "job_id": "job_20260720_111105_63653d",
+        "tool": "validatemodel",
+        "tool_error": false
+      }
+    },
+    {
+      "seq": 5,
+      "ts": "2026-07-20T11:12:56+00:00",
+      "stage": "repair-1",
+      "status": "ok",
+      "summary": "Regenerated model with validator-visible LBSM and removed Q quantum number from the self-conjugate neutral N field",
+      "data": {
+        "motivating_check": "ufo_generation failed: BSM Lagrangian symbol 'LBSM' is undefined; FeynRules warned self-conjugate fields should not carry quantum numbers",
+        "repairs": [
+          "Replaced LN/LFull final terms with LBSM := LNKin + LNCC + LNNC + LNH + LNG",
+          "Removed QuantumNumbers -> {Q -> 0} from self-conjugate N"
+        ]
+      }
+    },
+    {
+      "seq": 6,
+      "ts": "2026-07-20T11:12:59+00:00",
+      "stage": "job_submit",
+      "status": "ok",
+      "summary": "submitted validatemodel as job_20260720_111259_464aee",
+      "data": {
+        "job_id": "job_20260720_111259_464aee",
+        "tool": "validatemodel"
+      }
+    },
+    {
+      "seq": 7,
+      "ts": "2026-07-20T11:14:23+00:00",
+      "stage": "job",
+      "status": "ok",
+      "summary": "validatemodel job job_20260720_111259_464aee finished",
+      "data": {
+        "job_id": "job_20260720_111259_464aee",
+        "tool": "validatemodel",
+        "tool_error": false
+      }
+    },
+    {
+      "seq": 8,
+      "ts": "2026-07-20T11:15:49+00:00",
+      "stage": "repair-2",
+      "status": "ok",
+      "summary": "Renamed the internal heavy-neutrino field from N to N1 to avoid Mathematica built-in N and malformed UFO Python",
+      "data": {
+        "motivating_checks": [
+          "wl:hermiticity reported N::argt for N called with 0 arguments",
+          "wl:mass_spectrum saw spurious non-diagonal terms involving Index[Index]",
+          "madgraph:import rejected malformed UFO Python"
+        ],
+        "repairs": [
+          "ClassName N -> N1, Mass mN -> mN1, Width WN -> WN1",
+          "Mixing parameters VeN/VmuN/VtaN -> VeN1/VmuN1/VtaN1",
+          "Updated all Lagrangian terms to use N1/N1bar while representing the paper's single heavy eigenstate N"
+        ]
+      }
+    },
+    {
+      "seq": 9,
+      "ts": "2026-07-20T11:15:52+00:00",
+      "stage": "job_submit",
+      "status": "ok",
+      "summary": "submitted validatemodel as job_20260720_111552_7ba359",
+      "data": {
+        "job_id": "job_20260720_111552_7ba359",
+        "tool": "validatemodel"
+      }
+    },
+    {
+      "seq": 10,
+      "ts": "2026-07-20T11:16:49+00:00",
+      "stage": "job",
+      "status": "ok",
+      "summary": "validatemodel job job_20260720_111552_7ba359 finished",
+      "data": {
+        "job_id": "job_20260720_111552_7ba359",
+        "tool": "validatemodel",
+        "tool_error": false
+      }
+    },
+    {
+      "seq": 11,
+      "ts": "2026-07-20T11:17:03+00:00",
+      "stage": "validate",
+      "status": "ok",
+      "summary": "Validation passed on round 3: UFO generation, MadGraph import, Hermiticity, kinetic, and mass checks all passed",
+      "data": {
+        "job_id": "job_20260720_111552_7ba359",
+        "passed": true,
+        "checks": [
+          "ufo_generation",
+          "ufo_file:__init__.py",
+          "ufo_file:particles.py",
+          "ufo_file:parameters.py",
+          "ufo_file:vertices.py",
+          "ufo_file:couplings.py",
+          "madgraph:import",
+          "wl:hermiticity",
+          "wl:kinetic_terms",
+          "wl:mass_spectrum"
+        ],
+        "rounds": 3
+      }
+    },
+    {
+      "seq": 12,
+      "ts": "2026-07-20T11:17:06+00:00",
+      "stage": "job_submit",
+      "status": "ok",
+      "summary": "submitted reverselagrangian as job_20260720_111706_4ac4b8",
+      "data": {
+        "job_id": "job_20260720_111706_4ac4b8",
+        "tool": "reverselagrangian"
+      }
+    },
+    {
+      "seq": 13,
+      "ts": "2026-07-20T11:17:57+00:00",
+      "stage": "reverse_reconstruct",
+      "status": "ok",
+      "summary": "blank-slate reconstruction of 1602.06957",
+      "data": {
+        "seconds": 49.9,
+        "error": null
+      }
+    },
+    {
+      "seq": 14,
+      "ts": "2026-07-20T11:19:15+00:00",
+      "stage": "reverse_crosscheck",
+      "status": "ok",
+      "summary": "paper cross-check of 1602.06957",
+      "data": {
+        "seconds": 77.7,
+        "error": null
+      }
+    },
+    {
+      "seq": 15,
+      "ts": "2026-07-20T11:19:15+00:00",
+      "stage": "reverse_package",
+      "status": "ok",
+      "summary": "review package for 1602.06957",
+      "data": {
+        "review": "reverse/1602.06957/REVIEW.md"
+      }
+    },
+    {
+      "seq": 16,
+      "ts": "2026-07-20T11:19:15+00:00",
+      "stage": "job",
+      "status": "ok",
+      "summary": "reverselagrangian job job_20260720_111706_4ac4b8 finished",
+      "data": {
+        "job_id": "job_20260720_111706_4ac4b8",
+        "tool": "reverselagrangian",
+        "tool_error": false
+      }
+    },
+    {
+      "seq": 17,
+      "ts": "2026-07-20T11:19:37+00:00",
+      "stage": "reverse-check",
+      "status": "ok",
+      "summary": "Reverse Lagrangian reconstruction and paper cross-check completed; review package written with flagged disagreements",
+      "data": {
+        "job_id": "job_20260720_111706_4ac4b8",
+        "review_package": "reverse/1602.06957/REVIEW.md",
+        "flagged_disagreements": [
+          "heavy charged-current sign and complex conjugation convention",
+          "heavy neutral-current sign and complex conjugation convention",
+          "real-only mixing parameters versus paper's general complex V_lN",
+          "missing full U,V,X,Y mixing rotation",
+          "missing SM light-neutrino CC/NC terms supplied by base SM if model stack is used",
+          "extra explicit Majorana kinetic/mass term relative to displayed interaction-only equation",
+          "Goldstone signs/i conventions not printed in paper"
+        ]
+      }
+    }
+  ]
+}

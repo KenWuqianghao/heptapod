@@ -1,0 +1,237 @@
+# Reconstructed Physics From `sanitized.fr`
+
+## Lagrangian
+
+The model adds one self-conjugate Majorana fermion \(N_1\). No gauge quantum numbers or indices are declared for \(N_1\), so it is a Standard Model gauge singlet:
+\[
+D_\mu N_1=\partial_\mu N_1,
+\]
+with no \(SU(3)_c\), \(SU(2)_L\), or \(U(1)_Y\) gauge connection acting on it.
+
+### `LNKin`
+
+\[
+\mathcal{L}_{\texttt{LNKin}}
+=
+\frac{i}{2}\,\overline{N_1}\gamma^\mu \partial_\mu N_1
+-
+\frac{1}{2}\,m_{N_1}\,\overline{N_1}N_1 .
+\]
+
+The factors of \(1/2\) are the standard normalization for a self-conjugate Majorana fermion.
+
+### `LNCCbare`
+
+With \(P_L\equiv (1-\gamma^5)/2\),
+
+\[
+\mathcal{L}_{\texttt{LNCCbare}}
+=
+\frac{g_N}{\sqrt{2}}
+\left[
+V_{eN_1}\,\overline{N_1}\gamma^\mu P_L e\,W^+_\mu
++
+V_{\mu N_1}\,\overline{N_1}\gamma^\mu P_L \mu\,W^+_\mu
++
+V_{\tau N_1}\,\overline{N_1}\gamma^\mu P_L \tau\,W^+_\mu
+\right].
+\]
+
+### `LNCC`
+
+\[
+\mathcal{L}_{\texttt{LNCC}}
+=
+\mathcal{L}_{\texttt{LNCCbare}}
++
+\mathrm{h.c.}
+\]
+
+Equivalently,
+
+\[
+\mathcal{L}_{\texttt{LNCC}}
+=
+\frac{g_N}{\sqrt{2}}
+\sum_{\ell=e,\mu,\tau}
+V_{\ell N_1}\,
+\overline{N_1}\gamma^\mu P_L \ell\,W^+_\mu
++
+\frac{g_N}{\sqrt{2}}
+\sum_{\ell=e,\mu,\tau}
+V_{\ell N_1}\,
+\overline{\ell}\gamma^\mu P_L N_1\,W^-_\mu ,
+\]
+where the \(V_{\ell N_1}\) are real external parameters in the file.
+
+### `LNNCBare`
+
+\[
+\mathcal{L}_{\texttt{LNNCBare}}
+=
+\frac{1}{2}\frac{g_N}{c_W}
+\left[
+V_{eN_1}\,\overline{N_1}\gamma^\mu P_L \nu_e\,Z_\mu
++
+V_{\mu N_1}\,\overline{N_1}\gamma^\mu P_L \nu_\mu\,Z_\mu
++
+V_{\tau N_1}\,\overline{N_1}\gamma^\mu P_L \nu_\tau\,Z_\mu
+\right].
+\]
+
+### `LNNC`
+
+\[
+\mathcal{L}_{\texttt{LNNC}}
+=
+\mathcal{L}_{\texttt{LNNCBare}}
++
+\mathrm{h.c.}
+\]
+
+Equivalently,
+
+\[
+\mathcal{L}_{\texttt{LNNC}}
+=
+\frac{g_N}{2c_W}
+\sum_{\ell=e,\mu,\tau}
+V_{\ell N_1}\,
+\overline{N_1}\gamma^\mu P_L \nu_\ell\,Z_\mu
++
+\frac{g_N}{2c_W}
+\sum_{\ell=e,\mu,\tau}
+V_{\ell N_1}\,
+\overline{\nu_\ell}\gamma^\mu P_L N_1\,Z_\mu .
+\]
+
+### `LNHbare`
+
+\[
+\mathcal{L}_{\texttt{LNHbare}}
+=
+-
+\frac{g_N m_{N_1}}{2M_W}
+\left[
+V_{eN_1}\,\overline{N_1}P_L\nu_e\,H
++
+V_{\mu N_1}\,\overline{N_1}P_L\nu_\mu\,H
++
+V_{\tau N_1}\,\overline{N_1}P_L\nu_\tau\,H
+\right].
+\]
+
+### `LNH`
+
+\[
+\mathcal{L}_{\texttt{LNH}}
+=
+\mathcal{L}_{\texttt{LNHbare}}
++
+\mathrm{h.c.}
+\]
+
+Equivalently,
+
+\[
+\mathcal{L}_{\texttt{LNH}}
+=
+-
+\frac{g_N m_{N_1}}{2M_W}
+\sum_{\ell=e,\mu,\tau}
+V_{\ell N_1}\,
+\overline{N_1}P_L\nu_\ell\,H
+-
+\frac{g_N m_{N_1}}{2M_W}
+\sum_{\ell=e,\mu,\tau}
+V_{\ell N_1}\,
+\overline{\nu_\ell}P_R N_1\,H .
+\]
+
+### `LNGbare`
+
+With \(P_R\equiv (1+\gamma^5)/2\),
+
+\[
+\mathcal{L}_{\texttt{LNGbare}}
+=
+i\,\frac{g_N m_{N_1}}{2M_W}
+\left[
+V_{eN_1}\,\overline{\nu_e}P_R N_1\,G^0
++
+V_{\mu N_1}\,\overline{\nu_\mu}P_R N_1\,G^0
++
+V_{\tau N_1}\,\overline{\nu_\tau}P_R N_1\,G^0
+\right]
+\]
+
+\[
+\qquad
++
+i\,\frac{g_N m_{N_1}}{\sqrt{2}M_W}
+\left[
+V_{eN_1}\,\overline{e}P_R N_1\,G^-
++
+V_{\mu N_1}\,\overline{\mu}P_R N_1\,G^-
++
+V_{\tau N_1}\,\overline{\tau}P_R N_1\,G^-
+\right].
+\]
+
+Here `G0` is the neutral Goldstone boson and `GPbar` is the negatively charged Goldstone boson \(G^-\).
+
+### `LNG`
+
+\[
+\mathcal{L}_{\texttt{LNG}}
+=
+\mathcal{L}_{\texttt{LNGbare}}
++
+\mathrm{h.c.}
+\]
+
+That is, it also contains the conjugate \(G^0\) and \(G^+\) interactions implied by hermitian conjugation.
+
+### `LBSM`
+
+\[
+\mathcal{L}_{\texttt{LBSM}}
+=
+\mathcal{L}_{\texttt{LNKin}}
++
+\mathcal{L}_{\texttt{LNCC}}
++
+\mathcal{L}_{\texttt{LNNC}}
++
+\mathcal{L}_{\texttt{LNH}}
++
+\mathcal{L}_{\texttt{LNG}} .
+\]
+
+## Field Table
+
+| Symbol | Spin | \(SU(3)_c\) rep | \(SU(2)_L\) rep | \(U(1)\) charge / hypercharge | Self-conjugate | Mass |
+|---|---:|---:|---:|---:|---|---|
+| `N1` | \(1/2\) | singlet | singlet | \(0\) | yes | `mN1 = 300.` |
+
+The file declares no color, weak-isospin, or abelian quantum number for `N1`; the interactions therefore treat it as a neutral gauge-singlet Majorana fermion coupled through mixing-like parameters to Standard Model leptons.
+
+## Parameters
+
+| Symbol | Type | Value | Multiplies | Physical meaning |
+|---|---|---:|---|---|
+| `VeN1` | external, real | `1.0` | \(N_1\)-electron-flavor charged-current, neutral-current, Higgs, and Goldstone terms | Mixing/coupling coefficient between \(N_1\) and electron-flavor leptons |
+| `VmuN1` | external, real | `0.0` | \(N_1\)-muon-flavor charged-current, neutral-current, Higgs, and Goldstone terms | Mixing/coupling coefficient between \(N_1\) and muon-flavor leptons |
+| `VtaN1` | external, real | `0.0` | \(N_1\)-tau-flavor charged-current, neutral-current, Higgs, and Goldstone terms | Mixing/coupling coefficient between \(N_1\) and tau-flavor leptons |
+
+The internal parameter is
+
+\[
+g_N = \frac{e}{s_W},
+\]
+
+so the new interactions use the Standard Model weak \(SU(2)_L\) coupling normalization.
+
+## Physics Summary
+
+The file encodes a single neutral Majorana fermion \(N_1\), a gauge singlet with mass \(m_{N_1}=300\), coupled to Standard Model leptons through flavor-dependent real coefficients \(V_{eN_1}\), \(V_{\mu N_1}\), and \(V_{\tau N_1}\). It has charged-current interactions with \(W^\pm\ell^\mp\), neutral-current interactions with \(Z\nu_\ell\), Higgs interactions with \(H\nu_\ell\), and the corresponding Feynman-gauge Goldstone interactions. This mediates production and decay channels such as \(W^\ast\to \ell N_1\), \(N_1\to \ell W\), \(N_1\to \nu Z\), and \(N_1\to \nu H\), with Majorana self-conjugacy allowing lepton-number-violating charged-lepton signatures.

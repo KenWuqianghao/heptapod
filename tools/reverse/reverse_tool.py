@@ -30,11 +30,12 @@ from orchestral.tools.base.field_utils import RuntimeField, StateField
 from tools.frgen.fr_parser import parse_lagrangian_terms
 from tools.logging.audit import append_event
 from tools.reverse.blank_agent import DEFAULT_BLANK_AGENT_CMD, run_blank_agent
+from tools.reverse.pdf_build import compile_review_pdf
 from tools.reverse.prompts import CROSSCHECK_PROMPT, RECONSTRUCT_PROMPT
 from tools.reverse.review_package import build_review_md
 from tools.reverse.sanitize import sanitize_fr
 
-SCHEMA_VERSION = "reverse-lagrangian-1.0"
+SCHEMA_VERSION = "reverse-lagrangian-1.1"
 
 _ACTIONS = ("reconstruct", "crosscheck", "full")
 
@@ -58,8 +59,9 @@ class ReverseLagrangianTool(BaseTool):
     context, and collects a reconstruction of the physics: the Lagrangian in
     LaTeX term by term, a field table, and parameter meanings. With
     paper_tex_path set, a second fresh session compares the reconstruction
-    against the paper (term-by-term agree/disagree table). Assembles
-    REVIEW.md for a human physicist to sign off.
+    against the paper (term-by-term agree/disagree table). Assembles the
+    review package and compiles it to a LaTeX PDF (REVIEW.pdf) for a human
+    physicist to sign off; REVIEW.md is kept as the typeset source.
 
     Runs take minutes — submit via submitjob(tool_name="reverselagrangian")
     and poll jobstatus rather than calling directly.
@@ -243,8 +245,16 @@ class ReverseLagrangianTool(BaseTool):
         review_path = os.path.join(out_abs, "REVIEW.md")
         with open(review_path, "w", encoding="utf-8") as fh:
             fh.write(review)
+
+        # The physicist deliverable is a LaTeX-compiled PDF; REVIEW.md stays
+        # on disk as the pandoc source and as the fallback when no converter
+        # is installed.
+        pdf_res = compile_review_pdf(review_path)
+        review_pdf_rel = os.path.join(out_rel, "REVIEW.pdf") \
+            if pdf_res["ok"] else None
         self._audit("reverse_package", "ok", f"review package for {stem}",
-                    {"review": os.path.join(out_rel, "REVIEW.md")})
+                    {"review": review_pdf_rel or os.path.join(out_rel, "REVIEW.md"),
+                     "pdf_error": pdf_res["error"]})
 
         failed = [r for r in agent_runs if r.get("error")]
         result = {
@@ -257,7 +267,9 @@ class ReverseLagrangianTool(BaseTool):
             if recon_md else None,
             "crosscheck": os.path.join(out_rel, "crosscheck.md")
             if cross_md else None,
-            "review_package": os.path.join(out_rel, "REVIEW.md"),
+            "review_package": review_pdf_rel or os.path.join(out_rel, "REVIEW.md"),
+            "review_markdown_source": os.path.join(out_rel, "REVIEW.md"),
+            "review_pdf_error": pdf_res["error"],
             "lagrangian_terms": [
                 {"name": t["name"], "op": t["op"], "n_chars": len(t["expression"])}
                 for t in terms

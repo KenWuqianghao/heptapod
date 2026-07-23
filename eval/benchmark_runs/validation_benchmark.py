@@ -35,6 +35,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import signal
 import subprocess
 import sys
 import time
@@ -88,19 +89,28 @@ def compile_to_ufo(page: str, fr: Path, lag: str, outdir: Path) -> dict:
         f"OutputDir={outdir}", "Checks=true", "AddDecays=false", f"LagName={lag}",
     ]
     t0 = time.time()
+    # Popen + process-group kill: subprocess.run(timeout=) only kills
+    # wolframscript, then blocks in communicate() until the orphaned
+    # WolframKernel children release the output pipe (observed 85 min hang).
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                         text=True, stdin=subprocess.DEVNULL, start_new_session=True)
     try:
-        p = subprocess.run(cmd, capture_output=True, text=True,
-                           timeout=COMPILE_TIMEOUT, stdin=subprocess.DEVNULL)
-        out = (p.stdout or "") + "\n" + (p.stderr or "")
+        out, _ = p.communicate(timeout=COMPILE_TIMEOUT)
         rc = p.returncode
         timed_out = False
-    except subprocess.TimeoutExpired as e:
-        out = (e.stdout or "") if isinstance(e.stdout, str) else ""
+    except subprocess.TimeoutExpired:
+        os.killpg(os.getpgid(p.pid), signal.SIGKILL)
+        try:
+            out, _ = p.communicate(timeout=30)
+        except Exception:
+            out = ""
         rc = -1
         timed_out = True
     finally:
         _kill_stale_kernels()
+    out = out or ""
     dt = round(time.time() - t0, 1)
+    (outdir.parent / "compile.log").write_text(out)
     ufo_files = [f for f in ("particles.py", "parameters.py", "couplings.py",
                              "vertices.py", "lorentz.py")
                  if (outdir / f).is_file()]
@@ -141,6 +151,7 @@ def madgraph_import(outdir: Path, workdir: Path) -> dict:
         p = subprocess.run([str(MG5), str(cmdfile)], capture_output=True, text=True,
                            timeout=MG5_TIMEOUT, stdin=subprocess.DEVNULL, cwd=str(workdir))
         out = (p.stdout or "") + "\n" + (p.stderr or "")
+        (workdir / "mg5.log").write_text(out)
     except subprocess.TimeoutExpired:
         return {"madgraph_import_ok": False, "reason": "timeout"}
     fatal = ("Traceback (most recent call last)" in out

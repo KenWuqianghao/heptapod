@@ -1,0 +1,144 @@
+{
+  "aggregate": {
+    "n_models": 1,
+    "pass_oneshot": 0,
+    "pass_repaired": 0,
+    "fail_after_repair": 1,
+    "agent_no_change": 0,
+    "max_rounds": 3
+  },
+  "results": [
+    {
+      "page": "SLQrules",
+      "rounds": [
+        {
+          "round": 0,
+          "fr": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/SLQrules/repair/round0/model.fr",
+          "lag_symbol": "LBSM",
+          "compile_ok": false,
+          "timed_out": false,
+          "exit": 1,
+          "seconds": 7.1,
+          "ufo_files": [],
+          "checks": {},
+          "protected_symbol_errors": 0,
+          "log_tail": "/kenwu/Documents/Github/heptapod/eval/benchmark_runs/SLQrules/repair/round0/model.fr\")\n\nGeneral::stop: Further output of Syntax::sntx will be suppressed during this calculation.\nMerging model-files...\n\nSyntax::sntx: Invalid syntax in or before \"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ^\". (line 660 of \"/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/SLQrules/repair/round0/model.fr\")\nThis model implementation was created by\nAndreas Crivellin\nLuc Schnell\nModel Version: 1.0\nFor more information, type ModelInformation[].\n\n   - Loading particle classes.\n   - Loading gauge group classes.\n   - Loading parameter classes.\n\nModel SLQrules_gen loaded.\n[INFO] Total Lagrangian: LSM + LBSM\nError: BSM Lagrangian symbol 'LBSM' is undefined in the model.\n\n",
+          "status": "compile_failed",
+          "compile_log": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/SLQrules/repair/round0/compile.log",
+          "full_pass": false,
+          "error_tags": [
+            "lag_symbol_undefined",
+            "fr_syntax_error"
+          ]
+        },
+        {
+          "round": 1,
+          "fr": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/SLQrules/repair/round1/model.fr",
+          "lag_symbol": "LTot",
+          "compile_ok": false,
+          "timed_out": true,
+          "exit": -1,
+          "seconds": 600.1,
+          "ufo_files": [],
+          "checks": {},
+          "protected_symbol_errors": 0,
+          "log_tail": "",
+          "status": "compile_timeout",
+          "compile_log": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/SLQrules/repair/round1/compile.log",
+          "full_pass": false,
+          "error_tags": [
+            "compile_timeout"
+          ]
+        },
+        {
+          "round": 2,
+          "fr": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/SLQrules/repair/round2/model.fr",
+          "lag_symbol": "LTot",
+          "compile_ok": true,
+          "timed_out": false,
+          "exit": 0,
+          "seconds": 201.6,
+          "ufo_files": [
+            "particles.py",
+            "parameters.py",
+            "couplings.py",
+            "vertices.py",
+            "lorentz.py"
+          ],
+          "checks": {
+            "hermiticity": false,
+            "kinetic_terms": true,
+            "mass_spectrum": true
+          },
+          "protected_symbol_errors": 3,
+          "log_tail": "",
+          "n_particles_ufo": 33,
+          "madgraph_import_ok": false,
+          "mg5_particles": null,
+          "lepton_number_violation": false,
+          "mg5_tail": "C/models/import_ufo.py\", line 251, in import_model\n    model = import_full_model(model_path, decay, prefix)\n  File \"/Users/kenwu/MG5_aMC/models/import_ufo.py\", line 413, in import_full_model\n    ufo_model = ufomodels.load_model(model_path, decay)\n  File \"/Users/kenwu/MG5_aMC/models/__init__.py\", line 101, in load_model\n    raise UFOError(str(error))\nmodels.UFOError: invalid syntax (object_library.py, line 268)\n\u001b[1;31mCommand \"import /private/tmp/repair_bench/SLQrules/round2/mg5run/mg5_import.txt\" interrupted in sub-command:\n\"import model /tmp/repair_bench/SLQrules/round2/UFO\" with error:\nUFOError : invalid syntax (object_library.py, line 268)\nPlease report this bug on https://bugs.launchpad.net/mg5amcnlo\nMore information is found in 'MG5_debug'.\nPlease attach this file to your report.\u001b[0m\n",
+          "mg5_debug_tail": "graph_interface.py\", line 5837, in do_import\n    raise self.InvalidCmd('UFO model not python3 compatible. You can convert it via the command \\nconvert model %s\\nYou can also type \\\"set auto_convert_model T\\\" to automatically convert all python2 module to be python3 compatible in the future.' % model_path)\nmadgraph.InvalidCmd: UFO model not python3 compatible. You can convert it via the command \nconvert model /tmp/repair_bench/SLQrules/round2/UFO\nYou can also type \"set auto_convert_model T\" to automatically convert all python2 module to be python3 compatible in the future.\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1570, in onecmd\n    return self.onecmd_orig(line, **opt)\n           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1519, in onecmd_orig\n    return func(arg, **opt)\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/master_interface.py\", line 281, in do_import\n    self.cmd.do_import(self, *args, **opts)\n    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/madgraph_interface.py\", line 5893, in do_import\n    self.import_command_file(args[1])\n    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1718, in import_command_file\n    self.exec_cmd(line, precmd=True)\n    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1599, in exec_cmd\n    stop = Cmd.onecmd_orig(current_interface, line, **opt)\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1519, in onecmd_orig\n    return func(arg, **opt)\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/master_interface.py\", line 281, in do_import\n    self.cmd.do_import(self, *args, **opts)\n    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/madgraph_interface.py\", line 5835, in do_import\n    raise err\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/madgraph_interface.py\", line 5819, in do_import\n    self._curr_model = import_ufo.import_model(args[1], prefix=prefix,\n                       ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n        complex_mass_scheme=self.options['complex_mass_scheme'],\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n        options=options)\n        ^^^^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/models/import_ufo.py\", line 251, in import_model\n    model = import_full_model(model_path, decay, prefix)\n  File \"/Users/kenwu/MG5_aMC/models/import_ufo.py\", line 413, in import_full_model\n    ufo_model = ufomodels.load_model(model_path, decay)\n  File \"/Users/kenwu/MG5_aMC/models/__init__.py\", line 101, in load_model\n    raise UFOError(str(error))\nmodels.UFOError: invalid syntax (object_library.py, line 268)\nFail to write options with error No model currently active, please import a model!",
+          "status": "compiled",
+          "compile_log": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/SLQrules/repair/round2/compile.log",
+          "full_pass": false,
+          "error_tags": [
+            "hermiticity_fail",
+            "mg5_import_fail",
+            "mg5_python_traceback",
+            "mg5_invalid_cmd"
+          ]
+        },
+        {
+          "round": 3,
+          "fr": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/SLQrules/repair/round3/model.fr",
+          "lag_symbol": "LTot",
+          "compile_ok": false,
+          "timed_out": true,
+          "exit": -1,
+          "seconds": 600.1,
+          "ufo_files": [],
+          "checks": {},
+          "protected_symbol_errors": 0,
+          "log_tail": "",
+          "status": "compile_timeout",
+          "compile_log": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/SLQrules/repair/round3/compile.log",
+          "full_pass": false,
+          "error_tags": [
+            "compile_timeout"
+          ]
+        }
+      ],
+      "agent_runs": [
+        {
+          "exit": 0,
+          "timed_out": false,
+          "seconds": 248.9,
+          "notes": "Updated `model.fr` in place: replaced the undeclared component-only class setup with FeynRules classes for the fields actually used in the Lagrangian (`S1`, `S1t`, `R2`, `R2t`, `S3`) while preserving particle names, charges/hypercharges, masses, widths, and quantum numbers; removed invalid `HC[...]` placeholders by splitting non-Hermitian interaction blocks into `core + HC[core]`; replaced malformed/undefined quartic shorthand aliases with explicit invariant contractions using the declared fields and existing parameters; and changed the final top-level assignment to the required `LTot := LQ2Phi + LQkin + LQf + LQ3Phi + LQ4Phi;`. I also removed the undefined `LBSM` final symbol so the validation harness can find the BSM Lagrangian under `LTot`.",
+          "round": 1,
+          "changed": true,
+          "diff_lines": 158
+        },
+        {
+          "exit": 0,
+          "timed_out": false,
+          "seconds": 629.7,
+          "notes": "Updated `model.fr` in place by adding explicit `Value` entries for the indexed internal mixing/Yukawa parameters, using identity matrices for the unitary `W*mat` parameters and `1.0` entries for the Yukawa matrices, so UFO export has concrete parameter definitions; I also removed eager `ExpandIndices[..., FlavorExpand -> ...]` wrappers from the BSM Lagrangian pieces and combined duplicate quartic scalar operators into summed coefficients, preserving the same fields, couplings, terms, and `LTot` structure while avoiding the reported FeynRules compile-time blowup.",
+          "round": 2,
+          "changed": true,
+          "diff_lines": 36
+        },
+        {
+          "exit": 0,
+          "timed_out": false,
+          "seconds": 183.0,
+          "notes": "Updated `model.fr` in place by replacing direct BSM use of the unresolved SM Higgs doublet symbols `Phi`/`Phibar` with explicit component helpers built from `GP`, `G0`, `H`, and `vev`, so those names no longer leak into UFO particle export. I also rewrote the `Y33` adjoint scalar term as `core + HC[core]` with the same normalization, making its Hermiticity manifest to FeynRules while preserving the operator. `LTot` remains the final top-level assignment. I could not run the full Wolfram validation here because `wolframscript` has no configured kernel path in this environment.",
+          "round": 3,
+          "changed": true,
+          "diff_lines": 17
+        }
+      ],
+      "final_status": "fail_after_repair",
+      "rounds_used": 3
+    }
+  ]
+}

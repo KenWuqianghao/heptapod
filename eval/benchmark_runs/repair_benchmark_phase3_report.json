@@ -1,0 +1,686 @@
+{
+  "aggregate": {
+    "n_models": 4,
+    "pass_oneshot": 0,
+    "pass_repaired": 1,
+    "fail_after_repair": 3,
+    "agent_no_change": 0,
+    "max_rounds": 3
+  },
+  "results": [
+    {
+      "page": "ALRM_general",
+      "seed": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/ALRM_general/repair2/round0/model.fr",
+      "rounds": [
+        {
+          "round": 0,
+          "fr": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/ALRM_general/repair3/round0/model.fr",
+          "lag_symbol": "LeffALRM",
+          "compile_ok": true,
+          "timed_out": false,
+          "exit": 0,
+          "seconds": 37.1,
+          "ufo_files": [
+            "particles.py",
+            "parameters.py",
+            "couplings.py",
+            "vertices.py",
+            "lorentz.py"
+          ],
+          "checks": {
+            "hermiticity": true,
+            "kinetic_terms": true,
+            "mass_spectrum": true
+          },
+          "protected_symbol_errors": 0,
+          "log_tail": "",
+          "n_particles_ufo": 40,
+          "madgraph_import_ok": false,
+          "mg5_particles": null,
+          "lepton_number_violation": false,
+          "mg5_tail": "mport_ufo.py\", line 251, in import_model\n    model = import_full_model(model_path, decay, prefix)\n  File \"/Users/kenwu/MG5_aMC/models/import_ufo.py\", line 413, in import_full_model\n    ufo_model = ufomodels.load_model(model_path, decay)\n  File \"/Users/kenwu/MG5_aMC/models/__init__.py\", line 101, in load_model\n    raise UFOError(str(error))\nmodels.UFOError: invalid syntax (object_library.py, line 268)\n\u001b[1;31mCommand \"import /private/tmp/repair_bench3/ALRM_general/round0/mg5run/mg5_import.txt\" interrupted in sub-command:\n\"import model /tmp/repair_bench3/ALRM_general/round0/UFO\" with error:\nUFOError : invalid syntax (object_library.py, line 268)\nPlease report this bug on https://bugs.launchpad.net/mg5amcnlo\nMore information is found in 'MG5_debug'.\nPlease attach this file to your report.\u001b[0m\n",
+          "mg5_debug_tail": "_interface.py\", line 5837, in do_import\n    raise self.InvalidCmd('UFO model not python3 compatible. You can convert it via the command \\nconvert model %s\\nYou can also type \\\"set auto_convert_model T\\\" to automatically convert all python2 module to be python3 compatible in the future.' % model_path)\nmadgraph.InvalidCmd: UFO model not python3 compatible. You can convert it via the command \nconvert model /tmp/repair_bench3/ALRM_general/round0/UFO\nYou can also type \"set auto_convert_model T\" to automatically convert all python2 module to be python3 compatible in the future.\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1570, in onecmd\n    return self.onecmd_orig(line, **opt)\n           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1519, in onecmd_orig\n    return func(arg, **opt)\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/master_interface.py\", line 281, in do_import\n    self.cmd.do_import(self, *args, **opts)\n    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/madgraph_interface.py\", line 5893, in do_import\n    self.import_command_file(args[1])\n    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1718, in import_command_file\n    self.exec_cmd(line, precmd=True)\n    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1599, in exec_cmd\n    stop = Cmd.onecmd_orig(current_interface, line, **opt)\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1519, in onecmd_orig\n    return func(arg, **opt)\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/master_interface.py\", line 281, in do_import\n    self.cmd.do_import(self, *args, **opts)\n    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/madgraph_interface.py\", line 5835, in do_import\n    raise err\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/madgraph_interface.py\", line 5819, in do_import\n    self._curr_model = import_ufo.import_model(args[1], prefix=prefix,\n                       ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n        complex_mass_scheme=self.options['complex_mass_scheme'],\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n        options=options)\n        ^^^^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/models/import_ufo.py\", line 251, in import_model\n    model = import_full_model(model_path, decay, prefix)\n  File \"/Users/kenwu/MG5_aMC/models/import_ufo.py\", line 413, in import_full_model\n    ufo_model = ufomodels.load_model(model_path, decay)\n  File \"/Users/kenwu/MG5_aMC/models/__init__.py\", line 101, in load_model\n    raise UFOError(str(error))\nmodels.UFOError: invalid syntax (object_library.py, line 268)\nFail to write options with error No model currently active, please import a model!",
+          "status": "compiled",
+          "ufo_syntax_errors": [
+            {
+              "file": "couplings.py",
+              "line": 206,
+              "msg": "unterminated string literal (detected at line 206)",
+              "context": "  204 | GC_49 = Coupling(name = 'GC_49',\n  205 |                  value = 'ExtractFermionsFromParticleList(Table(List(List(List(G,1),List(G,2),List(G,3),List(G,4),List(h0(5),5)),(0 + 1*complex(0,1))*G**2*Ghgg*PRIVATExSortStrucConst(f(1,3,Index(Gluon,xx$16717,1)))*PRIVATExSortStrucConst(f(2,4,Index(Gluon,xx$16717,1)))*Metric(1,4)*Metric(2,3)*Classe\n  206 |                  order = {'                                                                                                                                 2                                                                                                                                               \n  207 | PRIVATE`GetIntOrder[ExtractFermionsFromParticleList[Table[{{{G, 1}, {G, 2}, {G, 3}, {G, 4}, {h0[Index[{}[[1]], Ext[5]]], 5}}, I G  Ghgg PRIVATE`SortStrucConst[C$f[Index[Gluon, Ext[1]], Index[Gluon, Ext[3]], Index[Gluon, xx$16717, 1]]] PRIVATE`SortStrucConst[C$f[Index[Gluon, Ext[2]], Index[Gluon, Ext\n  208 | "
+            },
+            {
+              "file": "vertices.py",
+              "line": 82,
+              "msg": "closing parenthesis ')' does not match opening parenthesis '[' on line 79",
+              "context": "   80 |               color = [ '1' ],\n   81 |               lorentz = [ L.<>PRIVATE`ConvertSpinToString[0]<>PRIVATE`ConvertSpinToString[0]<>1 ],\n   82 |               couplings = {(0,-1 + PRIVATE`ConvertSpinToString[0]<>PRIVATE`ConvertSpinToString[0]<>1):C.GC_46})\n   83 | \n   84 | V_13 = Vertex(name = 'V_13',"
+            }
+          ],
+          "ufo_import_error": "                                                                                                                                                                                                                                                                                       2                                                                                                                                                                                                                                                                                                                                                                                           2                                                                                                                                                                                                                                                                                                                                                                                           2                                                                                                                                                                                                                                                                                                                                                                                           2\n             ^\nSyntaxError: unterminated string literal (detected at line 206)\n",
+          "ufo_dir": "/tmp/repair_bench3/ALRM_general/round0/UFO",
+          "compile_log": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/ALRM_general/repair3/round0/compile.log",
+          "full_pass": false,
+          "error_tags": [
+            "selfconjugate_quantum_numbers",
+            "mg5_import_fail",
+            "ufo_python_syntax_error",
+            "mg5_python_traceback",
+            "mg5_invalid_cmd"
+          ]
+        },
+        {
+          "round": 1,
+          "fr": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/ALRM_general/repair3/round1/model.fr",
+          "lag_symbol": "LTot",
+          "compile_ok": false,
+          "timed_out": true,
+          "exit": -1,
+          "seconds": 5274.4,
+          "ufo_files": [],
+          "checks": {},
+          "protected_symbol_errors": 0,
+          "log_tail": "ength 2 of dimension 1 in {2, 2}.\n\nGeneral::stop: Further output of Length `1` of dimension `2` in `3` is incommensurate with length `4` of dimension 1 in `5`. will be suppressed during this calculation.\nMerging model-files...\nThis model implementation was created by\nMariana Frank\nBenjamin Fuks\nOzer Ozdal\nModel Version: 1.0\nFor more information, type ModelInformation[].\n\n   - Loading particle classes.\n\nToExpression::argb: ToExpression called with 0 arguments; between 1 and 3 arguments are expected.\n\nToExpression::argb: ToExpression called with 0 arguments; between 1 and 3 arguments are expected.\n   - Loading gauge group classes.\n   - Loading parameter classes.\n\nModel ALRM_general_gen loaded.\n\nInner::incom: Length 1 of dimension 1 in {Index[SU2D]} is incommensurate with length 2 of dimension 1 in {2, 2}.\n\nInner::incom: Length 1 of dimension 1 in {Index[SU2D]} is incommensurate with length 2 of dimension 1 in {2, 2}.\n[INFO] Total Lagrangian: LSM + LTot\n[INFO] Running FeynRules consistency checks.\nHEPTAPOD-CHECK-BEGIN: hermiticity\nChecking for hermiticity by calculating the Feynman rules contained in L-HC[L].\nIf the lagrangian is hermitian, then the number of vertices should be zero.\n",
+          "status": "compile_timeout",
+          "compile_log": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/ALRM_general/repair3/round1/compile.log",
+          "full_pass": false,
+          "error_tags": [
+            "compile_timeout"
+          ]
+        },
+        {
+          "round": 2,
+          "fr": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/ALRM_general/repair3/round2/model.fr",
+          "lag_symbol": "LTot",
+          "compile_ok": false,
+          "timed_out": true,
+          "exit": -1,
+          "seconds": 5240.8,
+          "ufo_files": [],
+          "checks": {},
+          "protected_symbol_errors": 0,
+          "log_tail": "m kernel 7 (Local):\nInner::incom: Length 1 of dimension 1 in {Index[SU2D]} is incommensurate with length 2 of dimension 1 in {2, 2}.\n\nGeneral::stop: Further output of Length `1` of dimension `2` in `3` is incommensurate with length `4` of dimension 1 in `5`. will be suppressed during this calculation.\nMerging model-files...\nThis model implementation was created by\nMariana Frank\nBenjamin Fuks\nOzer Ozdal\nModel Version: 1.0\nFor more information, type ModelInformation[].\n\n   - Loading particle classes.\n\nToExpression::argb: ToExpression called with 0 arguments; between 1 and 3 arguments are expected.\n   - Loading gauge group classes.\n   - Loading parameter classes.\n\nModel ALRM_general_gen loaded.\n\nInner::incom: Length 1 of dimension 1 in {Index[SU2D]} is incommensurate with length 2 of dimension 1 in {2, 2}.\n\nInner::incom: Length 1 of dimension 1 in {Index[SU2D]} is incommensurate with length 2 of dimension 1 in {2, 2}.\n[INFO] Total Lagrangian: LSM + LTot\n[INFO] Running FeynRules consistency checks.\nHEPTAPOD-CHECK-BEGIN: hermiticity\nChecking for hermiticity by calculating the Feynman rules contained in L-HC[L].\nIf the lagrangian is hermitian, then the number of vertices should be zero.\n",
+          "status": "compile_timeout",
+          "compile_log": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/ALRM_general/repair3/round2/compile.log",
+          "full_pass": false,
+          "error_tags": [
+            "compile_timeout"
+          ]
+        },
+        {
+          "round": 3,
+          "fr": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/ALRM_general/repair3/round3/model.fr",
+          "lag_symbol": "LTot",
+          "compile_ok": false,
+          "timed_out": true,
+          "exit": -1,
+          "seconds": 3398.5,
+          "ufo_files": [],
+          "checks": {},
+          "protected_symbol_errors": 0,
+          "log_tail": "m kernel 5 (Local):\nInner::incom: Length 1 of dimension 1 in {Index[SU2D]} is incommensurate with length 2 of dimension 1 in {2, 2}.\n\nGeneral::stop: Further output of Length `1` of dimension `2` in `3` is incommensurate with length `4` of dimension 1 in `5`. will be suppressed during this calculation.\nMerging model-files...\nThis model implementation was created by\nMariana Frank\nBenjamin Fuks\nOzer Ozdal\nModel Version: 1.0\nFor more information, type ModelInformation[].\n\n   - Loading particle classes.\n\nToExpression::argb: ToExpression called with 0 arguments; between 1 and 3 arguments are expected.\n   - Loading gauge group classes.\n   - Loading parameter classes.\n\nModel ALRM_general_gen loaded.\n\nInner::incom: Length 1 of dimension 1 in {Index[SU2D]} is incommensurate with length 2 of dimension 1 in {2, 2}.\n\nInner::incom: Length 1 of dimension 1 in {Index[SU2D]} is incommensurate with length 2 of dimension 1 in {2, 2}.\n[INFO] Total Lagrangian: LSM + LTot\n[INFO] Running FeynRules consistency checks.\nHEPTAPOD-CHECK-BEGIN: hermiticity\nChecking for hermiticity by calculating the Feynman rules contained in L-HC[L].\nIf the lagrangian is hermitian, then the number of vertices should be zero.\n",
+          "status": "compile_timeout",
+          "compile_log": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/ALRM_general/repair3/round3/compile.log",
+          "full_pass": false,
+          "error_tags": [
+            "compile_timeout"
+          ]
+        }
+      ],
+      "agent_runs": [
+        {
+          "exit": 0,
+          "timed_out": false,
+          "seconds": 59.6,
+          "notes": "Updated `model.fr` in place: I added explicit `Indices -> {Index[Scalar4]}` / `Indices -> {Index[Scalar2]}` to the multi-member scalar classes `h0`, `A0`, and `Hp`, which fixes the malformed `Index[{}[[1]]]` structures leaking into the generated UFO; removed trivial `Q -> 0` quantum-number declarations from self-conjugate neutral classes `Zp`, `h0`, and `A0`; and added the required final top-level `LTot := LYALRM + LSALRM + LFALRM + LeffALRM;` assignment so the total BSM Lagrangian is defined last.",
+          "round": 1,
+          "changed": true,
+          "diff_lines": 8
+        },
+        {
+          "exit": 0,
+          "timed_out": false,
+          "seconds": 1406.5,
+          "notes": "Updated `model.fr` by undoing the timeout-causing artificial scalar flavor indices and splitting `h0/h01/h02/h03`, `A01/A02`, and `Hp1/Hp2` into separate scalar classes instead of indexed multiplets. This preserves the same fields, masses, widths, charges, and Lagrangian terms, while avoiding the malformed empty-index UFO serialization and the heavy scalar-flavor expansion that caused the compile timeout; I also assigned `h01` a unique PDG code and kept `LTot := LYALRM + LSALRM + LFALRM + LeffALRM;` as the final top-level assignment.",
+          "round": 2,
+          "changed": true,
+          "diff_lines": 118
+        },
+        {
+          "exit": 0,
+          "timed_out": false,
+          "seconds": 4245.7,
+          "notes": "Updated `model.fr` in place: fixed the undefined `Phihat` typo in `LYALRM` to use the defined `phihat`, changed the Lagrangian helper assignments to delayed definitions so Wolfram does not expand the matrix expressions at file load, and replaced the invalid `Value -> Internal` placeholders for `lam1`, `MH02`, and `MH03` with valid external Les Houches inputs so they cannot leak as unevaluated `Internal` symbols into the UFO Python. I also verified the file now loads with `WolframKernel` and that `LTot` remains the final top-level assignment.",
+          "round": 3,
+          "changed": true,
+          "diff_lines": 38
+        }
+      ],
+      "final_status": "fail_after_repair",
+      "rounds_used": 3,
+      "best_round": 0,
+      "best_round_summary": "status=compiled, hermiticity=True, kinetic=True, mass=True, madgraph_import=False, tags=selfconjugate_quantum_numbers, mg5_import_fail, ufo_python_syntax_error, mg5_python_traceback, mg5_invalid_cmd, compile_seconds=37.1"
+    },
+    {
+      "page": "HNLs",
+      "seed": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/HNLs/repair2/round0/model.fr",
+      "rounds": [
+        {
+          "round": 0,
+          "fr": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/HNLs/repair3/round0/model.fr",
+          "lag_symbol": "LTot",
+          "compile_ok": true,
+          "timed_out": false,
+          "exit": 0,
+          "seconds": 380.2,
+          "ufo_files": [
+            "particles.py",
+            "parameters.py",
+            "couplings.py",
+            "vertices.py",
+            "lorentz.py"
+          ],
+          "checks": {
+            "hermiticity": true,
+            "kinetic_terms": true,
+            "mass_spectrum": true
+          },
+          "protected_symbol_errors": 2,
+          "log_tail": "",
+          "n_particles_ufo": 44,
+          "madgraph_import_ok": false,
+          "mg5_particles": null,
+          "lepton_number_violation": false,
+          "mg5_tail": "MG5_aMC/models/import_ufo.py\", line 251, in import_model\n    model = import_full_model(model_path, decay, prefix)\n  File \"/Users/kenwu/MG5_aMC/models/import_ufo.py\", line 413, in import_full_model\n    ufo_model = ufomodels.load_model(model_path, decay)\n  File \"/Users/kenwu/MG5_aMC/models/__init__.py\", line 101, in load_model\n    raise UFOError(str(error))\nmodels.UFOError: invalid syntax (object_library.py, line 268)\n\u001b[1;31mCommand \"import /private/tmp/repair_bench3/HNLs/round0/mg5run/mg5_import.txt\" interrupted in sub-command:\n\"import model /tmp/repair_bench3/HNLs/round0/UFO\" with error:\nUFOError : invalid syntax (object_library.py, line 268)\nPlease report this bug on https://bugs.launchpad.net/mg5amcnlo\nMore information is found in 'MG5_debug'.\nPlease attach this file to your report.\u001b[0m\n",
+          "mg5_debug_tail": "madgraph_interface.py\", line 5837, in do_import\n    raise self.InvalidCmd('UFO model not python3 compatible. You can convert it via the command \\nconvert model %s\\nYou can also type \\\"set auto_convert_model T\\\" to automatically convert all python2 module to be python3 compatible in the future.' % model_path)\nmadgraph.InvalidCmd: UFO model not python3 compatible. You can convert it via the command \nconvert model /tmp/repair_bench3/HNLs/round0/UFO\nYou can also type \"set auto_convert_model T\" to automatically convert all python2 module to be python3 compatible in the future.\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1570, in onecmd\n    return self.onecmd_orig(line, **opt)\n           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1519, in onecmd_orig\n    return func(arg, **opt)\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/master_interface.py\", line 281, in do_import\n    self.cmd.do_import(self, *args, **opts)\n    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/madgraph_interface.py\", line 5893, in do_import\n    self.import_command_file(args[1])\n    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1718, in import_command_file\n    self.exec_cmd(line, precmd=True)\n    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1599, in exec_cmd\n    stop = Cmd.onecmd_orig(current_interface, line, **opt)\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1519, in onecmd_orig\n    return func(arg, **opt)\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/master_interface.py\", line 281, in do_import\n    self.cmd.do_import(self, *args, **opts)\n    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/madgraph_interface.py\", line 5835, in do_import\n    raise err\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/madgraph_interface.py\", line 5819, in do_import\n    self._curr_model = import_ufo.import_model(args[1], prefix=prefix,\n                       ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n        complex_mass_scheme=self.options['complex_mass_scheme'],\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n        options=options)\n        ^^^^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/models/import_ufo.py\", line 251, in import_model\n    model = import_full_model(model_path, decay, prefix)\n  File \"/Users/kenwu/MG5_aMC/models/import_ufo.py\", line 413, in import_full_model\n    ufo_model = ufomodels.load_model(model_path, decay)\n  File \"/Users/kenwu/MG5_aMC/models/__init__.py\", line 101, in load_model\n    raise UFOError(str(error))\nmodels.UFOError: invalid syntax (object_library.py, line 268)\nFail to write options with error No model currently active, please import a model!",
+          "status": "compiled",
+          "ufo_syntax_errors": [
+            {
+              "file": "lorentz.py",
+              "line": 15,
+              "msg": "cannot assign to literal here. Maybe you meant '==' instead of '='?",
+              "context": "   13 | \n   14 | \n   15 | 1 = Lorentz(name = '1',\n   16 |             spins = [],\n   17 |             structure = '0')"
+            },
+            {
+              "file": "vertices.py",
+              "line": 1786,
+              "msg": "closing parenthesis ')' does not match opening parenthesis '[' on line 1783",
+              "context": " 1784 |                color = [ '1' ],\n 1785 |                lorentz = [ L.<>PRIVATE`ConvertSpinToString[0]<>PRIVATE`ConvertSpinToString[0]<>1 ],\n 1786 |                couplings = {(0,-1 + PRIVATE`ConvertSpinToString[0]<>PRIVATE`ConvertSpinToString[0]<>1):C.GC_421})\n 1787 | \n 1788 | V_297 = Vertex(name = 'V_297',"
+            }
+          ],
+          "ufo_import_error": "Traceback (most recent call last):\n  File \"<string>\", line 5, in <module>\n    __import__('UFO')\n    ~~~~~~~~~~^^^^^^^\n  File \"/tmp/repair_bench3/HNLs/round0/UFO/__init__.py\", line 2, in <module>\n    import particles\n  File \"/tmp/repair_bench3/HNLs/round0/UFO/particles.py\", line 203, in <module>\n    mass = Param.N4,\n           ^^^^^^^^\nAttributeError: module 'parameters' has no attribute 'N4'. Did you mean: 'MN4'?\n",
+          "ufo_dir": "/tmp/repair_bench3/HNLs/round0/UFO",
+          "compile_log": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/HNLs/repair3/round0/compile.log",
+          "full_pass": false,
+          "error_tags": [
+            "duplicate_particle_names",
+            "mg5_import_fail",
+            "ufo_python_syntax_error",
+            "mg5_python_traceback",
+            "mg5_invalid_cmd"
+          ]
+        },
+        {
+          "round": 1,
+          "fr": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/HNLs/repair3/round1/model.fr",
+          "lag_symbol": "LTot",
+          "compile_ok": true,
+          "timed_out": false,
+          "exit": 0,
+          "seconds": 4276.7,
+          "ufo_files": [
+            "particles.py",
+            "parameters.py",
+            "couplings.py",
+            "vertices.py",
+            "lorentz.py"
+          ],
+          "checks": {
+            "hermiticity": true,
+            "kinetic_terms": true,
+            "mass_spectrum": true
+          },
+          "protected_symbol_errors": 2,
+          "log_tail": "",
+          "n_particles_ufo": 44,
+          "madgraph_import_ok": false,
+          "mg5_particles": null,
+          "lepton_number_violation": false,
+          "mg5_tail": "MG5_aMC/models/import_ufo.py\", line 251, in import_model\n    model = import_full_model(model_path, decay, prefix)\n  File \"/Users/kenwu/MG5_aMC/models/import_ufo.py\", line 413, in import_full_model\n    ufo_model = ufomodels.load_model(model_path, decay)\n  File \"/Users/kenwu/MG5_aMC/models/__init__.py\", line 101, in load_model\n    raise UFOError(str(error))\nmodels.UFOError: invalid syntax (object_library.py, line 268)\n\u001b[1;31mCommand \"import /private/tmp/repair_bench3/HNLs/round1/mg5run/mg5_import.txt\" interrupted in sub-command:\n\"import model /tmp/repair_bench3/HNLs/round1/UFO\" with error:\nUFOError : invalid syntax (object_library.py, line 268)\nPlease report this bug on https://bugs.launchpad.net/mg5amcnlo\nMore information is found in 'MG5_debug'.\nPlease attach this file to your report.\u001b[0m\n",
+          "mg5_debug_tail": "madgraph_interface.py\", line 5837, in do_import\n    raise self.InvalidCmd('UFO model not python3 compatible. You can convert it via the command \\nconvert model %s\\nYou can also type \\\"set auto_convert_model T\\\" to automatically convert all python2 module to be python3 compatible in the future.' % model_path)\nmadgraph.InvalidCmd: UFO model not python3 compatible. You can convert it via the command \nconvert model /tmp/repair_bench3/HNLs/round1/UFO\nYou can also type \"set auto_convert_model T\" to automatically convert all python2 module to be python3 compatible in the future.\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1570, in onecmd\n    return self.onecmd_orig(line, **opt)\n           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1519, in onecmd_orig\n    return func(arg, **opt)\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/master_interface.py\", line 281, in do_import\n    self.cmd.do_import(self, *args, **opts)\n    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/madgraph_interface.py\", line 5893, in do_import\n    self.import_command_file(args[1])\n    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1718, in import_command_file\n    self.exec_cmd(line, precmd=True)\n    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1599, in exec_cmd\n    stop = Cmd.onecmd_orig(current_interface, line, **opt)\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1519, in onecmd_orig\n    return func(arg, **opt)\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/master_interface.py\", line 281, in do_import\n    self.cmd.do_import(self, *args, **opts)\n    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/madgraph_interface.py\", line 5835, in do_import\n    raise err\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/madgraph_interface.py\", line 5819, in do_import\n    self._curr_model = import_ufo.import_model(args[1], prefix=prefix,\n                       ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n        complex_mass_scheme=self.options['complex_mass_scheme'],\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n        options=options)\n        ^^^^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/models/import_ufo.py\", line 251, in import_model\n    model = import_full_model(model_path, decay, prefix)\n  File \"/Users/kenwu/MG5_aMC/models/import_ufo.py\", line 413, in import_full_model\n    ufo_model = ufomodels.load_model(model_path, decay)\n  File \"/Users/kenwu/MG5_aMC/models/__init__.py\", line 101, in load_model\n    raise UFOError(str(error))\nmodels.UFOError: invalid syntax (object_library.py, line 268)\nFail to write options with error No model currently active, please import a model!",
+          "status": "compiled",
+          "ufo_syntax_errors": [
+            {
+              "file": "lorentz.py",
+              "line": 15,
+              "msg": "cannot assign to literal here. Maybe you meant '==' instead of '='?",
+              "context": "   13 | \n   14 | \n   15 | 1 = Lorentz(name = '1',\n   16 |             spins = [],\n   17 |             structure = '0')"
+            },
+            {
+              "file": "vertices.py",
+              "line": 2386,
+              "msg": "closing parenthesis ')' does not match opening parenthesis '[' on line 2383",
+              "context": " 2384 |                color = [ '1' ],\n 2385 |                lorentz = [ L.<>PRIVATE`ConvertSpinToString[0]<>PRIVATE`ConvertSpinToString[0]<>1 ],\n 2386 |                couplings = {(0,-1 + PRIVATE`ConvertSpinToString[0]<>PRIVATE`ConvertSpinToString[0]<>1):C.GC_617})\n 2387 | \n 2388 | V_397 = Vertex(name = 'V_397',"
+            }
+          ],
+          "ufo_import_error": "Traceback (most recent call last):\n  File \"<string>\", line 5, in <module>\n    __import__('UFO')\n    ~~~~~~~~~~^^^^^^^\n  File \"/tmp/repair_bench3/HNLs/round1/UFO/__init__.py\", line 2, in <module>\n    import particles\n  File \"/tmp/repair_bench3/HNLs/round1/UFO/particles.py\", line 8, in <module>\n    import parameters as Param\n  File \"/tmp/repair_bench3/HNLs/round1/UFO/parameters.py\", line 295, in <module>\n    value = MassN4,\n            ^^^^^^\nNameError: name 'MassN4' is not defined\n",
+          "ufo_dir": "/tmp/repair_bench3/HNLs/round1/UFO",
+          "compile_log": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/HNLs/repair3/round1/compile.log",
+          "full_pass": false,
+          "error_tags": [
+            "duplicate_particle_names",
+            "mg5_import_fail",
+            "ufo_python_syntax_error",
+            "mg5_python_traceback",
+            "mg5_invalid_cmd"
+          ]
+        },
+        {
+          "round": 2,
+          "fr": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/HNLs/repair3/round2/model.fr",
+          "lag_symbol": "LTot",
+          "compile_ok": true,
+          "timed_out": false,
+          "exit": 0,
+          "seconds": 1842.0,
+          "ufo_files": [
+            "particles.py",
+            "parameters.py",
+            "couplings.py",
+            "vertices.py",
+            "lorentz.py"
+          ],
+          "checks": {
+            "hermiticity": true,
+            "kinetic_terms": true,
+            "mass_spectrum": true
+          },
+          "protected_symbol_errors": 2,
+          "log_tail": "",
+          "n_particles_ufo": 44,
+          "madgraph_import_ok": false,
+          "mg5_particles": null,
+          "lepton_number_violation": false,
+          "mg5_tail": "MG5_aMC/models/import_ufo.py\", line 251, in import_model\n    model = import_full_model(model_path, decay, prefix)\n  File \"/Users/kenwu/MG5_aMC/models/import_ufo.py\", line 413, in import_full_model\n    ufo_model = ufomodels.load_model(model_path, decay)\n  File \"/Users/kenwu/MG5_aMC/models/__init__.py\", line 101, in load_model\n    raise UFOError(str(error))\nmodels.UFOError: invalid syntax (object_library.py, line 268)\n\u001b[1;31mCommand \"import /private/tmp/repair_bench3/HNLs/round2/mg5run/mg5_import.txt\" interrupted in sub-command:\n\"import model /tmp/repair_bench3/HNLs/round2/UFO\" with error:\nUFOError : invalid syntax (object_library.py, line 268)\nPlease report this bug on https://bugs.launchpad.net/mg5amcnlo\nMore information is found in 'MG5_debug'.\nPlease attach this file to your report.\u001b[0m\n",
+          "mg5_debug_tail": "madgraph_interface.py\", line 5837, in do_import\n    raise self.InvalidCmd('UFO model not python3 compatible. You can convert it via the command \\nconvert model %s\\nYou can also type \\\"set auto_convert_model T\\\" to automatically convert all python2 module to be python3 compatible in the future.' % model_path)\nmadgraph.InvalidCmd: UFO model not python3 compatible. You can convert it via the command \nconvert model /tmp/repair_bench3/HNLs/round2/UFO\nYou can also type \"set auto_convert_model T\" to automatically convert all python2 module to be python3 compatible in the future.\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1570, in onecmd\n    return self.onecmd_orig(line, **opt)\n           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1519, in onecmd_orig\n    return func(arg, **opt)\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/master_interface.py\", line 281, in do_import\n    self.cmd.do_import(self, *args, **opts)\n    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/madgraph_interface.py\", line 5893, in do_import\n    self.import_command_file(args[1])\n    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1718, in import_command_file\n    self.exec_cmd(line, precmd=True)\n    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1599, in exec_cmd\n    stop = Cmd.onecmd_orig(current_interface, line, **opt)\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1519, in onecmd_orig\n    return func(arg, **opt)\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/master_interface.py\", line 281, in do_import\n    self.cmd.do_import(self, *args, **opts)\n    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/madgraph_interface.py\", line 5835, in do_import\n    raise err\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/madgraph_interface.py\", line 5819, in do_import\n    self._curr_model = import_ufo.import_model(args[1], prefix=prefix,\n                       ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n        complex_mass_scheme=self.options['complex_mass_scheme'],\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n        options=options)\n        ^^^^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/models/import_ufo.py\", line 251, in import_model\n    model = import_full_model(model_path, decay, prefix)\n  File \"/Users/kenwu/MG5_aMC/models/import_ufo.py\", line 413, in import_full_model\n    ufo_model = ufomodels.load_model(model_path, decay)\n  File \"/Users/kenwu/MG5_aMC/models/__init__.py\", line 101, in load_model\n    raise UFOError(str(error))\nmodels.UFOError: invalid syntax (object_library.py, line 268)\nFail to write options with error No model currently active, please import a model!",
+          "status": "compiled",
+          "ufo_syntax_errors": [
+            {
+              "file": "lorentz.py",
+              "line": 15,
+              "msg": "cannot assign to literal here. Maybe you meant '==' instead of '='?",
+              "context": "   13 | \n   14 | \n   15 | 1 = Lorentz(name = '1',\n   16 |             spins = [],\n   17 |             structure = '0')"
+            },
+            {
+              "file": "vertices.py",
+              "line": 2338,
+              "msg": "closing parenthesis ')' does not match opening parenthesis '[' on line 2335",
+              "context": " 2336 |                color = [ '1' ],\n 2337 |                lorentz = [ L.<>PRIVATE`ConvertSpinToString[0]<>PRIVATE`ConvertSpinToString[0]<>1 ],\n 2338 |                couplings = {(0,-1 + PRIVATE`ConvertSpinToString[0]<>PRIVATE`ConvertSpinToString[0]<>1):C.GC_613})\n 2339 | \n 2340 | V_389 = Vertex(name = 'V_389',"
+            }
+          ],
+          "ufo_import_error": "Traceback (most recent call last):\n  File \"<string>\", line 5, in <module>\n    __import__('UFO')\n    ~~~~~~~~~~^^^^^^^\n  File \"/tmp/repair_bench3/HNLs/round2/UFO/__init__.py\", line 4, in <module>\n    import lorentz\n  File \"/tmp/repair_bench3/HNLs/round2/UFO/lorentz.py\", line 15\n    1 = Lorentz(name = '1',\n    ^\nSyntaxError: cannot assign to literal here. Maybe you meant '==' instead of '='?\n",
+          "ufo_dir": "/tmp/repair_bench3/HNLs/round2/UFO",
+          "compile_log": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/HNLs/repair3/round2/compile.log",
+          "full_pass": false,
+          "error_tags": [
+            "duplicate_particle_names",
+            "mg5_import_fail",
+            "ufo_python_syntax_error",
+            "mg5_python_traceback",
+            "mg5_invalid_cmd"
+          ]
+        },
+        {
+          "round": 3,
+          "fr": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/HNLs/repair3/round3/model.fr",
+          "lag_symbol": "LTot",
+          "compile_ok": true,
+          "timed_out": false,
+          "exit": 0,
+          "seconds": 1216.9,
+          "ufo_files": [
+            "particles.py",
+            "parameters.py",
+            "couplings.py",
+            "vertices.py",
+            "lorentz.py"
+          ],
+          "checks": {
+            "hermiticity": true,
+            "kinetic_terms": true,
+            "mass_spectrum": true
+          },
+          "protected_symbol_errors": 0,
+          "log_tail": "",
+          "n_particles_ufo": 44,
+          "madgraph_import_ok": false,
+          "mg5_particles": null,
+          "lepton_number_violation": false,
+          "mg5_tail": "MG5_aMC/models/import_ufo.py\", line 251, in import_model\n    model = import_full_model(model_path, decay, prefix)\n  File \"/Users/kenwu/MG5_aMC/models/import_ufo.py\", line 413, in import_full_model\n    ufo_model = ufomodels.load_model(model_path, decay)\n  File \"/Users/kenwu/MG5_aMC/models/__init__.py\", line 101, in load_model\n    raise UFOError(str(error))\nmodels.UFOError: invalid syntax (object_library.py, line 268)\n\u001b[1;31mCommand \"import /private/tmp/repair_bench3/HNLs/round3/mg5run/mg5_import.txt\" interrupted in sub-command:\n\"import model /tmp/repair_bench3/HNLs/round3/UFO\" with error:\nUFOError : invalid syntax (object_library.py, line 268)\nPlease report this bug on https://bugs.launchpad.net/mg5amcnlo\nMore information is found in 'MG5_debug'.\nPlease attach this file to your report.\u001b[0m\n",
+          "mg5_debug_tail": "madgraph_interface.py\", line 5837, in do_import\n    raise self.InvalidCmd('UFO model not python3 compatible. You can convert it via the command \\nconvert model %s\\nYou can also type \\\"set auto_convert_model T\\\" to automatically convert all python2 module to be python3 compatible in the future.' % model_path)\nmadgraph.InvalidCmd: UFO model not python3 compatible. You can convert it via the command \nconvert model /tmp/repair_bench3/HNLs/round3/UFO\nYou can also type \"set auto_convert_model T\" to automatically convert all python2 module to be python3 compatible in the future.\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1570, in onecmd\n    return self.onecmd_orig(line, **opt)\n           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1519, in onecmd_orig\n    return func(arg, **opt)\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/master_interface.py\", line 281, in do_import\n    self.cmd.do_import(self, *args, **opts)\n    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/madgraph_interface.py\", line 5893, in do_import\n    self.import_command_file(args[1])\n    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1718, in import_command_file\n    self.exec_cmd(line, precmd=True)\n    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1599, in exec_cmd\n    stop = Cmd.onecmd_orig(current_interface, line, **opt)\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1519, in onecmd_orig\n    return func(arg, **opt)\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/master_interface.py\", line 281, in do_import\n    self.cmd.do_import(self, *args, **opts)\n    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/madgraph_interface.py\", line 5835, in do_import\n    raise err\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/madgraph_interface.py\", line 5819, in do_import\n    self._curr_model = import_ufo.import_model(args[1], prefix=prefix,\n                       ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n        complex_mass_scheme=self.options['complex_mass_scheme'],\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n        options=options)\n        ^^^^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/models/import_ufo.py\", line 251, in import_model\n    model = import_full_model(model_path, decay, prefix)\n  File \"/Users/kenwu/MG5_aMC/models/import_ufo.py\", line 413, in import_full_model\n    ufo_model = ufomodels.load_model(model_path, decay)\n  File \"/Users/kenwu/MG5_aMC/models/__init__.py\", line 101, in load_model\n    raise UFOError(str(error))\nmodels.UFOError: invalid syntax (object_library.py, line 268)\nFail to write options with error No model currently active, please import a model!",
+          "status": "compiled",
+          "ufo_syntax_errors": [],
+          "ufo_import_error": "/tmp/repair_bench3/HNLs/round3/UFO/coupling_orders.py:12: SyntaxWarning: 'set' object is not subscriptable; perhaps you missed a comma?\n  perturbative_expansion = {{NP, 1}, {NP, 0}}[[3,2]])\nTraceback (most recent call last):\n  File \"<string>\", line 5, in <module>\n    __import__('UFO')\n    ~~~~~~~~~~^^^^^^^\n  File \"/tmp/repair_bench3/HNLs/round3/UFO/__init__.py\", line 7, in <module>\n    import coupling_orders\n  File \"/tmp/repair_bench3/HNLs/round3/UFO/coupling_orders.py\", line 12, in <module>\n    perturbative_expansion = {{NP, 1}, {NP, 0}}[[3,2]])\n                               ^^\nNameError: name 'NP' is not defined\n",
+          "ufo_dir": "/tmp/repair_bench3/HNLs/round3/UFO",
+          "compile_log": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/HNLs/repair3/round3/compile.log",
+          "full_pass": false,
+          "error_tags": [
+            "duplicate_particle_names",
+            "mg5_import_fail",
+            "ufo_semantic_error",
+            "mg5_python_traceback",
+            "mg5_invalid_cmd"
+          ]
+        }
+      ],
+      "agent_runs": [
+        {
+          "exit": 0,
+          "timed_out": false,
+          "seconds": 8122.9,
+          "notes": "Updated `model.fr` in place: fixed the `N4` mass declaration to use the existing `MassN4` parameter, added explicit sums over neutrino mass eigenstates in the `NR`/`NL` unphysical field definitions to prevent FeynRules internals from leaking into UFO Python, corrected the internal `yN` convention to match the declared heavy-neutrino rotation and remove off-diagonal mass residues, removed the unused `LagHeavyN` assignment, and added missing `HC[...]` conjugates for charged pseudoscalar, charged vector interaction, and semileptonic hadronic terms so `LTot` remains the final BSM-only assignment and is Hermitian. Static checks passed for balanced delimiters, final `LTot`, and absence of source-level leaked constructs; I could not run the full Wolfram validation because `wolframscript` has no configured kernel path in this environment.",
+          "round": 1,
+          "changed": true,
+          "diff_lines": 26
+        },
+        {
+          "exit": 0,
+          "timed_out": false,
+          "seconds": 2220.6,
+          "notes": "Updated `model.fr` to remove the failed `MassN4` alias path: `FR$RmDblExt` no longer remaps `MN4`, the unused internal `MassN4` parameter was removed, and the `N4` class mass now uses the existing external `MN4` directly so the UFO should not emit `value = MassN4`. I also kept the old gauge-basis Dirac block defined above but removed it from final `LTot`, replacing it with a mass-basis `LHeavyNMass := -MN4 N4bar.N4`; this preserves the heavy-neutrino mass while preventing unreduced `LLbar`/`Phibar` and FeynRules `PRIVATE` expressions from leaking into UFO Python. `LTot` remains the last top-level assignment, and I verified balanced delimiters plus no remaining `MassN4` references; full FeynRules validation could not be run because `wolframscript` still has no configured Wolfram kernel path.",
+          "round": 2,
+          "changed": true,
+          "diff_lines": 14
+        },
+        {
+          "exit": 0,
+          "timed_out": false,
+          "seconds": 216.4,
+          "notes": "Changed `model.fr` in place by replacing `NoUnfold[Range[4]]` and `NoUnfold[Range[1]]` in the custom `Neutrinos` and `Heavynus` index ranges with plain `Range[4]` and `Range[1]`; the previous wrappers were leaking into the UFO as `NoUnfold`, `Addpad`, `Complement`, and `PRIVATE` expressions, producing invalid Python Lorentz objects like `1 = Lorentz(...)` and empty malformed vertices. The physics content is unchanged: the model still has four neutrino states, one heavy-neutrino index, the same fields, parameters, and final BSM-only `LTot`; static delimiter and final-assignment checks pass, but I could not run the full Wolfram validation because `wolframscript` has no configured kernel path in this environment.",
+          "round": 3,
+          "changed": true,
+          "diff_lines": 4
+        }
+      ],
+      "final_status": "fail_after_repair",
+      "rounds_used": 3,
+      "best_round": 0,
+      "best_round_summary": "status=compiled, hermiticity=True, kinetic=True, mass=True, madgraph_import=False, tags=duplicate_particle_names, mg5_import_fail, ufo_python_syntax_error, mg5_python_traceback, mg5_invalid_cmd, compile_seconds=380.2"
+    },
+    {
+      "page": "SLQrules",
+      "seed": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/SLQrules/repair2/round3/model.fr",
+      "rounds": [
+        {
+          "round": 0,
+          "fr": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/SLQrules/repair3/round0/model.fr",
+          "lag_symbol": "LTot",
+          "compile_ok": true,
+          "timed_out": false,
+          "exit": 0,
+          "seconds": 2623.3,
+          "ufo_files": [
+            "particles.py",
+            "parameters.py",
+            "couplings.py",
+            "vertices.py",
+            "lorentz.py"
+          ],
+          "checks": {
+            "hermiticity": false,
+            "kinetic_terms": true,
+            "mass_spectrum": true
+          },
+          "protected_symbol_errors": 3,
+          "log_tail": "",
+          "n_particles_ufo": 33,
+          "madgraph_import_ok": true,
+          "mg5_particles": 26,
+          "lepton_number_violation": false,
+          "mg5_tail": "",
+          "mg5_debug_tail": "",
+          "status": "compiled",
+          "ufo_dir": "/tmp/repair_bench3/SLQrules/round0/UFO",
+          "compile_log": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/SLQrules/repair3/round0/compile.log",
+          "full_pass": false,
+          "error_tags": [
+            "hermiticity_fail"
+          ]
+        },
+        {
+          "round": 1,
+          "fr": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/SLQrules/repair3/round1/model.fr",
+          "lag_symbol": "LTot",
+          "compile_ok": true,
+          "timed_out": false,
+          "exit": 0,
+          "seconds": 3563.2,
+          "ufo_files": [
+            "particles.py",
+            "parameters.py",
+            "couplings.py",
+            "vertices.py",
+            "lorentz.py"
+          ],
+          "checks": {
+            "hermiticity": false,
+            "kinetic_terms": true,
+            "mass_spectrum": true
+          },
+          "protected_symbol_errors": 3,
+          "log_tail": "",
+          "n_particles_ufo": 33,
+          "madgraph_import_ok": true,
+          "mg5_particles": 26,
+          "lepton_number_violation": false,
+          "mg5_tail": "",
+          "mg5_debug_tail": "",
+          "status": "compiled",
+          "ufo_dir": "/tmp/repair_bench3/SLQrules/round1/UFO",
+          "compile_log": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/SLQrules/repair3/round1/compile.log",
+          "full_pass": false,
+          "error_tags": [
+            "hermiticity_fail"
+          ]
+        },
+        {
+          "round": 2,
+          "fr": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/SLQrules/repair3/round2/model.fr",
+          "lag_symbol": "LTot",
+          "compile_ok": true,
+          "timed_out": false,
+          "exit": 0,
+          "seconds": 246.2,
+          "ufo_files": [
+            "particles.py",
+            "parameters.py",
+            "couplings.py",
+            "vertices.py",
+            "lorentz.py"
+          ],
+          "checks": {
+            "hermiticity": false,
+            "kinetic_terms": true,
+            "mass_spectrum": true
+          },
+          "protected_symbol_errors": 3,
+          "log_tail": "",
+          "n_particles_ufo": 33,
+          "madgraph_import_ok": true,
+          "mg5_particles": 26,
+          "lepton_number_violation": false,
+          "mg5_tail": "",
+          "mg5_debug_tail": "",
+          "status": "compiled",
+          "ufo_dir": "/tmp/repair_bench3/SLQrules/round2/UFO",
+          "compile_log": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/SLQrules/repair3/round2/compile.log",
+          "full_pass": false,
+          "error_tags": [
+            "hermiticity_fail"
+          ]
+        },
+        {
+          "round": 3,
+          "fr": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/SLQrules/repair3/round3/model.fr",
+          "lag_symbol": "LTot",
+          "compile_ok": true,
+          "timed_out": false,
+          "exit": 0,
+          "seconds": 216.0,
+          "ufo_files": [
+            "particles.py",
+            "parameters.py",
+            "couplings.py",
+            "vertices.py",
+            "lorentz.py"
+          ],
+          "checks": {
+            "hermiticity": false,
+            "kinetic_terms": true,
+            "mass_spectrum": true
+          },
+          "protected_symbol_errors": 3,
+          "log_tail": "",
+          "n_particles_ufo": 33,
+          "madgraph_import_ok": true,
+          "mg5_particles": 26,
+          "lepton_number_violation": false,
+          "mg5_tail": "",
+          "mg5_debug_tail": "",
+          "status": "compiled",
+          "ufo_dir": "/tmp/repair_bench3/SLQrules/round3/UFO",
+          "compile_log": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/SLQrules/repair3/round3/compile.log",
+          "full_pass": false,
+          "error_tags": [
+            "hermiticity_fail"
+          ]
+        }
+      ],
+      "agent_runs": [
+        {
+          "exit": 0,
+          "timed_out": false,
+          "seconds": 8516.9,
+          "notes": "Updated `model.fr` to add hermitian-conjugation rules for the chiral projectors: `ProjL /: HC[ProjL] = ProjL;` and `ProjR /: HC[ProjR] = ProjR;`. The validation failure showed leftover `HC[ProjL]`/`HC[ProjR]` inside the nonzero `L - HC[L]` vertices, so this is a technical FeynRules simplification fix that preserves the fields, parameters, quantum numbers, and operator structure; `LTot` remains the final top-level assignment. I could not rerun the full Wolfram check locally because `wolframscript` is installed but no Wolfram kernel path is configured.",
+          "round": 1,
+          "changed": true,
+          "diff_lines": 3
+        },
+        {
+          "exit": 0,
+          "timed_out": false,
+          "seconds": 4567.1,
+          "notes": "Updated `model.fr` in place by rewriting the affected `LQf` fermion interaction terms so that only spinor bilinears are connected with `.` while `Eps[...]`, `Ta[...]`, and scalar fields are ordinary multiplicative factors; the same correction was applied inside the explicit `HC[...]` copy. This preserves the fields, quantum numbers, parameters, and operator structure, but fixes the technical FeynRules/Mathematica contraction defect that produced the `{SU2D, Generation}` dimension mismatch and nonzero `L - HC[L]` hermiticity vertices. `LTot` remains the final top-level assignment; I could not rerun Wolfram validation locally because `wolframscript` still has no configured Wolfram kernel path.",
+          "round": 2,
+          "changed": true,
+          "diff_lines": 24
+        },
+        {
+          "exit": 0,
+          "timed_out": false,
+          "seconds": 119.1,
+          "notes": "Updated `model.fr` in place by fixing the SM fermion doublet index order inside `LQf` and its explicit `HC[...]` copy: `Q`, `Qbar`, `QbarC`, and `LL` now use the FeynRules doublet ordering with the `SU2D` index before the `Generation` index, e.g. `LL[b,j]` and `QbarC[a,i,aa]`. This preserves the fields, quantum numbers, parameters, and operator structure, but fixes the technical index-contraction defect that matched the reported `{SU2D, Generation}` versus `SU2D` `Inner::incom` hermiticity failure.",
+          "round": 3,
+          "changed": true,
+          "diff_lines": 28
+        }
+      ],
+      "final_status": "fail_after_repair",
+      "rounds_used": 3,
+      "best_round": 0,
+      "best_round_summary": "status=compiled, hermiticity=False, kinetic=True, mass=True, madgraph_import=True, tags=hermiticity_fail, compile_seconds=2623.3"
+    },
+    {
+      "page": "pSPSS",
+      "seed": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/pSPSS/repair2/round3/model.fr",
+      "rounds": [
+        {
+          "round": 0,
+          "fr": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/pSPSS/repair3/round0/model.fr",
+          "lag_symbol": "LTot",
+          "compile_ok": true,
+          "timed_out": false,
+          "exit": 0,
+          "seconds": 895.4,
+          "ufo_files": [
+            "particles.py",
+            "parameters.py",
+            "couplings.py",
+            "vertices.py",
+            "lorentz.py"
+          ],
+          "checks": {
+            "hermiticity": true,
+            "kinetic_terms": true,
+            "mass_spectrum": true
+          },
+          "protected_symbol_errors": 0,
+          "log_tail": "",
+          "n_particles_ufo": 26,
+          "madgraph_import_ok": false,
+          "mg5_particles": null,
+          "lepton_number_violation": false,
+          "mg5_tail": "5_aMC/models/import_ufo.py\", line 251, in import_model\n    model = import_full_model(model_path, decay, prefix)\n  File \"/Users/kenwu/MG5_aMC/models/import_ufo.py\", line 413, in import_full_model\n    ufo_model = ufomodels.load_model(model_path, decay)\n  File \"/Users/kenwu/MG5_aMC/models/__init__.py\", line 101, in load_model\n    raise UFOError(str(error))\nmodels.UFOError: invalid syntax (object_library.py, line 268)\n\u001b[1;31mCommand \"import /private/tmp/repair_bench3/pSPSS/round0/mg5run/mg5_import.txt\" interrupted in sub-command:\n\"import model /tmp/repair_bench3/pSPSS/round0/UFO\" with error:\nUFOError : invalid syntax (object_library.py, line 268)\nPlease report this bug on https://bugs.launchpad.net/mg5amcnlo\nMore information is found in 'MG5_debug'.\nPlease attach this file to your report.\u001b[0m\n",
+          "mg5_debug_tail": "adgraph_interface.py\", line 5837, in do_import\n    raise self.InvalidCmd('UFO model not python3 compatible. You can convert it via the command \\nconvert model %s\\nYou can also type \\\"set auto_convert_model T\\\" to automatically convert all python2 module to be python3 compatible in the future.' % model_path)\nmadgraph.InvalidCmd: UFO model not python3 compatible. You can convert it via the command \nconvert model /tmp/repair_bench3/pSPSS/round0/UFO\nYou can also type \"set auto_convert_model T\" to automatically convert all python2 module to be python3 compatible in the future.\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1570, in onecmd\n    return self.onecmd_orig(line, **opt)\n           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1519, in onecmd_orig\n    return func(arg, **opt)\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/master_interface.py\", line 281, in do_import\n    self.cmd.do_import(self, *args, **opts)\n    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/madgraph_interface.py\", line 5893, in do_import\n    self.import_command_file(args[1])\n    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1718, in import_command_file\n    self.exec_cmd(line, precmd=True)\n    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1599, in exec_cmd\n    stop = Cmd.onecmd_orig(current_interface, line, **opt)\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/extended_cmd.py\", line 1519, in onecmd_orig\n    return func(arg, **opt)\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/master_interface.py\", line 281, in do_import\n    self.cmd.do_import(self, *args, **opts)\n    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/madgraph_interface.py\", line 5835, in do_import\n    raise err\n  File \"/Users/kenwu/MG5_aMC/madgraph/interface/madgraph_interface.py\", line 5819, in do_import\n    self._curr_model = import_ufo.import_model(args[1], prefix=prefix,\n                       ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n        complex_mass_scheme=self.options['complex_mass_scheme'],\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n        options=options)\n        ^^^^^^^^^^^^^^^^\n  File \"/Users/kenwu/MG5_aMC/models/import_ufo.py\", line 251, in import_model\n    model = import_full_model(model_path, decay, prefix)\n  File \"/Users/kenwu/MG5_aMC/models/import_ufo.py\", line 413, in import_full_model\n    ufo_model = ufomodels.load_model(model_path, decay)\n  File \"/Users/kenwu/MG5_aMC/models/__init__.py\", line 101, in load_model\n    raise UFOError(str(error))\nmodels.UFOError: invalid syntax (object_library.py, line 268)\nFail to write options with error No model currently active, please import a model!",
+          "status": "compiled",
+          "ufo_syntax_errors": [],
+          "ufo_import_error": "Traceback (most recent call last):\n  File \"<string>\", line 5, in <module>\n    __import__('UFO')\n    ~~~~~~~~~~^^^^^^^\n  File \"/tmp/repair_bench3/pSPSS/round0/UFO/__init__.py\", line 2, in <module>\n    import particles\n  File \"/tmp/repair_bench3/pSPSS/round0/UFO/particles.py\", line 8, in <module>\n    import parameters as Param\n  File \"/tmp/repair_bench3/pSPSS/round0/UFO/parameters.py\", line 31, in <module>\n    value = 2 + 1.*e,\n                   ^\nNameError: name 'e' is not defined. Did you mean: 're'?\n",
+          "ufo_dir": "/tmp/repair_bench3/pSPSS/round0/UFO",
+          "compile_log": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/pSPSS/repair3/round0/compile.log",
+          "full_pass": false,
+          "error_tags": [
+            "mg5_import_fail",
+            "ufo_semantic_error",
+            "mg5_python_traceback",
+            "mg5_invalid_cmd"
+          ]
+        },
+        {
+          "round": 1,
+          "fr": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/pSPSS/repair3/round1/model.fr",
+          "lag_symbol": "LTot",
+          "compile_ok": true,
+          "timed_out": false,
+          "exit": 0,
+          "seconds": 1069.0,
+          "ufo_files": [
+            "particles.py",
+            "parameters.py",
+            "couplings.py",
+            "vertices.py",
+            "lorentz.py"
+          ],
+          "checks": {
+            "hermiticity": true,
+            "kinetic_terms": true,
+            "mass_spectrum": true
+          },
+          "protected_symbol_errors": 0,
+          "log_tail": "",
+          "n_particles_ufo": 26,
+          "madgraph_import_ok": true,
+          "mg5_particles": 19,
+          "lepton_number_violation": true,
+          "mg5_tail": "",
+          "mg5_debug_tail": "",
+          "status": "compiled",
+          "ufo_dir": "/tmp/repair_bench3/pSPSS/round1/UFO",
+          "compile_log": "/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/pSPSS/repair3/round1/compile.log",
+          "full_pass": true,
+          "error_tags": []
+        }
+      ],
+      "agent_runs": [
+        {
+          "exit": 0,
+          "timed_out": false,
+          "seconds": 80.3,
+          "notes": "Changed `model.fr` only: converted the external parameter values for `Mmaj`, `deltaM`, `theta1`, `theta2`, `theta3`, and `damping` from C-style literals like `1.000000e+02` to valid Mathematica numeric syntax like `1.000000*^02` or `0.000000`. This preserves the parameter values while fixing the UFO export cause shown in `VALIDATION_REPORT.md`, where Mathematica interpreted `e` as a symbol and generated invalid Python expressions such as `2 + 1.*e` in `parameters.py`; `LTot` remains the last top-level assignment and the UFO files were not edited.",
+          "round": 1,
+          "changed": true,
+          "diff_lines": 12
+        }
+      ],
+      "final_status": "pass_repaired",
+      "rounds_used": 1
+    }
+  ]
+}

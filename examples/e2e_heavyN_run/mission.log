@@ -1,0 +1,83 @@
+
+══════════════════════════════════════════════════════════════════════════
+  AUTONOMOUS MISSION — HeavyN  (arXiv:1602.06957)
+  paper → model → validate/repair loop → reverse check → REVIEW.pdf
+  2026-07-20 11:09:44 UTC  ·  9m 53s wall  ·  17 ledger events  ·  0 human interventions
+══════════════════════════════════════════════════════════════════════════
+
+[11:09:44] +  0s  ⤓ FETCH        Fetched arXiv LaTeX source for 1602.06957 into text/1602.06957_source.tex
+[11:11:03] + 79s  ✎ GENERATE     Generated initial one-heavy-neutrino FeynRules add-on model at model/1602.06957.fr
+                      field: N spin 1/2, SU(3)=1 SU(2)=1 Y=0,
+                             self-conjugate
+                      params: VeN, VmuN, VtaN, gN=ee/sw
+                      terms: LNKin + LNCC(+HC) + LNNC(+HC) + LNH(+HC) +
+                             LNG(+HC)
+
+[11:11:05] + 81s  → SUBMIT       submitted validatemodel as job_20260720_111105_63653d
+[11:11:17] + 93s  · JOB DONE     validatemodel job job_20260720_111105_63653d finished
+
+[11:12:56] +192s  ⟳ REPAIR 1     Regenerated model with validator-visible LBSM and removed Q quantum number from the self-conjugate neutral N field
+                      ← check: ufo_generation failed: BSM Lagrangian
+                               symbol 'LBSM' is undefined; FeynRules
+                               warned self-conjugate fields should not
+                               carry quantum numbers
+                        fix: Replaced LN/LFull final terms with LBSM :=
+                             LNKin + LNCC + LNNC + LNH + LNG
+                        fix: Removed QuantumNumbers -> {Q -> 0} from
+                             self-conjugate N
+[11:12:59] +195s  → SUBMIT       submitted validatemodel as job_20260720_111259_464aee
+[11:14:23] +279s  · JOB DONE     validatemodel job job_20260720_111259_464aee finished
+
+[11:15:49] +365s  ⟳ REPAIR 2     Renamed the internal heavy-neutrino field from N to N1 to avoid Mathematica built-in N and malformed UFO Python
+                      ← check: wl:hermiticity reported N::argt for N
+                               called with 0 arguments
+                      ← check: wl:mass_spectrum saw spurious non-diagonal
+                               terms involving Index[Index]
+                      ← check: madgraph:import rejected malformed UFO
+                               Python
+                        fix: ClassName N -> N1, Mass mN -> mN1, Width WN
+                             -> WN1
+                        fix: Mixing parameters VeN/VmuN/VtaN ->
+                             VeN1/VmuN1/VtaN1
+                        fix: Updated all Lagrangian terms to use N1/N1bar
+                             while representing the paper's single heavy
+                             eigenstate N
+[11:15:52] +368s  → SUBMIT       submitted validatemodel as job_20260720_111552_7ba359
+[11:16:49] +425s  · JOB DONE     validatemodel job job_20260720_111552_7ba359 finished
+
+[11:17:03] +439s  ✓ VALIDATE     Validation passed on round 3: UFO generation, MadGraph import, Hermiticity, kinetic, and mass checks all passed
+                      round: 3
+                      green: ufo_generation ✓ madgraph:import ✓
+                             wl:hermiticity ✓ wl:kinetic_terms ✓
+                             wl:mass_spectrum ✓
+
+[11:17:06] +442s  → SUBMIT       submitted reverselagrangian as job_20260720_111706_4ac4b8
+[11:17:57] +493s  ◐ RECONSTRUCT  blank-slate reconstruction of 1602.06957
+                      agent: fresh blank-slate codex instance · 49.9s
+[11:19:15] +571s  ◑ CROSS-CHECK  paper cross-check of 1602.06957
+                      agent: fresh blank-slate codex instance · 77.7s
+[11:19:15] +571s  ▤ PACKAGE      review package for 1602.06957
+[11:19:15] +571s  · JOB DONE     reverselagrangian job job_20260720_111706_4ac4b8 finished
+
+[11:19:37] +593s  ✓ REVERSE DONE Reverse Lagrangian reconstruction and paper cross-check completed; review package written with flagged disagreements
+                      ⚑ flag: heavy charged-current sign and complex
+                              conjugation convention
+                      ⚑ flag: heavy neutral-current sign and complex
+                              conjugation convention
+                      ⚑ flag: real-only mixing parameters versus paper's
+                              general complex V_lN
+                      ⚑ flag: missing full U,V,X,Y mixing rotation
+                      ⚑ flag: missing SM light-neutrino CC/NC terms
+                              supplied by base SM if model stack is used
+                      ⚑ flag: extra explicit Majorana kinetic/mass term
+                              relative to displayed interaction-only
+                              equation
+                      ⚑ flag: Goldstone signs/i conventions not printed in
+                              paper
+
+══════════════════════════════════════════════════════════════════════════
+  RESULT  validated in 3 rounds, review package compiled, STOPPED for human sign-off
+  the tool never issues a physics verdict — that line is signed by a person
+  deliverable: examples/e2e_heavyN_run/reverse/REVIEW.pdf (69 KB, 7 pages)
+══════════════════════════════════════════════════════════════════════════
+

@@ -8,8 +8,8 @@
 Shared physics for the `llp` bundle: analytic parent-flux kernels, a
 declared parent-rest-frame LLP energy spectrum (a pinned data product,
 NOT a hard-coded amplitude), decay-volume geometry, and the boost /
-decay-probability conventions used by LLPFluxFromMesonDecayTool and
-DecayInVolumeTool.
+decay-probability conventions used by LLPFluxFromMesonDecayTool and the
+DecayInVolume* yield tools.
 
 The bundle is model- and setting-agnostic by construction:
   - the collider-forward vs beam-dump choice lives entirely in the kernel
@@ -61,71 +61,49 @@ import yaml
 # hbar*c in GeV*m — the single constant tying the g^2-stripped reference
 # width to a lab-frame decay length.
 HBARC_M_GEV = 1.973269804e-16
+# speed of light in m/s, for the parent lab decay length beta*gamma*c*tau.
+C_LIGHT_M_S = 2.99792458e8
 
 
 # ---------------------------------------------------------------------------
-# analytic parent-flux kernels
-# (adapted from hepbench benchmarks/llp_forward/_shared/kernels.py)
+# parent decay-in-flight (the LLP production vertex)
+#
+# The parent flux is the HARVESTED PYTHIA forward flux (per-parent lab momenta
+# + per-collision weights from harvest_forward_flux), not an analytic kernel.
+# What the physics core supplies is *where along the parent's flight the LLP is
+# produced*: a parent of lab momentum p and proper decay length c*tau decays at
+# lab length ell ~ Exp(lambda), lambda = beta*gamma c*tau, and the LLP is
+# emitted there. This is g-independent (the parent is SM), so it is sampled
+# once and preserves exact coupling reweighting downstream. It matters when
+# c*tau is not small vs the baseline (e.g. kaons, c*tau = 3.7 m); prompt
+# parents (charm, tau) collapse to ell ~ 0. Sampling is by DETERMINISTIC
+# STRATIFICATION (a fixed decay-length quantile grid per parent): the upper
+# (decay-length) contour branch is set by the sparse parents decaying just
+# before the absorber, and a fixed grid removes the Monte-Carlo jitter there
+# while keeping the exact g-reweighting.
 # ---------------------------------------------------------------------------
-class AnalyticKernel:
-    """A closed-form parent-flux kernel loaded from a YAML spec.
+def sample_decay_vertices(pvec_par, ctau_par_m, m_par, n_strata):
+    """Deterministic stratified decay-in-flight production vertices.
 
-    Form `pexp_texp` (the only supported form):
-
-        d^2N/(dp dtheta) = n_per_int
-            * p^a exp(-p/p0) / (Gamma(a+1) p0^(a+1))     [momentum factor]
-            * (theta/theta0^2) exp(-theta/theta0)        [angular factor]
-
-    Both factors are unit-normalized on (0, inf), so n_per_int is the mean
-    number of decaying parents per primary interaction. Sampling is exact:
-    p ~ Gamma(a+1, p0), theta ~ Gamma(2, theta0), azimuth uniform.
-
-    The YAML must carry (optionally nested under a top-level `kernel:` key):
-    name, parent, parent_mass_gev, form: pexp_texp, and
-    params: {n_per_int, p0_gev, a, theta0_rad}.
-    """
-
-    REQUIRED = ("name", "parent", "parent_mass_gev", "form", "params")
-
-    def __init__(self, spec):
-        for key in self.REQUIRED:
-            if key not in spec:
-                raise ValueError(f"kernel spec missing '{key}'")
-        if spec["form"] != "pexp_texp":
-            raise ValueError(f"unknown kernel form '{spec['form']}'")
-        self.spec = spec
-        self.name = spec["name"]
-        self.parent = spec["parent"]
-        self.parent_mass = float(spec["parent_mass_gev"])
-        p = spec["params"]
-        self.n_per_int = float(p["n_per_int"])
-        self.p0 = float(p["p0_gev"])
-        self.a = float(p["a"])
-        self.theta0 = float(p["theta0_rad"])
-
-    @classmethod
-    def from_yaml(cls, path):
-        with open(path) as fh:
-            doc = yaml.safe_load(fh)
-        if not isinstance(doc, dict):
-            raise ValueError("kernel YAML must be a mapping")
-        return cls(doc["kernel"] if "kernel" in doc else doc)
-
-    def density(self, p, theta):
-        """d^2N/(dp dtheta) per primary interaction."""
-        p = np.asarray(p, dtype=float)
-        theta = np.asarray(theta, dtype=float)
-        fp = p ** self.a * np.exp(-p / self.p0) \
-            / (math.gamma(self.a + 1.0) * self.p0 ** (self.a + 1.0))
-        ft = theta / self.theta0 ** 2 * np.exp(-theta / self.theta0)
-        return self.n_per_int * fp * ft
-
-    def sample(self, n, rng):
-        """Exact draws of (p, theta, azimuth) from the kernel shape."""
-        p = rng.gamma(shape=self.a + 1.0, scale=self.p0, size=n)
-        theta = rng.gamma(shape=2.0, scale=self.theta0, size=n)
-        phi_az = rng.uniform(0.0, 2.0 * np.pi, size=n)
-        return p, theta, phi_az
+    pvec_par: (N, 3) parent lab 3-momenta; ctau_par_m: parent proper decay
+    length [m] (an SM constant); m_par: parent mass [GeV]; n_strata: K strata
+    per parent. Returns (rep, vertex): rep (N*K,) the source-parent index of
+    each LLP replica, and vertex (N*K, 3) its production point, placed at the
+    stratum-k quantile ell_k = -lambda ln(1 - (k+1/2)/K) of the parent's lab
+    decay-length distribution. Each replica carries 1/K of the parent weight
+    (the caller applies the 1/K)."""
+    pvec_par = np.asarray(pvec_par, dtype=float)
+    N = len(pvec_par)
+    K = max(1, int(n_strata))
+    p_par_mag = np.linalg.norm(pvec_par, axis=1)
+    lam = (p_par_mag / m_par) * float(ctau_par_m)      # (N,) lab decay length
+    rep = np.repeat(np.arange(N), K)
+    strat = np.tile(np.arange(K), N)
+    u = (strat + 0.5) / K
+    ell = -np.maximum(lam[rep], 1e-300) * np.log1p(-u)
+    d_par = pvec_par[rep] / np.maximum(p_par_mag[rep], 1e-300)[:, None]
+    vertex = ell[:, None] * d_par
+    return rep, vertex
 
 
 # ---------------------------------------------------------------------------
@@ -314,11 +292,22 @@ def boost_to_lab(estar, kstar, e_par, pvec_par, m_par):
 # (adapted from hepbench benchmarks/llp_forward/_shared/pipeline.py)
 # ---------------------------------------------------------------------------
 class DecayVolume:
-    """On-axis cylindrical decay volume + downstream detector plane.
+    """Cylindrical decay volume + downstream detector plane.
 
     Loaded from a YAML spec carrying (optionally nested under a top-level
-    `geometry:` key): z_min_m, z_max_m, r_volume_m, z_det_m, r_det_m.
-    All distances in meters from the primary interaction point."""
+    `geometry:` key): z_min_m, z_max_m, r_volume_m, z_det_m, r_det_m, and
+    optionally z_prod_m and x_off_m. All distances in meters from the primary
+    interaction point.
+
+    - z_prod_m (default z_min): end of the parent PRODUCTION REGION. Parents
+      decay/are swept in [0, z_prod]; the gap [z_prod, z_min] is empty
+      baseline. An LLP counts only if its production vertex has z < z_prod.
+      The gap sets a minimum survival distance, which bounds (well-conditions)
+      the decay-length contour branch. Set z_prod = z_min for the absorber at
+      the fiducial face (or the prompt-at-IP limit, where all vertices are 0).
+    - x_off_m (default 0 = on-axis): transverse displacement of the detector
+      from the beam line; the cylinder axis and the detector plane are centred
+      on (x_off, 0) at all z. Off-axis sees a softer, lower-rate LLP flux."""
 
     def __init__(self, spec):
         if not isinstance(spec, dict):
@@ -332,6 +321,8 @@ class DecayVolume:
             self.r_det = float(g["r_det_m"])
         except KeyError as e:
             raise ValueError(f"geometry spec missing {e}")
+        self.z_prod = float(g.get("z_prod_m", self.z_min))
+        self.x_off = float(g.get("x_off_m", 0.0))
 
     @classmethod
     def from_yaml(cls, path):
@@ -339,12 +330,12 @@ class DecayVolume:
             return cls(yaml.safe_load(fh))
 
     def segment(self, theta):
-        """In-volume path segment [L1, L2] for rays at angle theta.
+        """In-volume path segment [L1, L2] for on-axis rays FROM THE ORIGIN at
+        angle theta (the prompt-at-IP special case of segment_from_vertex).
 
-        Vectorized; returns (L1, L2, ok). The ray r(z) = z tan(theta)
-        must satisfy r < r_vol, capping the usable z at
-        z_cap = r_vol / tan(theta). Valid for forward rays
-        (theta < pi/2); callers must mask backward rays out of `ok`."""
+        Vectorized; returns (L1, L2, ok). The ray r(z) = z tan(theta) must
+        satisfy r < r_vol, capping usable z at z_cap = r_vol / tan(theta).
+        Valid for forward rays; callers mask backward rays out of `ok`."""
         theta = np.asarray(theta, dtype=float)
         tan_t = np.tan(theta)
         cos_t = np.cos(theta)
@@ -354,6 +345,44 @@ class DecayVolume:
         ok = (z_hi > self.z_min) & (theta < 0.5 * np.pi)
         L1 = self.z_min / cos_t
         L2 = np.where(ok, z_hi / cos_t, self.z_min / cos_t)
+        return L1, L2, ok
+
+    def segment_from_vertex(self, vtx, u):
+        """In-volume path segment [L1, L2] for an LLP produced at `vtx` (N,3)
+        travelling along unit direction `u` (N,3) -- the general
+        (decay-in-flight, off-axis) case. The segment is where the ray
+        {vtx + s u : s>0} is inside the radius about the (off-axis) axis AND in
+        the z-window [z_min, z_max]; L1, L2 are path lengths from vtx (the LLP
+        decay clock starts at production). A vertex at or beyond z_prod is
+        absorbed/swept (ok=False); a vertex of 0 reduces to segment(theta)."""
+        vtx = np.asarray(vtx, dtype=float)
+        u = np.asarray(u, dtype=float)
+        x0, y0, z0 = vtx[:, 0], vtx[:, 1], vtx[:, 2]
+        ux, uy, uz = u[:, 0], u[:, 1], u[:, 2]
+        xr = x0 - self.x_off                       # radius about (x_off, 0)
+        a = ux * ux + uy * uy
+        b = 2.0 * (xr * ux + y0 * uy)
+        c = xr * xr + y0 * y0 - self.r_vol ** 2
+        disc = b * b - 4.0 * a * c
+        sq = np.sqrt(np.maximum(disc, 0.0))
+        a_safe = np.where(a > 1e-30, a, 1e-30)
+        r_lo = np.minimum((-b - sq) / (2 * a_safe), (-b + sq) / (2 * a_safe))
+        r_hi = np.maximum((-b - sq) / (2 * a_safe), (-b + sq) / (2 * a_safe))
+        small = a <= 1e-30                          # ray parallel to axis
+        r_lo = np.where(small, np.where(c < 0, -np.inf, np.inf), r_lo)
+        r_hi = np.where(small, np.where(c < 0, np.inf, -np.inf), r_hi)
+        noroot = (disc < 0) & (~small)
+        r_lo = np.where(noroot, np.inf, r_lo)
+        r_hi = np.where(noroot, -np.inf, r_hi)
+        fwd = uz > 0
+        uz_safe = np.where(fwd, uz, 1.0)
+        z_lo = (self.z_min - z0) / uz_safe
+        z_hi = (self.z_max - z0) / uz_safe
+        s_lo = np.maximum(np.maximum(r_lo, z_lo), 0.0)
+        s_hi = np.minimum(r_hi, z_hi)
+        ok = fwd & (z0 < self.z_prod) & (s_hi > s_lo)
+        L1 = np.where(ok, s_lo, 0.0)
+        L2 = np.where(ok, s_hi, 0.0)
         return L1, L2, ok
 
 
@@ -396,6 +425,23 @@ def two_track_pass(p4_phi, vertex, m_phi, m1, m2, geom, rng):
         dz = geom.z_det - vertex[:, 2]
         t = np.where(forward, dz / np.where(forward, klab[:, 2], 1.0), np.inf)
         xy = vertex[:, :2] + t[:, None] * klab[:, :2]
-        r = np.sqrt(np.einsum("ij,ij->i", xy, xy))
+        dx = xy[:, 0] - geom.x_off              # detector plane centred off-axis
+        r = np.sqrt(dx * dx + xy[:, 1] ** 2)
         ok &= forward & (r < geom.r_det)
     return ok
+
+
+def photon_pass(p4_phi, vertex, geom):
+    """Acceptance for a two-photon (or otherwise collinear) LLP decay: for a
+    light, highly boosted LLP the daughters are collinear with it, so require
+    the LLP line-of-flight from the decay vertex to reach the detector face
+    within r_det (about the off-axis axis). Lifetime-independent."""
+    pmag = np.linalg.norm(p4_phi[:, 1:], axis=1)
+    dirs = p4_phi[:, 1:] / np.maximum(pmag, 1e-300)[:, None]
+    fwd = dirs[:, 2] > 0.0
+    dz = geom.z_det - vertex[:, 2]
+    t = np.where(fwd, dz / np.where(fwd, dirs[:, 2], 1.0), np.inf)
+    xy = vertex[:, :2] + t[:, None] * dirs[:, :2]
+    dx = xy[:, 0] - geom.x_off
+    r = np.sqrt(dx * dx + xy[:, 1] ** 2)
+    return fwd & (r < geom.r_det)

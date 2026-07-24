@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "toolbase": {
+      "type": "stdio",
+      "command": "toolbase",
+      "args": [
+        "serve"
+      ]
+    }
+  }
+}

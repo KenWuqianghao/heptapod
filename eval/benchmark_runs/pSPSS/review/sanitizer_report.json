@@ -1,0 +1,9 @@
+{
+  "original_model_name": "pSPSS_gen",
+  "anon_model_name": "ANON-MODEL",
+  "information_blocks_removed": 1,
+  "prose_values_scrubbed": 13,
+  "sha256_original": "f22a6acc9c4ff0260d34ac429969de0bb67139c2ab5c1b582326167536bcfd13",
+  "sha256_sanitized": "fc60f771a39e5a3a9ae43b6f78189a337372e5a5c45f3433149f4d220eff5468",
+  "blindness_scope": "blank slate w.r.t. paper, authors, model name, comments and prose labels \u2014 NOT w.r.t. field/parameter symbol names, which are kept so the reviewer can map the reconstruction back"
+}

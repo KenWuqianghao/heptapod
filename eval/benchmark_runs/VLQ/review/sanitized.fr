@@ -1,0 +1,334 @@
+
+
+
+M$ModelName = "ANON-MODEL";
+
+
+M$InteractionOrderHierarchy = {{NP, 1}};
+
+M$InteractionOrderLimit = {{NP, 99}};
+
+FeynmanGauge = False;
+
+M$Parameters = {
+  thT == {
+    ParameterType -> External,
+    Value -> 0.1,
+    ComplexParameter -> False,
+    BlockName -> VLQINPUTS,
+    OrderBlock -> 1,
+    InteractionOrder -> {NP, 1},
+    ParameterName -> thT,
+    TeX -> "\\theta_T",
+    Description -> ""
+  },
+  lamT == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> VLQYUKAWA,
+    OrderBlock -> 1,
+    InteractionOrder -> {NP, 1},
+    ParameterName -> lamT,
+    TeX -> "\\lambda_T",
+    Description -> ""
+  },
+  lamTp == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> VLQYUKAWA,
+    OrderBlock -> 2,
+    InteractionOrder -> {NP, 1},
+    ParameterName -> lamTp,
+    TeX -> "\\lambda'_T",
+    Description -> ""
+  },
+  MT0 == {
+    ParameterType -> External,
+    Value -> 600.,
+    ComplexParameter -> False,
+    BlockName -> VLQMASSES,
+    OrderBlock -> 1,
+    ParameterName -> MT0,
+    Description -> ""
+  },
+  MTmix == {
+    ParameterType -> External,
+    Value -> 0.,
+    ComplexParameter -> False,
+    BlockName -> VLQMASSES,
+    OrderBlock -> 2,
+    InteractionOrder -> {NP, 1},
+    ParameterName -> MTmix,
+    Description -> ""
+  },
+  thB == {
+    ParameterType -> External,
+    Value -> 0.01,
+    ComplexParameter -> False,
+    BlockName -> VLQINPUTS,
+    OrderBlock -> 2,
+    InteractionOrder -> {NP, 1},
+    ParameterName -> thB,
+    TeX -> "\\theta_B",
+    Description -> ""
+  },
+  lamB == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> VLQYUKAWA,
+    OrderBlock -> 3,
+    InteractionOrder -> {NP, 1},
+    ParameterName -> lamB,
+    TeX -> "\\lambda_B",
+    Description -> ""
+  },
+  lamBp == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> VLQYUKAWA,
+    OrderBlock -> 4,
+    InteractionOrder -> {NP, 1},
+    ParameterName -> lamBp,
+    TeX -> "\\lambda'_B",
+    Description -> ""
+  },
+  MB0 == {
+    ParameterType -> External,
+    Value -> 600.,
+    ComplexParameter -> False,
+    BlockName -> VLQMASSES,
+    OrderBlock -> 3,
+    ParameterName -> MB0,
+    Description -> ""
+  },
+  MBmix == {
+    ParameterType -> External,
+    Value -> 0.,
+    ComplexParameter -> False,
+    BlockName -> VLQMASSES,
+    OrderBlock -> 4,
+    InteractionOrder -> {NP, 1},
+    ParameterName -> MBmix,
+    Description -> ""
+  },
+  thU4 == {
+    ParameterType -> External,
+    Value -> 0.1,
+    ComplexParameter -> False,
+    BlockName -> CKM4,
+    OrderBlock -> 1,
+    InteractionOrder -> {NP, 1},
+    ParameterName -> thU4,
+    TeX -> "\\theta_u",
+    Description -> ""
+  },
+  thV4 == {
+    ParameterType -> External,
+    Value -> 0.1,
+    ComplexParameter -> False,
+    BlockName -> CKM4,
+    OrderBlock -> 2,
+    InteractionOrder -> {NP, 1},
+    ParameterName -> thV4,
+    TeX -> "\\theta_v",
+    Description -> ""
+  },
+  thW4 == {
+    ParameterType -> External,
+    Value -> 0.,
+    ComplexParameter -> False,
+    BlockName -> CKM4,
+    OrderBlock -> 3,
+    InteractionOrder -> {NP, 1},
+    ParameterName -> thW4,
+    TeX -> "\\theta_w",
+    Description -> ""
+  },
+  sT == {
+    ParameterType -> Internal,
+    Value -> Sin[thT],
+    ComplexParameter -> False,
+    ParameterName -> sT,
+    Description -> ""
+  },
+  cT == {
+    ParameterType -> Internal,
+    Value -> Cos[thT],
+    ComplexParameter -> False,
+    ParameterName -> cT,
+    Description -> ""
+  },
+  sB == {
+    ParameterType -> Internal,
+    Value -> Sin[thB],
+    ComplexParameter -> False,
+    ParameterName -> sB,
+    Description -> ""
+  },
+  cB == {
+    ParameterType -> Internal,
+    Value -> Cos[thB],
+    ComplexParameter -> False,
+    ParameterName -> cB,
+    Description -> ""
+  },
+  sU4 == {
+    ParameterType -> Internal,
+    Value -> Sin[thU4],
+    ComplexParameter -> False,
+    ParameterName -> sU4,
+    Description -> ""
+  },
+  cU4 == {
+    ParameterType -> Internal,
+    Value -> Cos[thU4],
+    ComplexParameter -> False,
+    ParameterName -> cU4,
+    Description -> ""
+  },
+  sV4 == {
+    ParameterType -> Internal,
+    Value -> Sin[thV4],
+    ComplexParameter -> False,
+    ParameterName -> sV4,
+    Description -> ""
+  },
+  cV4 == {
+    ParameterType -> Internal,
+    Value -> Cos[thV4],
+    ComplexParameter -> False,
+    ParameterName -> cV4,
+    Description -> ""
+  },
+  sW4 == {
+    ParameterType -> Internal,
+    Value -> Sin[thW4],
+    ComplexParameter -> False,
+    ParameterName -> sW4,
+    Description -> ""
+  },
+  cW4 == {
+    ParameterType -> Internal,
+    Value -> Cos[thW4],
+    ComplexParameter -> False,
+    ParameterName -> cW4,
+    Description -> ""
+  }
+};
+
+M$ClassesDescription = {
+  F[100] == {
+    ClassName -> tp,
+    SelfConjugate -> False,
+    Indices -> {Index[Colour]},
+    Mass -> {MTP, 600.},
+    Width -> {WTP, 1.},
+    QuantumNumbers -> {Q -> 2/3, Y -> 2/3},
+    PDG -> 6000006,
+    ParticleName -> "tp",
+    AntiParticleName -> "tp~",
+    FullName -> "",
+    PropagatorLabel -> "tp",
+    PropagatorType -> Straight,
+    PropagatorArrow -> Forward
+  },
+  F[101] == {
+    ClassName -> bp,
+    SelfConjugate -> False,
+    Indices -> {Index[Colour]},
+    Mass -> {MBP, 600.},
+    Width -> {WBP, 1.},
+    QuantumNumbers -> {Q -> -1/3, Y -> -1/3},
+    PDG -> 6000007,
+    ParticleName -> "bp",
+    AntiParticleName -> "bp~",
+    FullName -> "",
+    PropagatorLabel -> "bp",
+    PropagatorType -> Straight,
+    PropagatorArrow -> Forward
+  },
+  F[102] == {
+    ClassName -> t4,
+    SelfConjugate -> False,
+    Indices -> {Index[Colour]},
+    Mass -> {MT4, 600.},
+    Width -> {WT4, 1.},
+    QuantumNumbers -> {Q -> 2/3, Y -> 1/6},
+    PDG -> 7000006,
+    ParticleName -> "t4",
+    AntiParticleName -> "t4~",
+    FullName -> "",
+    PropagatorLabel -> "t4",
+    PropagatorType -> Straight,
+    PropagatorArrow -> Forward
+  },
+  F[103] == {
+    ClassName -> b4,
+    SelfConjugate -> False,
+    Indices -> {Index[Colour]},
+    Mass -> {MB4, 600.},
+    Width -> {WB4, 1.},
+    QuantumNumbers -> {Q -> -1/3, Y -> 1/6},
+    PDG -> 7000007,
+    ParticleName -> "b4",
+    AntiParticleName -> "b4~",
+    FullName -> "",
+    PropagatorLabel -> "b4",
+    PropagatorType -> Straight,
+    PropagatorArrow -> Forward
+  },
+  F[104] == {
+    ClassName -> n4,
+    SelfConjugate -> False,
+    Mass -> {MN4, 100.},
+    Width -> {WN4, 1.},
+    QuantumNumbers -> {Q -> 0, Y -> -1/2},
+    PDG -> 7000012,
+    ParticleName -> "n4",
+    AntiParticleName -> "n4~",
+    FullName -> "",
+    PropagatorLabel -> "n4",
+    PropagatorType -> Straight,
+    PropagatorArrow -> Forward
+  },
+  F[105] == {
+    ClassName -> e4,
+    SelfConjugate -> False,
+    Mass -> {ME4, 100.},
+    Width -> {WE4, 1.},
+    QuantumNumbers -> {Q -> -1, Y -> -1/2},
+    PDG -> 7000011,
+    ParticleName -> "e4",
+    AntiParticleName -> "e4~",
+    FullName -> "",
+    PropagatorLabel -> "e4",
+    PropagatorType -> Straight,
+    PropagatorArrow -> Forward
+  }
+};
+
+LyTP = -lamT (bar[Q3L].Phi.tR) - lamTp (bar[Q3L].Phi.tpR) + HC[-lamT (bar[Q3L].Phi.tR) - lamTp (bar[Q3L].Phi.tpR)];
+
+LDTP = -MT0 bar[tpL].tpR - MTmix bar[tpL].tR + HC[-MT0 bar[tpL].tpR - MTmix bar[tpL].tR];
+
+LWTP = -(gw/Sqrt[2]) (cT CKM[3, ff] bar[t].Ga[mu].ProjM.dq[ff] + sT CKM[3, ff] bar[tp].Ga[mu].ProjM.dq[ff]) W[mu] + HC[-(gw/Sqrt[2]) (cT CKM[3, ff] bar[t].Ga[mu].ProjM.dq[ff] + sT CKM[3, ff] bar[tp].Ga[mu].ProjM.dq[ff]) W[mu]];
+
+LZTP = -(gw/(2 cw)) (cT^2 bar[t].Ga[mu].ProjM.t + sT cT bar[t].Ga[mu].ProjM.tp + sT cT bar[tp].Ga[mu].ProjM.t + sT^2 bar[tp].Ga[mu].ProjM.tp) Z[mu];
+
+LHTP = (gw/(2 MW)) ((cT^2 MT bar[t].ProjP.t + sT cT MTP bar[t].ProjP.tp + sT cT MT bar[tp].ProjP.t + sT^2 MTP bar[tp].ProjP.tp) H + HC[(cT^2 MT bar[t].ProjP.t + sT cT MTP bar[t].ProjP.tp + sT cT MT bar[tp].ProjP.t + sT^2 MTP bar[tp].ProjP.tp) H]);
+
+LyBP = -lamB (bar[Q3L].Phibar.bR) - lamBp (bar[Q3L].Phibar.bpR) + HC[-lamB (bar[Q3L].Phibar.bR) - lamBp (bar[Q3L].Phibar.bpR)];
+
+LDBP = -MB0 bar[bpL].bpR - MBmix bar[bpL].bR + HC[-MB0 bar[bpL].bpR - MBmix bar[bpL].bR];
+
+LWBP = -(gw/Sqrt[2]) (cB CKM[ff,3] bar[uq[ff]].Ga[mu].ProjM.b + sB CKM[ff,3] bar[uq[ff]].Ga[mu].ProjM.bp) W[mu] + HC[-(gw/Sqrt[2]) (cB CKM[ff,3] bar[uq[ff]].Ga[mu].ProjM.b + sB CKM[ff,3] bar[uq[ff]].Ga[mu].ProjM.bp) W[mu]];
+
+LZBP = -(gw/(2 cw)) (cB^2 bar[b].Ga[mu].ProjM.b + sB cB bar[b].Ga[mu].ProjM.bp + sB cB bar[bp].Ga[mu].ProjM.b + sB^2 bar[bp].Ga[mu].ProjM.bp) Z[mu];
+
+L4CKM = -(gw/Sqrt[2]) ((cU4 CKM[3, ff] - sU4 sV4 CKM[2, ff] - sU4 cV4 sW4 CKM[1, ff]) bar[t].Ga[mu].ProjM.dq[ff] + (sU4 CKM[3, ff] + cU4 sV4 CKM[2, ff] + cU4 cV4 sW4 CKM[1, ff]) bar[t4].Ga[mu].ProjM.dq[ff] + (cV4 CKM[2, ff] - sV4 sW4 CKM[1, ff]) bar[c].Ga[mu].ProjM.dq[ff] + cW4 CKM[1, ff] bar[u].Ga[mu].ProjM.dq[ff]) W[mu] + HC[-(gw/Sqrt[2]) ((cU4 CKM[3, ff] - sU4 sV4 CKM[2, ff] - sU4 cV4 sW4 CKM[1, ff]) bar[t].Ga[mu].ProjM.dq[ff] + (sU4 CKM[3, ff] + cU4 sV4 CKM[2, ff] + cU4 cV4 sW4 CKM[1, ff]) bar[t4].Ga[mu].ProjM.dq[ff] + (cV4 CKM[2, ff] - sV4 sW4 CKM[1, ff]) bar[c].Ga[mu].ProjM.dq[ff] + cW4 CKM[1, ff] bar[u].Ga[mu].ProjM.dq[ff]) W[mu]];
+
+L4Mass = -MT4 bar[t4].t4 - MB4 bar[b4].b4 - MN4 bar[n4].n4 - ME4 bar[e4].e4;

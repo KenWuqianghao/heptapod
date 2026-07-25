@@ -1,0 +1,338 @@
+
+
+
+M$ModelName = "ANON-MODEL";
+
+
+M$InteractionOrderHierarchy = {{QCD, 1}, {NP, 2}, {QED, 2}};
+
+M$InteractionOrderLimit = {{NP, 4}};
+
+FeynmanGauge = True;
+
+$CKMDiag = False;
+
+$MNSDiag = True;
+
+M$InteractionOrderLimit = {{NP, 4}};
+
+M$InteractionOrderHierarchy = {{QCD, 1}, {NP, 2}, {QED, 2}};
+
+IndexRange[Index[NEU]] = Range[4];
+IndexRange[Index[CHA]] = Range[2];
+IndexRange[Index[SCA]] = Range[6];
+IndexStyle[NEU, i];
+IndexStyle[CHA, i];
+IndexStyle[SCA, i];
+
+M$Parameters = {
+  gd == {
+    ParameterType -> External,
+    Value -> 0.001,
+    ComplexParameter -> False,
+    BlockName -> DARK,
+    OrderBlock -> 1,
+    InteractionOrder -> {NP, 1},
+    TeX -> "Subscript[g,d]",
+    Description -> ""
+  },
+  RNN == {
+    ParameterType -> External,
+    Indices -> {Index[NEU], Index[NEU]},
+    ComplexParameter -> False,
+    BlockName -> NMIX,
+    Description -> ""
+  },
+  INN == {
+    ParameterType -> External,
+    Indices -> {Index[NEU], Index[NEU]},
+    ComplexParameter -> False,
+    BlockName -> IMNMIX,
+    Description -> ""
+  },
+  RUU == {
+    ParameterType -> External,
+    Indices -> {Index[CHA], Index[CHA]},
+    ComplexParameter -> False,
+    BlockName -> UMIX,
+    Description -> ""
+  },
+  IUU == {
+    ParameterType -> External,
+    Indices -> {Index[CHA], Index[CHA]},
+    ComplexParameter -> False,
+    BlockName -> IMUMIX,
+    Description -> ""
+  },
+  RVV == {
+    ParameterType -> External,
+    Indices -> {Index[CHA], Index[CHA]},
+    ComplexParameter -> False,
+    BlockName -> VMIX,
+    Description -> ""
+  },
+  IVV == {
+    ParameterType -> External,
+    Indices -> {Index[CHA], Index[CHA]},
+    ComplexParameter -> False,
+    BlockName -> IMVMIX,
+    Description -> ""
+  },
+  RRn == {
+    ParameterType -> External,
+    Indices -> {Index[Generation], Index[Generation]},
+    ComplexParameter -> False,
+    BlockName -> SNUMIX,
+    Description -> ""
+  },
+  IRn == {
+    ParameterType -> External,
+    Indices -> {Index[Generation], Index[Generation]},
+    ComplexParameter -> False,
+    BlockName -> IMSNUMIX,
+    Description -> ""
+  },
+  RRl == {
+    ParameterType -> External,
+    Indices -> {Index[SCA], Index[SCA]},
+    ComplexParameter -> False,
+    BlockName -> SELMIX,
+    Description -> ""
+  },
+  IRl == {
+    ParameterType -> External,
+    Indices -> {Index[SCA], Index[SCA]},
+    ComplexParameter -> False,
+    BlockName -> IMSELMIX,
+    Description -> ""
+  },
+  RRu == {
+    ParameterType -> External,
+    Indices -> {Index[SCA], Index[SCA]},
+    ComplexParameter -> False,
+    BlockName -> USQMIX,
+    Description -> ""
+  },
+  IRu == {
+    ParameterType -> External,
+    Indices -> {Index[SCA], Index[SCA]},
+    ComplexParameter -> False,
+    BlockName -> IMUSQMIX,
+    Description -> ""
+  },
+  RRd == {
+    ParameterType -> External,
+    Indices -> {Index[SCA], Index[SCA]},
+    ComplexParameter -> False,
+    BlockName -> DSQMIX,
+    Description -> ""
+  },
+  IRd == {
+    ParameterType -> External,
+    Indices -> {Index[SCA], Index[SCA]},
+    ComplexParameter -> False,
+    BlockName -> IMDSQMIX,
+    Description -> ""
+  },
+  alp == {
+    ParameterType -> External,
+    ComplexParameter -> False,
+    BlockName -> FRALPHA,
+    TeX -> "\\[Alpha]",
+    Description -> ""
+  }
+};
+
+M$ClassesDescription = {
+  V[100] == {
+    ClassName -> AD,
+    SelfConjugate -> True,
+    Mass -> {MAD},
+    Width -> {WAD},
+    PDG -> 3000022,
+    ParticleName -> "ad",
+    FullName -> "",
+    PropagatorLabel -> "AD",
+    PropagatorType -> Sine,
+    PropagatorArrow -> None
+  },
+  F[101] == {
+    ClassName -> neu,
+    SelfConjugate -> True,
+    ClassMembers -> {neu1, neu2, neu3, neu4},
+    Indices -> {Index[NEU]},
+    FlavorIndex -> NEU,
+    Mass -> {Mneu, {Mneu1, 10.}, {Mneu2}, {Mneu3}, {Mneu4}},
+    Width -> {Wneu, {Wneu1}, {Wneu2}, {Wneu3}, {Wneu4}},
+    PDG -> {1000022, 1000023, 1000025, 1000035},
+    ParticleName -> {"n1", "n2", "n3", "n4"},
+    FullName -> {"neutralino 1", "neutralino 2", "neutralino 3", "neutralino 4"},
+    PropagatorLabel -> {"neu", "neu1", "neu2", "neu3", "neu4"},
+    PropagatorType -> Straight,
+    PropagatorArrow -> None
+  },
+  F[102] == {
+    ClassName -> ch,
+    SelfConjugate -> False,
+    ClassMembers -> {ch1, ch2},
+    Indices -> {Index[CHA]},
+    FlavorIndex -> CHA,
+    Mass -> {Mch, {Mch1}, {Mch2}},
+    Width -> {Wch, {Wch1}, {Wch2}},
+    QuantumNumbers -> {Q -> 1},
+    PDG -> {1000024, 1000037},
+    ParticleName -> {"x1+", "x2+"},
+    AntiParticleName -> {"x1-", "x2-"},
+    FullName -> {"chargino 1", "chargino 2"},
+    PropagatorLabel -> {"ch", "ch1", "ch2"},
+    PropagatorType -> Straight,
+    PropagatorArrow -> Forward
+  },
+  F[103] == {
+    ClassName -> go,
+    SelfConjugate -> True,
+    Indices -> {Index[Gluon]},
+    Mass -> {Mgo},
+    Width -> {Wgo},
+    PDG -> 1000021,
+    ParticleName -> "go",
+    FullName -> "",
+    PropagatorLabel -> "go",
+    PropagatorType -> Straight,
+    PropagatorArrow -> None
+  },
+  F[104] == {
+    ClassName -> neuD,
+    SelfConjugate -> True,
+    Mass -> {MneuD, 1.},
+    Width -> {WneuD, 0.},
+    PDG -> 3000001,
+    ParticleName -> "nD",
+    FullName -> "",
+    PropagatorLabel -> "neuD",
+    PropagatorType -> Straight,
+    PropagatorArrow -> None
+  },
+  S[201] == {
+    ClassName -> h0,
+    SelfConjugate -> True,
+    Mass -> {MH01, 125.},
+    Width -> {WH01},
+    PDG -> 25,
+    ParticleName -> "h01",
+    FullName -> "",
+    PropagatorLabel -> "h0",
+    PropagatorType -> ScalarDash,
+    PropagatorArrow -> None
+  },
+  S[202] == {
+    ClassName -> H0,
+    SelfConjugate -> True,
+    Mass -> {MH02},
+    Width -> {WH02},
+    PDG -> 35,
+    ParticleName -> "h02",
+    FullName -> "",
+    PropagatorLabel -> "H0",
+    PropagatorType -> ScalarDash,
+    PropagatorArrow -> None
+  },
+  S[203] == {
+    ClassName -> A0,
+    SelfConjugate -> True,
+    Mass -> {MA0},
+    Width -> {WA0},
+    PDG -> 36,
+    ParticleName -> "A0",
+    FullName -> "",
+    PropagatorLabel -> "A0",
+    PropagatorType -> ScalarDash,
+    PropagatorArrow -> None
+  },
+  S[204] == {
+    ClassName -> Hp,
+    SelfConjugate -> False,
+    Mass -> {MHp},
+    Width -> {WHp},
+    QuantumNumbers -> {Q -> 1},
+    PDG -> 37,
+    ParticleName -> "H+",
+    AntiParticleName -> "H-",
+    FullName -> "",
+    PropagatorLabel -> "Hp",
+    PropagatorType -> ScalarDash,
+    PropagatorArrow -> Forward
+  },
+  S[205] == {
+    ClassName -> sn,
+    SelfConjugate -> False,
+    ClassMembers -> {sn1, sn2, sn3},
+    Indices -> {Index[Generation]},
+    FlavorIndex -> Generation,
+    Mass -> {Msn, {Msn1}, {Msn2}, {Msn3}},
+    Width -> {Wsn, {Wsn1}, {Wsn2}, {Wsn3}},
+    QuantumNumbers -> {Q -> 0},
+    PDG -> {1000012, 1000014, 1000016},
+    ParticleName -> {"sv1", "sv2", "sv3"},
+    AntiParticleName -> {"sv1~", "sv2~", "sv3~"},
+    FullName -> {"sneutrino 1", "sneutrino 2", "sneutrino 3"},
+    PropagatorLabel -> {"sn", "sn1", "sn2", "sn3"},
+    PropagatorType -> ScalarDash,
+    PropagatorArrow -> Forward
+  },
+  S[206] == {
+    ClassName -> sl,
+    SelfConjugate -> False,
+    ClassMembers -> {sl1, sl2, sl3, sl4, sl5, sl6},
+    Indices -> {Index[SCA]},
+    FlavorIndex -> SCA,
+    Mass -> {Msl, {Msl1}, {Msl2}, {Msl3}, {Msl4}, {Msl5}, {Msl6}},
+    QuantumNumbers -> {Q -> -1},
+    PDG -> {1000011, 1000013, 1000015, 2000011, 2000013, 2000015},
+    ParticleName -> {"sl1-", "sl2-", "sl3-", "sl4-", "sl5-", "sl6-"},
+    AntiParticleName -> {"sl1+", "sl2+", "sl3+", "sl4+", "sl5+", "sl6+"},
+    FullName -> {"charged slepton 1", "charged slepton 2", "charged slepton 3", "charged slepton 4", "charged slepton 5", "charged slepton 6"},
+    PropagatorLabel -> {"sl", "sl1", "sl2", "sl3", "sl4", "sl5", "sl6"},
+    PropagatorType -> ScalarDash,
+    PropagatorArrow -> Forward
+  },
+  S[207] == {
+    ClassName -> su,
+    SelfConjugate -> False,
+    ClassMembers -> {su1, su2, su3, su4, su5, su6},
+    Indices -> {Index[SCA], Index[Colour]},
+    FlavorIndex -> SCA,
+    Mass -> {Msu, {Msu1}, {Msu2}, {Msu3}, {Msu4}, {Msu5}, {Msu6}},
+    QuantumNumbers -> {Q -> 2/3},
+    PDG -> {1000002, 1000004, 1000006, 2000002, 2000004, 2000006},
+    ParticleName -> {"su1", "su2", "su3", "su4", "su5", "su6"},
+    AntiParticleName -> {"su1~", "su2~", "su3~", "su4~", "su5~", "su6~"},
+    FullName -> {"up squark 1", "up squark 2", "up squark 3", "up squark 4", "up squark 5", "up squark 6"},
+    PropagatorLabel -> {"su", "su1", "su2", "su3", "su4", "su5", "su6"},
+    PropagatorType -> ScalarDash,
+    PropagatorArrow -> Forward
+  },
+  S[208] == {
+    ClassName -> sd,
+    SelfConjugate -> False,
+    ClassMembers -> {sd1, sd2, sd3, sd4, sd5, sd6},
+    Indices -> {Index[SCA], Index[Colour]},
+    FlavorIndex -> SCA,
+    Mass -> {Msd, {Msd1}, {Msd2}, {Msd3}, {Msd4}, {Msd5}, {Msd6}},
+    QuantumNumbers -> {Q -> -1/3},
+    PDG -> {1000001, 1000003, 1000005, 2000001, 2000003, 2000005},
+    ParticleName -> {"sd1", "sd2", "sd3", "sd4", "sd5", "sd6"},
+    AntiParticleName -> {"sd1~", "sd2~", "sd3~", "sd4~", "sd5~", "sd6~"},
+    FullName -> {"down squark 1", "down squark 2", "down squark 3", "down squark 4", "down squark 5", "down squark 6"},
+    PropagatorLabel -> {"sd", "sd1", "sd2", "sd3", "sd4", "sd5", "sd6"},
+    PropagatorType -> ScalarDash,
+    PropagatorArrow -> Forward
+  }
+};
+
+
+LN1NDAD := I*gd*(neu1bar.Ga[mu].neuD)*AD[mu];
+
+LADMuMu := gd*(mbar.Ga[mu].m)*AD[mu];
+
+LTot := LN1NDAD + LADMuMu;

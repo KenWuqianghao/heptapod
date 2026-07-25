@@ -1,0 +1,9 @@
+{
+  "original_model_name": "NJLComposite_gen",
+  "anon_model_name": "ANON-MODEL",
+  "information_blocks_removed": 1,
+  "prose_values_scrubbed": 24,
+  "sha256_original": "cbbcaec2b2a727972030fc9b00e2061ae2c290a8ae3e4d69e7f313f3a798ff94",
+  "sha256_sanitized": "6c8761ee2893e0b59d6fbe9f3ca34ebb8a13edde3c771937329a65a89a5ba793",
+  "blindness_scope": "blank slate w.r.t. paper, authors, model name, comments and prose labels \u2014 NOT w.r.t. field/parameter symbol names, which are kept so the reviewer can map the reconstruction back"
+}

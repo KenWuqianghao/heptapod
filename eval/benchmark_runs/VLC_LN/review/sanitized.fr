@@ -1,0 +1,339 @@
+
+
+
+M$ModelName = "ANON-MODEL";
+
+
+M$InteractionOrderHierarchy = {{QCD, 1}, {QED, 2}, {NP, 2}};
+
+FeynmanGauge = True;
+
+FR$LoopSwitches = {{Gf, MW}};
+
+FR$RmDblExt = {ymb -> MB, ymc -> MC, ymdo -> MD, yme -> Me, ymm -> MMU, yms -> MS, ymt -> MT, ymtau -> MTA, ymup -> MU};
+
+IndexRange[Index[HCIndex]] = NoUnfold[Range[3]];
+IndexStyle[HCIndex, h];
+
+M$Parameters = {
+  NHC == {
+    ParameterType -> External,
+    Value -> 3.,
+    ComplexParameter -> False,
+    BlockName -> VLCPARAM,
+    OrderBlock -> 1,
+    Description -> ""
+  },
+  grho == {
+    ParameterType -> External,
+    Value -> 7.0,
+    ComplexParameter -> False,
+    BlockName -> VLCPARAM,
+    OrderBlock -> 2,
+    InteractionOrder -> {NP, 1},
+    Description -> ""
+  },
+  fpi == {
+    ParameterType -> External,
+    Value -> 500.,
+    ComplexParameter -> False,
+    BlockName -> VLCPARAM,
+    OrderBlock -> 3,
+    Description -> ""
+  },
+  mL == {
+    ParameterType -> External,
+    Value -> 100.,
+    ComplexParameter -> False,
+    BlockName -> VLCPARAM,
+    OrderBlock -> 4,
+    Description -> ""
+  },
+  mN == {
+    ParameterType -> External,
+    Value -> 100.,
+    ComplexParameter -> False,
+    BlockName -> VLCPARAM,
+    OrderBlock -> 5,
+    Description -> ""
+  },
+  thetaH == {
+    ParameterType -> External,
+    Value -> 0.,
+    ComplexParameter -> False,
+    BlockName -> VLCPARAM,
+    OrderBlock -> 6,
+    Description -> ""
+  },
+  yre == {
+    ParameterType -> External,
+    Value -> 0.1,
+    ComplexParameter -> False,
+    BlockName -> VLCYUK,
+    OrderBlock -> 1,
+    InteractionOrder -> {NP, 1},
+    Description -> ""
+  },
+  yim == {
+    ParameterType -> External,
+    Value -> 0.,
+    ComplexParameter -> False,
+    BlockName -> VLCYUK,
+    OrderBlock -> 2,
+    InteractionOrder -> {NP, 1},
+    Description -> ""
+  },
+  ytre == {
+    ParameterType -> External,
+    Value -> 0.1,
+    ComplexParameter -> False,
+    BlockName -> VLCYUK,
+    OrderBlock -> 3,
+    InteractionOrder -> {NP, 1},
+    Description -> ""
+  },
+  ytim == {
+    ParameterType -> External,
+    Value -> 0.,
+    ComplexParameter -> False,
+    BlockName -> VLCYUK,
+    OrderBlock -> 4,
+    InteractionOrder -> {NP, 1},
+    Description -> ""
+  },
+  y == {
+    ParameterType -> Internal,
+    Value -> yre + I yim,
+    ComplexParameter -> True,
+    InteractionOrder -> {NP, 1},
+    Description -> ""
+  },
+  ytil == {
+    ParameterType -> Internal,
+    Value -> ytre + I ytim,
+    ComplexParameter -> True,
+    InteractionOrder -> {NP, 1},
+    Description -> ""
+  },
+  Acoup == {
+    ParameterType -> Internal,
+    Value -> y + Conjugate[ytil],
+    ComplexParameter -> True,
+    InteractionOrder -> {NP, 1},
+    Description -> ""
+  },
+  Bcoup == {
+    ParameterType -> Internal,
+    Value -> y - Conjugate[ytil],
+    ComplexParameter -> True,
+    InteractionOrder -> {NP, 1},
+    Description -> ""
+  },
+  epsK == {
+    ParameterType -> Internal,
+    Value -> I Sqrt[2] Bcoup grho fpi^2/mK2^2,
+    ComplexParameter -> True,
+    Description -> ""
+  },
+  mRhoDerived == {
+    ParameterType -> Internal,
+    Value -> grho fpi,
+    ComplexParameter -> False,
+    Description -> ""
+  },
+  gV == {
+    ParameterType -> Internal,
+    Value -> gw^2/grho,
+    ComplexParameter -> False,
+    InteractionOrder -> {NP, 1},
+    Description -> ""
+  }
+};
+
+M$ClassesDescription = {
+  F[101] == {
+    ClassName -> Lvlc,
+    SelfConjugate -> False,
+    ClassMembers -> {L0, Lm},
+    Indices -> {Index[HCIndex], Index[SU2D]},
+    FlavorIndex -> SU2D,
+    Mass -> {ML, 100.},
+    Width -> {{WVL0, 1.}, {WVLM, 1.}},
+    QuantumNumbers -> {Y -> -1/2},
+    ParticleName -> {"L0", "L-"},
+    AntiParticleName -> {"L0~", "L+"},
+    FullName -> {"Vectorlike neutral component of L", "Vectorlike charged component of L"},
+    PropagatorType -> Straight,
+    PropagatorArrow -> Forward
+  },
+  F[102] == {
+    ClassName -> Nvlc,
+    SelfConjugate -> False,
+    Indices -> {Index[HCIndex]},
+    Mass -> {MN, 100.},
+    Width -> {WN, 1.},
+    QuantumNumbers -> {Y -> 0},
+    ParticleName -> "N",
+    AntiParticleName -> "N~",
+    FullName -> "",
+    PropagatorType -> Straight,
+    PropagatorArrow -> Forward
+  },
+  S[101] == {
+    ClassName -> pi0,
+    SelfConjugate -> True,
+    Mass -> {mPi3, 300.},
+    Width -> {wPi0, 1.},
+    PDG -> 10001,
+    ParticleName -> "pi0",
+    FullName -> "",
+    PropagatorLabel -> "pi0",
+    PropagatorType -> ScalarDash,
+    PropagatorArrow -> None
+  },
+  S[102] == {
+    ClassName -> pip,
+    SelfConjugate -> False,
+    Mass -> {mPi3, 300.},
+    Width -> {wPiP, 1.},
+    QuantumNumbers -> {Q -> 1},
+    PDG -> 10002,
+    ParticleName -> "pi+",
+    AntiParticleName -> "pi-",
+    FullName -> "",
+    PropagatorLabel -> "pi+",
+    PropagatorType -> ScalarDash,
+    PropagatorArrow -> None
+  },
+  S[103] == {
+    ClassName -> K2,
+    SelfConjugate -> False,
+    ClassMembers -> {Kp, K0},
+    Indices -> {Index[SU2D]},
+    FlavorIndex -> SU2D,
+    Mass -> {mK2, 500.},
+    Width -> {{wKp, 1.}, {wK0, 1.}},
+    QuantumNumbers -> {Y -> 1/2},
+    PDG -> {10003, 10004},
+    ParticleName -> {"K+", "K0"},
+    AntiParticleName -> {"K-", "K0~"},
+    FullName -> {"Charged component of the composite Kaon Higgs doublet", "Neutral component of the composite Kaon Higgs doublet"},
+    PropagatorLabel -> {"K+", "K0"},
+    PropagatorType -> ScalarDash,
+    PropagatorArrow -> None
+  },
+  S[104] == {
+    ClassName -> eta,
+    SelfConjugate -> True,
+    Mass -> {mEta, 300.},
+    Width -> {wEta, 1.},
+    PDG -> 10005,
+    ParticleName -> "eta",
+    FullName -> "",
+    PropagatorLabel -> "eta",
+    PropagatorType -> ScalarDash,
+    PropagatorArrow -> None
+  },
+  S[105] == {
+    ClassName -> etaP,
+    SelfConjugate -> True,
+    Mass -> {mEtaP, 1000.},
+    Width -> {wEtaP, 1.},
+    PDG -> 10006,
+    ParticleName -> "etaP",
+    FullName -> "",
+    PropagatorLabel -> "etaP",
+    PropagatorType -> ScalarDash,
+    PropagatorArrow -> None
+  },
+  V[101] == {
+    ClassName -> rho0,
+    SelfConjugate -> True,
+    Mass -> {mrho, 2000.},
+    Width -> {wrho0, 1.},
+    PDG -> 20001,
+    ParticleName -> "rho0",
+    FullName -> "",
+    PropagatorLabel -> "rho0",
+    PropagatorType -> Sine,
+    PropagatorArrow -> None
+  },
+  V[102] == {
+    ClassName -> rhop,
+    SelfConjugate -> False,
+    Mass -> {mrho, 2000.},
+    Width -> {wrhoP, 1.},
+    QuantumNumbers -> {Q -> 1},
+    PDG -> 20002,
+    ParticleName -> "rho+",
+    AntiParticleName -> "rho-",
+    FullName -> "",
+    PropagatorLabel -> "rho+",
+    PropagatorType -> Sine,
+    PropagatorArrow -> Forward
+  }
+};
+
+PiMat = {{pi0/Sqrt[2] + eta/Sqrt[6] + etaP/Sqrt[3], pip, Kp}, {pipbar, -pi0/Sqrt[2] + eta/Sqrt[6] + etaP/Sqrt[3], K0}, {Kpbar, K0bar, -2 eta/Sqrt[6] + etaP/Sqrt[3]}};
+
+Umat := MatrixExp[I Sqrt[2] PiMat/fpi];
+
+PhiSM[1] := -I GP;
+PhiSM[2] := (vev + H + I G0)/Sqrt[2];
+PhiSMBar[1] := I GPbar;
+PhiSMBar[2] := (vev + H - I G0)/Sqrt[2];
+
+Mmat = {{mL, 0, y PhiSM[1]}, {0, mL, y PhiSM[2]}, {Conjugate[ytil] PhiSMBar[1], Conjugate[ytil] PhiSMBar[2], mN}};
+
+PiTriplet[a_] := { (pip + pipbar)/Sqrt[2], I (pip - pipbar)/Sqrt[2], pi0 }[[a]];
+
+WiPhys[mu_, 1] := (W[mu] + Wbar[mu])/Sqrt[2];
+WiPhys[mu_, 2] := -I (W[mu] - Wbar[mu])/Sqrt[2];
+WiPhys[mu_, 3] := sw A[mu] + cw Z[mu];
+BPhys[mu_] := cw A[mu] - sw Z[mu];
+
+SU2FS[mu_, nu_, 1] := del[WiPhys[nu, 1], mu] - del[WiPhys[mu, 1], nu] + gw (WiPhys[mu, 2] WiPhys[nu, 3] - WiPhys[mu, 3] WiPhys[nu, 2]);
+SU2FS[mu_, nu_, 2] := del[WiPhys[nu, 2], mu] - del[WiPhys[mu, 2], nu] + gw (WiPhys[mu, 3] WiPhys[nu, 1] - WiPhys[mu, 1] WiPhys[nu, 3]);
+SU2FS[mu_, nu_, 3] := del[WiPhys[nu, 3], mu] - del[WiPhys[mu, 3], nu] + gw (WiPhys[mu, 1] WiPhys[nu, 2] - WiPhys[mu, 2] WiPhys[nu, 1]);
+BFS[mu_, nu_] := del[BPhys[nu], mu] - del[BPhys[mu], nu];
+
+DK2[1, mu_] := del[Kp, mu] + I gw/2 (WiPhys[mu, 3] Kp + (WiPhys[mu, 1] - I WiPhys[mu, 2]) K0) + I g1/2 BPhys[mu] Kp;
+DK2[2, mu_] := del[K0, mu] + I gw/2 ((WiPhys[mu, 1] + I WiPhys[mu, 2]) Kp - WiPhys[mu, 3] K0) + I g1/2 BPhys[mu] K0;
+DK2Bar[1, mu_] := del[Kpbar, mu] - I gw/2 (Kpbar WiPhys[mu, 3] + K0bar (WiPhys[mu, 1] + I WiPhys[mu, 2])) - I g1/2 BPhys[mu] Kpbar;
+DK2Bar[2, mu_] := del[K0bar, mu] - I gw/2 (Kpbar (WiPhys[mu, 1] - I WiPhys[mu, 2]) - K0bar WiPhys[mu, 3]) - I g1/2 BPhys[mu] K0bar;
+
+LUVVLC := Block[{mu,sp,aa,kin,yuk},
+  kin = I L0bar[sp,aa].Ga[mu].DC[L0[sp,aa],mu] +
+        I Lmbar[sp,aa].Ga[mu].DC[Lm[sp,aa],mu] +
+        I Nvlcbar[sp,aa].Ga[mu].DC[Nvlc[sp,aa],mu];
+  yuk = y PhiSM[1] L0bar[sp,aa].ProjM.Nvlc[sp,aa] +
+        y PhiSM[2] Lmbar[sp,aa].ProjM.Nvlc[sp,aa] +
+        ytil PhiSMBar[1] L0bar[sp,aa].ProjP.Nvlc[sp,aa] +
+        ytil PhiSMBar[2] Lmbar[sp,aa].ProjP.Nvlc[sp,aa];
+  1/2 (kin + HC[kin]) -
+  mL (L0bar[sp,aa].L0[sp,aa] + Lmbar[sp,aa].Lm[sp,aa]) -
+  mN Nvlcbar[sp,aa].Nvlc[sp,aa] +
+  yuk + HC[yuk]
+];
+
+LChiralFull := Block[{mu,i}, fpi^2/4 Tr[DC[Umat,mu].DC[HC[Umat],mu]] + (grho fpi^3 Tr[Mmat.Umat] + HC[grho fpi^3 Tr[Mmat.Umat]]) + fpi^2/16 (mEtaP^2/3) (Log[Det[Umat]] - Log[Det[HC[Umat]]])^2 + 3 gw^2 grho^2 fpi^4/(2 (4 Pi)^2) Sum[Tr[Umat.Ta[i].HC[Umat].Ta[i]], {i,1,3}]];
+
+LKinCompositeScalars := Block[{mu}, 1/2 del[pi0,mu] del[pi0,mu] + del[pipbar,mu] del[pip,mu] + 1/2 del[eta,mu] del[eta,mu] + 1/2 del[etaP,mu] del[etaP,mu] - mEtaP^2/2 etaP^2];
+
+LMExpanded := -mK2^2 (Kpbar Kp + K0bar K0) - mPi3^2/2 (pi0^2 + 2 pip pipbar) - mEta^2/2 eta^2 + (-I Sqrt[2] grho fpi^2 Bcoup (Kpbar PhiSM[1] + K0bar PhiSM[2]) - grho/Sqrt[2] Acoup fpi (Sum[(Kpbar PauliSigma[a,1,jj] + K0bar PauliSigma[a,2,jj]) PhiSM[jj] PiTriplet[a], {a,1,3}, {jj,1,2}] - eta (Kpbar PhiSM[1] + K0bar PhiSM[2])/Sqrt[3]) + HC[-I Sqrt[2] grho fpi^2 Bcoup (Kpbar PhiSM[1] + K0bar PhiSM[2]) - grho/Sqrt[2] Acoup fpi (Sum[(Kpbar PauliSigma[a,1,jj] + K0bar PauliSigma[a,2,jj]) PhiSM[jj] PiTriplet[a], {a,1,3}, {jj,1,2}] - eta (Kpbar PhiSM[1] + K0bar PhiSM[2])/Sqrt[3])]);
+
+LKinTriplet := (I del[pipbar, mu] gw pi0 WiPhys[mu, 1])/(2 Sqrt[2]) - (I del[pip, mu] gw pi0 WiPhys[mu, 1])/(2 Sqrt[2]) - (I del[pi0, mu] gw pipbar WiPhys[mu, 1])/(2 Sqrt[2]) + (I del[pi0, mu] gw pip WiPhys[mu, 1])/(2 Sqrt[2]) + (del[pipbar, mu] gw pi0 WiPhys[mu, 2])/(2 Sqrt[2]) + (del[pip, mu] gw pi0 WiPhys[mu, 2])/(2 Sqrt[2]) - (del[pi0, mu] gw pipbar WiPhys[mu, 2])/(2 Sqrt[2]) - (del[pi0, mu] gw pip WiPhys[mu, 2])/(2 Sqrt[2]) + 1/2 I del[pip, mu] gw pipbar WiPhys[mu, 3] - 1/2 I del[pipbar, mu] gw pip WiPhys[mu, 3];
+
+LKinK2 := Block[{mu}, DK2Bar[1, mu] DK2[1, mu] + DK2Bar[2, mu] DK2[2, mu]];
+
+LAnomalyTriplet := Block[{mu,nu,rho,sig}, NHC g1 gw/(32 Pi^2 fpi) Eps[mu,nu,rho,sig] BFS[rho,sig] (PiTriplet[1] SU2FS[mu,nu,1] + PiTriplet[2] SU2FS[mu,nu,2] + PiTriplet[3] SU2FS[mu,nu,3])];
+
+LAnomalyEta := Block[{mu,nu,rho,sig}, -NHC eta/(32 Sqrt[3] Pi^2 fpi) Eps[mu,nu,rho,sig] (gw^2 (SU2FS[mu,nu,1] SU2FS[rho,sig,1] + SU2FS[mu,nu,2] SU2FS[rho,sig,2] + SU2FS[mu,nu,3] SU2FS[rho,sig,3]) + g1^2 BFS[mu,nu] BFS[rho,sig])];
+
+LEDM := Block[{mu,nu,rho,sig,a}, -mPi3^2/2 Sum[PiTriplet[a]^2,{a,1,3}] - mEta^2/2 eta^2 + 4 Im[y ytil] grho^2 fpi^3/mK2^2 (Sum[PhiSMBar[i] PauliSigma[a,i,j] PhiSM[j] PiTriplet[a],{a,1,3},{i,1,2},{j,1,2}] - eta Sum[PhiSMBar[i] PhiSM[i],{i,1,2}]/Sqrt[3]) + NHC g1 gw/(32 Pi^2 fpi) Eps[mu,nu,rho,sig] BFS[rho,sig] (PiTriplet[1] SU2FS[mu,nu,1] + PiTriplet[2] SU2FS[mu,nu,2] + PiTriplet[3] SU2FS[mu,nu,3]) - NHC eta/(32 Sqrt[3] Pi^2 fpi) Eps[mu,nu,rho,sig] (gw^2 (SU2FS[mu,nu,1] SU2FS[rho,sig,1] + SU2FS[mu,nu,2] SU2FS[rho,sig,2] + SU2FS[mu,nu,3] SU2FS[rho,sig,3]) + g1^2 BFS[mu,nu] BFS[rho,sig])];
+
+LRhoff := 1/Sqrt[2] gV (rhop[mu] (vlbar.Ga[mu].ProjM.l + ubar.Ga[mu].ProjM.d + cbar.Ga[mu].ProjM.s + tbar.Ga[mu].ProjM.b) + rhopbar[mu] (lbar.Ga[mu].ProjM.vl + dbar.Ga[mu].ProjM.u + sbar.Ga[mu].ProjM.c + bbar.Ga[mu].ProjM.t)) + 1/2 gV rho0[mu] (vlbar.Ga[mu].ProjM.vl + ubar.Ga[mu].ProjM.u + cbar.Ga[mu].ProjM.c + tbar.Ga[mu].ProjM.t - lbar.Ga[mu].ProjM.l - dbar.Ga[mu].ProjM.d - sbar.Ga[mu].ProjM.s - bbar.Ga[mu].ProjM.b);
+
+LRhoTriplet := grho 1/2 I del[pip, mu] pipbar rho0[mu] - grho 1/2 I del[pipbar, mu] pip rho0[mu] - grho 1/2 I del[pip, mu] pi0 rhopbar[mu] + grho 1/2 I del[pi0, mu] pip rhopbar[mu] + grho 1/2 I del[pipbar, mu] pi0 rhop[mu] - grho 1/2 I del[pi0, mu] pipbar rhop[mu];
+
+LTot := LUVVLC + LKinCompositeScalars + LMExpanded + LKinTriplet + LKinK2 + LAnomalyTriplet + LAnomalyEta + LRhoff + LRhoTriplet;

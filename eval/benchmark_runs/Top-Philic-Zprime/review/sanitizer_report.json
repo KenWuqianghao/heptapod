@@ -1,0 +1,9 @@
+{
+  "original_model_name": "Top-Philic-Zprime_gen",
+  "anon_model_name": "ANON-MODEL",
+  "information_blocks_removed": 1,
+  "prose_values_scrubbed": 6,
+  "sha256_original": "a6a2c351fa957692c895fa0da0636048cdf7845735853621d723edee7a371681",
+  "sha256_sanitized": "4a18ce96dbe1b8fd636483bc5852c5bec3cf8f1fea36cbac240d1c410ac80bd6",
+  "blindness_scope": "blank slate w.r.t. paper, authors, model name, comments and prose labels \u2014 NOT w.r.t. field/parameter symbol names, which are kept so the reviewer can map the reconstruction back"
+}

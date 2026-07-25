@@ -1,0 +1,9 @@
+{
+  "original_model_name": "368sextets_gen",
+  "anon_model_name": "ANON-MODEL",
+  "information_blocks_removed": 1,
+  "prose_values_scrubbed": 22,
+  "sha256_original": "df8d5ab83b63ec5f9a9ac7e2986af06c6fd41e07735cf3c3cb56eafe3488a334",
+  "sha256_sanitized": "32833259d1ab2c40c95b3fb809e304aab7c8d0886c5f677ed5178b005f689982",
+  "blindness_scope": "blank slate w.r.t. paper, authors, model name, comments and prose labels \u2014 NOT w.r.t. field/parameter symbol names, which are kept so the reviewer can map the reconstruction back"
+}

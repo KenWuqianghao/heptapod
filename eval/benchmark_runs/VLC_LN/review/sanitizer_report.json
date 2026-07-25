@@ -1,0 +1,9 @@
+{
+  "original_model_name": "VLC_LN_gen",
+  "anon_model_name": "ANON-MODEL",
+  "information_blocks_removed": 1,
+  "prose_values_scrubbed": 24,
+  "sha256_original": "0d4e05094dc566806a41e35bbb94de8cc6f15e2a7335e28448a8c6477a4c7fd2",
+  "sha256_sanitized": "3b384345eb490526b2ca0307a89e17dfe95e16857533b0bbbc9af03fb5e929ef",
+  "blindness_scope": "blank slate w.r.t. paper, authors, model name, comments and prose labels \u2014 NOT w.r.t. field/parameter symbol names, which are kept so the reviewer can map the reconstruction back"
+}

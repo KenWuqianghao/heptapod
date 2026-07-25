@@ -1,0 +1,9 @@
+{
+  "original_model_name": "Monotops_gen",
+  "anon_model_name": "ANON-MODEL",
+  "information_blocks_removed": 1,
+  "prose_values_scrubbed": 22,
+  "sha256_original": "54800573fa0acaebdd201e3992d9296fe0d9ecf5d5a6049bbe3448b553550b23",
+  "sha256_sanitized": "13c4e0f3048c065eaa0bc3669351add09afd2e74df7ff625d15e1aeeab6e7e22",
+  "blindness_scope": "blank slate w.r.t. paper, authors, model name, comments and prose labels \u2014 NOT w.r.t. field/parameter symbol names, which are kept so the reviewer can map the reconstruction back"
+}

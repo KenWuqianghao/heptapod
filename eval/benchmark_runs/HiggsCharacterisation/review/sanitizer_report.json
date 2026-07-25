@@ -1,0 +1,9 @@
+{
+  "original_model_name": "HiggsCharacterisation_gen",
+  "anon_model_name": "ANON-MODEL",
+  "information_blocks_removed": 1,
+  "prose_values_scrubbed": 62,
+  "sha256_original": "5e779330cf2eafc4d9103f35623e83b3ce46288a209eef4767b9fe7f2b362d3b",
+  "sha256_sanitized": "ba241ba090a4a88eb290da7cdb7dfd6862a7f673dd08db300283b098074232a4",
+  "blindness_scope": "blank slate w.r.t. paper, authors, model name, comments and prose labels \u2014 NOT w.r.t. field/parameter symbol names, which are kept so the reviewer can map the reconstruction back"
+}

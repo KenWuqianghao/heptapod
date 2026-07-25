@@ -1,0 +1,42 @@
+**Located Paper Definitions**
+
+The paper’s model definition is in Section II, “The Minimal Dilaton Model.” It defines the field content as one gauge-singlet scalar \(S\) and one fermion \(T\) with the same quantum numbers as the right-handed top quark. The effective Lagrangian is Eq. (2), the scalar potential is Eq. (3), scalar mixing is Eq. (4), the scalar-potential reparameterization is Eq. (5), \(\eta\) is Eq. (8), and the left-handed top/top-partner mixing is Eq. (9). Eq. (1) is background for traditional dilaton couplings and is explicitly not the distinctive MDM setup used later.
+
+| paper term (eq. ref) | reconstruction term | verdict | notes |
+|---|---|---|---|
+| Field content: gauge-singlet scalar \(S\), fermion \(T\) with right-handed-top quantum numbers, Section II before Eq. (2) | \(S\) singlet scalar; \(T\) color triplet, \(SU(2)_L\) singlet, \(Y=Q=2/3\) | agree | “Same quantum number as right-handed top quark” implies the listed \(T\) gauge representation. |
+| \(L_{\rm SM}\) without Higgs potential, Eq. (2) | Not reconstructed as full SM; only Higgs kinetic/covariant derivative and third-generation/top-partner pieces are shown | missing-in-reconstruction | The paper includes all SM kinetic, gauge, and Yukawa terms except the Higgs potential. The reconstruction is only the BSM/model-relevant subset. |
+| Singlet kinetic term \(-\frac12\partial_\mu S\partial^\mu S\), Eq. (2) | \(-\frac12\partial_\mu S\partial^\mu S\) | agree | Same normalization and sign, modulo metric convention. |
+| Top-partner kinetic term, schematically \(-\bar T \slashed D T\), Eq. (2) | \(i\bar T\gamma^\mu D_\mu T\), expanded through \(T_L,T_R\) | agree | Same physics up to common extraction/sign conventions for the Dirac kinetic term. The reconstruction’s cross-chiral expansion is redundant; the compact \(i\bar T\gamma^\mu D_\mu T\) is the meaningful form. |
+| Dilaton/top-partner mass interaction \(-\bar T(M/f)S T\), Eq. (2) | \(-M_\Delta/v_f\, S\bar T T\), with \(M_\Delta=M_{T'}c_l\) | agree | Same structure if \(v_f=f\) and the implementation identifies the paper’s \(M\) with \(M_\Delta\). That mass-parameter mapping is not stated explicitly in the paper excerpt. |
+| Yukawa interaction \(-[y'\,\bar T_R(q_{3L}\cdot H)+{\rm h.c.}]\), Eq. (2) | \(-y'\bar Q_{L,3}^{\,i}\widetilde\Phi_i T_R+{\rm h.c.}\) | agree | Equivalent physics when written in the hermitian-conjugate orientation with the usual \(\epsilon_{ij}\) contraction/\(\widetilde\Phi\) convention. |
+| \(q_{3L}\) is the third-generation \(SU(2)_L\) left-handed quark doublet, text after Eq. (2) | \(Q_{L,3}=(t_L,b_L)^T\) | agree | Same field content. |
+| Scalar potential \(+\frac{m_S^2}{2}S^2+\frac{\lambda_S}{4!}S^4+\frac{\kappa}{2}S^2|H|^2+m_H^2|H|^2+\frac{\lambda_H}{4}|H|^4\) inside \(\widetilde V\), Eq. (3), entering the Lagrangian as \(-\widetilde V\) | \(-\frac{\mu_S^2}{2}S^2-\frac{\lambda_S}{24}S^4-\frac{\kappa}{2}S^2\Phi^\dagger\Phi-\mu_H^2\Phi^\dagger\Phi-\frac{\lambda_H}{4}(\Phi^\dagger\Phi)^2\) | agree | Coefficients match once the reconstruction’s \(\mu_{S,H}^2\) are identified with the paper’s \(m_{S,H}^2\), and \(|H|^2=\Phi^\dagger\Phi\). |
+| Higgs doublet neutral component \(H^0=\frac1{\sqrt2}(v+h\cos\theta_S-s\sin\theta_S)\), Eq. (4) | \(\Phi^0=\frac1{\sqrt2}(v+c_s h-s_s s_{\rm DM}+iG^0)\) | agree | Same neutral scalar mixing if \(c_s=\cos\theta_S\), \(s_s=\sin\theta_S\), and \(s_{\rm DM}=s\). Goldstone terms are gauge-completion details absent from the paper equation. |
+| Singlet mixing \(S=f+h\sin\theta_S+s\cos\theta_S\), Eq. (4) | \(S=v_f+s_s h+c_s s_{\rm DM}\) | agree | Same mixing if \(v_f=f\), \(s_s=\sin\theta_S\), \(c_s=\cos\theta_S\). |
+| Scalar-potential parameter relations for \(\kappa,\lambda_H,\lambda_S\), Eq. (5) | Reconstruction lists internal \(\kappa,\lambda_H,\lambda_S,\mu_S^2,\mu_H^2\), but does not reproduce the Eq. (5) formulas | missing-in-reconstruction | The Lagrangian terms are present, but the paper’s coefficient relations in terms of \(f,v,\theta_S,m_h,m_s\), including absolute values and \({\rm Sign}(\sin2\theta_S)\), are not fully reconstructed. |
+| \(\eta\equiv v/(fN_T)\), with \(N_T=1\) for MDM, Eq. (8) | \(v_f=v/\eta\) | agree | Equivalent for \(N_T=1\). |
+| Left-handed mixing \(q^u_{3L}=\cos\theta_L\,t_L+\sin\theta_L\,t'_L\), Eq. (9) | Not given; reconstruction only defines \(Q_{L,3}=(t_L,b_L)^T\) | missing-in-reconstruction | The paper explicitly gives the gauge-basis upper component of \(q_{3L}\) in terms of mass eigenstates. |
+| Left-handed top-partner mixing \(T_L=-\sin\theta_L\,t_L+\cos\theta_L\,t'_L\), Eq. (9) | \(T_L=P_L(-s_l t+c_l t')\) | agree | Same relation if \(s_l=\sin\theta_L\), \(c_l=\cos\theta_L\). |
+| Right-handed top-partner mixing | \(T_R=P_R(-s_r t+c_r t')\) | extra-in-reconstruction | Section II of the paper does not explicitly define a right-handed mixing angle. This may be an implementation detail inferred from mass diagonalization or from Ref. [15], but it is not in the displayed paper definition. |
+| Full Higgs doublet with charged/neutral Goldstones | \(\Phi=(-iG^+,\,(v+c_sh-s_s s_{\rm DM}+iG^0)/\sqrt2)^T\) | extra-in-reconstruction | The paper only displays \(H^0\) in Eq. (4). The Goldstone and phase conventions are standard gauge-basis completion, not a contradiction. |
+| Covariant derivative of \(\Phi\) with \(Y=1/2\) | Explicit \(D_\mu\Phi=(\partial_\mu-igW^a_\mu\sigma^a/2-ig'B_\mu/2)\Phi\) | agree | Consistent with the SM Higgs doublet contained in \(L_{\rm SM}\). |
+| Covariant derivative of \(T\) with color triplet, \(SU(2)\) singlet, \(Y=2/3\) | Explicit \(D_\mu T=(\partial_\mu-ig_sG^AT^A-ig'(2/3)B_\mu)T\) | agree | Consistent with “same quantum number as the right-handed top quark.” |
+
+**Disagreements And Checks**
+
+- **Missing full \(L_{\rm SM}\) content**: severity **substantive**. A human should check whether the implementation intentionally imports the SM Lagrangian elsewhere, since the reconstruction itself only shows the BSM/Higgs-sector subset.
+
+- **Missing Eq. (5) scalar-parameter relations**: severity **substantive**. A human should check the implementation definitions of \(\mu_S^2,\mu_H^2,\lambda_H,\lambda_S,\kappa\) against the paper’s formulas, especially the sign and absolute-value conventions.
+
+- **Missing \(q^u_{3L}\) left-handed mixing relation from Eq. (9)**: severity **substantive**. A human should check whether the implementation rotates the SM top component consistently with \(q^u_{3L}=c_Lt_L+s_Lt'_L\), not only the heavy \(T_L\) component.
+
+- **Extra right-handed mixing \(T_R=P_R(-s_rt+c_rt')\)**: severity **convention**. A human should check whether this is an implementation-level diagonalization convention compatible with the paper’s approximations \(m_{t'}\gg m_t\) and \(\tan\theta_L\ll m_{t'}/m_t\).
+
+- **Extra Goldstone/full-doublet conventions**: severity **cosmetic**. A human should check only that the \(-iG^+\) and \(+iG^0\) phase conventions are used consistently in the implementation’s gauge fixing and Feynman rules.
+
+- **Top-partner mass mapping \(M\leftrightarrow M_\Delta=M_{T'}c_l\)**: severity **convention**. A human should verify the implementation’s input-parameter definitions, because the paper names \(M\) as the strong-dynamics scale but does not explicitly state the reconstructed \(M_{T'}c_l\) relation in Eq. (2).
+
+**Overall Assessment**
+
+The reconstruction captures the central MDM Lagrangian structure from Section II: a real singlet scalar mixed with the neutral Higgs, the scalar potential with the same operator content and normalizations, a vector-like \(SU(3)_c\) triplet \(SU(2)_L\) singlet top partner of charge \(2/3\), its dilaton-proportional mass interaction, and the \(y'\) Yukawa mixing with the third-generation quark doublet. The main gaps are not obvious wrong operators but incomplete reconstruction of paper-level definitions: the full \(L_{\rm SM}\) context, the Eq. (5) coefficient relations, and the full left-handed top mixing relation for \(q^u_{3L}\). The extra right-handed rotation and Goldstone-expanded Higgs doublet look like implementation conventions rather than direct conflicts, but they should be checked against the implementation’s mass diagonalization and gauge conventions.

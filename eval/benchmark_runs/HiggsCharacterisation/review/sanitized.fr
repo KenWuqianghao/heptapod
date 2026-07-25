@@ -1,0 +1,547 @@
+
+
+
+M$ModelName = "ANON-MODEL";
+
+
+M$InteractionOrderHierarchy = {{QNP, 2}};
+
+M$InteractionOrderLimit = {{QNP, 2}};
+
+FeynmanGauge = False;
+
+M$Parameters = {
+  Lambda == {
+    ParameterType -> External,
+    Value -> 1000.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 1,
+    Description -> ""
+  },
+  ca == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 2,
+    Description -> ""
+  },
+  sa == {
+    ParameterType -> Internal,
+    Value -> Sqrt[1-ca^2],
+    ComplexParameter -> False,
+    Description -> ""
+  },
+  kSM == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 3,
+    Description -> ""
+  },
+  kHtt == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 4,
+    Description -> ""
+  },
+  kAtt == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 5,
+    Description -> ""
+  },
+  kHbb == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 6,
+    Description -> ""
+  },
+  kAbb == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 7,
+    Description -> ""
+  },
+  kHll == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 8,
+    Description -> ""
+  },
+  kAll == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 9,
+    Description -> ""
+  },
+  kHaa == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 10,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  kAaa == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 11,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  kHza == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 12,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  kAza == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 13,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  kHgg == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 14,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  kAgg == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 15,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  kHzz == {
+    ParameterType -> External,
+    Value -> 0.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 16,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  kAzz == {
+    ParameterType -> External,
+    Value -> 0.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 17,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  kHww == {
+    ParameterType -> External,
+    Value -> 0.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 18,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  kAww == {
+    ParameterType -> External,
+    Value -> 0.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 19,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  kHda == {
+    ParameterType -> External,
+    Value -> 0.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 20,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  kHdz == {
+    ParameterType -> External,
+    Value -> 0.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 21,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  kHdwR == {
+    ParameterType -> External,
+    Value -> 0.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 22,
+    Description -> ""
+  },
+  kHdwI == {
+    ParameterType -> External,
+    Value -> 0.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 23,
+    Description -> ""
+  },
+  kHdw == {
+    ParameterType -> Internal,
+    Value -> kHdwR+I*kHdwI,
+    ComplexParameter -> True,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  kqa == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 24,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  kqb == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 25,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  kla == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 26,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  klb == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 27,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  kw1 == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 28,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  kw2 == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 29,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  kw3 == {
+    ParameterType -> External,
+    Value -> 0.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 30,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  kw4 == {
+    ParameterType -> External,
+    Value -> 0.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 31,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  kw5 == {
+    ParameterType -> External,
+    Value -> 0.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 32,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  kz1 == {
+    ParameterType -> External,
+    Value -> 0.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 33,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  kz3 == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 34,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  kz5 == {
+    ParameterType -> External,
+    Value -> 0.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 35,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  kq == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 36,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  kq3 == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 37,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  kl == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 38,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  kg == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 39,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  ka == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 40,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  kz == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 41,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  kw == {
+    ParameterType -> External,
+    Value -> 1.,
+    ComplexParameter -> False,
+    BlockName -> BSMINPUTS,
+    OrderBlock -> 42,
+    InteractionOrder -> {QNP, 1},
+    Description -> ""
+  },
+  gHaa == {
+    ParameterType -> Internal,
+    Value -> ee^2/(4*Pi)/(Pi*vev)*(47/18),
+    ComplexParameter -> False,
+    Description -> ""
+  },
+  gAaa == {
+    ParameterType -> Internal,
+    Value -> ee^2/(4*Pi)/(Pi*vev)*(4/3),
+    ComplexParameter -> False,
+    Description -> ""
+  },
+  gHza == {
+    ParameterType -> Internal,
+    Value -> Sqrt[ee^2/(4*Pi)*Gf*MZ^2/(8*Sqrt[2]*Pi)]*(94*cw^2-13)/(9*Pi*vev),
+    ComplexParameter -> False,
+    Description -> ""
+  },
+  gAza == {
+    ParameterType -> Internal,
+    Value -> 2*Sqrt[ee^2/(4*Pi)*Gf*MZ^2/(8*Sqrt[2]*Pi)]*(8*cw^2-5)/(3*Pi*vev),
+    ComplexParameter -> False,
+    Description -> ""
+  },
+  gHgg == {
+    ParameterType -> Internal,
+    Value -> -gs^2/(4*Pi)/(3*Pi*vev),
+    ComplexParameter -> False,
+    Description -> ""
+  },
+  gAgg == {
+    ParameterType -> Internal,
+    Value -> gs^2/(4*Pi)/(2*Pi*vev),
+    ComplexParameter -> False,
+    Description -> ""
+  },
+  au == {
+    ParameterType -> Internal,
+    Value -> ee/(2 sw cw)*(1/2-4/3 sw2),
+    ComplexParameter -> False,
+    Description -> ""
+  },
+  bu == {
+    ParameterType -> Internal,
+    Value -> ee/(2 sw cw)*(1/2),
+    ComplexParameter -> False,
+    Description -> ""
+  },
+  ad == {
+    ParameterType -> Internal,
+    Value -> ee/(2 sw cw)*(-1/2+2/3 sw2),
+    ComplexParameter -> False,
+    Description -> ""
+  },
+  bd == {
+    ParameterType -> Internal,
+    Value -> ee/(2 sw cw)*(-1/2),
+    ComplexParameter -> False,
+    Description -> ""
+  },
+  an == {
+    ParameterType -> Internal,
+    Value -> ee/(2 sw cw)*(1/2),
+    ComplexParameter -> False,
+    Description -> ""
+  },
+  bn == {
+    ParameterType -> Internal,
+    Value -> ee/(2 sw cw)*(1/2),
+    ComplexParameter -> False,
+    Description -> ""
+  },
+  al == {
+    ParameterType -> Internal,
+    Value -> ee/(2 sw cw)*(-1/2+2 sw2),
+    ComplexParameter -> False,
+    Description -> ""
+  },
+  bl == {
+    ParameterType -> Internal,
+    Value -> ee/(2 sw cw)*(-1/2),
+    ComplexParameter -> False,
+    Description -> ""
+  },
+  gwwz == {
+    ParameterType -> Internal,
+    Value -> -ee*cw/sw,
+    ComplexParameter -> False,
+    Description -> ""
+  }
+};
+
+M$ClassesDescription = {
+  S[100] == {
+    ClassName -> X0,
+    SelfConjugate -> True,
+    Mass -> {MX0, 125.0},
+    Width -> {WX0, 0.00407},
+    QuantumNumbers -> {Q -> 0, Y -> 0},
+    PDG -> 5000000,
+    ParticleName -> "X0",
+    FullName -> "",
+    PropagatorLabel -> "X0",
+    PropagatorType -> D,
+    PropagatorArrow -> None
+  },
+  V[101] == {
+    ClassName -> X1,
+    SelfConjugate -> True,
+    Mass -> {MX1, 125.0},
+    Width -> {WX1, 0.00407},
+    QuantumNumbers -> {Q -> 0, Y -> 0},
+    PDG -> 5000001,
+    ParticleName -> "X1",
+    FullName -> "",
+    PropagatorLabel -> "X1",
+    PropagatorType -> Sine,
+    PropagatorArrow -> None
+  },
+  T[102] == {
+    ClassName -> X2,
+    SelfConjugate -> True,
+    Mass -> {MX2, 125.0},
+    Width -> {WX2, 0.00407},
+    QuantumNumbers -> {Q -> 0, Y -> 0},
+    PDG -> 5000002,
+    ParticleName -> "X2",
+    FullName -> "",
+    PropagatorLabel -> "X2",
+    PropagatorArrow -> None
+  }
+};
+
+TFq[mu_,nu_] := Sum[Tfermion[q,mu,nu], {q,{u,d,c,s}}]; TFq3[mu_,nu_] := Tfermion[t,mu,nu] + Tfermion[b,mu,nu]; TFl[mu_,nu_] := Sum[Tfermion[lep,mu,nu], {lep,{ve,vm,vt,e,muon,ta}}]; TYq[mu_,nu_] := -ME[mu,nu] (-MT tbar.t - MB bbar.b); TYl[mu_,nu_] := -ME[mu,nu] (-MTA tabar.ta); TGg[mu_,nu_] := -ME[mu,nu] (-1/4 FS[G,rho,sig,a] FS[G,rho,sig,a]) - FS[G,mu,rho,a] FS[G,nu,rho,a]; TGa[mu_,nu_] := -ME[mu,nu] (-1/4 FS[A,rho,sig] FS[A,rho,sig]) - FS[A,mu,rho] FS[A,nu,rho]; TGz[mu_,nu_] := -ME[mu,nu] (-1/4 FS[Z,rho,sig] FS[Z,rho,sig] + 1/2 MZ^2 Z[rho] Z[rho]) - (FS[Z,mu,rho] FS[Z,nu,rho] - MZ^2 Z[mu] Z[nu]); TGw[mu_,nu_] := -ME[mu,nu] (-1/2 FS[Wbar,rho,sig] FS[W,rho,sig] + MW^2 Wbar[rho] W[rho]) - (FS[Wbar,mu,rho] FS[W,nu,rho] - MW^2 Wbar[mu] W[nu] + FS[Wbar,nu,rho] FS[W,mu,rho] - MW^2 Wbar[nu] W[mu])
+
+L0f := -(ca (kHtt MT/vev tbar.t + kHbb MB/vev bbar.b + kHll MTA/vev tabar.ta) + I sa (kAtt MT/vev tbar.Ga[5].t + kAbb MB/vev bbar.Ga[5].b + kAll MTA/vev tabar.Ga[5].ta)) X0;
+
+L0v := (-1/4 (ca kHaa gHaa FS[A,mu,nu] FS[A,mu,nu] + sa kAaa gAaa FS[A,mu,nu] Dual[FS][A,mu,nu]) - 1/2 (ca kHza gHza FS[Z,mu,nu] FS[A,mu,nu] + sa kAza gAza FS[Z,mu,nu] Dual[FS][A,mu,nu]) - 1/4 (ca kHgg gHgg FS[G,mu,nu,a] FS[G,mu,nu,a] + sa kAgg gAgg FS[G,mu,nu,a] Dual[FS][G,mu,nu,a]) - 1/4/Lambda (ca kHzz FS[Z,mu,nu] FS[Z,mu,nu] + sa kAzz FS[Z,mu,nu] Dual[FS][Z,mu,nu]) - 1/2/Lambda (ca kHww FS[Wbar,mu,nu] FS[W,mu,nu] + sa kAww FS[Wbar,mu,nu] Dual[FS][W,mu,nu]) - 1/Lambda (ca kHda Z[nu] del[FS[A,mu,nu],mu] + ca kHdz Z[nu] del[FS[Z,mu,nu],mu] + ca (kHdw Wbar[nu] del[FS[W,mu,nu],mu] + HC[kHdw Wbar[nu] del[FS[W,mu,nu],mu]]))) X0;
+
+L1f := (kqa au uqbar[s,n,i].Ga[mu,s,t].uq[t,n,i] + kqa ad dqbar[s,n,i].Ga[mu,s,t].dq[t,n,i] + kla an vlbar[s,n].Ga[mu,s,t].vl[t,n] + kla al lbar[s,n].Ga[mu,s,t].l[t,n] - kqb bu uqbar[s,n,i].Ga[mu,s,t].Ga[5,t,u].uq[u,n,i] - kqb bd dqbar[s,n,i].Ga[mu,s,t].Ga[5,t,u].dq[u,n,i] - klb bn vlbar[s,n].Ga[mu,s,t].Ga[5,t,u].vl[u,n] - klb bl lbar[s,n].Ga[mu,s,t].Ga[5,t,u].l[u,n]) X1[mu];
+
+L1w := I kw1 gwwz (FS[Wbar,mu,nu] W[mu] - FS[W,mu,nu] Wbar[mu]) X1[nu] + I kw2 gwwz Wbar[mu] W[nu] FS[X1,mu,nu] - kw3 Wbar[mu] W[nu] (del[X1[nu],mu] + del[X1[mu],nu]) + I kw4 Wbar[mu] W[nu] Dual[FS][X1,mu,nu] - kw5 Eps[mu,nu,rho,sig] (Wbar[mu] del[W[nu],rho] - del[Wbar[mu],rho] W[nu]) X1[sig];
+
+L1z := -kz1 FS[Z,mu,nu] Z[mu] X1[nu] - kz3 X1[mu] del[Z[mu],nu] Z[nu] - kz5 Eps[mu,nu,rho,sig] X1[mu] Z[nu] del[Z[sig],rho];
+
+L1 := L1f + L1w + L1z;
+
+L2f := -1/Lambda (kq TFq[mu,nu] + kq3 (TFq3[mu,nu] + TYq[mu,nu]) + kl (TFl[mu,nu] + TYl[mu,nu])) X2[mu,nu];
+
+L2v := -1/Lambda (kg TGg[mu,nu] + ka TGa[mu,nu] + kz TGz[mu,nu] + kw TGw[mu,nu]) X2[mu,nu];
+
+L2 := L2f + L2v;
+
+LHCNP := L0f + L0v + L1 + L2;

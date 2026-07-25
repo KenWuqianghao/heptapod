@@ -1,0 +1,85 @@
+
+
+
+M$ModelName = "ANON-MODEL";
+
+
+M$InteractionOrderHierarchy = {{NP, 2}};
+
+M$InteractionOrderLimit = {{NP, 2}};
+
+FeynmanGauge = False;
+
+M$Parameters = {
+  ct == {
+    ParameterType -> External,
+    Value -> 2.,
+    ComplexParameter -> False,
+    BlockName -> TPZPINPUTS,
+    OrderBlock -> 1,
+    InteractionOrder -> {NP, 1},
+    ParameterName -> ct,
+    TeX -> "c_t",
+    Description -> ""
+  },
+  thetaV1 == {
+    ParameterType -> External,
+    Value -> 1.5707963267948966,
+    ComplexParameter -> False,
+    BlockName -> TPZPINPUTS,
+    OrderBlock -> 2,
+    InteractionOrder -> {NP, 0},
+    ParameterName -> thetaV1,
+    TeX -> "\\theta",
+    Description -> ""
+  },
+  cL == {
+    ParameterType -> Internal,
+    ComplexParameter -> False,
+    InteractionOrder -> {NP, 1},
+    Definitions -> {cL -> ct Cos[thetaV1]},
+    TeX -> "c_L",
+    Description -> ""
+  },
+  cR == {
+    ParameterType -> Internal,
+    ComplexParameter -> False,
+    InteractionOrder -> {NP, 1},
+    Definitions -> {cR -> ct Sin[thetaV1]},
+    TeX -> "c_R",
+    Description -> ""
+  },
+  WV1 == {
+    ParameterType -> Internal,
+    ComplexParameter -> False,
+    Definitions -> {WV1 :> If[NumericalValue[MV1] > 2 NumericalValue[MT], (ct^2 MV1)/(8 Pi) Sqrt[1 - 4 MT^2/MV1^2] (1 - MT^2/MV1^2 (1 - 3 Sin[2 thetaV1])), 0]},
+    TeX -> "\\Gamma_{V_1}",
+    Description -> ""
+  }
+};
+
+M$ClassesDescription = {
+  V[100] == {
+    ClassName -> V1,
+    SelfConjugate -> True,
+    Mass -> {MV1, 1500.},
+    Width -> {WV1, Internal},
+    QuantumNumbers -> {Q -> 0, Y -> 0},
+    PDG -> 9000047,
+    ParticleName -> "V1",
+    FullName -> "",
+    PropagatorLabel -> "V1",
+    PropagatorType -> Sine,
+    PropagatorArrow -> None
+  }
+};
+
+LV1kin = -1/4 (del[V1[nu], mu] - del[V1[mu], nu]) (del[V1[nu], mu] - del[V1[mu], nu]) + 1/2 MV1^2 V1[mu] V1[mu];
+
+LV1intL = Block[{sp1, sp2, cc}, cL V1[mu] QLbar[sp1, 1, 3, cc] Ga[mu, sp1, sp2] QL[sp2, 1, 3, cc]];
+
+LV1intR = Block[{sp1, sp2, cc}, cR V1[mu] uRbar[sp1, 3, cc] Ga[mu, sp1, sp2] uR[sp2, 3, cc]];
+
+LV1int = LV1intL + LV1intR;
+
+LBSM = LV1kin + LV1int;

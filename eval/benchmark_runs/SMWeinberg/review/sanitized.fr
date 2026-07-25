@@ -1,0 +1,122 @@
+
+
+
+M$ModelName = "ANON-MODEL";
+
+
+FeynmanGauge = True;
+
+M$Parameters = {
+  Lambda == {
+    ParameterType -> External,
+    Value -> 200000.,
+    ComplexParameter -> False,
+    BlockName -> NUPHYSICS,
+    OrderBlock -> 1,
+    TeX -> "\\[CapitalLambda]",
+    Description -> ""
+  },
+  Cee == {
+    ParameterType -> External,
+    Value -> 1.1,
+    ComplexParameter -> False,
+    BlockName -> NUPHYSICS,
+    OrderBlock -> 2,
+    TeX -> "Subscript[C,ee]",
+    Description -> ""
+  },
+  Cem == {
+    ParameterType -> External,
+    Value -> 1.0,
+    ComplexParameter -> False,
+    BlockName -> NUPHYSICS,
+    OrderBlock -> 3,
+    TeX -> "Subscript[C,e\\[Mu]]",
+    Description -> ""
+  },
+  Cet == {
+    ParameterType -> External,
+    Value -> 1.3,
+    ComplexParameter -> False,
+    BlockName -> NUPHYSICS,
+    OrderBlock -> 4,
+    TeX -> "Subscript[C,e\\[Tau]]",
+    Description -> ""
+  },
+  Cmm == {
+    ParameterType -> External,
+    Value -> 1.4,
+    ComplexParameter -> False,
+    BlockName -> NUPHYSICS,
+    OrderBlock -> 5,
+    TeX -> "Subscript[C,\\[Mu]\\[Mu]]",
+    Description -> ""
+  },
+  Cmt == {
+    ParameterType -> External,
+    Value -> 1.5,
+    ComplexParameter -> False,
+    BlockName -> NUPHYSICS,
+    OrderBlock -> 6,
+    TeX -> "Subscript[C,\\[Mu]\\[Tau]]",
+    Description -> ""
+  },
+  Ctt == {
+    ParameterType -> External,
+    Value -> 1.6,
+    ComplexParameter -> False,
+    BlockName -> NUPHYSICS,
+    OrderBlock -> 7,
+    TeX -> "Subscript[C,\\[Tau]\\[Tau]]",
+    Description -> ""
+  },
+  mN1 == {
+    ParameterType -> Internal,
+    Value -> vev*vev*Abs[Cee+Cem+Cet+Cmm+Cmt+Ctt]/Lambda,
+    ComplexParameter -> False,
+    TeX -> "Subscript[m,\"N\"]",
+    Description -> ""
+  }
+};
+
+M$ClassesDescription = {
+  F[131] == {
+    ClassName -> N1,
+    SelfConjugate -> True,
+    Mass -> {mN1, Internal},
+    Width -> {WN1, 0},
+    QuantumNumbers -> {Q -> 0},
+    PDG -> 9900012,
+    ParticleName -> "N1",
+    FullName -> "",
+    PropagatorLabel -> "N1",
+    PropagatorType -> Straight,
+    PropagatorArrow -> False
+  }
+};
+
+LNKin := I/2 N1bar[s1].Ga[v,s1,s2].del[N1[s2],v] - 1/2 mN1 N1bar[s1].N1[s1];
+
+LNCCbare := gw/Sqrt[2] * N1bar.W[m].ProjM[m].e + gw/Sqrt[2] * N1bar.W[m].ProjM[m].mu + gw/Sqrt[2] * N1bar.W[m].ProjM[m].ta;
+
+LNCC := LNCCbare + HC[LNCCbare];
+
+LNNCbare := 1/2 * gw/cw * N1bar.Z[m].ProjM[m].ve + 1/2 * gw/cw * N1bar.Z[m].ProjM[m].vm + 1/2 * gw/cw * N1bar.Z[m].ProjM[m].vt;
+
+LNNC := LNNCbare + HC[LNNCbare];
+
+LNHbare := - gw*mN1/(2*MW) * (1 + H*gw/(4*MW)) * N1bar.ProjM.ve H - gw*mN1/(2*MW) * (1 + H*gw/(4*MW)) * N1bar.ProjM.vm H - gw*mN1/(2*MW) * (1 + H*gw/(4*MW)) * N1bar.ProjM.vt H;
+
+LNHX := LNHbare + HC[LNHbare];
+
+LNGbare := I *gw*mN1/(2*Sqrt[2]*MW) * (1 + H*gw/(2*MW)) * ebar.ProjP.N1 GPbar + I *gw*mN1/(2*Sqrt[2]*MW) * (1 + H*gw/(2*MW)) * mubar.ProjP.N1 GPbar + I *gw*mN1/(2*Sqrt[2]*MW) * (1 + H*gw/(2*MW)) * tabar.ProjP.N1 GPbar + I *gw*mN1/(2*Sqrt[2]*MW) * (1 + H*gw/(2*MW)) * N1bar.ProjP.CC[e] GPbar + I *gw*mN1/(2*Sqrt[2]*MW) * (1 + H*gw/(2*MW)) * N1bar.ProjP.CC[mu] GPbar + I *gw*mN1/(2*Sqrt[2]*MW) * (1 + H*gw/(2*MW)) * N1bar.ProjP.CC[ta] GPbar + I *gw*mN1/(2*MW) * (1 + H*gw/(2*MW)) * vebar.ProjP.N1 G0 + I *gw*mN1/(2*MW) * (1 + H*gw/(2*MW)) * vmbar.ProjP.N1 G0 + I *gw*mN1/(2*MW) * (1 + H*gw/(2*MW)) * vtbar.ProjP.N1 G0;
+
+LNGX := LNGbare + HC[LNGbare];
+
+LNGGbare := gw*gw*mN1/(4*MW*MW) * ebar.ProjP.CC[e] GPbar GPbar + gw*gw*mN1/(4*MW*MW) * mubar.ProjP.CC[e] GPbar GPbar + gw*gw*mN1/(4*MW*MW) * tabar.ProjP.CC[e] GPbar GPbar + gw*gw*mN1/(4*MW*MW) * ebar.ProjP.CC[mu] GPbar GPbar + gw*gw*mN1/(4*MW*MW) * mubar.ProjP.CC[mu] GPbar GPbar + gw*gw*mN1/(4*MW*MW) * tabar.ProjP.CC[mu] GPbar GPbar + gw*gw*mN1/(4*MW*MW) * ebar.ProjP.CC[ta] GPbar GPbar + gw*gw*mN1/(4*MW*MW) * mubar.ProjP.CC[ta] GPbar GPbar + gw*gw*mN1/(4*MW*MW) * tabar.ProjP.CC[ta] GPbar GPbar + gw*gw*mN1/(8*MW*MW) * vebar.ProjP.N1 G0 G0 + gw*gw*mN1/(8*MW*MW) * vmbar.ProjP.N1 G0 G0 + gw*gw*mN1/(8*MW*MW) * vtbar.ProjP.N1 G0 G0 + gw*gw*mN1/(4*Sqrt[2]*MW*MW) * ebar.ProjP.N1 GPbar G0 + gw*gw*mN1/(4*Sqrt[2]*MW*MW) * mubar.ProjP.N1 GPbar G0 + gw*gw*mN1/(4*Sqrt[2]*MW*MW) * tabar.ProjP.N1 GPbar G0 + gw*gw*mN1/(4*Sqrt[2]*MW*MW) * N1bar.ProjP.CC[e] GPbar G0 + gw*gw*mN1/(4*Sqrt[2]*MW*MW) * N1bar.ProjP.CC[mu] GPbar G0 + gw*gw*mN1/(4*Sqrt[2]*MW*MW) * N1bar.ProjP.CC[ta] GPbar G0;
+
+LNGGX := LNGGbare + HC[LNGGbare];
+
+LD5 := LNKin + LNCC + LNNC + LNHX + LNGX + LNGGX;
+
+LFull := LSM + LD5;

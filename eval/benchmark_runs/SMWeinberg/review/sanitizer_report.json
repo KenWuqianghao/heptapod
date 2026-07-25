@@ -1,0 +1,9 @@
+{
+  "original_model_name": "SMWeinberg_gen",
+  "anon_model_name": "ANON-MODEL",
+  "information_blocks_removed": 1,
+  "prose_values_scrubbed": 9,
+  "sha256_original": "ea9174cf30bbe94238d10d391c03e38aad38439e2b86d2570c5c2c211c43db16",
+  "sha256_sanitized": "0f82b8aacdfa35bcbb10db8e3278b8404dbe5c8fbd17960f4c54990cdb5e942d",
+  "blindness_scope": "blank slate w.r.t. paper, authors, model name, comments and prose labels \u2014 NOT w.r.t. field/parameter symbol names, which are kept so the reviewer can map the reconstruction back"
+}

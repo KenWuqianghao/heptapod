@@ -1,0 +1,48 @@
+# Comparison of `reconstruction.md` Against the Paper Model
+
+## Located Paper Definitions
+
+The relevant model definitions are in:
+
+- General sterile-neutrino Lagrangian: Eq. (2.1), with post-EWSB form Eq. (2.2).
+- Symmetry-protected seesaw scenario: Section 4.1, especially LNLS charges Eq. (4.1), SPSS Lagrangian Eq. (4.2), mass Lagrangian Eq. (4.3), mass matrix Eq. (4.4), mixing definition Eq. (4.5), mixing parameter Eq. (4.6), masses Eq. (4.7), and mixing matrix Eq. (4.8).
+- Small symmetry breaking: Section 4.2, especially Eq. (4.11) through Eq. (4.16).
+- Phenomenological SPSS: Section 4.3, especially pSPSS mass prescription Eq. (4.17) and parameter list Table 2.
+- FeynRules implementation: Section 5.1, especially the sterile kinetic terms, mass term, Yukawa term, neutrino replacement Eq. (5.2), and `RemoveHigherOrder` truncation.
+
+## Term-by-Term Comparison
+
+| paper term (eq. ref) | reconstruction term | verdict | notes |
+|---|---|---:|---|
+| Sterile neutrinos are SM singlets; general sterile extension uses sterile neutrinos \(N_i\) added to the SM, Eq. (2.1), Section 5.1 | `N1L`, `N2L` are color and electroweak singlet left-handed Weyl fields with \(Y=Q=0\) | **agree** | Correct gauge content. The paper explicitly treats the sterile fields as SM singlets and left-chiral DOFs. |
+| LNLS charge assignment: \(\ell:+1\), \(N_1:-1\), \(N_2:+1\), all other fields zero, Eq. (4.1) | No LNLS charge assignment listed | **missing-in-reconstruction** | The reconstruction captures the gauge charges but omits the lepton-number-like symmetry charges that protect the Dirac limit. |
+| SPSS kinetic term \(N_i^c i\!\not\!\partial N_i\), Eq. (4.2); implementation: `I (N1Lbar.Ga[mu].del[N1L, mu] + N2Lbar.Ga[mu].del[N2L, mu])`, Section 5.1 | \(i\overline{N_{1L}}\gamma^\mu\partial_\mu N_{1L}+i\overline{N_{2L}}\gamma^\mu\partial_\mu N_{2L}\) | **agree** | Same sterile kinetic content. The reconstruction’s ordinary derivative is consistent with the singlet gauge representation. |
+| Symmetric-limit Yukawa term \(-y_{1\alpha}N_1^c\widetilde H^\dagger\ell_\alpha+\mathrm{H.c.}\), Eq. (4.2); implementation: `yvn[ff1] (CC[N1Lbar].LL[... ] PhiNPbar[...] Eps[...])`, Section 5.1 | \(\sum_\alpha y_\alpha \frac{-\overline n_4+i\overline n_5}{\sqrt2}P_L(\nu'_\alpha\Phi_2-\ell_\alpha\Phi_1)+\mathrm{H.c.}\) | **agree** | Correctly couples only the \(N_1\)-type sterile combination to the SM lepton doublet and Higgs doublet. The antisymmetric \(SU(2)_L\) contraction is represented in component form. Overall sign conventions are not physically material here. |
+| Yukawa-mixing relation \(\theta=m_D/m_M\), \(m_D=y_1v\), Eq. (4.6) | \(y_\alpha=M_{\rm maj}\theta_\alpha/v\) | **agree** | Correct inversion of Eq. (4.6), assuming the same Higgs-VEV convention as the implementation. |
+| Sterile mass term \(-N_1^c m_M N_2+\mathrm{H.c.}\), Eq. (4.2); implementation: `- Mmaj CC[N1Lbar[sp1]].N2L[sp1]`, Section 5.1 | \(-M_{\rm maj}\overline{N_{1L}^{\,c}}N_{2L}+\mathrm{H.c.}\) | **agree** | Correct off-diagonal sterile mass term producing the pseudo-Dirac pair in the symmetry limit. |
+| Interaction-basis mass Lagrangian \(-\frac12 n^cM_nn+\mathrm{H.c.}\), Eq. (4.3), with matrix Eq. (4.4) | Encoded indirectly through \(N_{1L},N_{2L}\), their mass term, and physical \(n_4,n_5\) masses | **agree** | The reconstruction does not reproduce the full matrix, but its terms imply the same \(N_1\)-\(N_2\) off-diagonal heavy block and active-sterile Dirac entries through the Yukawas. |
+| Mixing matrix \(U_n\) through second order in \(\theta\), Eq. (4.8) | Explicit expressions for \(N_{1L}\), \(N_{2L}\), and \(\nu'_{e,\mu,\tau}\) through second order | **agree** | Matches Eq. (4.8) for real \(\theta_\alpha\). The paper writes complex conjugates \(\theta^\ast\), while the reconstruction treats the implemented parameters as real. |
+| Exact charged-lepton block \(U_{CL}= (1+|\theta|^2)^{-1/2}(-i\theta^\ast/\sqrt2,\theta^\ast/\sqrt2)\), Eq. (4.9), and possible rescaling Eq. (4.10) | Uses second-order expansion with \(1-\theta^2/2\) factors | **agree** | Consistent with the paper’s stated second-order expansion and the FeynRules implementation’s truncation. |
+| Symmetric-limit heavy masses \(m_4=m_5=m_M(1+\frac12|\theta|^2)+O(|\theta|^4)\), Eq. (4.7) | \(M_{n4}=M_{\rm maj}(1+\theta^2/2)-\Delta m/2\), \(M_{n5}=M_{\rm maj}(1+\theta^2/2)+\Delta m/2\) | **agree** | Reduces to Eq. (4.7) when \(\Delta m=0\). |
+| pSPSS mass splitting \(m_{4/5}=m_M(1+\frac12|\theta|^2)\mp\frac12\Delta m\), Eq. (4.17) | Same mass prescription with `deltaM` | **agree** | Correct pSPSS implementation of the phenomenological mass splitting. |
+| Generic small-LNV terms \(-y_{2\alpha}N_2^c\widetilde H^\dagger\ell_\alpha-\mu'_MN_1^cN_1-\mu_MN_2^cN_2+\cdots+\mathrm{H.c.}\), Eq. (4.11) | No explicit \(y_2\), \(\mu_M\), or \(\mu'_M\) Lagrangian terms; only \(\Delta m\) in masses | **agree** | This agrees with the pSPSS definition in Section 4.3: instead of implementing Eq. (4.11), the model directly parameterizes the heavy-neutrino mass splitting by \(\Delta m\). |
+| Active neutrino replacement \(n_\alpha=(U'_{CL})_{\alpha i}n_i\), Eq. (5.2), used inside the SM lepton doublet, Section 5.1 | Defines \(\nu'_e,\nu'_\mu,\nu'_\tau\) as active-neutrino combinations including heavy admixtures | **agree** | Correct physics content for the implemented mixing replacement. |
+| Complete pSPSS implementation: SM Lagrangian with neutrino fields replaced by `UnCL nL`, plus NP terms; complete Lagrangian named `LpSPSS`, Section 5.1 | `LTot = LKineticSterile + LNP` | **missing-in-reconstruction** | The reconstruction’s displayed `LTot` omits the SM Lagrangian pieces whose neutrino fields are replaced by the mixed fields. Its later physics summary mentions inherited weak/Higgs interactions, but the displayed total Lagrangian is incomplete relative to `LpSPSS`. |
+| Truncation: implemented mixing matrix valid up to second order in \(\theta\); `RemoveHigherOrder` drops smaller terms, Section 5.1 | All terms truncated to second order in \(\theta_e,\theta_\mu,\theta_\tau\) | **agree** | Correct. |
+| Free pSPSS parameters \(m_M\), \(\Delta m\), \(\theta_1,\theta_2,\theta_3\), damping \(\lambda\), Table 2 | `Mmaj`, `deltaM`, `theta1`, `theta2`, `theta3`, `damping` with the same defaults | **agree** | Correct parameter list and defaults. |
+| Damping parameter \(\lambda\) included for MadGraph oscillation treatment, not as an ordinary FeynRules interaction term, Section 4.3 and Section 5.1 | `damping` declared but not used in displayed Lagrangian | **agree** | Correct. |
+| Physical fields extended by self-conjugate neutrinos \(n_4,n_5\), Section 5.1 | `n4`, `n5` listed as self-conjugate Majorana fields | **agree** | Correct. |
+| Dirac/pseudo-Dirac relative phase: heavy mass eigenstate couplings have relative phase \(-i\), Appendix A, especially Eq. (A.6) and Eq. (A.7) | \(N_{1L}=(in_4+n_5)/\sqrt2\), active admixtures \(-i\theta_\alpha n_4/\sqrt2+\theta_\alpha n_5/\sqrt2\) | **agree** | Correct relative phase structure for the pseudo-Dirac pair, up to equivalent field/sign conventions. |
+| Complex structure: paper generally writes \(\theta^\ast\), \(|\theta|^2\), and complex vectors, Eq. (4.8) through Eq. (4.10) | Reconstruction uses \(\theta^2=\theta_e^2+\theta_\mu^2+\theta_\tau^2\) and real \(\theta_\alpha\) | **disagree** | This is acceptable only if the implementation restricts `theta1`, `theta2`, `theta3` to real external parameters. As a statement of the paper’s analytic model, it drops possible complex phases. |
+
+## Disagreements and Human Checks
+
+- **Missing LNLS charges** — severity: **substantive**. A human should check whether the reconstruction is intended to document only FeynRules gauge content or also the symmetry structure of the pSPSS, because Eq. (4.1) is central to why the allowed terms have the displayed form.
+
+- **Displayed total Lagrangian omits the SM-with-mixed-neutrinos part** — severity: **substantive**. A human should check whether `LTot` in the reconstruction is meant to be only the new-physics addition or the full `LpSPSS`; the paper’s Section 5.1 says the SM fermion Lagrangian is modified by replacing \(\nu\) with `UnCL nL`.
+
+- **Real versus complex active-sterile mixings** — severity: **convention**. A human should check the actual implementation parameter declarations: if `theta1`, `theta2`, and `theta3` are real, the reconstruction is faithful to the implementation, but it is narrower than the complex notation used in the paper’s analytic equations.
+
+## Overall Assessment
+
+The reconstruction captures the core pSPSS implementation well: two sterile singlet left-chiral fields, two self-conjugate heavy neutrino mass eigenstates, the off-diagonal pseudo-Dirac mass term, Yukawas proportional to \(M_{\rm maj}\theta_\alpha/v\), the second-order active-sterile mixing structure, the phenomenological mass splitting \(\Delta m\), and the default parameter block all agree with Sections 4.1, 4.3, and 5.1 of the paper. The main limitations are scope and documentation: it omits the LNLS charge assignment that explains the model’s symmetry protection, and its displayed `LTot` does not include the SM Lagrangian after the neutrino mixing replacement, even though that replacement is necessary for the weak interactions of \(n_4,n_5\). The only physics-content mismatch is the treatment of \(\theta_\alpha\) as real rather than generally complex, which may be a faithful implementation restriction but should be checked against the original model file.

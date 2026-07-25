@@ -1,0 +1,9 @@
+{
+  "original_model_name": "topBSM_gen",
+  "anon_model_name": "ANON-MODEL",
+  "information_blocks_removed": 1,
+  "prose_values_scrubbed": 28,
+  "sha256_original": "252421b25a31369940a4053281f037302204dc7822c8bf22767d7ee230f46b06",
+  "sha256_sanitized": "01feb01cf538f8a724e5e45aca0b5b4281e60f4984a400635f9c472e6b05b9f3",
+  "blindness_scope": "blank slate w.r.t. paper, authors, model name, comments and prose labels \u2014 NOT w.r.t. field/parameter symbol names, which are kept so the reviewer can map the reconstruction back"
+}

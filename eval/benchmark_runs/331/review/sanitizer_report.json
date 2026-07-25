@@ -1,0 +1,9 @@
+{
+  "original_model_name": "331_gen",
+  "anon_model_name": "ANON-MODEL",
+  "information_blocks_removed": 1,
+  "prose_values_scrubbed": 54,
+  "sha256_original": "6b05637d78582ac955a34f8fc607fdd53f506feeea3f5af09a5e24467131c065",
+  "sha256_sanitized": "40693a32cb9e640630e0933280baff5da0076162af9ccd5332c520b18bff6737",
+  "blindness_scope": "blank slate w.r.t. paper, authors, model name, comments and prose labels \u2014 NOT w.r.t. field/parameter symbol names, which are kept so the reviewer can map the reconstruction back"
+}

@@ -1,0 +1,143 @@
+
+
+
+M$ModelName = "ANON-MODEL";
+
+
+M$InteractionOrderHierarchy = {{NP, 1}, {QCD, 2}, {QED, 3}};
+
+M$Parameters = {
+  gWpL == {
+    ParameterType -> External,
+    Value -> 0.653,
+    ComplexParameter -> False,
+    BlockName -> WPRIME,
+    OrderBlock -> 1,
+    InteractionOrder -> {NP, 1},
+    ParameterName -> gWpL,
+    TeX -> "g_L",
+    Description -> ""
+  },
+  gWpR == {
+    ParameterType -> External,
+    Value -> 0.653,
+    ComplexParameter -> False,
+    BlockName -> WPRIME,
+    OrderBlock -> 2,
+    InteractionOrder -> {NP, 1},
+    ParameterName -> gWpR,
+    TeX -> "g_R",
+    Description -> ""
+  },
+  zetaWp == {
+    ParameterType -> External,
+    Value -> 0.,
+    ComplexParameter -> False,
+    BlockName -> WPRIME,
+    OrderBlock -> 3,
+    ParameterName -> zetaWp,
+    TeX -> "\\zeta",
+    Description -> ""
+  },
+  omegaWp == {
+    ParameterType -> External,
+    Value -> 0.,
+    ComplexParameter -> False,
+    BlockName -> WPRIME,
+    OrderBlock -> 4,
+    ParameterName -> omegaWp,
+    TeX -> "\\omega",
+    Description -> ""
+  },
+  VpLQ == {
+    ParameterType -> External,
+    Value -> {VpLQ[1,1] -> 0.9751, VpLQ[1,2] -> 0.2215, VpLQ[1,3] -> 0.0035, VpLQ[2,1] -> 0.2210, VpLQ[2,2] -> 0.9743, VpLQ[2,3] -> 0.0410, VpLQ[3,1] -> 0.0090, VpLQ[3,2] -> 0.0400, VpLQ[3,3] -> 1.0000},
+    Indices -> {Index[Generation], Index[Generation]},
+    ComplexParameter -> False,
+    BlockName -> VPLQ,
+    InteractionOrder -> {NP, 1},
+    ParameterName -> VpLQ,
+    TeX -> "V^{L,q}",
+    Description -> ""
+  },
+  VpRQ == {
+    ParameterType -> External,
+    Value -> {VpRQ[1,1] -> 0.9751, VpRQ[1,2] -> 0.2215, VpRQ[1,3] -> 0.0035, VpRQ[2,1] -> 0.2210, VpRQ[2,2] -> 0.9743, VpRQ[2,3] -> 0.0410, VpRQ[3,1] -> 0.0090, VpRQ[3,2] -> 0.0400, VpRQ[3,3] -> 1.0000},
+    Indices -> {Index[Generation], Index[Generation]},
+    ComplexParameter -> False,
+    BlockName -> VPRQ,
+    InteractionOrder -> {NP, 1},
+    ParameterName -> VpRQ,
+    TeX -> "V^{R,q}",
+    Description -> ""
+  },
+  VpLL == {
+    ParameterType -> External,
+    Value -> {VpLL[1,1] -> 1., VpLL[1,2] -> 0., VpLL[1,3] -> 0., VpLL[2,1] -> 0., VpLL[2,2] -> 1., VpLL[2,3] -> 0., VpLL[3,1] -> 0., VpLL[3,2] -> 0., VpLL[3,3] -> 1.},
+    Indices -> {Index[Generation], Index[Generation]},
+    ComplexParameter -> False,
+    BlockName -> VPLL,
+    InteractionOrder -> {NP, 1},
+    ParameterName -> VpLL,
+    TeX -> "V^{L,\\ell}",
+    Description -> ""
+  },
+  VpRL == {
+    ParameterType -> External,
+    Value -> {VpRL[1,1] -> 1., VpRL[1,2] -> 0., VpRL[1,3] -> 0., VpRL[2,1] -> 0., VpRL[2,2] -> 1., VpRL[2,3] -> 0., VpRL[3,1] -> 0., VpRL[3,2] -> 0., VpRL[3,3] -> 1.},
+    Indices -> {Index[Generation], Index[Generation]},
+    ComplexParameter -> False,
+    BlockName -> VPRL,
+    InteractionOrder -> {NP, 1},
+    ParameterName -> VpRL,
+    TeX -> "V^{R,\\ell}",
+    Description -> ""
+  }
+};
+
+M$ClassesDescription = {
+  V[100] == {
+    ClassName -> Wp,
+    SelfConjugate -> False,
+    Mass -> {MWp, 1000.},
+    Width -> {WWp, 1.},
+    QuantumNumbers -> {Q -> 1},
+    PDG -> 9900024,
+    ParticleName -> "W+prime",
+    AntiParticleName -> "W-prime",
+    FullName -> "",
+    PropagatorLabel -> "Wp",
+    PropagatorType -> Sine,
+    PropagatorArrow -> Forward
+  },
+  F[100] == {
+    ClassName -> vR,
+    SelfConjugate -> False,
+    ClassMembers -> {veR, vmR, vtR},
+    Indices -> {Index[Generation]},
+    FlavorIndex -> Generation,
+    Mass -> {MvR, 100.},
+    Width -> 0,
+    QuantumNumbers -> {Q -> 0},
+    PDG -> {9900012, 9900014, 9900016},
+    ParticleName -> {"veR", "vmR", "vtR"},
+    AntiParticleName -> {"veR~", "vmR~", "vtR~"},
+    FullName -> {"right-handed electron neutrino", "right-handed muon neutrino", "right-handed tau neutrino"},
+    PropagatorLabel -> {"veR", "vmR", "vtR"},
+    PropagatorType -> Straight,
+    PropagatorArrow -> Forward,
+    Chirality -> R
+  }
+};
+
+LkinWp = Block[{mu,nu}, -1/2 DC[HC[Wp[nu]],mu] DC[Wp[nu],mu] + 1/2 DC[HC[Wp[nu]],mu] DC[Wp[mu],nu] + MWp^2 HC[Wp[mu]] Wp[mu]];
+
+LkinNuR = Block[{mu,sp1,sp2,i}, Sum[I bar[vR][sp1,i].Ga[mu,sp1,sp2].del[vR[sp2,i],mu] - MvR bar[vR][sp1,i].vR[sp1,i], {i,1,3}]];
+
+LWpQuarkNonHC := Block[{mu,sp1,sp2,sp3,i,j,aa}, Sum[1/Sqrt[2] Wp[mu] (gWpR Exp[I omegaWp] Cos[zetaWp] VpRQ[i,j] bar[uq][sp1,i,aa].Ga[mu,sp1,sp2].ProjP[sp2,sp3].dq[sp3,j,aa] + gWpL Sin[zetaWp] VpLQ[i,j] bar[uq][sp1,i,aa].Ga[mu,sp1,sp2].ProjM[sp2,sp3].dq[sp3,j,aa]), {i,1,3}, {j,1,3}, {aa,1,3}]];
+
+LWpLeptonNonHC := Block[{mu,sp1,sp2,sp3,i,j}, Sum[1/Sqrt[2] Wp[mu] (gWpR Exp[I omegaWp] Cos[zetaWp] VpRL[i,j] bar[vR][sp1,i].Ga[mu,sp1,sp2].ProjP[sp2,sp3].l[sp3,j] + gWpL Sin[zetaWp] VpLL[i,j] bar[vl][sp1,i].Ga[mu,sp1,sp2].ProjM[sp2,sp3].l[sp3,j]), {i,1,3}, {j,1,3}]];
+
+LWpFermions := LWpQuarkNonHC + LWpLeptonNonHC + HC[LWpQuarkNonHC + LWpLeptonNonHC];
+
+LBSM = LkinWp + LkinNuR + LWpFermions;

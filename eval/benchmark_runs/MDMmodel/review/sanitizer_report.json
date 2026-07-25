@@ -1,0 +1,9 @@
+{
+  "original_model_name": "MDMmodel_gen",
+  "anon_model_name": "ANON-MODEL",
+  "information_blocks_removed": 1,
+  "prose_values_scrubbed": 18,
+  "sha256_original": "86c3bea07f04d1f42f68e54dced4b4701543e606feb6c4223a11b4b02a13e5e5",
+  "sha256_sanitized": "7c85e661383449e25a2e15458fb3fd2914203d5d5d6ddc7bd63e47dae5b176fc",
+  "blindness_scope": "blank slate w.r.t. paper, authors, model name, comments and prose labels \u2014 NOT w.r.t. field/parameter symbol names, which are kept so the reviewer can map the reconstruction back"
+}

@@ -1,0 +1,9 @@
+{
+  "original_model_name": "LeptoQuark_gen",
+  "anon_model_name": "ANON-MODEL",
+  "information_blocks_removed": 1,
+  "prose_values_scrubbed": 42,
+  "sha256_original": "82114944a303902aa1bfadf7367dea28548f6e23cdf85faf54b40a4d6a05ff83",
+  "sha256_sanitized": "387b74ffebc54fd2019e7474570ea356db9a402588713fa9bc07b0b5e3e89a03",
+  "blindness_scope": "blank slate w.r.t. paper, authors, model name, comments and prose labels \u2014 NOT w.r.t. field/parameter symbol names, which are kept so the reviewer can map the reconstruction back"
+}

@@ -1,0 +1,715 @@
+
+
+
+M$ModelName = "ANON-MODEL";
+
+
+M$InteractionOrderHierarchy = {{QCD, 1}, {QED, 2}, {NP, 2}};
+
+M$InteractionOrderLimit = {{NP, 99}};
+
+FeynmanGauge = False;
+
+M$vevs = {{rho[2], v1/Sqrt[2]}, {eta[1], v2/Sqrt[2]}, {chi[3], v3/Sqrt[2]}};
+
+M$Restrictions = {};
+
+FR$LoopSwitches = {};
+
+IndexStyle[FirstTwoGeneration, i2];
+
+IndexStyle[SU3L, a3];
+
+
+IndexRange[Index[FirstTwoGeneration]] = NoUnfold[Range[2]];
+IndexRange[Index[SU3L]] = NoUnfold[Range[3]];
+IndexStyle[FirstTwoGeneration, i2];
+IndexStyle[SU3L, a3];
+
+M$Parameters = {
+  beta331 == {
+    ParameterType -> External,
+    Value -> 0.5773502691896258,
+    ComplexParameter -> False,
+    BlockName -> THREETHREEONEINPUTS,
+    OrderBlock -> 1,
+    InteractionOrder -> {NP, 0},
+    ParameterName -> beta331,
+    TeX -> "\\\\beta",
+    Description -> ""
+  },
+  v1 == {
+    ParameterType -> External,
+    Value -> 200.,
+    ComplexParameter -> False,
+    BlockName -> THREETHREEONEINPUTS,
+    OrderBlock -> 2,
+    InteractionOrder -> {NP, 0},
+    ParameterName -> v1,
+    TeX -> "v_1",
+    Description -> ""
+  },
+  v2 == {
+    ParameterType -> Internal,
+    Value -> Sqrt[vev^2 - v1^2],
+    ComplexParameter -> False,
+    InteractionOrder -> {NP, 0},
+    ParameterName -> v2,
+    TeX -> "v_2",
+    Description -> ""
+  },
+  v3 == {
+    ParameterType -> External,
+    Value -> 2000.,
+    ComplexParameter -> False,
+    BlockName -> THREETHREEONEINPUTS,
+    OrderBlock -> 3,
+    InteractionOrder -> {NP, 1},
+    ParameterName -> v3,
+    TeX -> "v_3",
+    Description -> ""
+  },
+  f331 == {
+    ParameterType -> External,
+    Value -> 2000.,
+    ComplexParameter -> False,
+    BlockName -> THREETHREEONEINPUTS,
+    OrderBlock -> 4,
+    InteractionOrder -> {NP, 1},
+    ParameterName -> f331,
+    TeX -> "f",
+    Description -> ""
+  },
+  k331 == {
+    ParameterType -> Internal,
+    Value -> f331/v3,
+    ComplexParameter -> False,
+    InteractionOrder -> {NP, 0},
+    ParameterName -> k331,
+    TeX -> "k",
+    Description -> ""
+  },
+  QY331 == {
+    ParameterType -> Internal,
+    Value -> (Sqrt[3]*beta331 + 1)/2,
+    ComplexParameter -> False,
+    InteractionOrder -> {NP, 0},
+    ParameterName -> QY331,
+    TeX -> "Q_Y",
+    Description -> ""
+  },
+  QV331 == {
+    ParameterType -> Internal,
+    Value -> (Sqrt[3]*beta331 - 1)/2,
+    ComplexParameter -> False,
+    InteractionOrder -> {NP, 0},
+    ParameterName -> QV331,
+    TeX -> "Q_V",
+    Description -> ""
+  },
+  QD331 == {
+    ParameterType -> Internal,
+    Value -> 1/6 - Sqrt[3]*beta331/2,
+    ComplexParameter -> False,
+    InteractionOrder -> {NP, 0},
+    ParameterName -> QD331,
+    TeX -> "Q_D",
+    Description -> ""
+  },
+  QT331 == {
+    ParameterType -> Internal,
+    Value -> 1/6 + Sqrt[3]*beta331/2,
+    ComplexParameter -> False,
+    InteractionOrder -> {NP, 0},
+    ParameterName -> QT331,
+    TeX -> "Q_T",
+    Description -> ""
+  },
+  QE331 == {
+    ParameterType -> Internal,
+    Value -> -1/2 + Sqrt[3]*beta331/2,
+    ComplexParameter -> False,
+    InteractionOrder -> {NP, 0},
+    ParameterName -> QE331,
+    TeX -> "Q_E",
+    Description -> ""
+  },
+  lam1 == {
+    ParameterType -> External,
+    Value -> 0.13,
+    ComplexParameter -> False,
+    BlockName -> THREETHREEONESCALAR,
+    OrderBlock -> 1,
+    InteractionOrder -> {NP, 2},
+    ParameterName -> lam1,
+    TeX -> "\\\\lambda_1",
+    Description -> ""
+  },
+  lam2 == {
+    ParameterType -> External,
+    Value -> 0.13,
+    ComplexParameter -> False,
+    BlockName -> THREETHREEONESCALAR,
+    OrderBlock -> 2,
+    InteractionOrder -> {NP, 2},
+    ParameterName -> lam2,
+    TeX -> "\\\\lambda_2",
+    Description -> ""
+  },
+  lam3 == {
+    ParameterType -> External,
+    Value -> 0.10,
+    ComplexParameter -> False,
+    BlockName -> THREETHREEONESCALAR,
+    OrderBlock -> 3,
+    InteractionOrder -> {NP, 2},
+    ParameterName -> lam3,
+    TeX -> "\\\\lambda_3",
+    Description -> ""
+  },
+  lam12 == {
+    ParameterType -> External,
+    Value -> 0.10,
+    ComplexParameter -> False,
+    BlockName -> THREETHREEONESCALAR,
+    OrderBlock -> 4,
+    InteractionOrder -> {NP, 2},
+    ParameterName -> lam12,
+    TeX -> "\\\\lambda_{12}",
+    Description -> ""
+  },
+  lam13 == {
+    ParameterType -> External,
+    Value -> 0.10,
+    ComplexParameter -> False,
+    BlockName -> THREETHREEONESCALAR,
+    OrderBlock -> 5,
+    InteractionOrder -> {NP, 2},
+    ParameterName -> lam13,
+    TeX -> "\\\\lambda_{13}",
+    Description -> ""
+  },
+  lam23 == {
+    ParameterType -> External,
+    Value -> 0.10,
+    ComplexParameter -> False,
+    BlockName -> THREETHREEONESCALAR,
+    OrderBlock -> 6,
+    InteractionOrder -> {NP, 2},
+    ParameterName -> lam23,
+    TeX -> "\\\\lambda_{23}",
+    Description -> ""
+  },
+  lamp12 == {
+    ParameterType -> External,
+    Value -> 0.10,
+    ComplexParameter -> False,
+    BlockName -> THREETHREEONESCALAR,
+    OrderBlock -> 7,
+    InteractionOrder -> {NP, 2},
+    ParameterName -> lamp12,
+    TeX -> "\\\\lambda'_{12}",
+    Description -> ""
+  },
+  lamp13 == {
+    ParameterType -> External,
+    Value -> 0.10,
+    ComplexParameter -> False,
+    BlockName -> THREETHREEONESCALAR,
+    OrderBlock -> 8,
+    InteractionOrder -> {NP, 2},
+    ParameterName -> lamp13,
+    TeX -> "\\\\lambda'_{13}",
+    Description -> ""
+  },
+  lamp23 == {
+    ParameterType -> External,
+    Value -> 0.10,
+    ComplexParameter -> False,
+    BlockName -> THREETHREEONESCALAR,
+    OrderBlock -> 9,
+    InteractionOrder -> {NP, 2},
+    ParameterName -> lamp23,
+    TeX -> "\\\\lambda'_{23}",
+    Description -> ""
+  },
+  mu1sq == {
+    ParameterType -> External,
+    Value -> -10000.,
+    ComplexParameter -> False,
+    BlockName -> THREETHREEONESCALAR,
+    OrderBlock -> 10,
+    InteractionOrder -> {NP, 2},
+    ParameterName -> mu1sq,
+    TeX -> "\\\\mu_1^2",
+    Description -> ""
+  },
+  mu2sq == {
+    ParameterType -> External,
+    Value -> -10000.,
+    ComplexParameter -> False,
+    BlockName -> THREETHREEONESCALAR,
+    OrderBlock -> 11,
+    InteractionOrder -> {NP, 2},
+    ParameterName -> mu2sq,
+    TeX -> "\\\\mu_2^2",
+    Description -> ""
+  },
+  mu3sq == {
+    ParameterType -> External,
+    Value -> -1000000.,
+    ComplexParameter -> False,
+    BlockName -> THREETHREEONESCALAR,
+    OrderBlock -> 12,
+    InteractionOrder -> {NP, 2},
+    ParameterName -> mu3sq,
+    TeX -> "\\\\mu_3^2",
+    Description -> ""
+  },
+  s12 == {
+    ParameterType -> Internal,
+    Value -> v2/vev,
+    ComplexParameter -> False,
+    InteractionOrder -> {NP, 0},
+    ParameterName -> s12,
+    TeX -> "s_{12}",
+    Description -> ""
+  },
+  c12 == {
+    ParameterType -> Internal,
+    Value -> v1/vev,
+    ComplexParameter -> False,
+    InteractionOrder -> {NP, 0},
+    ParameterName -> c12,
+    TeX -> "c_{12}",
+    Description -> ""
+  },
+  s13 == {
+    ParameterType -> Internal,
+    Value -> v3/Sqrt[v1^2 + v3^2],
+    ComplexParameter -> False,
+    InteractionOrder -> {NP, 0},
+    ParameterName -> s13,
+    TeX -> "s_{13}",
+    Description -> ""
+  },
+  c13 == {
+    ParameterType -> Internal,
+    Value -> v1/Sqrt[v1^2 + v3^2],
+    ComplexParameter -> False,
+    InteractionOrder -> {NP, 0},
+    ParameterName -> c13,
+    TeX -> "c_{13}",
+    Description -> ""
+  },
+  s23 == {
+    ParameterType -> Internal,
+    Value -> v3/Sqrt[v2^2 + v3^2],
+    ComplexParameter -> False,
+    InteractionOrder -> {NP, 0},
+    ParameterName -> s23,
+    TeX -> "s_{23}",
+    Description -> ""
+  },
+  c23 == {
+    ParameterType -> Internal,
+    Value -> v2/Sqrt[v2^2 + v3^2],
+    ComplexParameter -> False,
+    InteractionOrder -> {NP, 0},
+    ParameterName -> c23,
+    TeX -> "c_{23}",
+    Description -> ""
+  },
+  a0 == {
+    ParameterType -> Internal,
+    Value -> Sqrt[1 - (1 + beta331^2)*sw^2],
+    ComplexParameter -> False,
+    InteractionOrder -> {NP, 0},
+    ParameterName -> a0,
+    TeX -> "a_0",
+    Description -> ""
+  },
+  ap == {
+    ParameterType -> Internal,
+    Value -> Sqrt[3]*beta331 + 1,
+    ComplexParameter -> False,
+    InteractionOrder -> {NP, 0},
+    ParameterName -> ap,
+    TeX -> "a_+",
+    Description -> ""
+  },
+  am == {
+    ParameterType -> Internal,
+    Value -> Sqrt[3]*beta331 - 1,
+    ComplexParameter -> False,
+    InteractionOrder -> {NP, 0},
+    ParameterName -> am,
+    TeX -> "a_-",
+    Description -> ""
+  },
+  bp == {
+    ParameterType -> Internal,
+    Value -> Sqrt[3]*beta331 + 2,
+    ComplexParameter -> False,
+    InteractionOrder -> {NP, 0},
+    ParameterName -> bp,
+    TeX -> "b_+",
+    Description -> ""
+  },
+  bm == {
+    ParameterType -> Internal,
+    Value -> Sqrt[3]*beta331 - 2,
+    ComplexParameter -> False,
+    InteractionOrder -> {NP, 0},
+    ParameterName -> bm,
+    TeX -> "b_-",
+    Description -> ""
+  },
+  U331 == {
+    ParameterType -> External,
+    Indices -> {Index[SU3L], Index[SU3L]},
+    ComplexParameter -> False,
+    BlockName -> U331,
+    InteractionOrder -> {NP, 0},
+    ParameterName -> U331,
+    TeX -> "U",
+    Description -> ""
+  },
+  O331 == {
+    ParameterType -> External,
+    Indices -> {Index[SU3L], Index[SU3L]},
+    ComplexParameter -> False,
+    BlockName -> O331,
+    InteractionOrder -> {NP, 0},
+    ParameterName -> O331,
+    TeX -> "O",
+    Description -> ""
+  },
+  yU331 == {
+    ParameterType -> External,
+    Indices -> {Index[Generation], Index[Generation]},
+    ComplexParameter -> False,
+    BlockName -> YU331,
+    InteractionOrder -> {NP, 1},
+    ParameterName -> yU331,
+    TeX -> "y^u",
+    Description -> ""
+  },
+  yD331 == {
+    ParameterType -> External,
+    Indices -> {Index[Generation], Index[Generation]},
+    ComplexParameter -> False,
+    BlockName -> YD331,
+    InteractionOrder -> {NP, 1},
+    ParameterName -> yD331,
+    TeX -> "y^d",
+    Description -> ""
+  },
+  yJ331 == {
+    ParameterType -> External,
+    Indices -> {Index[FirstTwoGeneration], Index[FirstTwoGeneration]},
+    ComplexParameter -> False,
+    BlockName -> YJ331,
+    InteractionOrder -> {NP, 1},
+    ParameterName -> yJ331,
+    TeX -> "y^J",
+    Description -> ""
+  },
+  yT331 == {
+    ParameterType -> External,
+    Value -> 1.0,
+    ComplexParameter -> False,
+    BlockName -> YJ331,
+    OrderBlock -> 33,
+    InteractionOrder -> {NP, 1},
+    ParameterName -> yT331,
+    TeX -> "y^J_{33}",
+    Description -> ""
+  },
+  yE331 == {
+    ParameterType -> External,
+    Indices -> {Index[Generation], Index[Generation]},
+    ComplexParameter -> False,
+    BlockName -> YE331,
+    InteractionOrder -> {NP, 1},
+    ParameterName -> yE331,
+    TeX -> "y^E",
+    Description -> ""
+  },
+  yL331 == {
+    ParameterType -> External,
+    Indices -> {Index[Generation], Index[Generation]},
+    ComplexParameter -> False,
+    BlockName -> YL331,
+    InteractionOrder -> {NP, 1},
+    ParameterName -> yL331,
+    TeX -> "y^e",
+    Description -> ""
+  }
+};
+
+M$ClassesDescription = {
+  S[101] == {
+    ClassName -> H2,
+    SelfConjugate -> True,
+    Mass -> {MH2, 1500.},
+    Width -> {WH2, 1.},
+    PDG -> 9000002,
+    ParticleName -> "H2",
+    FullName -> "",
+    PropagatorLabel -> "H2",
+    PropagatorType -> ScalarDash,
+    PropagatorArrow -> None
+  },
+  S[102] == {
+    ClassName -> H3,
+    SelfConjugate -> True,
+    Mass -> {MH3, 2000.},
+    Width -> {WH3, 1.},
+    PDG -> 9000003,
+    ParticleName -> "H3",
+    FullName -> "",
+    PropagatorLabel -> "H3",
+    PropagatorType -> ScalarDash,
+    PropagatorArrow -> None
+  },
+  S[103] == {
+    ClassName -> H0,
+    SelfConjugate -> True,
+    Mass -> {MH0, 1500.},
+    Width -> {WH0, 1.},
+    PDG -> 9000004,
+    ParticleName -> "H0",
+    FullName -> "",
+    PropagatorLabel -> "H0",
+    PropagatorType -> ScalarDash,
+    PropagatorArrow -> None
+  },
+  S[104] == {
+    ClassName -> Hp,
+    SelfConjugate -> False,
+    Mass -> {MHp, 1500.},
+    Width -> {WHp, 1.},
+    QuantumNumbers -> {Q -> 1, ColourRep -> 1, SU2Rep -> 1},
+    PDG -> 9000005,
+    ParticleName -> "H+",
+    AntiParticleName -> "H-",
+    FullName -> "",
+    PropagatorLabel -> "H+",
+    PropagatorType -> ScalarDash,
+    PropagatorArrow -> Forward
+  },
+  S[105] == {
+    ClassName -> HQY,
+    SelfConjugate -> False,
+    Mass -> {MHQY, 1400.},
+    Width -> {WHQY, 1.},
+    QuantumNumbers -> {Q -> 1, ColourRep -> 1, SU2Rep -> 1},
+    PDG -> 9000006,
+    ParticleName -> "HqY",
+    AntiParticleName -> "HqY~",
+    FullName -> "",
+    PropagatorLabel -> "HQY",
+    PropagatorType -> ScalarDash,
+    PropagatorArrow -> Forward
+  },
+  S[106] == {
+    ClassName -> HQV,
+    SelfConjugate -> False,
+    Mass -> {MHQV, 1300.},
+    Width -> {WHQV, 1.},
+    QuantumNumbers -> {Q -> 0, ColourRep -> 1, SU2Rep -> 1},
+    PDG -> 9000007,
+    ParticleName -> "HqV",
+    AntiParticleName -> "HqV~",
+    FullName -> "",
+    PropagatorLabel -> "HQV",
+    PropagatorType -> ScalarDash,
+    PropagatorArrow -> Forward
+  },
+  S[107] == {
+    ClassName -> G0p,
+    SelfConjugate -> True,
+    Unphysical -> True,
+    Goldstone -> Zp,
+    Mass -> {MG0p, MZp},
+    Width -> {WG0p, 0.},
+    PropagatorLabel -> "G0p",
+    PropagatorType -> ScalarDash,
+    PropagatorArrow -> None
+  },
+  S[108] == {
+    ClassName -> GY,
+    SelfConjugate -> False,
+    Unphysical -> True,
+    Goldstone -> Yp,
+    Mass -> {MGY, MY},
+    Width -> {WGY, 0.},
+    QuantumNumbers -> {Q -> 1, ColourRep -> 1, SU2Rep -> 1},
+    PropagatorLabel -> "GY",
+    PropagatorType -> ScalarDash,
+    PropagatorArrow -> Forward
+  },
+  S[109] == {
+    ClassName -> GV,
+    SelfConjugate -> False,
+    Unphysical -> True,
+    Goldstone -> Vp,
+    Mass -> {MGV, MV},
+    Width -> {WGV, 0.},
+    QuantumNumbers -> {Q -> 0, ColourRep -> 1, SU2Rep -> 1},
+    PropagatorLabel -> "GV",
+    PropagatorType -> ScalarDash,
+    PropagatorArrow -> Forward
+  },
+  S[110] == {
+    ClassName -> rho,
+    SelfConjugate -> False,
+    Unphysical -> True,
+    Indices -> {Index[SU3L]},
+    Definitions -> {
+      rho[1] -> s12 Hp + c12 GP,
+      rho[2] -> (v1 + U331[1,1] H + U331[1,2] H2 + U331[1,3] H3 + I (O331[1,1] H0 + O331[1,2] G0 + O331[1,3] G0p))/Sqrt[2],
+      rho[3] -> s13 HQV + c13 GV
+    }
+  },
+  S[111] == {
+    ClassName -> eta,
+    SelfConjugate -> False,
+    Unphysical -> True,
+    Indices -> {Index[SU3L]},
+    Definitions -> {
+      eta[1] -> (v2 + U331[2,1] H + U331[2,2] H2 + U331[2,3] H3 + I (O331[2,1] H0 + O331[2,2] G0 + O331[2,3] G0p))/Sqrt[2],
+      eta[2] -> c12 Hp - s12 GP,
+      eta[3] -> s23 HQY + c23 GY
+    }
+  },
+  S[112] == {
+    ClassName -> chi,
+    SelfConjugate -> False,
+    Unphysical -> True,
+    Indices -> {Index[SU3L]},
+    Definitions -> {
+      chi[1] -> c23 HQY - s23 GY,
+      chi[2] -> c13 HQV - s13 GV,
+      chi[3] -> (v3 + U331[3,1] H + U331[3,2] H2 + U331[3,3] H3 + I (O331[3,1] H0 + O331[3,2] G0 + O331[3,3] G0p))/Sqrt[2]
+    }
+  },
+  V[101] == {
+    ClassName -> Zp,
+    SelfConjugate -> True,
+    Mass -> {MZp, 4000.},
+    Width -> {WZp, 1.},
+    PDG -> 9000010,
+    ParticleName -> "Zp",
+    FullName -> "",
+    PropagatorLabel -> "Zp",
+    PropagatorType -> Sine,
+    PropagatorArrow -> None
+  },
+  V[102] == {
+    ClassName -> Yp,
+    SelfConjugate -> False,
+    Mass -> {MY, 1000.},
+    Width -> {WY, 1.},
+    QuantumNumbers -> {Q -> 1, ColourRep -> 1, SU2Rep -> 1},
+    PDG -> 9000011,
+    ParticleName -> "Y",
+    AntiParticleName -> "Y~",
+    FullName -> "",
+    PropagatorLabel -> "Y",
+    PropagatorType -> Sine,
+    PropagatorArrow -> Forward
+  },
+  V[103] == {
+    ClassName -> Vp,
+    SelfConjugate -> False,
+    Mass -> {MV, 1000.},
+    Width -> {WV, 1.},
+    QuantumNumbers -> {Q -> 0, ColourRep -> 1, SU2Rep -> 1},
+    PDG -> 9000012,
+    ParticleName -> "V",
+    AntiParticleName -> "V~",
+    FullName -> "",
+    PropagatorLabel -> "V",
+    PropagatorType -> Sine,
+    PropagatorArrow -> Forward
+  },
+  F[101] == {
+    ClassName -> DQ,
+    SelfConjugate -> False,
+    Indices -> {Index[Colour]},
+    Mass -> {MDQ, 1000.},
+    Width -> {WD, 1.},
+    QuantumNumbers -> {Q -> -1/3, ColourRep -> 3, SU2Rep -> 1},
+    PDG -> 9000021,
+    ParticleName -> "D",
+    AntiParticleName -> "D~",
+    FullName -> "",
+    PropagatorLabel -> "D",
+    PropagatorType -> Straight,
+    PropagatorArrow -> Forward
+  },
+  F[102] == {
+    ClassName -> SQ,
+    SelfConjugate -> False,
+    Indices -> {Index[Colour]},
+    Mass -> {MSq, 1000.},
+    Width -> {WSq, 1.},
+    QuantumNumbers -> {Q -> -1/3, ColourRep -> 3, SU2Rep -> 1},
+    PDG -> 9000022,
+    ParticleName -> "S",
+    AntiParticleName -> "S~",
+    FullName -> "",
+    PropagatorLabel -> "S",
+    PropagatorType -> Straight,
+    PropagatorArrow -> Forward
+  },
+  F[103] == {
+    ClassName -> TQ,
+    SelfConjugate -> False,
+    Indices -> {Index[Colour]},
+    Mass -> {MTQ, 1000.},
+    Width -> {WTQ, 1.},
+    QuantumNumbers -> {Q -> 2/3, ColourRep -> 3, SU2Rep -> 1},
+    PDG -> 9000023,
+    ParticleName -> "T",
+    AntiParticleName -> "T~",
+    FullName -> "",
+    PropagatorLabel -> "T",
+    PropagatorType -> Straight,
+    PropagatorArrow -> Forward
+  },
+  F[104] == {
+    ClassName -> EL,
+    SelfConjugate -> False,
+    ClassMembers -> {Ee, Emu, Etau},
+    Indices -> {Index[Generation]},
+    FlavorIndex -> Generation,
+    Mass -> {ME, {MEe, 1000.}, {MEmu, 1000.}, {MEtau, 1000.}},
+    Width -> {WE, {WEe, 1.}, {WEmu, 1.}, {WEtau, 1.}},
+    QuantumNumbers -> {Q -> 0, ColourRep -> 1, SU2Rep -> 1},
+    PDG -> {9000031, 9000032, 9000033},
+    ParticleName -> {"Ee", "Emu", "Etau"},
+    AntiParticleName -> {"Ee~", "Emu~", "Etau~"},
+    FullName -> {"heavy electron partner", "heavy muon partner", "heavy tau partner"},
+    PropagatorLabel -> {"Ee", "Emu", "Etau"},
+    PropagatorType -> Straight,
+    PropagatorArrow -> Forward
+  }
+};
+
+M$Definitions = { QY331 -> (Sqrt[3] beta331 + 1)/2, QV331 -> (Sqrt[3] beta331 - 1)/2, QD331 -> 1/6 - Sqrt[3] beta331/2, QT331 -> 1/6 + Sqrt[3] beta331/2, QE331 -> -1/2 + Sqrt[3] beta331/2 };
+
+
+VHiggs331 = mu1sq HC[rho].rho + mu2sq HC[eta].eta + mu3sq HC[chi].chi + lam1 (HC[rho].rho)^2 + lam2 (HC[eta].eta)^2 + lam3 (HC[chi].chi)^2 + lam12 (HC[rho].rho) (HC[eta].eta) + lam13 (HC[rho].rho) (HC[chi].chi) + lam23 (HC[eta].eta) (HC[chi].chi) + lamp12 (HC[rho].eta) (HC[eta].rho) + lamp13 (HC[rho].chi) (HC[chi].rho) + lamp23 (HC[eta].chi) (HC[chi].eta) + Sqrt[2] f331 (Eps[i,j,k] rho[i] eta[j] chi[k] + HC[Eps[i,j,k] rho[i] eta[j] chi[k]]);
+
+LHiggs331 = HC[DC[rho, mu]].DC[rho, mu] + HC[DC[eta, mu]].DC[eta, mu] + HC[DC[chi, mu]].DC[chi, mu] - VHiggs331;
+
+LGauge331Mass = 1/4 gw^2 vev^2 W[mu] HC[W[mu]] + 1/4 gw^2 (v3^2 + v2^2) Yp[mu] HC[Yp[mu]] + 1/4 gw^2 (v3^2 + v1^2) Vp[mu] HC[Vp[mu]] + 1/2 MZp^2 Zp[mu] Zp[mu];
+
+LGaugeSelf331 = (-I ee) A[mu] W[nu] HC[W[sig]] VVV[mu,nu,sig] + (I am ee/2) A[mu] Vp[nu] HC[Vp[sig]] VVV[mu,nu,sig] + (I ap ee/2) A[mu] Yp[nu] HC[Yp[sig]] VVV[mu,nu,sig] - I Sqrt[3] ee a0/(2 cw sw) Zp[mu] (Vp[nu] HC[Vp[sig]] + Yp[nu] HC[Yp[sig]]) VVV[mu,nu,sig];
+
+LScalarFermion331 = H0 (O331[3,1] ME[ll]/v3 HC[EL[ll]].EL[ll] + O331[2,1] Ml[ll]/v2 HC[LL[ll]].LL[ll]) - I H2 (U331[3,2] ME[ll]/v3 HC[EL[ll]].EL[ll]) - I H3 (U331[3,3] ME[ll]/v3 HC[EL[ll]].EL[ll]) - I H2 (U331[1,2] Md[q]/v1 HC[d[q]].d[q] + U331[2,2] Mu[q]/v2 HC[u[q]].u[q]) - I H3 (U331[1,3] Md[q]/v1 HC[d[q]].d[q] + U331[2,3] Mu[q]/v2 HC[u[q]].u[q]);
+
+LTot := LGaugeSelf331;

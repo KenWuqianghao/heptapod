@@ -1,0 +1,9 @@
+{
+  "original_model_name": "GeneralU1_gen",
+  "anon_model_name": "ANON-MODEL",
+  "information_blocks_removed": 1,
+  "prose_values_scrubbed": 20,
+  "sha256_original": "85d538b28394448dba064c00e18d940c0a92d00987678b4a3637bc9998ee7c4e",
+  "sha256_sanitized": "190b4935938de0ecf330f578a748f7335a2e5c558db78eca448549120387658c",
+  "blindness_scope": "blank slate w.r.t. paper, authors, model name, comments and prose labels \u2014 NOT w.r.t. field/parameter symbol names, which are kept so the reviewer can map the reconstruction back"
+}

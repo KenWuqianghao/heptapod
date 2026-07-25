@@ -1,0 +1,165 @@
+
+
+
+M$ModelName = "ANON-MODEL";
+
+
+M$InteractionOrderHierarchy = {{QCD, 1}, {QED, 2}, {NP, 1}};
+
+FeynmanGauge = True;
+
+M$Parameters = {
+  VeN1 == {
+    ParameterType -> External,
+    Value -> 1.0,
+    ComplexParameter -> False,
+    BlockName -> NUMIXING,
+    OrderBlock -> 1,
+    TeX -> "Subscript[V,eN1]",
+    Description -> ""
+  },
+  VeN2 == {
+    ParameterType -> External,
+    Value -> 0.0,
+    ComplexParameter -> False,
+    BlockName -> NUMIXING,
+    OrderBlock -> 2,
+    TeX -> "Subscript[V,eN2]",
+    Description -> ""
+  },
+  VeN3 == {
+    ParameterType -> External,
+    Value -> 0.0,
+    ComplexParameter -> False,
+    BlockName -> NUMIXING,
+    OrderBlock -> 3,
+    TeX -> "Subscript[V,eN3]",
+    Description -> ""
+  },
+  VmuN1 == {
+    ParameterType -> External,
+    Value -> 0.0,
+    ComplexParameter -> False,
+    BlockName -> NUMIXING,
+    OrderBlock -> 4,
+    TeX -> "Subscript[V,muN1]",
+    Description -> ""
+  },
+  VmuN2 == {
+    ParameterType -> External,
+    Value -> 1.0,
+    ComplexParameter -> False,
+    BlockName -> NUMIXING,
+    OrderBlock -> 5,
+    TeX -> "Subscript[V,muN2]",
+    Description -> ""
+  },
+  VmuN3 == {
+    ParameterType -> External,
+    Value -> 0.0,
+    ComplexParameter -> False,
+    BlockName -> NUMIXING,
+    OrderBlock -> 6,
+    TeX -> "Subscript[V,muN3]",
+    Description -> ""
+  },
+  VtaN1 == {
+    ParameterType -> External,
+    Value -> 0.0,
+    ComplexParameter -> False,
+    BlockName -> NUMIXING,
+    OrderBlock -> 7,
+    TeX -> "Subscript[V,taN1]",
+    Description -> ""
+  },
+  VtaN2 == {
+    ParameterType -> External,
+    Value -> 0.0,
+    ComplexParameter -> False,
+    BlockName -> NUMIXING,
+    OrderBlock -> 8,
+    TeX -> "Subscript[V,taN2]",
+    Description -> ""
+  },
+  VtaN3 == {
+    ParameterType -> External,
+    Value -> 1.0,
+    ComplexParameter -> False,
+    BlockName -> NUMIXING,
+    OrderBlock -> 9,
+    TeX -> "Subscript[V,taN3]",
+    Description -> ""
+  },
+  gN == {
+    ParameterType -> Internal,
+    ComplexParameter -> False,
+    InteractionOrder -> {NP, 1},
+    Definitions -> {gN -> ee/sw},
+    TeX -> "Subscript[g,N]",
+    Description -> ""
+  }
+};
+
+M$ClassesDescription = {
+  F[131] == {
+    ClassName -> N1,
+    SelfConjugate -> True,
+    Mass -> {mN1, 300.},
+    Width -> {WN1, 0.303},
+    QuantumNumbers -> {Q -> 0, Y -> 0},
+    PDG -> 9900012,
+    ParticleName -> "N1",
+    FullName -> "",
+    PropagatorLabel -> "N1",
+    PropagatorType -> Straight,
+    PropagatorArrow -> False
+  },
+  F[132] == {
+    ClassName -> N2,
+    SelfConjugate -> True,
+    Mass -> {mN2, 500.},
+    Width -> {WN2, 1.50},
+    QuantumNumbers -> {Q -> 0, Y -> 0},
+    PDG -> 9900014,
+    ParticleName -> "N2",
+    FullName -> "",
+    PropagatorLabel -> "N2",
+    PropagatorType -> Straight,
+    PropagatorArrow -> False
+  },
+  F[133] == {
+    ClassName -> N3,
+    SelfConjugate -> True,
+    Mass -> {mN3, 1000.},
+    Width -> {WN3, 12.3},
+    QuantumNumbers -> {Q -> 0, Y -> 0},
+    PDG -> 9900016,
+    ParticleName -> "N3",
+    FullName -> "",
+    PropagatorLabel -> "N3",
+    PropagatorType -> Straight,
+    PropagatorArrow -> False
+  }
+};
+
+LNKin := I/2 N1bar[s1].Ga[v,s1,s2].del[N1[s2],v] - 1/2 mN1 N1bar[s1] N1[s1] + I/2 N2bar[s1].Ga[v,s1,s2].del[N2[s2],v] - 1/2 mN2 N2bar[s1] N2[s1] + I/2 N3bar[s1].Ga[v,s1,s2].del[N3[s2],v] - 1/2 mN3 N3bar[s1] N3[s1];
+
+LNCCbare := gN/Sqrt[2]*(VeN1*N1bar.W[m].ProjM[m].e + VmuN1*N1bar.W[m].ProjM[m].mu + VtaN1*N1bar.W[m].ProjM[m].ta) + gN/Sqrt[2]*(VeN2*N2bar.W[m].ProjM[m].e + VmuN2*N2bar.W[m].ProjM[m].mu + VtaN2*N2bar.W[m].ProjM[m].ta) + gN/Sqrt[2]*(VeN3*N3bar.W[m].ProjM[m].e + VmuN3*N3bar.W[m].ProjM[m].mu + VtaN3*N3bar.W[m].ProjM[m].ta);
+
+LNCC := LNCCbare + HC[LNCCbare];
+
+LNNCBare := 1/2*gN/cw*(VeN1*N1bar.Z[m].ProjM[m].ve + VmuN1*N1bar.Z[m].ProjM[m].vm + VtaN1*N1bar.Z[m].ProjM[m].vt) + 1/2*gN/cw*(VeN2*N2bar.Z[m].ProjM[m].ve + VmuN2*N2bar.Z[m].ProjM[m].vm + VtaN2*N2bar.Z[m].ProjM[m].vt) + 1/2*gN/cw*(VeN3*N3bar.Z[m].ProjM[m].ve + VmuN3*N3bar.Z[m].ProjM[m].vm + VtaN3*N3bar.Z[m].ProjM[m].vt);
+
+LNNC := LNNCBare + HC[LNNCBare];
+
+LNHbare := -gN*mN1/(2*MW)*(VeN1*N1bar.ProjM.ve H + VmuN1*N1bar.ProjM.vm H + VtaN1*N1bar.ProjM.vt H) - gN*mN2/(2*MW)*(VeN2*N2bar.ProjM.ve H + VmuN2*N2bar.ProjM.vm H + VtaN2*N2bar.ProjM.vt H) - gN*mN3/(2*MW)*(VeN3*N3bar.ProjM.ve H + VmuN3*N3bar.ProjM.vm H + VtaN3*N3bar.ProjM.vt H);
+
+LNH := LNHbare + HC[LNHbare];
+
+LNGbare := I*gN*mN1/(2*MW)*(VeN1*vebar.ProjP.N1 G0 + VmuN1*vmbar.ProjP.N1 G0 + VtaN1*vtbar.ProjP.N1 G0) + I*gN*mN2/(2*MW)*(VeN2*vebar.ProjP.N2 G0 + VmuN2*vmbar.ProjP.N2 G0 + VtaN2*vtbar.ProjP.N2 G0) + I*gN*mN3/(2*MW)*(VeN3*vebar.ProjP.N3 G0 + VmuN3*vmbar.ProjP.N3 G0 + VtaN3*vtbar.ProjP.N3 G0) + I*gN*mN1/(Sqrt[2]*MW)*(VeN1*ebar.ProjP.N1 GPbar + VmuN1*mubar.ProjP.N1 GPbar + VtaN1*tabar.ProjP.N1 GPbar) + I*gN*mN2/(Sqrt[2]*MW)*(VeN2*ebar.ProjP.N2 GPbar + VmuN2*mubar.ProjP.N2 GPbar + VtaN2*tabar.ProjP.N2 GPbar) + I*gN*mN3/(Sqrt[2]*MW)*(VeN3*ebar.ProjP.N3 GPbar + VmuN3*mubar.ProjP.N3 GPbar + VtaN3*tabar.ProjP.N3 GPbar);
+
+LNG := LNGbare + HC[LNGbare];
+
+LN := LNKin + LNCC + LNNC + LNH + LNG;
+
+LFull := LSM + LN;

@@ -1,0 +1,9 @@
+{
+  "original_model_name": "Sextets_gen",
+  "anon_model_name": "ANON-MODEL",
+  "information_blocks_removed": 1,
+  "prose_values_scrubbed": 27,
+  "sha256_original": "ef202a603123a58b4aec2dc6cb74206c5e6247cbdc6af9c0930128891ec814e7",
+  "sha256_sanitized": "169193ae77e0222691b3e1bb126e1aea37721df0965fb58c0f58b37537518e05",
+  "blindness_scope": "blank slate w.r.t. paper, authors, model name, comments and prose labels \u2014 NOT w.r.t. field/parameter symbol names, which are kept so the reviewer can map the reconstruction back"
+}

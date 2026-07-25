@@ -1,0 +1,9 @@
+{
+  "original_model_name": "pNG_gen",
+  "anon_model_name": "ANON-MODEL",
+  "information_blocks_removed": 1,
+  "prose_values_scrubbed": 12,
+  "sha256_original": "3e3fd0b94dab6298718ab9344959622bcb55630f0f72ed64ebac025ee095a50f",
+  "sha256_sanitized": "a8f5b20c7264d43f3e5c73a57b5c41208310dbd4f92a3cc1026c60506a080aae",
+  "blindness_scope": "blank slate w.r.t. paper, authors, model name, comments and prose labels \u2014 NOT w.r.t. field/parameter symbol names, which are kept so the reviewer can map the reconstruction back"
+}

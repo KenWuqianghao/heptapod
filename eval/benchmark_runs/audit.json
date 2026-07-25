@@ -1,0 +1,798 @@
+{
+  "schema": "audit-1.0",
+  "created": "2026-07-25T01:44:33+00:00",
+  "events": [
+    {
+      "seq": 1,
+      "ts": "2026-07-25T01:44:33+00:00",
+      "stage": "reverse_reconstruct",
+      "status": "ok",
+      "summary": "blank-slate reconstruction of topBSM_gen",
+      "data": {
+        "seconds": 96.4,
+        "error": null
+      }
+    },
+    {
+      "seq": 2,
+      "ts": "2026-07-25T01:46:15+00:00",
+      "stage": "reverse_crosscheck",
+      "status": "ok",
+      "summary": "paper cross-check of topBSM_gen",
+      "data": {
+        "seconds": 102.2,
+        "error": null
+      }
+    },
+    {
+      "seq": 3,
+      "ts": "2026-07-25T01:46:22+00:00",
+      "stage": "reverse_package",
+      "status": "ok",
+      "summary": "review package for topBSM_gen",
+      "data": {
+        "review": "topBSM/review/REVIEW.pdf",
+        "pdf_error": null
+      }
+    },
+    {
+      "seq": 4,
+      "ts": "2026-07-25T01:48:01+00:00",
+      "stage": "reverse_reconstruct",
+      "status": "ok",
+      "summary": "blank-slate reconstruction of ChernSimonsPortal_gen",
+      "data": {
+        "seconds": 98.7,
+        "error": null
+      }
+    },
+    {
+      "seq": 5,
+      "ts": "2026-07-25T01:49:32+00:00",
+      "stage": "reverse_crosscheck",
+      "status": "ok",
+      "summary": "paper cross-check of ChernSimonsPortal_gen",
+      "data": {
+        "seconds": 91.4,
+        "error": null
+      }
+    },
+    {
+      "seq": 6,
+      "ts": "2026-07-25T01:49:41+00:00",
+      "stage": "reverse_package",
+      "status": "ok",
+      "summary": "review package for ChernSimonsPortal_gen",
+      "data": {
+        "review": "ChernSimonsPortal/review/REVIEW.pdf",
+        "pdf_error": null
+      }
+    },
+    {
+      "seq": 7,
+      "ts": "2026-07-25T01:50:48+00:00",
+      "stage": "reverse_reconstruct",
+      "status": "ok",
+      "summary": "blank-slate reconstruction of DMsimp_gen",
+      "data": {
+        "seconds": 66.9,
+        "error": null
+      }
+    },
+    {
+      "seq": 8,
+      "ts": "2026-07-25T01:52:34+00:00",
+      "stage": "reverse_crosscheck",
+      "status": "ok",
+      "summary": "paper cross-check of DMsimp_gen",
+      "data": {
+        "seconds": 105.2,
+        "error": null
+      }
+    },
+    {
+      "seq": 9,
+      "ts": "2026-07-25T01:52:42+00:00",
+      "stage": "reverse_package",
+      "status": "ok",
+      "summary": "review package for DMsimp_gen",
+      "data": {
+        "review": "DMsimp/review/REVIEW.pdf",
+        "pdf_error": null
+      }
+    },
+    {
+      "seq": 10,
+      "ts": "2026-07-25T01:53:55+00:00",
+      "stage": "reverse_reconstruct",
+      "status": "ok",
+      "summary": "blank-slate reconstruction of HeavyN_gen",
+      "data": {
+        "seconds": 72.1,
+        "error": null
+      }
+    },
+    {
+      "seq": 11,
+      "ts": "2026-07-25T01:55:31+00:00",
+      "stage": "reverse_crosscheck",
+      "status": "ok",
+      "summary": "paper cross-check of HeavyN_gen",
+      "data": {
+        "seconds": 95.9,
+        "error": null
+      }
+    },
+    {
+      "seq": 12,
+      "ts": "2026-07-25T01:55:37+00:00",
+      "stage": "reverse_package",
+      "status": "ok",
+      "summary": "review package for HeavyN_gen",
+      "data": {
+        "review": "HeavyN/review/REVIEW.pdf",
+        "pdf_error": null
+      }
+    },
+    {
+      "seq": 13,
+      "ts": "2026-07-25T01:57:22+00:00",
+      "stage": "reverse_reconstruct",
+      "status": "ok",
+      "summary": "blank-slate reconstruction of Monotops_gen",
+      "data": {
+        "seconds": 105.9,
+        "error": null
+      }
+    },
+    {
+      "seq": 14,
+      "ts": "2026-07-25T01:59:19+00:00",
+      "stage": "reverse_crosscheck",
+      "status": "ok",
+      "summary": "paper cross-check of Monotops_gen",
+      "data": {
+        "seconds": 116.7,
+        "error": null
+      }
+    },
+    {
+      "seq": 15,
+      "ts": "2026-07-25T01:59:25+00:00",
+      "stage": "reverse_package",
+      "status": "ok",
+      "summary": "review package for Monotops_gen",
+      "data": {
+        "review": "Monotops/review/REVIEW.pdf",
+        "pdf_error": null
+      }
+    },
+    {
+      "seq": 16,
+      "ts": "2026-07-25T02:00:45+00:00",
+      "stage": "reverse_reconstruct",
+      "status": "ok",
+      "summary": "blank-slate reconstruction of pNG_gen",
+      "data": {
+        "seconds": 80.5,
+        "error": null
+      }
+    },
+    {
+      "seq": 17,
+      "ts": "2026-07-25T02:02:57+00:00",
+      "stage": "reverse_crosscheck",
+      "status": "ok",
+      "summary": "paper cross-check of pNG_gen",
+      "data": {
+        "seconds": 131.8,
+        "error": null
+      }
+    },
+    {
+      "seq": 18,
+      "ts": "2026-07-25T02:03:02+00:00",
+      "stage": "reverse_package",
+      "status": "ok",
+      "summary": "review package for pNG_gen",
+      "data": {
+        "review": "pNG/review/REVIEW.pdf",
+        "pdf_error": null
+      }
+    },
+    {
+      "seq": 19,
+      "ts": "2026-07-25T02:04:48+00:00",
+      "stage": "reverse_reconstruct",
+      "status": "ok",
+      "summary": "blank-slate reconstruction of Sextets_gen",
+      "data": {
+        "seconds": 105.9,
+        "error": null
+      }
+    },
+    {
+      "seq": 20,
+      "ts": "2026-07-25T02:07:00+00:00",
+      "stage": "reverse_crosscheck",
+      "status": "ok",
+      "summary": "paper cross-check of Sextets_gen",
+      "data": {
+        "seconds": 131.7,
+        "error": null
+      }
+    },
+    {
+      "seq": 21,
+      "ts": "2026-07-25T02:07:05+00:00",
+      "stage": "reverse_package",
+      "status": "ok",
+      "summary": "review package for Sextets_gen",
+      "data": {
+        "review": "Sextets/review/REVIEW.pdf",
+        "pdf_error": null
+      }
+    },
+    {
+      "seq": 22,
+      "ts": "2026-07-25T02:08:33+00:00",
+      "stage": "reverse_reconstruct",
+      "status": "ok",
+      "summary": "blank-slate reconstruction of SMWeinberg_gen",
+      "data": {
+        "seconds": 88.2,
+        "error": null
+      }
+    },
+    {
+      "seq": 23,
+      "ts": "2026-07-25T02:10:45+00:00",
+      "stage": "reverse_crosscheck",
+      "status": "ok",
+      "summary": "paper cross-check of SMWeinberg_gen",
+      "data": {
+        "seconds": 131.7,
+        "error": null
+      }
+    },
+    {
+      "seq": 24,
+      "ts": "2026-07-25T02:10:50+00:00",
+      "stage": "reverse_package",
+      "status": "ok",
+      "summary": "review package for SMWeinberg_gen",
+      "data": {
+        "review": "SMWeinberg/review/REVIEW.pdf",
+        "pdf_error": null
+      }
+    },
+    {
+      "seq": 25,
+      "ts": "2026-07-25T02:11:51+00:00",
+      "stage": "reverse_reconstruct",
+      "status": "ok",
+      "summary": "blank-slate reconstruction of Top-Philic-Zprime_gen",
+      "data": {
+        "seconds": 61.1,
+        "error": null
+      }
+    },
+    {
+      "seq": 26,
+      "ts": "2026-07-25T02:13:20+00:00",
+      "stage": "reverse_crosscheck",
+      "status": "ok",
+      "summary": "paper cross-check of Top-Philic-Zprime_gen",
+      "data": {
+        "seconds": 89.4,
+        "error": null
+      }
+    },
+    {
+      "seq": 27,
+      "ts": "2026-07-25T02:13:25+00:00",
+      "stage": "reverse_package",
+      "status": "ok",
+      "summary": "review package for Top-Philic-Zprime_gen",
+      "data": {
+        "review": "Top-Philic-Zprime/review/REVIEW.pdf",
+        "pdf_error": null
+      }
+    },
+    {
+      "seq": 28,
+      "ts": "2026-07-25T02:14:47+00:00",
+      "stage": "reverse_reconstruct",
+      "status": "ok",
+      "summary": "blank-slate reconstruction of Triplets_gen",
+      "data": {
+        "seconds": 81.5,
+        "error": null
+      }
+    },
+    {
+      "seq": 29,
+      "ts": "2026-07-25T02:16:24+00:00",
+      "stage": "reverse_crosscheck",
+      "status": "ok",
+      "summary": "paper cross-check of Triplets_gen",
+      "data": {
+        "seconds": 97.2,
+        "error": null
+      }
+    },
+    {
+      "seq": 30,
+      "ts": "2026-07-25T02:16:28+00:00",
+      "stage": "reverse_package",
+      "status": "ok",
+      "summary": "review package for Triplets_gen",
+      "data": {
+        "review": "Triplets/review/REVIEW.pdf",
+        "pdf_error": null
+      }
+    },
+    {
+      "seq": 31,
+      "ts": "2026-07-25T02:18:03+00:00",
+      "stage": "reverse_reconstruct",
+      "status": "ok",
+      "summary": "blank-slate reconstruction of VLQ_gen",
+      "data": {
+        "seconds": 94.3,
+        "error": null
+      }
+    },
+    {
+      "seq": 32,
+      "ts": "2026-07-25T02:20:02+00:00",
+      "stage": "reverse_crosscheck",
+      "status": "ok",
+      "summary": "paper cross-check of VLQ_gen",
+      "data": {
+        "seconds": 119.2,
+        "error": null
+      }
+    },
+    {
+      "seq": 33,
+      "ts": "2026-07-25T02:20:08+00:00",
+      "stage": "reverse_package",
+      "status": "ok",
+      "summary": "review package for VLQ_gen",
+      "data": {
+        "review": "VLQ/review/REVIEW.pdf",
+        "pdf_error": null
+      }
+    },
+    {
+      "seq": 34,
+      "ts": "2026-07-25T02:21:47+00:00",
+      "stage": "reverse_reconstruct",
+      "status": "ok",
+      "summary": "blank-slate reconstruction of LeptoQuark_gen",
+      "data": {
+        "seconds": 99.5,
+        "error": null
+      }
+    },
+    {
+      "seq": 35,
+      "ts": "2026-07-25T02:23:31+00:00",
+      "stage": "reverse_crosscheck",
+      "status": "ok",
+      "summary": "paper cross-check of LeptoQuark_gen",
+      "data": {
+        "seconds": 104.0,
+        "error": null
+      }
+    },
+    {
+      "seq": 36,
+      "ts": "2026-07-25T02:23:35+00:00",
+      "stage": "reverse_package",
+      "status": "ok",
+      "summary": "review package for LeptoQuark_gen",
+      "data": {
+        "review": "LeptoQuark/review/REVIEW.md",
+        "pdf_error": "pandoc exit 43: Error producing PDF.\n! Undefined control sequence.\nl.301 \\beta^L_{23}=\\betaL"
+      }
+    },
+    {
+      "seq": 37,
+      "ts": "2026-07-25T02:25:01+00:00",
+      "stage": "reverse_reconstruct",
+      "status": "ok",
+      "summary": "blank-slate reconstruction of Wprime_gen",
+      "data": {
+        "seconds": 86.1,
+        "error": null
+      }
+    },
+    {
+      "seq": 38,
+      "ts": "2026-07-25T02:26:48+00:00",
+      "stage": "reverse_crosscheck",
+      "status": "ok",
+      "summary": "paper cross-check of Wprime_gen",
+      "data": {
+        "seconds": 107.1,
+        "error": null
+      }
+    },
+    {
+      "seq": 39,
+      "ts": "2026-07-25T02:26:52+00:00",
+      "stage": "reverse_package",
+      "status": "ok",
+      "summary": "review package for Wprime_gen",
+      "data": {
+        "review": "Wprime/review/REVIEW.pdf",
+        "pdf_error": null
+      }
+    },
+    {
+      "seq": 40,
+      "ts": "2026-07-25T02:28:53+00:00",
+      "stage": "reverse_reconstruct",
+      "status": "ok",
+      "summary": "blank-slate reconstruction of HiggsCharacterisation_gen",
+      "data": {
+        "seconds": 121.1,
+        "error": null
+      }
+    },
+    {
+      "seq": 41,
+      "ts": "2026-07-25T02:31:53+00:00",
+      "stage": "reverse_crosscheck",
+      "status": "ok",
+      "summary": "paper cross-check of HiggsCharacterisation_gen",
+      "data": {
+        "seconds": 179.2,
+        "error": null
+      }
+    },
+    {
+      "seq": 42,
+      "ts": "2026-07-25T02:31:57+00:00",
+      "stage": "reverse_package",
+      "status": "ok",
+      "summary": "review package for HiggsCharacterisation_gen",
+      "data": {
+        "review": "HiggsCharacterisation/review/REVIEW.pdf",
+        "pdf_error": null
+      }
+    },
+    {
+      "seq": 43,
+      "ts": "2026-07-25T02:33:53+00:00",
+      "stage": "reverse_reconstruct",
+      "status": "ok",
+      "summary": "blank-slate reconstruction of NJLComposite_gen",
+      "data": {
+        "seconds": 116.6,
+        "error": null
+      }
+    },
+    {
+      "seq": 44,
+      "ts": "2026-07-25T02:35:48+00:00",
+      "stage": "reverse_crosscheck",
+      "status": "ok",
+      "summary": "paper cross-check of NJLComposite_gen",
+      "data": {
+        "seconds": 114.5,
+        "error": null
+      }
+    },
+    {
+      "seq": 45,
+      "ts": "2026-07-25T02:35:51+00:00",
+      "stage": "reverse_package",
+      "status": "ok",
+      "summary": "review package for NJLComposite_gen",
+      "data": {
+        "review": "NJLComposite/review/REVIEW.pdf",
+        "pdf_error": null
+      }
+    },
+    {
+      "seq": 46,
+      "ts": "2026-07-25T02:37:03+00:00",
+      "stage": "reverse_reconstruct",
+      "status": "ok",
+      "summary": "blank-slate reconstruction of final",
+      "data": {
+        "seconds": 72.0,
+        "error": null
+      }
+    },
+    {
+      "seq": 47,
+      "ts": "2026-07-25T02:38:51+00:00",
+      "stage": "reverse_crosscheck",
+      "status": "ok",
+      "summary": "paper cross-check of final",
+      "data": {
+        "seconds": 108.1,
+        "error": null
+      }
+    },
+    {
+      "seq": 48,
+      "ts": "2026-07-25T02:38:55+00:00",
+      "stage": "reverse_package",
+      "status": "ok",
+      "summary": "review package for final",
+      "data": {
+        "review": "EffLRSM/review/REVIEW.pdf",
+        "pdf_error": null
+      }
+    },
+    {
+      "seq": 49,
+      "ts": "2026-07-25T02:40:24+00:00",
+      "stage": "reverse_reconstruct",
+      "status": "ok",
+      "summary": "blank-slate reconstruction of final",
+      "data": {
+        "seconds": 89.5,
+        "error": null
+      }
+    },
+    {
+      "seq": 50,
+      "ts": "2026-07-25T02:42:12+00:00",
+      "stage": "reverse_crosscheck",
+      "status": "ok",
+      "summary": "paper cross-check of final",
+      "data": {
+        "seconds": 107.3,
+        "error": null
+      }
+    },
+    {
+      "seq": 51,
+      "ts": "2026-07-25T02:42:15+00:00",
+      "stage": "reverse_package",
+      "status": "ok",
+      "summary": "review package for final",
+      "data": {
+        "review": "GeneralU1/review/REVIEW.pdf",
+        "pdf_error": null
+      }
+    },
+    {
+      "seq": 52,
+      "ts": "2026-07-25T02:43:36+00:00",
+      "stage": "reverse_reconstruct",
+      "status": "ok",
+      "summary": "blank-slate reconstruction of final",
+      "data": {
+        "seconds": 80.7,
+        "error": null
+      }
+    },
+    {
+      "seq": 53,
+      "ts": "2026-07-25T02:45:18+00:00",
+      "stage": "reverse_crosscheck",
+      "status": "ok",
+      "summary": "paper cross-check of final",
+      "data": {
+        "seconds": 102.2,
+        "error": null
+      }
+    },
+    {
+      "seq": 54,
+      "ts": "2026-07-25T02:45:21+00:00",
+      "stage": "reverse_package",
+      "status": "ok",
+      "summary": "review package for final",
+      "data": {
+        "review": "MDMmodel/review/REVIEW.md",
+        "pdf_error": "pandoc exit 43: Error producing PDF.\n! Undefined control sequence.\nl.554 ...ic term, schematically \\(-\\bar T \\slashed"
+      }
+    },
+    {
+      "seq": 55,
+      "ts": "2026-07-25T02:46:44+00:00",
+      "stage": "reverse_reconstruct",
+      "status": "ok",
+      "summary": "blank-slate reconstruction of final",
+      "data": {
+        "seconds": 83.0,
+        "error": null
+      }
+    },
+    {
+      "seq": 56,
+      "ts": "2026-07-25T02:48:41+00:00",
+      "stage": "reverse_crosscheck",
+      "status": "ok",
+      "summary": "paper cross-check of final",
+      "data": {
+        "seconds": 116.1,
+        "error": null
+      }
+    },
+    {
+      "seq": 57,
+      "ts": "2026-07-25T02:48:44+00:00",
+      "stage": "reverse_package",
+      "status": "ok",
+      "summary": "review package for final",
+      "data": {
+        "review": "368sextets/review/REVIEW.md",
+        "pdf_error": "pandoc exit 43: Error producing PDF.\n! Missing { inserted.\n<to be read again> \n                   \\mskip \nl.600 \\(\\bar\\Psi_q(i\\!\\not\\!"
+      }
+    },
+    {
+      "seq": 58,
+      "ts": "2026-07-25T02:49:53+00:00",
+      "stage": "reverse_reconstruct",
+      "status": "ok",
+      "summary": "blank-slate reconstruction of final",
+      "data": {
+        "seconds": 69.2,
+        "error": null
+      }
+    },
+    {
+      "seq": 59,
+      "ts": "2026-07-25T02:51:24+00:00",
+      "stage": "reverse_crosscheck",
+      "status": "ok",
+      "summary": "paper cross-check of final",
+      "data": {
+        "seconds": 90.5,
+        "error": null
+      }
+    },
+    {
+      "seq": 60,
+      "ts": "2026-07-25T02:51:27+00:00",
+      "stage": "reverse_package",
+      "status": "ok",
+      "summary": "review package for final",
+      "data": {
+        "review": "MSSMD/review/REVIEW.pdf",
+        "pdf_error": null
+      }
+    },
+    {
+      "seq": 61,
+      "ts": "2026-07-25T03:06:27+00:00",
+      "stage": "reverse_reconstruct",
+      "status": "fail",
+      "summary": "blank-slate reconstruction of final",
+      "data": {
+        "seconds": 900.1,
+        "error": "timed out after 900s"
+      }
+    },
+    {
+      "seq": 62,
+      "ts": "2026-07-25T03:06:30+00:00",
+      "stage": "reverse_package",
+      "status": "ok",
+      "summary": "review package for final",
+      "data": {
+        "review": "331/review/REVIEW.pdf",
+        "pdf_error": null
+      }
+    },
+    {
+      "seq": 63,
+      "ts": "2026-07-25T03:46:25+00:00",
+      "stage": "reverse_reconstruct",
+      "status": "fail",
+      "summary": "blank-slate reconstruction of final",
+      "data": {
+        "seconds": 2394.2,
+        "error": "engine exit 1, no output produced"
+      }
+    },
+    {
+      "seq": 64,
+      "ts": "2026-07-25T03:46:31+00:00",
+      "stage": "reverse_package",
+      "status": "ok",
+      "summary": "review package for final",
+      "data": {
+        "review": "B-L-SM/review/REVIEW.pdf",
+        "pdf_error": null
+      }
+    },
+    {
+      "seq": 65,
+      "ts": "2026-07-25T04:16:41+00:00",
+      "stage": "reverse_reconstruct",
+      "status": "ok",
+      "summary": "blank-slate reconstruction of final",
+      "data": {
+        "seconds": 1809.9,
+        "error": null
+      }
+    },
+    {
+      "seq": 66,
+      "ts": "2026-07-25T06:42:06+00:00",
+      "stage": "reverse_crosscheck",
+      "status": "fail",
+      "summary": "paper cross-check of final",
+      "data": {
+        "seconds": 8724.7,
+        "error": "engine exit 1, no output produced"
+      }
+    },
+    {
+      "seq": 67,
+      "ts": "2026-07-25T06:53:20+00:00",
+      "stage": "reverse_package",
+      "status": "ok",
+      "summary": "review package for final",
+      "data": {
+        "review": "CHEIDI/review/REVIEW.pdf",
+        "pdf_error": null
+      }
+    },
+    {
+      "seq": 68,
+      "ts": "2026-07-25T07:53:21+00:00",
+      "stage": "reverse_reconstruct",
+      "status": "fail",
+      "summary": "blank-slate reconstruction of final",
+      "data": {
+        "seconds": 3600.9,
+        "error": "engine exit 1, no output produced"
+      }
+    },
+    {
+      "seq": 69,
+      "ts": "2026-07-25T07:53:24+00:00",
+      "stage": "reverse_package",
+      "status": "ok",
+      "summary": "review package for final",
+      "data": {
+        "review": "VLC_LN/review/REVIEW.pdf",
+        "pdf_error": null
+      }
+    },
+    {
+      "seq": 70,
+      "ts": "2026-07-25T07:54:37+00:00",
+      "stage": "reverse_reconstruct",
+      "status": "ok",
+      "summary": "blank-slate reconstruction of final",
+      "data": {
+        "seconds": 73.3,
+        "error": null
+      }
+    },
+    {
+      "seq": 71,
+      "ts": "2026-07-25T07:56:06+00:00",
+      "stage": "reverse_crosscheck",
+      "status": "ok",
+      "summary": "paper cross-check of final",
+      "data": {
+        "seconds": 88.8,
+        "error": null
+      }
+    },
+    {
+      "seq": 72,
+      "ts": "2026-07-25T07:56:11+00:00",
+      "stage": "reverse_package",
+      "status": "ok",
+      "summary": "review package for final",
+      "data": {
+        "review": "pSPSS/review/REVIEW.md",
+        "pdf_error": "pandoc exit 43: Error producing PDF.\n! Missing { inserted.\n<to be read again> \n                   \\mskip \nl.586 SPSS kinetic term \\(N_i^c i\\!\\not\\!"
+      }
+    }
+  ]
+}

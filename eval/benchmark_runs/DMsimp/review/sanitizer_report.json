@@ -1,0 +1,9 @@
+{
+  "original_model_name": "DMsimp_gen",
+  "anon_model_name": "ANON-MODEL",
+  "information_blocks_removed": 1,
+  "prose_values_scrubbed": 19,
+  "sha256_original": "b2330abd9b1473503c383f8b700bc820edf637bb8b55b2f6e0cbda66dcf23edb",
+  "sha256_sanitized": "e3d398b88fbe714243c7a4930210f92783849b86b3d03d979bc22d8eced86377",
+  "blindness_scope": "blank slate w.r.t. paper, authors, model name, comments and prose labels \u2014 NOT w.r.t. field/parameter symbol names, which are kept so the reviewer can map the reconstruction back"
+}

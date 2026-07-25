@@ -1,0 +1,9 @@
+{
+  "original_model_name": "HeavyN_gen",
+  "anon_model_name": "ANON-MODEL",
+  "information_blocks_removed": 1,
+  "prose_values_scrubbed": 13,
+  "sha256_original": "39c0e9ccf44081478f9df1ba1e60721ea4173ed723c203e708bec68bb5dc757d",
+  "sha256_sanitized": "5c7a85d26476882062fda50d660c54d6529bbbdd25e2a8e21a12fdea3be66d1d",
+  "blindness_scope": "blank slate w.r.t. paper, authors, model name, comments and prose labels \u2014 NOT w.r.t. field/parameter symbol names, which are kept so the reviewer can map the reconstruction back"
+}

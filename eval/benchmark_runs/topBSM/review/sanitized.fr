@@ -1,0 +1,323 @@
+
+
+
+M$ModelName = "ANON-MODEL";
+
+
+M$InteractionOrderHierarchy = {{QS0, 8}, {QO0, 8}, {QS1, 8}, {QO1, 8}};
+
+FeynmanGauge = False;
+
+sertLight[t_] := 3/2 t (1 + (1 - t) ArcSin[1/Sqrt[t]]^2);
+
+serpLight[t_] := t ArcSin[1/Sqrt[t]]^2;
+
+sertHeavy[t_] := 3/2 t (1 + 1/4 (t - 1) (Log[(Sqrt[1 - t] + 1)/(1 - Sqrt[1 - t])] - I Pi)^2);
+
+serpHeavy[t_] := -1/4 t (Log[(Sqrt[1 - t] + 1)/(1 - Sqrt[1 - t])] - I Pi)^2;
+
+bjzeros = Table[N[BesselJZero[1, x]], {x, 1, 10}]
+
+M$Parameters = {
+  s0scalar == {
+    ParameterType -> External,
+    Value -> 1,
+    BlockName -> S0PARAMS,
+    InteractionOrder -> {QS0, 1},
+    ParameterName -> s0scalar,
+    TeX -> "Subscript[s0, scalar]",
+    Description -> ""
+  },
+  s0axial == {
+    ParameterType -> External,
+    Value -> 1,
+    BlockName -> S0PARAMS,
+    InteractionOrder -> {QS0, 1},
+    ParameterName -> s0axial,
+    TeX -> "Subscript[s0, axial]",
+    Description -> ""
+  },
+  s0fusionScalar == {
+    ParameterType -> Internal,
+    InteractionOrder -> {QS0, 1},
+    Definitions -> {s0fusionScalar :> If[NumericalValue[MS0] > 2 NumericalValue[MT], -s0scalar gs^2/(12 Pi^2 vev) sertHeavy[(2 MT/MS0)^2], -s0scalar gs^2/(12 Pi^2 vev) sertLight[(2 MT/MS0)^2]]},
+    TeX -> "Subscript[s0, fusionScalar]",
+    Description -> ""
+  },
+  s0fusionAxial == {
+    ParameterType -> Internal,
+    InteractionOrder -> {QS0, 1},
+    Definitions -> {s0fusionAxial :> If[NumericalValue[MS0] > 2 NumericalValue[MT], -s0axial gs^2/(8 Pi^2 vev) serpHeavy[(2 MT/MS0)^2], -s0axial gs^2/(8 Pi^2 vev) serpLight[(2 MT/MS0)^2]]},
+    TeX -> "Subscript[s0, fusionAxial]",
+    Description -> ""
+  },
+  WS0 == {
+    ParameterType -> Internal,
+    Definitions -> {WS0 :> If[NumericalValue[MS0] > 2 NumericalValue[MT], (3 MT^2 Sqrt[MS0^4 - 4 MS0^2 MT^2] (-4 MT^2 s0scalar^2 + MS0^2 (s0axial^2 + s0scalar^2)))/(8 Pi vev^2 MS0^3) + (MS0^3 Abs[s0fusionScalar]^2)/(8 Pi), (MS0^3 Abs[s0fusionScalar]^2)/(8 Pi)]},
+    Description -> ""
+  },
+  o0scalar == {
+    ParameterType -> External,
+    Value -> 1,
+    BlockName -> O0PARAMS,
+    InteractionOrder -> {QO0, 1},
+    ParameterName -> o0scalar,
+    TeX -> "Subscript[o0, scalar]",
+    Description -> ""
+  },
+  o0axial == {
+    ParameterType -> External,
+    Value -> 1,
+    BlockName -> O0PARAMS,
+    InteractionOrder -> {QO0, 1},
+    ParameterName -> o0axial,
+    TeX -> "Subscript[o0, axial]",
+    Description -> ""
+  },
+  o0fusionScalar == {
+    ParameterType -> Internal,
+    InteractionOrder -> {QO0, 1},
+    Definitions -> {o0fusionScalar :> If[NumericalValue[MO0] > 2 NumericalValue[MT], -o0scalar gs^2/(12 Pi^2 vev) sertHeavy[(2 MT/MO0)^2], -o0scalar gs^2/(12 Pi^2 vev) sertLight[(2 MT/MO0)^2]]},
+    TeX -> "Subscript[o0, fusionScalar]",
+    Description -> ""
+  },
+  o0fusionAxial == {
+    ParameterType -> Internal,
+    InteractionOrder -> {QO0, 1},
+    Definitions -> {o0fusionAxial :> If[NumericalValue[MO0] > 2 NumericalValue[MT], -o0axial gs^2/(8 Pi^2 vev) serpHeavy[(2 MT/MO0)^2], -o0axial gs^2/(8 Pi^2 vev) serpLight[(2 MT/MO0)^2]]},
+    TeX -> "Subscript[o0, fusionAxial]",
+    Description -> ""
+  },
+  WO0 == {
+    ParameterType -> Internal,
+    Definitions -> {WO0 :> If[NumericalValue[MO0] > 2 NumericalValue[MT], 1/6 (3 MT^2 Sqrt[MO0^4 - 4 MO0^2 MT^2] (-4 MT^2 o0scalar^2 + MO0^2 (o0axial^2 + o0scalar^2)))/(8 Pi vev^2 MO0^3) + 1/64 (MO0^3 Abs[o0fusionScalar]^2)/(8 Pi), 1/64 (MO0^3 Abs[o0fusionScalar]^2)/(8 Pi)]},
+    Description -> ""
+  },
+  s1uright == {
+    ParameterType -> External,
+    Value -> 1,
+    BlockName -> S1PARAMS,
+    InteractionOrder -> {QS1, 1},
+    ParameterName -> s1uright,
+    TeX -> "Subscript[s1, ur]",
+    Description -> ""
+  },
+  s1uleft == {
+    ParameterType -> External,
+    Value -> 1,
+    BlockName -> S1PARAMS,
+    InteractionOrder -> {QS1, 1},
+    ParameterName -> s1uleft,
+    TeX -> "Subscript[s1, ul]",
+    Description -> ""
+  },
+  s1dright == {
+    ParameterType -> External,
+    Value -> 1,
+    BlockName -> S1PARAMS,
+    InteractionOrder -> {QS1, 1},
+    ParameterName -> s1dright,
+    TeX -> "Subscript[s1, dr]",
+    Description -> ""
+  },
+  s1dleft == {
+    ParameterType -> External,
+    Value -> 1,
+    BlockName -> S1PARAMS,
+    InteractionOrder -> {QS1, 1},
+    ParameterName -> s1dleft,
+    TeX -> "Subscript[s1, dl]",
+    Description -> ""
+  },
+  s1eright == {
+    ParameterType -> External,
+    Value -> 1,
+    BlockName -> S1PARAMS,
+    InteractionOrder -> {QS1, 1},
+    ParameterName -> s1eright,
+    TeX -> "Subscript[s1, er]",
+    Description -> ""
+  },
+  s1eleft == {
+    ParameterType -> External,
+    Value -> 1,
+    BlockName -> S1PARAMS,
+    InteractionOrder -> {QS1, 1},
+    ParameterName -> s1eleft,
+    TeX -> "Subscript[s1, el]",
+    Description -> ""
+  },
+  s1nu == {
+    ParameterType -> External,
+    Value -> 1,
+    BlockName -> S1PARAMS,
+    InteractionOrder -> {QS1, 1},
+    ParameterName -> s1nu,
+    TeX -> "Subscript[s1, v]",
+    Description -> ""
+  },
+  WS1 == {
+    ParameterType -> Internal,
+    Definitions -> {WS1 -> 1/(288*cw^2*Pi*sw^2*MS1^3)*ee^2*(+9*MS1^4*s1nu^2 +2*MS1^4*(16*s1uright^2*sw^4 + s1uleft^2*(3 - 4*sw^2)^2) +6*MS1^4*(4*s1eright^2*sw^4 + s1eleft^2*(1 - 2*sw^2)^2) +2*MS1^4*(4*s1dright^2*sw^4 + s1dleft^2*(3 - 2*sw^2)^2) +Sqrt[MS1^4 - 4*MS1^2*MT^2]*(+MT^2*(-9*s1uleft^2 +24*s1uleft*(s1uleft - 3*s1uright)*sw^2 -16*(s1uleft^2 - 6*s1uleft*s1uright + s1uright^2)*sw^4) +MS1^2*(16*s1uright^2*sw^4 + s1uleft^2*(3 - 4*sw^2)^2)) +3*Sqrt[MS1^4 - 4*MS1^2*MTA^2]*(-MTA^2*(+s1eleft^2 -4*s1eleft*(s1eleft - 3*s1eright)*sw^2 +4*(s1eleft^2 - 6*s1eleft*s1eright + s1eright^2)*sw^4) +MS1^2*(4*s1eright^2*sw^4 + s1eleft^2*(1 - 2*sw^2)^2)) +Sqrt[-4*MB^2*MS1^2 + MS1^4]*(+MB^2*(-9*s1dleft^2 +12*s1dleft*(s1dleft - 3*s1dright)*sw^2 -4*(s1dleft^2 - 6*s1dleft*s1dright + s1dright^2)*sw^4) +MS1^2*(4*s1dright^2*sw^4 + s1dleft^2*(3 - 2*sw^2)^2)))},
+    Description -> ""
+  },
+  o1uright == {
+    ParameterType -> External,
+    Value -> 1,
+    BlockName -> O1PARAMS,
+    InteractionOrder -> {QO1, 1},
+    ParameterName -> o1uright,
+    TeX -> "Subscript[o1, ur]",
+    Description -> ""
+  },
+  o1uleft == {
+    ParameterType -> External,
+    Value -> 1,
+    BlockName -> O1PARAMS,
+    InteractionOrder -> {QO1, 1},
+    ParameterName -> o1uleft,
+    TeX -> "Subscript[o1, ul]",
+    Description -> ""
+  },
+  o1dright == {
+    ParameterType -> External,
+    Value -> 1,
+    BlockName -> O1PARAMS,
+    InteractionOrder -> {QO1, 1},
+    ParameterName -> o1dright,
+    TeX -> "Subscript[o1, dr]",
+    Description -> ""
+  },
+  o1dleft == {
+    ParameterType -> External,
+    Value -> 1,
+    BlockName -> O1PARAMS,
+    InteractionOrder -> {QO1, 1},
+    ParameterName -> o1dleft,
+    TeX -> "Subscript[o1, dl]",
+    Description -> ""
+  },
+  WO1 == {
+    ParameterType -> Internal,
+    Definitions -> {WO1 -> (gs^2/(48*Pi*MO1^3))*(+2*MO1^4*(o1dleft^2 + o1dright^2) +Sqrt[-4*MB^2*MO1^2 + MO1^4]*(MO1^2*(o1dleft^2 + o1dright^2) -MB^2*(o1dleft^2 - 6*o1dleft*o1dright + o1dright^2)) +2*MO1^4*(o1uleft^2 + o1uright^2) +Sqrt[MO1^4 - 4*MO1^2*MT^2]*(MO1^2*(o1uleft^2 + o1uright^2) -MT^2*(o1uleft^2 - 6*o1uleft*o1uright + o1uright^2)))},
+    Description -> ""
+  }
+};
+
+M$ClassesDescription = {
+  S[21] == {
+    ClassName -> S0,
+    SelfConjugate -> True,
+    Mass -> {MS0, 400},
+    Width -> {WS0, Internal},
+    QuantumNumbers -> {Q -> 0, Y -> 0},
+    PDG -> 6000045,
+    ParticleName -> "S0",
+    FullName -> "",
+    PropagatorLabel -> "S0",
+    PropagatorType -> D,
+    PropagatorArrow -> None
+  },
+  S[22] == {
+    ClassName -> O0,
+    SelfConjugate -> True,
+    Indices -> {Index[Gluon]},
+    Mass -> {MO0, 400},
+    Width -> {WO0, Internal},
+    QuantumNumbers -> {Q -> 0, Y -> 0},
+    PDG -> 6000046,
+    ParticleName -> "O0",
+    FullName -> "",
+    PropagatorLabel -> "O0",
+    PropagatorType -> D,
+    PropagatorArrow -> None
+  },
+  V[7] == {
+    ClassName -> S1,
+    SelfConjugate -> True,
+    Mass -> {MS1, 2000},
+    Width -> {WS1, Internal},
+    QuantumNumbers -> {Q -> 0, Y -> 0},
+    PDG -> 6000047,
+    ParticleName -> "S1",
+    FullName -> "",
+    PropagatorLabel -> "S1",
+    PropagatorType -> Sine,
+    PropagatorArrow -> None
+  },
+  V[8] == {
+    ClassName -> O1,
+    SelfConjugate -> True,
+    Indices -> {Index[Gluon]},
+    Mass -> {MO1, 2000},
+    Width -> {WO1, Internal},
+    QuantumNumbers -> {Q -> 0, Y -> 0},
+    PDG -> 6000048,
+    ParticleName -> "O1",
+    FullName -> "",
+    PropagatorLabel -> "O1",
+    PropagatorType -> Sine,
+    PropagatorArrow -> None
+  },
+  T[1] == {
+    ClassName -> S2,
+    SelfConjugate -> True,
+    Mass -> {MS2, 500},
+    Width -> {WS2, 2},
+    QuantumNumbers -> {Q -> 0, Y -> 0},
+    PDG -> 6000049,
+    ParticleName -> "S2",
+    FullName -> "",
+    PropagatorLabel -> "S2"
+  }
+};
+
+LS0top = s0scalar MT/vev S0 tbar.t + I s0axial MT/vev S0 tbar.Ga[5].t;
+
+LS0ggfusionScalar = -1/4 s0fusionScalar S0 FS[G,mu,nu,aa] FS[G,mu,nu,aa];
+
+LS0ggfusionAxial = -1/4 s0fusionAxial S0 FS[G,mu,nu,aa] Dual[FS][G,mu,nu,aa];
+
+LS0ggfusion = LS0ggfusionScalar + LS0ggfusionAxial;
+
+LS0 = LS0top + LS0ggfusion;
+
+LO0top = o0scalar MT/vev tbar.T[a].t O0[a] + I o0axial MT/vev tbar.Ga[5].T[a].t O0[a];
+
+LO0ggfusionScalar = -1/4 o0fusionScalar dSUN[aa,bb,cc] O0[aa] FS[G,mu,nu,bb] FS[G,mu,nu,cc];
+
+LO0ggfusionAxial = -1/4 o0fusionAxial dSUN[aa,bb,cc] O0[aa] FS[G,mu,nu,bb] Dual[FS][G,mu,nu,cc];
+
+LO0ggfusion = LO0ggfusionScalar + LO0ggfusionAxial;
+
+LO0 = LO0top + LO0ggfusion;
+
+ez = ee/(sw cw);
+
+ey = ee sw/cw;
+
+LS1ul = - s1uleft S1[mu] QLbar[sp1,1,ff,cc] Ga[mu,sp1,sp2] QL[sp2,1,ff,cc] * ez (-1/2 + sw^2 2/3);
+
+LS1dl = - s1dleft S1[mu] QLbar[sp1,2,ff,cc] Ga[mu,sp1,sp2] QL[sp2,2,ff,cc] * ez (1/2 - sw^2/3);
+
+LS1ur = - s1uright S1[mu] uRbar.Ga[mu].uR * ey*2/3;
+
+LS1dr = - s1dright S1[mu] dRbar.Ga[mu].dR * (-ey)/3;
+
+LS1el = - s1eleft S1[mu] LLbar[sp1,2,ff] Ga[mu,sp1,sp2] LL[sp2,2,ff] * ez (1/2 - sw^2);
+
+LS1nu = - s1nu S1[mu] LLbar[sp1,1,ff] Ga[mu,sp1,sp2] LL[sp2,1,ff] * (-ez)/2;
+
+LS1er = - s1eright S1[mu] lRbar.Ga[mu].lR * (-ey);
+
+LS1 = LS1ul + LS1dl + LS1ur + LS1dr + LS1el + LS1er + LS1nu;
+
+LO1ul = o1uleft gs O1[mu, a] QLbar[sp1,1,ff,cc1] Ga[mu,sp1,sp2] T[a,cc1,cc2] QL[sp2,1,ff,cc2];
+
+LO1dl = o1dleft gs O1[mu, a] QLbar[sp1,2,ff,cc1] Ga[mu,sp1,sp2] T[a,cc1,cc2] QL[sp2,2,ff,cc2];
+
+LO1ur = o1uright gs O1[mu, a] uRbar.Ga[mu].T[a].uR;
+
+LO1dr = o1dright gs O1[mu, a] dRbar.Ga[mu].T[a].dR;
+
+LO1 = LO1ul + LO1dl + LO1ur + LO1dr;

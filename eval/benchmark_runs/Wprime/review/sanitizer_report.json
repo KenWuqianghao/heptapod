@@ -1,0 +1,9 @@
+{
+  "original_model_name": "Wprime_gen",
+  "anon_model_name": "ANON-MODEL",
+  "information_blocks_removed": 1,
+  "prose_values_scrubbed": 9,
+  "sha256_original": "1a2ff6036f7e2773abf7197d747a3478bc0ce05217ac0187000622d70dcb480b",
+  "sha256_sanitized": "a1ea4b904b88f7527c6b5241de3f0c4b1c7a0342116038ff4c42864f0cfe4a4f",
+  "blindness_scope": "blank slate w.r.t. paper, authors, model name, comments and prose labels \u2014 NOT w.r.t. field/parameter symbol names, which are kept so the reviewer can map the reconstruction back"
+}

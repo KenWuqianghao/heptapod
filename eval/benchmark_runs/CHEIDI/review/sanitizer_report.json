@@ -1,0 +1,9 @@
+{
+  "original_model_name": "CHEIDI_gen",
+  "anon_model_name": "ANON-MODEL",
+  "information_blocks_removed": 1,
+  "prose_values_scrubbed": 9,
+  "sha256_original": "881da11632ad0a297c0ff34f75872277609ce6c0b14cbc17424c134853d8bd52",
+  "sha256_sanitized": "d2efa270ba268a339aa68e055730defd8c094c46bf1f53bfb8ee00a30b328dd0",
+  "blindness_scope": "blank slate w.r.t. paper, authors, model name, comments and prose labels \u2014 NOT w.r.t. field/parameter symbol names, which are kept so the reviewer can map the reconstruction back"
+}

@@ -1,0 +1,9 @@
+{
+  "original_model_name": "VLQ_gen",
+  "anon_model_name": "ANON-MODEL",
+  "information_blocks_removed": 1,
+  "prose_values_scrubbed": 29,
+  "sha256_original": "8a66f97ba736625dce88eb1469fc958a46f3bf68ced0698d631781c08c47c9ab",
+  "sha256_sanitized": "7e507c5b0b917b988bc66805ae8dbf1fd4c0e007e604e1d594a1f439c511dea1",
+  "blindness_scope": "blank slate w.r.t. paper, authors, model name, comments and prose labels \u2014 NOT w.r.t. field/parameter symbol names, which are kept so the reviewer can map the reconstruction back"
+}

@@ -1,0 +1,9 @@
+{
+  "original_model_name": "MSSMD_gen",
+  "anon_model_name": "ANON-MODEL",
+  "information_blocks_removed": 1,
+  "prose_values_scrubbed": 23,
+  "sha256_original": "046d226e367751c7f838cc7287504e6df721701013bb7afee05d107135d9e1de",
+  "sha256_sanitized": "714652bf2a0a00b9b80173ceb00ceb80f5205c9ccf01d46d7bc1e6c5ddb754cd",
+  "blindness_scope": "blank slate w.r.t. paper, authors, model name, comments and prose labels \u2014 NOT w.r.t. field/parameter symbol names, which are kept so the reviewer can map the reconstruction back"
+}

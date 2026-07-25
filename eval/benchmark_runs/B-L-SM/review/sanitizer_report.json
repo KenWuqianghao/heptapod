@@ -1,0 +1,9 @@
+{
+  "original_model_name": "B-L-SM_gen",
+  "anon_model_name": "ANON-MODEL",
+  "information_blocks_removed": 1,
+  "prose_values_scrubbed": 32,
+  "sha256_original": "22cc04ddc3f3674007885462a6621e62ad534214c40e1f2db699ee6fd735cf82",
+  "sha256_sanitized": "3a849fd06aebb83dcf246fafa598676144f2fbaa7cebf3bc87dce7a6840a8c5e",
+  "blindness_scope": "blank slate w.r.t. paper, authors, model name, comments and prose labels \u2014 NOT w.r.t. field/parameter symbol names, which are kept so the reviewer can map the reconstruction back"
+}

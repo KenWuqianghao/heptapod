@@ -1,0 +1,9 @@
+{
+  "original_model_name": "ChernSimonsPortal_gen",
+  "anon_model_name": "ANON-MODEL",
+  "information_blocks_removed": 1,
+  "prose_values_scrubbed": 3,
+  "sha256_original": "b1e5d3d6e2ec72bb1f5d467d467f859ece1de4e6b4b2d220bb71811fb309b42b",
+  "sha256_sanitized": "65307630151345d4f5a58e44aa1898df8eeb608c38621c36690443be903eb237",
+  "blindness_scope": "blank slate w.r.t. paper, authors, model name, comments and prose labels \u2014 NOT w.r.t. field/parameter symbol names, which are kept so the reviewer can map the reconstruction back"
+}

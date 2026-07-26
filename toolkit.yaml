@@ -46,6 +46,12 @@ bundles:
   analysis:
     deps: [numpy>=2.3.5, tqdm>=4.67.0, pylhe>=1.0.2]
 
+  # ── BSM / SUSY spectrum setup ────────────────────────────────────
+  # Pure python (no external HEP software): parse benchmark-point spectra
+  # and build Pythia decay-table fragments for BSM states the LHE leaves
+  # stable. The experimental model is carried by the inputs, not the tools.
+  bsm: {}
+
   # ── event generation ─────────────────────────────────────────────
   # Pythia + Sherpa share heavy MC dependencies.
   event_gen:
@@ -154,6 +160,33 @@ tools:
     description: Template-based resonance reconstruction tool for combining
       pre-selected particle arrays.
     bundle: analysis
+  - module: tools.analysis.cutflow
+    name: CutflowTool
+    description: Read-only cutflow / selection-sanity diagnostic over a JSONL event
+      dataset (per-object multiplicity, per-cut survival, first cut that zeros the sample).
+    bundle: analysis
+  - module: tools.analysis.normalization
+    name: NormalizeYieldTool
+    description: Normalize raw MC counts to an expected yield via sigma x lumi / n_generated
+      (scalar or per-bin).
+    bundle: analysis
+  - module: tools.analysis.recast_linter
+    name: RecastLinterTool
+    description: Presence-only, answer-free self-check for a recast (observable provenance,
+      normalization self-consistency, cross-section magnitude, plausible yield, non-empty
+      signal region, generation warnings, decay completeness); never consults the reference.
+    bundle: analysis
+  - module: tools.analysis.benchmark_spectrum
+    name: ResolveBenchmarkSpectrumTool
+    description: Parse the GeV mass values a SUSY simplified-model benchmark point name
+      encodes (e.g. T5Wg_1600_100) so the spectrum is set deliberately, not defaulted;
+      echoes only the masses in the task's own point name (no reference/answer leak).
+    bundle: bsm
+  - module: tools.analysis.slha_decay
+    name: BuildDecayTableTool
+    description: Build a Pythia-readable decay-table fragment to decay a BSM state the
+      LHE left stable (e.g. GMSB neutralino -> photon + gravitino).
+    bundle: bsm
   - module: tools.eda.compute_symbolic_amplitude_tool
     name: ComputeSymbolicAmplitude
     description: Generate FeynCalc code with symbolic masses and couplings.
@@ -277,6 +310,13 @@ tools:
     name: MadGraphFromRunCardTool
     description: Run MadGraph5_aMC@NLO to generate parton-level events given a
       .mg5 run card template.
+    bundle: mg5
+  - module: tools.mg5.validate_process
+    name: ValidateProcessTool
+    description: "FAST (seconds) symbolic check of a MadGraph process + spectrum without\
+      \ running event generation — reports whether the process compiles, per-subprocess\
+      \ diagram counts (0 = empty decay), and the realized BSM spectrum. Use before\
+      \ the multi-minute MadGraphFromRunCard run to converge on the right process/decay/masses."
     bundle: mg5
   - module: tools.nda.branching_ratio_tool
     name: EstimateBranchingRatioNDATool

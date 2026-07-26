@@ -264,9 +264,27 @@ def _find_all_lhe_files(events_dir: str, run_dirs: list) -> dict:
 
     return lhe_files
 
+def _normalize_masses(masses) -> dict:
+    """Coerce a {pdg: GeV} mapping (or [[pdg, gev], ...]) into {int: float}.
+
+    Junk entries (non-numeric ids/values) are dropped rather than raising, so a
+    caller's loosely-typed spectrum still yields the well-formed pairs.
+    """
+    out = {}
+    items = masses.items() if isinstance(masses, dict) else (
+        masses if isinstance(masses, (list, tuple)) else [])
+    for pair in items:
+        try:
+            k, v = pair
+            out[int(k)] = float(v)
+        except (TypeError, ValueError):
+            continue
+    return out
+
+
 def _edit_mg5_card(card_text: str, *, ufo_path: Optional[str] = None,
                    output_name: Optional[str] = None, nevents: Optional[int] = None,
-                   seed: Optional[int] = None) -> str:
+                   seed: Optional[int] = None, masses: Optional[dict] = None) -> str:
     """
     Edit MG5 command card by replacing specific lines.
 
@@ -276,10 +294,18 @@ def _edit_mg5_card(card_text: str, *, ufo_path: Optional[str] = None,
         output_name: If provided, replaces the 'output' line
         nevents: If provided, replaces the 'set nevents' line
         seed: If provided, replaces the 'set iseed' line
+        masses: If provided, a {pdg_id: mass_gev} mapping injected as
+            'set mass <pdg> <gev>' in the run-card region (after 'launch'),
+            replacing any existing 'set mass <pdg>' for the same id. A
+            structured spectrum channel so benchmark masses survive card
+            regeneration instead of being dropped as free text.
 
     Returns:
         Modified card text
     """
+    mass_map = _normalize_masses(masses) if masses else {}
+    replaced_pdgs = set()
+
     lines = card_text.splitlines()
     output_lines = []
 
@@ -306,8 +332,38 @@ def _edit_mg5_card(card_text: str, *, ufo_path: Optional[str] = None,
             output_lines.append(f"set iseed {seed}")
             continue
 
+        # Replace an existing 'set mass <pdg>' for a requested id (idempotent),
+        # so re-editing a card doesn't stack duplicate spectrum lines.
+        if mass_map and stripped.startswith("set mass "):
+            parts = stripped.split()
+            if len(parts) >= 3 and parts[2].lstrip("-").isdigit():
+                pdg = int(parts[2])
+                if pdg in mass_map:
+                    output_lines.append(f"set mass {pdg} {mass_map[pdg]:g}")
+                    replaced_pdgs.add(pdg)
+                    continue
+
         # Keep original line
         output_lines.append(line)
+
+    # Inject any not-yet-present masses into the run-card region, right after
+    # 'launch' (where 'set' commands configure the run) so a benchmark spectrum
+    # is applied robustly rather than left as free text.
+    remaining = [(pdg, gev) for pdg, gev in mass_map.items()
+                 if pdg not in replaced_pdgs]
+    if remaining:
+        injected_lines = []
+        did_inject = False
+        for line in output_lines:
+            injected_lines.append(line)
+            if not did_inject and line.strip().startswith("launch"):
+                for pdg, gev in remaining:
+                    injected_lines.append(f"set mass {pdg} {gev:g}")
+                did_inject = True
+        if not did_inject:  # no 'launch' line — append at the end
+            for pdg, gev in remaining:
+                injected_lines.append(f"set mass {pdg} {gev:g}")
+        output_lines = injected_lines
 
     result = "\n".join(output_lines)
 
@@ -631,3 +687,135 @@ class MadGraphFromRunCardTool(BaseTool):
             result["runs"] = runs
 
         return json.dumps(result, separators=(",", ":"), ensure_ascii=False)
+
+# --- log-parsing helpers ported from the June-22 snapshot mg5.py ---
+# Required by tools/mg5/validate_process.py (ValidateProcessTool).
+import re  # noqa: E402  (idempotent; used by the classifiers below)
+
+_ANSI_RE = re.compile(r"\x1b\[[0-9;]*m")
+
+
+def _distill_mg5_log(log_path: str, max_lines: int = 8, max_chars: int = 700) -> str:
+    """Reduce an mg5_run.log to the lines that explain a failure.
+
+    MG5's own diagnostics are highly actionable but buried in hundreds of
+    banner/config lines (and wrapped in ANSI color). The lines that matter
+    name the bad UFO model, the rejected sub-command, the missing card, etc.,
+    e.g.:
+        Error detected in sub-command import model ...
+        ... directory is not a valid UFO model:  couplings.py is missing
+        command not executed: generate p p > go go
+    Surfacing these (instead of a generic "inspect the log") lets a weak agent
+    fix the run card directly rather than retry blindly. Task-agnostic: the
+    markers are MG5's, not any one process's."""
+    try:
+        with open(log_path, "r", encoding="utf-8", errors="replace") as fp:
+            raw = fp.read()
+    except Exception:
+        return ""
+    lines = [_ANSI_RE.sub("", l).rstrip() for l in raw.splitlines()]
+    lines = [l for l in lines if l.strip()]
+    # Root-cause lines (what actually went wrong) take priority over the
+    # cascade of "command not executed" notices MG5 prints afterwards; keep one
+    # of the latter so the agent sees which step was aborted.
+    cause_re = re.compile(
+        r"error detected|not a valid|is missing|no such|not found|invalid|"
+        r"traceback|exception|interrupt|aborted|fail|no matching|unknown|"
+        # PDF / run-card config faults (lhapdf, beam/PDF label mismatches) that
+        # otherwise leave only a generic "Output Missing".
+        r"not compatible|lhapdf|pdlabel|lpp\d|lhaid|no pdf|pdf set",
+        re.I)
+    cause = [l for l in lines if cause_re.search(l)]
+    notexec = [l for l in lines if re.search(r"command not executed", l, re.I)]
+    chosen = (cause[-max_lines:] + notexec[:1]) if cause else (lines[-max_lines:])
+    return "\n".join(chosen)[-max_chars:].strip()
+
+
+# MG5's two dominant, currently-opaque generate/process failures. Both name the
+# real cause on their own diagnostic line; surfacing that line structured (which
+# particle, why, what to do) lets a weak agent fix its process command instead of
+# retrying the same rejected generate. Task-agnostic: these are MG5's markers and
+# the guidance is generic generator usage, never a process's physics values.
+_NO_PARTICLE_RE = re.compile(r"No particle\s+(\S+)", re.I)
+_NO_DIAGRAM_RE = re.compile(r"NoDiagramException|no diagrams? for (?:this )?process", re.I)
+# A run-card 'set' issued out of place (e.g. top-level 'set nevents'): MG5 emits
+# "InvalidCmd: Possible options for set are [...]".
+_BAD_SET_RE = re.compile(r"Possible options for set are|InvalidCmd.*\bset\b", re.I)
+
+
+def _classify_mg5_log(log_path: str) -> Optional[dict]:
+    """Detect a known MG5 generate/process failure class in the log.
+
+    Returns a dict with keys ``error``, ``reason``, ``suggestion`` suitable for
+    splatting into ``format_error`` when one of the two dominant failure classes
+    is recognized, else None (caller falls back to the generic distilled log).
+        1. ``No particle <X>`` — MG5 rejected an unknown particle name in the
+           generate/process line.
+        2. ``NoDiagramException`` / 'No diagrams for process' — the process is
+           empty in this model.
+    Task-agnostic: keyed on MG5's own markers, names the offending particle, and
+    points at generic recovery (display particles / decay in the shower)."""
+    try:
+        with open(log_path, "r", encoding="utf-8", errors="replace") as fp:
+            raw = _ANSI_RE.sub("", fp.read())
+    except Exception:
+        return None
+
+    # 1. Unknown particle name(s) in the generate/process line.
+    bad = []
+    for m in _NO_PARTICLE_RE.finditer(raw):
+        tok = m.group(1).strip().strip(".,:;'\"")
+        if tok and tok not in bad:
+            bad.append(tok)
+    if bad:
+        names = ", ".join(f"'{b}'" for b in bad)
+        return {
+            "error": "Unknown Particle in Process",
+            "reason": f"MadGraph rejected particle name(s) {names} in the "
+                      f"generate/process line — not defined in the model.",
+            "suggestion": (
+                f"Particle(s) {names} are not defined in this model. Check the "
+                "model's particle names (in an MG5 session: `display particles`). "
+                "Two common causes: (a) wrong name — e.g. squarks are "
+                "ul/ur/dl/dr/cl/cr/sl/sr/t1/t2/b1/b2 (not 'sq'), the jet "
+                "multiparticle is 'j'; (b) the particle is genuinely absent from "
+                "this model — if it is a decay product not in the model (e.g. a "
+                "gravitino in MSSM_SLHA2), do NOT force it into the generate "
+                "command: produce the event down to the state the model contains "
+                "and perform that decay in the parton shower (Pythia) via the "
+                "spectrum's decay table."),
+        }
+
+    # 2. No diagrams found for the requested process.
+    if _NO_DIAGRAM_RE.search(raw):
+        return {
+            "error": "No Diagrams for Process",
+            "reason": "MadGraph found no diagrams for this process in the model.",
+            "suggestion": (
+                "MadGraph found no diagrams for this process. Causes: a particle "
+                "or coupling in the process is not in this model, the coupling "
+                "orders forbid it, or the decay is not allowed. Verify each "
+                "particle exists in the model and the process is physical; do not "
+                "retry the same process repeatedly."),
+        }
+
+    # 3. A 'set' command issued where MG5 does not accept it (e.g. a top-level
+    #    'set nevents'/'set iseed' written as an MG5 command before/without
+    #    launch). MG5 responds with "InvalidCmd: Possible options for set are
+    #    [...]". The fix is to let the tool place run-card sets after launch.
+    if _BAD_SET_RE.search(raw):
+        return {
+            "error": "Invalid 'set' Command",
+            "reason": "MadGraph rejected a 'set' command (InvalidCmd: Possible "
+                      "options for set are [...]) — a run-card parameter such as "
+                      "nevents/iseed was issued where MG5 does not accept it.",
+            "suggestion": (
+                "Don't hand-write `set nevents`/`set iseed` as MG5 commands — "
+                "pass the tool's `nevents`/`seed` arguments instead; the tool "
+                "places them in the run-card region for you. Any `set` for a "
+                "run-card parameter must come AFTER `launch`, not at the "
+                "MG5-command level."),
+        }
+
+    return None
+

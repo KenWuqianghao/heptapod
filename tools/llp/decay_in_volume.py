@@ -50,6 +50,20 @@ class _DecayInVolumeBase(BaseTool):
                     "parent channels is fine). The result echoes n_events and "
                     "sum_weights of the input, so check them against your full "
                     "production to confirm no parent channel was dropped")
+    events_paths: List[str] = RuntimeField(
+        default=[],
+        description="Alternative to `events_path`: SEVERAL LLP record files to "
+                    "treat as one sample, e.g. one per parent channel from "
+                    "MesonDecayToLLP at the same mass "
+                    "(['results/llp_K_m0.28.jsonl', 'results/llp_D_m0.28.jsonl', "
+                    "...]). The tool reads them in order and concatenates in "
+                    "memory, so a full-spectrum yield needs no hand-written "
+                    "concatenation step and no combined file on disk. Reading "
+                    "rather than appending keeps this idempotent: re-running a "
+                    "channel cannot double-count its flux, which would silently "
+                    "inflate every yield downstream. Takes precedence over "
+                    "`events_path` when non-empty; the per-file record counts "
+                    "are echoed as `inputs` so a dropped channel is visible.")
     geometry_path: str = RuntimeField(
         description="Path to geometry YAML (z_min_m, z_max_m, r_volume_m, "
                     "z_det_m, r_det_m in meters; optional z_prod_m end of "
@@ -152,22 +166,32 @@ class _DecayInVolumeBase(BaseTool):
 
         from . import llp_physics as phys
 
-        src = self._safe_path(self.events_path)
+        rel_srcs = [str(x) for x in (self.events_paths or []) if str(x).strip()]
+        if not rel_srcs:
+            rel_srcs = [self.events_path] if self.events_path else []
+        if not rel_srcs:
+            return self.format_error(
+                error="Invalid Parameter",
+                reason="no input given: both events_path and events_paths empty",
+                suggestion="Set events_path, or events_paths for several "
+                           "parent-channel files at the same mass")
+        srcs = [self._safe_path(r) for r in rel_srcs]
         geo = self._safe_path(self.geometry_path)
         dst = self._safe_path(self.output_path)
-        if not src or not geo or not dst:
+        if any(x is None for x in srcs) or not geo or not dst:
             return self.format_error(
                 error="Access Denied",
-                reason="events_path, geometry_path or output_path escapes "
+                reason="events_path(s), geometry_path or output_path escapes "
                        "base_directory",
                 suggestion="Use relative paths inside base_directory")
-        for path, label in ((src, "events_path"), (geo, "geometry_path")):
+        for path, label in list(zip(srcs, rel_srcs)) + [(geo, "geometry_path")]:
             if not os.path.exists(path):
                 return self.format_error(
                     error="File Not Found",
                     reason=f"{label} not found",
-                    context=f"path={getattr(self, label)}",
-                    suggestion=f"Provide a valid {label}")
+                    context=f"path={label}",
+                    suggestion=f"Provide a valid path for {label}")
+        src = srcs[0]
 
         # --------------------- validate parameters --------------------- #
         m_phi = float(self.m_phi_gev)
@@ -248,7 +272,10 @@ class _DecayInVolumeBase(BaseTool):
                            "r_volume_m, z_det_m, r_det_m")
         try:
             p4_list, vtx_list, w_list, channels = [], [], [], []
-            with open(src) as fh:
+            input_counts = []
+            for _src, _rel in zip(srcs, rel_srcs):
+              n_before = len(p4_list)
+              with open(_src) as fh:
                 for ln, line in enumerate(fh):
                     line = line.strip()
                     if not line:
@@ -261,6 +288,8 @@ class _DecayInVolumeBase(BaseTool):
                                      rec.get("vz", 0.0)])
                     w_list.append(rec["event_weight_g2_stripped"])
                     channels.append(rec.get("parent_channel"))
+              input_counts.append({"path": _rel,
+                                   "n_records": len(p4_list) - n_before})
         except KeyError as e:
             return self.format_error(
                 error="Event Format Error",
@@ -294,7 +323,8 @@ class _DecayInVolumeBase(BaseTool):
                                        m_phi, dmasses, wref, n_int,
                                        lifetime_mode, acc_mode, 0.0,
                                        offscale_ctaus=[pt[2] for pt in points],
-                                       offscale_vol_scale=getattr(geom, "z_max", None))
+                                       offscale_vol_scale=getattr(geom, "z_max", None),
+                                       br_vis=br_vis)
 
         # --------------------------- compute --------------------------- #
         try:
@@ -372,7 +402,8 @@ class _DecayInVolumeBase(BaseTool):
                                    n_geo, n_tt, m_phi, dmasses, wref, n_int,
                                    lifetime_mode, acc_mode, sum_w,
                                    offscale_ctaus=[pt[2] for pt in points],
-                                   offscale_vol_scale=getattr(geom, "z_max", None))
+                                   offscale_vol_scale=getattr(geom, "z_max", None),
+                                   br_vis=br_vis, inputs=input_counts)
 
     def _grid_diagnostic(self, yields, n_target):
         """Structured grid-boundary diagnostic + a note. Returns
@@ -488,10 +519,44 @@ class _DecayInVolumeBase(BaseTool):
                 f"this far off scale is far more often a wrong width than a "
                 f"genuinely insensitive experiment.")
 
+    @staticmethod
+    def _normalization_breakdown(n_events, n_geo, n_tt, sum_weights, n_int,
+                                 br_vis, wref) -> dict:
+        """The factors that multiply into N_sig, echoed so a discrepancy can be
+        localized.
+
+        N_sig = n_int * [g^2] * br_visible * sum_i w_i * P_dec,i * acc_i. When a
+        yield disagrees with an independent calculation by orders of magnitude
+        the question is always WHICH factor -- the flux normalization, the
+        branching ratio, or the geometric/kinematic acceptance -- and none of
+        them were observable in the output, so the caller could see only the
+        product. Each is cheap to report and turns a one-number disagreement
+        into a locatable one.
+        """
+        return {
+            "n_int": n_int,
+            "br_visible_effective": br_vis,
+            "width_ref_gev_effective": wref,
+            "sum_weights_per_collision": sum_weights,
+            "mean_weight_per_event": (sum_weights / n_events) if n_events else None,
+            "n_events": n_events,
+            "geometry_efficiency": (n_geo / n_events) if n_events else None,
+            "acceptance_efficiency": (n_tt / n_geo) if n_geo else None,
+            "overall_efficiency": (n_tt / n_events) if n_events else None,
+            "note": ("N_sig = n_int * [g^2 in portal mode] * br_visible_effective "
+                     "* sum_i w_i * P_dec,i * acc_i. If a yield is off by orders "
+                     "of magnitude, compare these factors one at a time against "
+                     "your own calculation: sum_weights_per_collision is the "
+                     "upstream flux normalization, br_visible_effective the "
+                     "branching into the detected state, and the efficiencies "
+                     "the geometric and kinematic acceptance."),
+        }
+
     def _write_outputs(self, dst, audit_path, yields, n_events, n_geo,
                        n_tt, m_phi, dmasses, wref, n_int,
                        lifetime_mode, acc_mode, sum_weights=0.0,
-                       offscale_ctaus=None, offscale_vol_scale=None) -> str:
+                       offscale_ctaus=None, offscale_vol_scale=None,
+                       br_vis=None, inputs=None) -> str:
         """Write the yields table and format the tool result JSON."""
         notes = []
         grid_diag, rq = self._grid_diagnostic(yields, self.n_target)
@@ -533,6 +598,9 @@ class _DecayInVolumeBase(BaseTool):
             notes.append(offscale)
             note = "; ".join(notes)
 
+        normalization = self._normalization_breakdown(
+            n_events, n_geo, n_tt, sum_weights, n_int, br_vis, wref)
+
         table = {
             "schema": YIELDS_SCHEMA_VERSION,
             "conventions": dict(CONVENTIONS),
@@ -547,6 +615,8 @@ class _DecayInVolumeBase(BaseTool):
             "sum_weights": sum_weights,
             "n_pass_geometry": n_geo,
             "n_pass_acceptance": n_tt,
+            "inputs": inputs,
+            "normalization": normalization,
             "grid_diagnostic": grid_diag,
             "lifetime_offscale": offscale,
             "yields": yields,
@@ -564,6 +634,8 @@ class _DecayInVolumeBase(BaseTool):
             "ctau_ref_g1_m": ctau_ref_g1,
             "n_pass_geometry": n_geo,
             "n_pass_acceptance": n_tt,
+            "inputs": inputs,
+            "normalization": normalization,
             "grid_diagnostic": grid_diag,
             "lifetime_offscale": offscale,
             "output_path": os.path.relpath(dst, self.base_directory),

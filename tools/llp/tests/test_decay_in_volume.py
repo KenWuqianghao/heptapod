@@ -409,3 +409,59 @@ def test_offscale_lifetime_is_reported():
                           acceptance="two_track")._run())
     assert not ok["lifetime_offscale"], ok["lifetime_offscale"]
     print("[OK] off-scale flagged, on-scale silent")
+
+
+def test_multi_input_equals_manual_concatenation():
+    """Several per-channel files == one hand-concatenated file, and the
+    per-file record counts are echoed so a dropped channel is visible.
+
+    The alternative the agent asked for -- a tool that APPENDS channels into a
+    combined file -- would double-count on any re-run, silently inflating every
+    downstream yield. Reading N files is idempotent, so it cannot.
+    """
+    print(">> multi-file input == manual concatenation ...")
+    _setup()
+    base = Path(base_directory)
+    src = (base / "flux.jsonl").read_text().splitlines()
+    half = len(src) // 2
+    (base / "flux_a.jsonl").write_text("\n".join(src[:half]) + "\n")
+    (base / "flux_b.jsonl").write_text("\n".join(src[half:]) + "\n")
+    wref = _width_ref(M_PHI, M_MU)
+    one = json.loads(_tool(width_ref_gev=wref, g_grid=[1e-8, 1e-7],
+                           acceptance="two_track")._run())
+    many = json.loads(_tool(events_path="", events_paths=["flux_a.jsonl", "flux_b.jsonl"],
+                            width_ref_gev=wref, g_grid=[1e-8, 1e-7],
+                            acceptance="two_track")._run())
+    assert one["status"] == "ok" and many["status"] == "ok", (one, many)
+    assert one["n_events"] == many["n_events"]
+    for a, b in zip(one["yields"], many["yields"]):
+        assert abs(a["n_sig"] - b["n_sig"]) <= 1e-9 * max(1.0, abs(a["n_sig"])), (a, b)
+    assert [i["n_records"] for i in many["inputs"]] == [half, len(src) - half]
+    # a missing member is a hard error, never a silent partial sum
+    r = _tool(events_path="", events_paths=["flux_a.jsonl", "nope.jsonl"],
+              width_ref_gev=wref, g_grid=[1e-8])._run()
+    assert "not found" in r.lower(), r
+    print("[OK] concatenation-free multi-input, counts echoed, missing file fatal")
+
+
+def test_normalization_breakdown_is_reported():
+    """The factors multiplying into N_sig are echoed so a discrepancy is
+    locatable -- previously only their product was observable."""
+    print(">> normalization breakdown ...")
+    _setup()
+    res = json.loads(_tool(width_ref_gev=_width_ref(M_PHI, M_MU),
+                           g_grid=[1e-8], br_visible=0.5,
+                           acceptance="two_track")._run())
+    nz = res["normalization"]
+    for key in ("n_int", "br_visible_effective", "width_ref_gev_effective",
+                "sum_weights_per_collision", "mean_weight_per_event",
+                "geometry_efficiency", "acceptance_efficiency",
+                "overall_efficiency"):
+        assert key in nz, key
+    assert nz["br_visible_effective"] == 0.5
+    assert 0.0 <= nz["geometry_efficiency"] <= 1.0
+    assert 0.0 <= nz["acceptance_efficiency"] <= 1.0
+    # the product identity the note describes must actually hold
+    assert abs(nz["overall_efficiency"]
+               - nz["geometry_efficiency"] * nz["acceptance_efficiency"]) < 1e-9
+    print("[OK] normalization factors reported and self-consistent")

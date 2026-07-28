@@ -344,3 +344,68 @@ def run_all():
 
 if __name__ == "__main__":
     run_all()
+
+
+def test_partial_widths_sum_to_total_and_derive_br():
+    """Per-channel widths reproduce the scalar path exactly, and derive br_visible.
+
+    The scalar interface asks the caller to supply a TOTAL width and, separately,
+    a branching ratio consistent with it -- two numbers that must agree by hand
+    and that the tool cannot check. Supplying the channels instead makes the sum
+    and the ratio the tool's arithmetic, so they cannot drift apart.
+    """
+    print(">> partial widths: sum == scalar total, br derived ...")
+    _setup()
+    wref = _width_ref(M_PHI, M_MU)
+    # split the same total across a visible and an invisible channel
+    vis, invis = 0.75 * wref, 0.25 * wref
+    scalar = json.loads(_tool(width_ref_gev=wref, br_visible=0.75,
+                              g_grid=[1e-8, 2e-8], acceptance="two_track")._run())
+    perchan = json.loads(_tool(partial_widths_ref_gev={"mumu": vis, "dark": invis},
+                               visible_channels=["mumu"],
+                               g_grid=[1e-8, 2e-8], acceptance="two_track")._run())
+    assert scalar["status"] == "ok" and perchan["status"] == "ok", (scalar, perchan)
+    for a, b in zip(scalar["yields"], perchan["yields"]):
+        assert abs(a["n_sig"] - b["n_sig"]) <= 1e-9 * max(1.0, abs(a["n_sig"])), (a, b)
+    # the derived total drives the same lifetime as the scalar one
+    assert abs(scalar["ctau_ref_g1_m"] - perchan["ctau_ref_g1_m"]) < 1e-12
+    print("[OK] per-channel and scalar paths agree exactly")
+
+
+def test_partial_widths_reject_inconsistent_input():
+    print(">> partial widths: input validation ...")
+    _setup()
+    # channels given but no visible_channels -> cannot derive br
+    r = _tool(partial_widths_ref_gev={"mumu": 1e-4}, g_grid=[1e-8])._run()
+    assert "visible_channels" in r, r
+    # visible channel not among the declared widths
+    r = _tool(partial_widths_ref_gev={"mumu": 1e-4},
+              visible_channels=["gammagamma"], g_grid=[1e-8])._run()
+    assert "not keys of" in r, r
+    # all channels closed -> no signal is possible, say so rather than divide by 0
+    r = _tool(partial_widths_ref_gev={"mumu": 0.0},
+              visible_channels=["mumu"], g_grid=[1e-8])._run()
+    assert "sums to zero" in r, r
+    print("[OK] missing/unknown/zero channel inputs rejected")
+
+
+def test_offscale_lifetime_is_reported():
+    """A scan whose lifetimes never reach the decay volume is flagged.
+
+    N_sig alone looks like an ordinary falling curve in that regime, so the
+    caller cannot tell a genuinely insensitive experiment from a wrong width or
+    a mis-placed grid. The tool knows the geometry, so it can say.
+    """
+    print(">> off-scale lifetime diagnostic ...")
+    _setup()
+    wref = _width_ref(M_PHI, M_MU)
+    # enormous couplings -> ctau ~ 1/g^2 far SHORT of the ~160 m volume
+    short = json.loads(_tool(width_ref_gev=wref, g_grid=[1.0, 2.0],
+                             acceptance="two_track")._run())
+    assert short["lifetime_offscale"], short
+    assert "SHORT" in short["lifetime_offscale"]
+    # a sane grid straddling the volume is not flagged
+    ok = json.loads(_tool(width_ref_gev=wref, g_grid=[1e-8, 1e-7],
+                          acceptance="two_track")._run())
+    assert not ok["lifetime_offscale"], ok["lifetime_offscale"]
+    print("[OK] off-scale flagged, on-scale silent")

@@ -6,7 +6,7 @@
 """
 import json
 import os
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from orchestral.tools.base.tool import BaseTool
 from orchestral.tools.base.field_utils import RuntimeField, StateField
@@ -117,6 +117,13 @@ class _DecayInVolumeBase(BaseTool):
     base_directory: str = StateField(default=".", description="Base directory for safe paths")
     # ---------------------------------------------------------------------- #
 
+    def _resolve_br_visible(self):
+        """Visible-channel branching ratio. Overridable: a subclass that is
+        given the LLP's partial widths can DERIVE this instead of trusting a
+        second, independently-supplied scalar that must be kept consistent with
+        the total width by hand."""
+        return float(self.br_visible)
+
     def _setup(self):
         """Setup base directory and validate it exists."""
         self.base_directory = os.path.abspath(self.base_directory)
@@ -166,7 +173,9 @@ class _DecayInVolumeBase(BaseTool):
         m_phi = float(self.m_phi_gev)
         dmasses = [float(m) for m in (self.daughter_masses_gev or [])]
         n_int = float(self.n_int)
-        br_vis = float(self.br_visible)
+        br_vis = self._resolve_br_visible()
+        if isinstance(br_vis, str):      # a format_error(...) from the hook
+            return br_vis
         if m_phi <= 0.0:
             return self.format_error(
                 error="Invalid Parameter",
@@ -283,7 +292,9 @@ class _DecayInVolumeBase(BaseTool):
                 pass
             return self._write_outputs(dst, audit_path, yields, 0, 0, 0,
                                        m_phi, dmasses, wref, n_int,
-                                       lifetime_mode, acc_mode, 0.0)
+                                       lifetime_mode, acc_mode, 0.0,
+                                       offscale_ctaus=[pt[2] for pt in points],
+                                       offscale_vol_scale=getattr(geom, "z_max", None))
 
         # --------------------------- compute --------------------------- #
         try:
@@ -359,7 +370,9 @@ class _DecayInVolumeBase(BaseTool):
 
         return self._write_outputs(dst, audit_path, yields, n_events,
                                    n_geo, n_tt, m_phi, dmasses, wref, n_int,
-                                   lifetime_mode, acc_mode, sum_w)
+                                   lifetime_mode, acc_mode, sum_w,
+                                   offscale_ctaus=[pt[2] for pt in points],
+                                   offscale_vol_scale=getattr(geom, "z_max", None))
 
     def _grid_diagnostic(self, yields, n_target):
         """Structured grid-boundary diagnostic + a note. Returns
@@ -444,9 +457,41 @@ class _DecayInVolumeBase(BaseTool):
                     f"the g grid.")
         return None
 
+    @staticmethod
+    def _offscale_note(ctaus, vol_scale) -> Optional[str]:
+        """Flag a lifetime grid that cannot bracket the reach band.
+
+        The band lives where ctau is within a few decades of the decay volume.
+        More than ~3 decades clear of it on either side and the whole grid sits
+        in a monotone regime: at short ctau everything decays before reaching
+        the volume, at long ctau nothing decays inside it, and N_sig falls off
+        smoothly either way. The caller cannot see that from N_sig alone -- it
+        looks like an ordinary curve -- so the tool, which knows the geometry,
+        says it. Model- and experiment-agnostic: it only compares the lifetimes
+        actually scanned against the volume scale.
+        """
+        ctaus = [c for c in (ctaus or []) if c and c > 0.0]
+        if not ctaus or not vol_scale or vol_scale <= 0.0:
+            return None
+        lo, hi = min(ctaus), max(ctaus)
+        if hi < vol_scale * 1e-3:
+            which = "far SHORT of"
+        elif lo > vol_scale * 1e3:
+            which = "far LONG of"
+        else:
+            return None
+        return (f"every scanned lifetime is {which} the decay volume "
+                f"(ctau spans {lo:.3g}-{hi:.3g} m, volume scale ~{vol_scale:.3g} m): "
+                f"the scanned range cannot bracket the reach band, so any band "
+                f"extracted from it is truncated rather than physical. Widen the "
+                f"grid, or check the width/lifetime input -- an implied lifetime "
+                f"this far off scale is far more often a wrong width than a "
+                f"genuinely insensitive experiment.")
+
     def _write_outputs(self, dst, audit_path, yields, n_events, n_geo,
                        n_tt, m_phi, dmasses, wref, n_int,
-                       lifetime_mode, acc_mode, sum_weights=0.0) -> str:
+                       lifetime_mode, acc_mode, sum_weights=0.0,
+                       offscale_ctaus=None, offscale_vol_scale=None) -> str:
         """Write the yields table and format the tool result JSON."""
         notes = []
         grid_diag, rq = self._grid_diagnostic(yields, self.n_target)
@@ -475,6 +520,19 @@ class _DecayInVolumeBase(BaseTool):
         if lifetime_mode == "portal" and wref > 0.0:
             from . import llp_physics as phys
             ctau_ref_g1 = phys.HBARC_M_GEV / wref
+        # Off-scale diagnostic. A scan whose implied proper decay length never
+        # comes near the decay volume cannot resolve the reach band: at ctau far
+        # below the volume everything decays before reaching it, far above it
+        # nothing decays inside, and in both regimes N_sig is monotone across
+        # the whole grid. The caller cannot see this from N_sig alone (the
+        # numbers look like a normal falling curve), so say it explicitly.
+        # Model- and experiment-agnostic: it compares the lifetimes the caller
+        # actually scanned against the geometry this tool already knows.
+        offscale = self._offscale_note(offscale_ctaus, offscale_vol_scale)
+        if offscale:
+            notes.append(offscale)
+            note = "; ".join(notes)
+
         table = {
             "schema": YIELDS_SCHEMA_VERSION,
             "conventions": dict(CONVENTIONS),
@@ -490,6 +548,7 @@ class _DecayInVolumeBase(BaseTool):
             "n_pass_geometry": n_geo,
             "n_pass_acceptance": n_tt,
             "grid_diagnostic": grid_diag,
+            "lifetime_offscale": offscale,
             "yields": yields,
         }
         if note:
@@ -506,6 +565,7 @@ class _DecayInVolumeBase(BaseTool):
             "n_pass_geometry": n_geo,
             "n_pass_acceptance": n_tt,
             "grid_diagnostic": grid_diag,
+            "lifetime_offscale": offscale,
             "output_path": os.path.relpath(dst, self.base_directory),
             "audit_path": os.path.relpath(audit_path, self.base_directory),
             "conventions": {"acceptance": CONVENTIONS["acceptance"],
@@ -539,6 +599,14 @@ class DecayInVolumeVsCouplingTool(_DecayInVolumeBase):
     production vertex (handling decay-in-flight parents and off-axis detectors)
     at the in-volume midpoint. Yields [{g, n_sig}] plus a per-event audit. For
     explicit lab-frame lifetimes instead, use DecayInVolumeVsLifetime.
+
+    Prefer `partial_widths_ref_gev` (channel -> g^2-stripped partial width at
+    g = 1) together with `visible_channels` over the scalar `width_ref_gev` +
+    `br_visible` pair: the tool then sums the channels itself, so "include every
+    channel open at this mass" becomes arithmetic the tool does rather than a
+    convention the caller has to honour, and br_visible is derived from the same
+    numbers instead of being supplied separately and kept in sync by hand. The
+    scalar pair still works unchanged.
     """
     width_ref_gev: float = RuntimeField(
         description="PHYSICAL g^2-stripped TOTAL width of phi at g = 1, in GeV: "
@@ -559,15 +627,86 @@ class DecayInVolumeVsCouplingTool(_DecayInVolumeBase):
         description="Couplings g at which to evaluate N_sig (non-empty, all "
                     "> 0). One event set covers the whole list by exact "
                     "reweighting, e.g. [1e-7, 3e-7, 1e-6, 3e-6, 1e-5]")
+    partial_widths_ref_gev: Dict[str, float] = RuntimeField(
+        default={},
+        description="PREFERRED over width_ref_gev: the g^2-stripped PARTIAL "
+                    "width of each decay channel open at this mass, in GeV at "
+                    "g = 1, e.g. {'mumu': 7.5e-4, 'gammagamma': 2.2e-9}. The "
+                    "tool sums them to get the total width that sets the "
+                    "lifetime, so 'include every open channel' becomes "
+                    "arithmetic the tool does rather than a convention you "
+                    "have to remember. Combined with visible_channels it also "
+                    "DERIVES br_visible, so the branching ratio and the total "
+                    "width cannot drift out of sync -- the classic silent error "
+                    "is supplying a total width that omits a channel the "
+                    "branching ratio assumes, or vice versa. Channel names are "
+                    "yours; only the split matters.")
+    visible_channels: List[str] = RuntimeField(
+        default=[],
+        description="Which keys of partial_widths_ref_gev this search detects, "
+                    "e.g. ['mumu'] for a two-track search or ['gammagamma'] "
+                    "for a photon search. br_visible is then "
+                    "sum(visible)/sum(all) and the separate br_visible field is "
+                    "ignored. Required when partial_widths_ref_gev is given.")
+
+    def _total_width_ref(self):
+        """(width_ref, error_or_None) from partial widths if supplied."""
+        pw = {str(k): float(v) for k, v in (self.partial_widths_ref_gev or {}).items()}
+        if not pw:
+            return None, None
+        if any(v < 0.0 for v in pw.values()):
+            return None, self.format_error(
+                error="Invalid Parameter",
+                reason=f"partial_widths_ref_gev has a negative width: {pw}",
+                suggestion="Partial widths are non-negative; a channel closed "
+                           "at this mass is 0 or simply absent")
+        total = sum(pw.values())
+        if total <= 0.0:
+            return None, self.format_error(
+                error="Invalid Parameter",
+                reason="partial_widths_ref_gev sums to zero",
+                suggestion="At least one channel must be open at this mass; "
+                           "with no open channel the LLP is stable and there is "
+                           "no decay-in-volume signal")
+        return total, None
+
+    def _resolve_br_visible(self):
+        pw = {str(k): float(v) for k, v in (self.partial_widths_ref_gev or {}).items()}
+        if not pw:
+            return float(self.br_visible)
+        vis = [str(c) for c in (self.visible_channels or [])]
+        if not vis:
+            return self.format_error(
+                error="Invalid Parameter",
+                reason="partial_widths_ref_gev was given without "
+                       "visible_channels",
+                suggestion="Name the detected channel(s), e.g. "
+                           "visible_channels=['mumu'] for a two-track search; "
+                           "br_visible is then derived as sum(visible)/sum(all)")
+        unknown = [c for c in vis if c not in pw]
+        if unknown:
+            return self.format_error(
+                error="Invalid Parameter",
+                reason=f"visible_channels {unknown} are not keys of "
+                       f"partial_widths_ref_gev ({sorted(pw)})",
+                suggestion="Use the same channel names in both fields")
+        total, err = self._total_width_ref()
+        if err:
+            return err
+        return sum(pw[c] for c in vis) / total
 
     def _lifetime_spec(self, phys):
-        wref = float(self.width_ref_gev or 0.0)
+        derived, err = self._total_width_ref()
+        if err:
+            return err
+        wref = derived if derived is not None else float(self.width_ref_gev or 0.0)
         g_grid = [float(g) for g in (self.g_grid or [])]
         if wref <= 0.0:
             return self.format_error(
                 error="Invalid Parameter",
-                reason=f"width_ref_gev must be positive (got {wref})",
-                suggestion="width_ref_gev is Gamma_tot at g = 1; for "
+                reason=f"total g^2-stripped width must be positive (got {wref})",
+                suggestion="Supply partial_widths_ref_gev (preferred) or "
+                           "width_ref_gev. This is Gamma_tot at g = 1; for "
                            "phi -> mu mu it vanishes at m_phi <= 2 m_mu, "
                            "where no decay-in-volume signal exists")
         if not g_grid or any(g <= 0.0 for g in g_grid):

@@ -22,7 +22,7 @@ step. See [External Dependencies](../../../README.md#external-dependencies).
 
 ```bash
 pip install toolbase
-tb install .[feynrules,mg5,event_gen,analysis]   # or plain `tb install .`
+tb install . --bundle feynrules --bundle mg5 --bundle event_gen --bundle analysis   # or plain `tb install .`
 ```
 
 The `feynrules` and `mg5` bundles are gated on external software, so their

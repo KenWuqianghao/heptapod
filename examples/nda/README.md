@@ -21,7 +21,7 @@ full install story):
 
 ```bash
 pip install toolbase
-tb install .[nda,pdg,mg5]     # or plain `tb install .` for every bundle
+tb install . --bundle nda --bundle pdg --bundle mg5   # or plain `tb install .` for every bundle
 ```
 
 `tb install` builds an isolated environment for the toolkit and resolves each

@@ -20,7 +20,7 @@ full install story):
 
 ```bash
 pip install toolbase
-tb install .[eda,nda,pdg]     # or plain `tb install .` for every bundle
+tb install . --bundle eda --bundle nda --bundle pdg   # or plain `tb install .` for every bundle
 
 # The eda bundle is gated on wolframscript: its tools stay hidden until this
 # is set, since they cannot run without it.

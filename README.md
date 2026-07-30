@@ -37,7 +37,9 @@ tb install .
 Useful variations:
 
 ```bash
-tb install .[analysis,mg5,nda]   # install only specific bundles
+tb install . --bundle analysis --bundle mg5 --bundle nda   # only these bundles
+tb install '.[analysis,mg5,nda]'                           # same, pip-extras style
+                                                           # (quote it — zsh globs the brackets)
 tb install -e .                  # editable: live-link the source for development
 ```
 
@@ -229,7 +231,7 @@ tb config set heptapod mg5_path "$(pwd)/MG5_aMC_v3.6.6"
 
 #### Pythia8 and Sherpa3 (`event_gen`)
 
-**Installed automatically** as bundle dependencies when you `tb install ./heptapod[event_gen]`. No separate installation needed.
+**Installed automatically** as bundle dependencies when you `tb install './heptapod[event_gen]'`. No separate installation needed.
 
 ---
 

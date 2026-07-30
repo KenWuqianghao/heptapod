@@ -80,7 +80,7 @@ dependencies:
       - opentelemetry-proto==1.38.0
       - opentelemetry-sdk==1.38.0
       - opentelemetry-semantic-conventions==0.59b0
-      - orchestral-ai==1.2.1
+      - orchestral-ai==1.10.0
       - packaging==25.0
       - pandas==2.3.3
       - particle==0.26.0

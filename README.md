@@ -4,21 +4,13 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Python](https://img.shields.io/badge/Python-3.12%20|%203.13-blue.svg)](https://www.python.org/downloads/)
 [![Framework](https://img.shields.io/badge/Framework-Orchestral--AI-green.svg)](https://orchestral-ai.com)
+[![Served via](https://img.shields.io/badge/Served%20via-toolbase-orange.svg)](https://github.com/alexr314/toolbase)
 
 ## Overview
 
-**HEPTAPOD** (High-Energy Physics Toolkit for Agentic Programming/Planning, Orchestration, and Deployment) is an open toolkit for **integrating LLM agents into high-energy physics workflows** — from symbolic amplitude calculations to Monte Carlo event generation and data analysis.
+**HEPTAPOD** (High-Energy Physics Toolkit for Agentic Programming/Planning, Orchestration, and Deployment) is an open toolkit for **integrating LLM agents into high-energy physics workflows**, spanning symbolic amplitude calculations, Monte Carlo event generation, and data analysis.
 
-HEPTAPOD provides structured tool interfaces that LLM agents can call directly, allowing researchers to express physics intent in natural language while the agent handles tool selection, execution, and error recovery. All tools are accessible via the [Model Context Protocol (MCP)](https://modelcontextprotocol.io), making them available to coding agents such as Claude Code and OpenAI Codex, as well as through the [Orchestral AI](https://orchestral-ai.com) framework.
-
-Current capabilities include:
-
-- **Exact tree-level calculations** via automatic FeynCalc code generation (EDA toolkit)
-- **Order-of-magnitude rate estimates** via Naive Dimensional Analysis (NDA toolkit)
-- **Automatic Feynman diagram enumeration** and ranking (FeynGraph toolkit)
-- **Particle data**, **literature search**, and **unit conversions** (PDG, INSPIRE, units)
-- **Monte Carlo event generation** pipelines with MadGraph, Pythia, and Sherpa
-- **Reproducible, auditable execution traces** via run cards and structured outputs
+HEPTAPOD provides structured tool interfaces that LLM agents can call directly, allowing researchers to express physics intent in natural language while the agent handles tool selection, execution, and error recovery. The tools are packaged as a **[toolbase](https://github.com/alexr314/toolbase) toolkit**: toolbase installs the toolkit into an isolated environment and **serves the tools over the [Model Context Protocol (MCP)](https://modelcontextprotocol.io)** to coding agents such as Claude Code and OpenAI Codex. The same tools also run directly under [Orchestral](https://orchestral-ai.com), a provider-agnostic agent framework (Claude, GPT, Gemini, Groq, Ollama) well-suited for tool development and API-based agent interaction.
 
 For a detailed discussion of the framework design and its application to Monte Carlo event generation, see [arXiv:2512.15867](https://arxiv.org/abs/2512.15867). The extension to agentic symbolic computation (Diagrammatica) and a general treatment of tool-constrained agentic programming are presented in [arXiv:2603.26990](https://arxiv.org/abs/2603.26990).
 
@@ -26,142 +18,178 @@ For a detailed discussion of the framework design and its application to Monte C
 
 ## Installation
 
+HEPTAPOD is distributed as a toolkit via **[toolbase](https://github.com/alexr314/toolbase)**, a registry and CLI for building, sharing, installing, and serving agent toolkits over MCP. For HEPTAPOD, toolbase provisions an isolated environment for the toolkit, resolves each bundle's dependencies and configuration, and serves the tools to your agent. Install it once in your preferred Python environment
+
 ```bash
-git clone https://github.com/tonymenzo/heptapod.git
-cd heptapod
-pip install -r requirements.txt        # or: conda env create -f environment.yml && conda activate heptapod
-python test_runner.py --only prereqs   # verify installation
+pip install toolbase        # provides the `tb` command
 ```
 
-Requires **Python 3.12 or 3.13**. See [External Dependencies](#external-dependencies) below for optional software (Mathematica, MadGraph, etc.) needed by specific toolkits.
+### Quick start
+
+```bash
+git clone https://github.com/tonymenzo/heptapod.git && cd heptapod
+tb install .
+```
+
+2. **`git clone … && cd heptapod`**: grab the toolkit
+3. **`tb install .`**: build the environment and install the tools straight from the clone
+
+Useful variations:
+
+```bash
+tb install .[analysis,mg5,nda]   # install only specific bundles
+tb install -e .                  # editable: live-link the source for development
+```
+
+Requires **Python 3.12 or 3.13**; toolbase auto-detects venv/conda and installs each selected bundle's dependencies. See [bundles](#bundles) for what each pulls in and [external Dependencies](#external-dependencies) for software (Mathematica, MadGraph, …) that some bundles expect on the system.
+
+### Portable / versioned installs (no clone)
+
+For air-gapped machines, servers, or pinning a specific version, install directly from a packaged tarball on the [Releases](https://github.com/tonymenzo/heptapod/releases) page:
+
+```bash
+tb install heptapod-<version>.tar.gz
+```
+
+These are self-contained snapshots produced with `tb export`; hand one to a collaborator or `scp` it to a server and `tb install` it as-is.
 
 ---
 
 ## Getting Started
 
-HEPTAPOD tools can be used through any **MCP-compatible client** or the **Orchestral AI** framework. Orchestral is provider-agnostic and well-suited for building, testing, and benchmarking new tools. MCP makes those tools available to any compatible client for interactive use — the examples below focus on coding agents (Claude Code, OpenAI Codex) as the most common case.
+toolbase serves the toolkit's tools to any MCP-compatible client. The typical flow is **install → activate → connect**.
 
-### MCP Coding Agents
-
-Register the HEPTAPOD MCP server and the agent gains direct access to physics tools.
-
-**Claude Code:**
+### Serve to a coding agent (Claude Code / Codex)
 
 ```bash
-# Run from the heptapod repo root
-claude mcp add --scope user heptapod -- \
-  /path/to/python "$(pwd)/mcp/heptapod_server_stdio.py"
+tb activate heptapod                  # add the whole toolkit to what gets served
+tb activate heptapod/nda              # …or just one bundle (nda auto-installs, no external deps)
+tb list                               # show installed toolkits and what's active
+
+tb connect claude-code                # wire into Claude Code (this project's .mcp.json)
+tb connect claude-code -g             # …or user-level (~/.claude.json, every session)
+tb connect codex                      # OpenAI Codex
 ```
 
-**OpenAI Codex:**
+`tb connect` writes the MCP server entry; your agent then spawns `tb serve` automatically upon launch. In Claude Code or Codex, type `/mcp` to confirm the `toolbase` server is connected. Run `tb connect --harnesses` to see all supported harnesses and `tb connect --list` to see where toolbase is currently wired.
+
+To load a system prompt, copy one into your working directory as `CLAUDE.md` (Claude Code) or `AGENTS.md` (Codex). Example system prompts for the EDA and NDA bundles are in `prompts/examples/`.
+
+### Orchestral
+
+All tools inherit from Orchestral's `BaseTool` class. All such instances are natively supported by `toolbase`. Wire it up or run a demo (after configuring an API key, see [Configuration](#configuration)):
 
 ```bash
-codex mcp add heptapod -- \
-  /path/to/python mcp/heptapod_server_stdio.py
+tb connect orchestral                        # writes a runnable agent script
+
+python examples/eda/eda_demo.py              # symbolic calculations (EDA)
+python examples/nda/nda_demo.py              # diagram enumeration + NDA estimation
+python examples/workflows/hep_bsm_demo.py    # Monte Carlo event generation pipeline
 ```
 
-To verify the server is connected, type `/mcp` in either agent's interactive session. To load a specific toolkit (e.g., `eda_toolkit`, `nda_toolkit`), append `--groups <toolkit>` to the server command.
-
-To load a system prompt, copy it to your working directory as `CLAUDE.md` (Claude Code) or `AGENTS.md` (Codex):
-
-```bash
-cp /path/to/system_prompt.md CLAUDE.md
-```
-
-Example system prompts for the EDA and NDA toolkits are provided in `prompts/examples/`.
-
-For available toolkits, scope options, creating custom toolkits, and HTTP transport setup, see [mcp/README.md](mcp/README.md).
-
-### Orchestral AI
-
-HEPTAPOD provides demo scripts that launch an Orchestral agent with a web UI:
-
-```bash
-python examples/eda/eda_demo.py              # Symbolic calculations (EDA)
-python examples/nda/nda_demo.py              # Diagram enumeration + NDA estimation
-python examples/workflows/hep_bsm_demo.py   # Monte Carlo event generation pipeline
-```
-
-Each demo creates a sandboxed workspace, loads the relevant tools and system prompt, and launches a web server at `http://127.0.0.1:8000`. Configure the LLM provider by editing the demo script (supports Claude, GPT, Gemini, Groq, and Ollama).
+Each demo creates a sandboxed workspace, loads the relevant tools and system prompt, and launches a web UI at `http://127.0.0.1:8000`. Configure the LLM provider by editing the demo script (Claude, GPT, Gemini, Groq, Ollama).
 
 ### Worked benchmarks
 
-Complete conversation transcripts with agent outputs are available for the EDA and NDA toolkits in [examples/eda/](examples/eda/) and [examples/nda/](examples/nda/).
+Complete conversation transcripts with agent outputs are available for the EDA and NDA bundles in [examples/eda/](examples/eda/) and [examples/nda/](examples/nda/).
+
+---
+
+## Bundles
+
+HEPTAPOD's capabilities span:
+
+- **Exact tree-level calculations** via automatic FeynCalc code generation (`eda`)
+- **Order-of-magnitude rate estimates** via Naive Dimensional Analysis (`nda`)
+- **Automatic Feynman diagram enumeration** and ranking (`nda` / FeynGraph)
+- **Particle data**, **literature search**, and **unit conversions** (`pdg`, `inspire`, `units`)
+- **Monte Carlo event generation** with MadGraph, Pythia, and Sherpa (`mg5`, `event_gen`)
+- **Event analysis**: cutflows, kinematics, reconstruction, yield normalization (`analysis`)
+- **BSM spectrum setup**: benchmark-point parsing and decay-table construction (`bsm`)
+- **Reproducible, auditable execution traces** via run cards and structured outputs
+
+Tools are grouped into **bundles**, so you install only what a workflow needs. Bundles with a `requires:` key are gated on config (see [Configuration](#configuration)); their tools stay hidden until it's set.
+
+| Bundle | Provides | Needs |
+|--------|----------|-------|
+| `units` | Unit / natural-unit conversions | none |
+| `inspire` | INSPIRE-HEP literature search | none |
+| `pdg` | Particle Data Group lookups | `pdg` pip pkg |
+| `analysis` | Cutflows, kinematics, reconstruction, JSONL/NumPy conversions, yield normalization, recast linting | numpy, tqdm, pylhe |
+| `bsm` | SUSY benchmark-point spectrum parsing; Pythia decay-table construction | none (pure python) |
+| `event_gen` | MadGraph → Pythia/Sherpa event-generation pipeline | pythia8mc, sherpa-mc, pylhe |
+| `mg5` | MadGraph5 run-card generation + fast process validation | `mg5_path` |
+| `nda` | Feynman-diagram enumeration + Naive Dimensional Analysis | feyngraph |
+| `eda` | Exact symbolic amplitudes via Mathematica/FeynCalc | `wolframscript_path` |
+| `feynrules` | BSM UFO model generation via FeynRules | `feynrules_path`, `wolframscript_path` |
+
+Additional domain bundles (e.g. `hepmc`/`delphes` detector simulation, `pythia`-only showering, `llp` long-lived-particle reach studies) ship on their respective feature branches. Inspect [`toolkit.yaml`](toolkit.yaml) for the authoritative, up-to-date list.
 
 ---
 
 ## Configuration
 
-### First-time setup
+### Toolkit configuration (external tool paths)
 
-The repo ships **templates**: `config.example.py` and `.env.example`. Copy each
-to its tracked-name-minus-`.example` once, then edit your local copy. The
-copies are gitignored so your paths and API keys never enter commit history.
+Bundles that call external software read their paths from the toolkit's config (`~/.toolbase/config/heptapod.yaml`). Set them with `tb config`:
 
 ```bash
-cp config.example.py config.py
+tb config set heptapod base_directory /path/to/workspace          # sandbox root for tool I/O
+tb config set heptapod mg5_path /path/to/MG5_aMC_v3.6.6           # event generation (mg5 bundle)
+tb config set heptapod wolframscript_path /path/to/wolframscript  # eda / feynrules
+tb config set heptapod feynrules_path /path/to/FeynRules_v2.3.49  # feynrules
+tb config set heptapod delphes_path /path/to/Delphes             # delphes bundle (if installed)
+
+tb config show heptapod                                          # view effective config
+tb config validate heptapod                                     # check required fields
+```
+
+`base_directory` defaults to the directory the agent launched `tb serve` from; pin it per-project when you want a fixed sandbox.
+
+### LLM providers (Orchestral demos only)
+
+When HEPTAPOD is served through an MCP coding agent, **the agent provides its own LLM**, so no API keys are needed. Keys are only required for the standalone Orchestral demos. Copy the templates and edit your local (gitignored) copies:
+
+```bash
 cp .env.example .env
+cp config.example.py config.py
 ```
-
-### LLM Providers
-
-**Cloud LLMs** (requires API key): Edit `.env` in the repository root (created
-above from `.env.example`):
 
 ```bash
-ANTHROPIC_API_KEY=your_key_here    # Claude — https://console.anthropic.com/
-OPENAI_API_KEY=your_key_here       # GPT — https://platform.openai.com/api-keys
-GOOGLE_API_KEY=your_key_here       # Gemini — https://aistudio.google.com/app/apikey
-GROQ_API_KEY=your_key_here         # Groq — https://console.groq.com/
+# .env: cloud providers (only what you use)
+ANTHROPIC_API_KEY=your_key_here    # Claude:  https://console.anthropic.com/
+OPENAI_API_KEY=your_key_here       # GPT:     https://platform.openai.com/api-keys
+GOOGLE_API_KEY=your_key_here       # Gemini:  https://aistudio.google.com/app/apikey
+GROQ_API_KEY=your_key_here         # Groq:    https://console.groq.com/
 ```
 
-You only need keys for the providers you plan to use. When using HEPTAPOD through an MCP coding agent, the agent provides its own LLM — API keys are only needed for the Orchestral demos.
-
-**Local Ollama** (free, no API key): Install from [ollama.com](https://ollama.com/download), then configure in `config.py` (created above from `config.example.py`):
-
-```python
-ollama_host = None              # localhost:11434 (default)
-ollama_model = "gpt-oss:20b"    # your preferred model
-```
-
-### External Tool Paths
-
-If using toolkits that require external software, edit `config.py` (your local copy):
-
-```python
-wolframscript_path = "/path/to/wolframscript"      # EDA toolkit, FeynRules
-feynrules_path = "/path/to/FeynRules_v2.3.49"      # FeynRules only
-mg5_path = "/path/to/MG5_aMC_v3.6.6"               # Event generation
-```
+For local, key-free inference, install [Ollama](https://ollama.com/download) and set `ollama_host` / `ollama_model` in `config.py`.
 
 ---
 
 ## External Dependencies
 
-Most HEPTAPOD tools (NDA, FeynGraph, PDG, INSPIRE, units) work out of the box with no external software. The following are only needed for specific toolkits:
+Most bundles (`units`, `inspire`, `pdg`, `nda`, `analysis`, `bsm`) work out of the box; toolbase installs their pip dependencies automatically. The following bundles expect additional software on the system:
 
-#### Mathematica and WolframScript
-
-**Required for:** EDA toolkit, FeynRules model generation.
+#### Mathematica and WolframScript (`eda`, `feynrules`)
 
 1. Install [Mathematica](https://www.wolfram.com/mathematica/) (includes WolframScript)
-2. Install [FeynCalc](https://feyncalc.github.io/) (for EDA)
+2. Install [FeynCalc](https://feyncalc.github.io/) (for `eda`)
 3. Authenticate: `wolframscript -authenticate`
 4. Optionally install [FeynRules](https://feynrules.irmp.ucl.ac.be/) v2.3.49 (for UFO model generation)
+5. Point toolbase at it: `tb config set heptapod wolframscript_path <path>`
 
-#### MadGraph5_aMC@NLO
+#### MadGraph5_aMC@NLO (`mg5`, `event_gen`)
 
-**Required for:** Parton-level event generation, NDA cross-checks.
-
-Download from [MadGraph Launchpad](https://launchpad.net/mg5amcnlo):
 ```bash
 wget https://launchpad.net/mg5amcnlo/3.0/3.6.x/+download/MG5_aMC_v3.6.6.tar.gz
 tar -xzf MG5_aMC_v3.6.6.tar.gz
+tb config set heptapod mg5_path "$(pwd)/MG5_aMC_v3.6.6"
 ```
 
-#### Pythia8 and Sherpa3
+#### Pythia8 and Sherpa3 (`event_gen`)
 
-**Installed automatically** via `pip install -r requirements.txt`. No separate installation needed.
+**Installed automatically** as bundle dependencies when you `tb install ./heptapod[event_gen]`. No separate installation needed.
 
 ---
 
@@ -170,18 +198,17 @@ tar -xzf MG5_aMC_v3.6.6.tar.gz
 ```bash
 python test_runner.py                # run all tests
 python test_runner.py --skip-slow    # skip MG5, Pythia, Sherpa generation
-python test_runner.py --only nda     # NDA tools only
-python test_runner.py --only eda     # EDA tools (some require wolframscript)
+python test_runner.py --only nda     # a single component
 python test_runner.py --help         # all options
 ```
 
-Available components: `prereqs`, `nda`, `eda`, `feyngraph`, `logging`, `pdg`, `inspire`, `units`, `llm`, `conversions`, `kinematics`, `reconstruction`, `delta_r_filter`, `feynrules`, `mg5`, `pythia`, `sherpa`.
+Individual tool suites can also be run directly with `pytest` (e.g. `pytest tools/analysis/`). During development, `tb validate` checks that `toolkit.yaml` and the tool modules are well-formed and servable.
 
 ---
 
 ## Usage
 
-Once the MCP server is registered or an Orchestral demo is running, interact with the agent in natural language:
+Once toolbase is connected (or an Orchestral demo is running), interact with the agent in natural language:
 
 **Symbolic calculations (EDA):**
 > Compute the tree-level decay width for H -> b bbar with a Yukawa vertex.
@@ -199,22 +226,19 @@ For detailed tool documentation, see [tools/README.md](tools/README.md).
 
 ---
 
-## Contributing tools
+## Contributing
 
-HEPTAPOD is designed to be extended with custom tools. If you'd like to contribute a new tool for model generation, event simulation, analysis, or any other physics workflow:
+HEPTAPOD is designed to be extended with custom tools. A new tool is a `BaseTool` subclass registered as one entry in `toolkit.yaml`.
 
 **See [CONTRIBUTING.md](CONTRIBUTING.md) for comprehensive guidelines on:**
 
-- Tool architecture and structure
-- Required components (RuntimeFields, StateFields, error handling)
+- Tool architecture and structure (RuntimeFields, StateFields, error handling)
+- Registering a tool + bundle in `toolkit.yaml`
 - Path safety and sandboxing requirements
-- Testing and integration
+- Testing, `tb validate`, and integration
 - Best practices and examples
 
-### Other Contributions
-
-For bug reports, feature requests, or technical discussions:
-- **GitHub Issues**: [https://github.com/tonymenzo/heptapod/issues](https://github.com/tonymenzo/heptapod/issues)
+For bug reports, feature requests, or technical discussions, use [GitHub Issues](https://github.com/tonymenzo/heptapod/issues).
 
 ---
 
@@ -235,7 +259,7 @@ If you use HEPTAPOD in your research, please cite:
 }
 ```
 
-If you use the NDA, FeynGraph, or EDA toolkits, please also cite:
+If you use the NDA, FeynGraph, or EDA bundles, please also cite:
 
 ```bibtex
 @article{Menzo:2026diagrammatica,
@@ -249,6 +273,8 @@ If you use the NDA, FeynGraph, or EDA toolkits, please also cite:
     year = "2026"
 }
 ```
+
+If you build on the [Orchestral](https://orchestral-ai.com) framework (for example, via the demos in `examples/`), please also cite:
 
 ```bibtex
 @misc{roman2026orchestralaiframeworkagent,
@@ -265,7 +291,7 @@ If you use the NDA, FeynGraph, or EDA toolkits, please also cite:
 
 ## License
 
-This project is licensed under the GPL-3.0 license - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GPL-3.0 license - see the [LICENSE](LICENSE.txt) file for details.
 
 ---
 
@@ -286,7 +312,5 @@ This project is licensed under the GPL-3.0 license - see the [LICENSE](LICENSE) 
 - Diagrammatica paper: [arXiv:2603.26990](https://arxiv.org/abs/2603.26990)
 
 ---
-
-**Version**: 1.0.0
 
 **Status**: Active Development

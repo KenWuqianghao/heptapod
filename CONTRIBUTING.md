@@ -18,6 +18,7 @@ HEPTAPOD is designed to be extensible through custom tools. This guide provides 
   - [Path Safety and Sandboxing](#3-path-safety-and-sandboxing)
   - [Output Format](#4-output-format)
   - [Schema Versioning](#5-schema-versioning)
+- [Register Your Tool in `toolkit.yaml`](#register-your-tool-in-toolkityaml)
 - [Testing Your Tool](#testing-your-tool)
 - [Best Practices](#best-practices)
 - [Submitting Your Tool](#submitting-your-tool)
@@ -172,8 +173,8 @@ class YourCustomTool(BaseTool):
 #### State Fields (injected from agent configuration)
 
 - Use `StateField()` for configuration parameters
-- Common state fields: `base_directory`, tool paths (e.g., `mg5_path`, `feynrules_path`), API keys
-- These are set once during agent initialization, not per-call
+- Common state fields: `base_directory`, tool paths (e.g., `mg5_path`, `feynrules_path`)
+- These come from toolbase config (`~/.toolbase/config/heptapod.yaml`, set with `tb config set heptapod <key> <value>`). Declare each such key under `config:` in `toolkit.yaml` so toolbase knows to inject it (see [Register Your Tool](#register-your-tool-in-toolkityaml))
 
 **Example from [mg5.py](tools/mg5/mg5.py#L315-328):**
 
@@ -376,9 +377,68 @@ result = {
 
 ---
 
+## Register Your Tool in `toolkit.yaml`
+
+Writing the class is only half the job. A tool is served to agents only once it is registered in [`toolkit.yaml`](toolkit.yaml), the manifest toolbase reads. Registration has up to three parts.
+
+**1. Add a tool entry** under `tools:`, one per tool class:
+
+```yaml
+tools:
+  - module: tools.your_area.your_tool     # dotted import path from the repo root
+    name: YourCustomTool                   # the class name
+    description: One-line summary the agent sees when choosing tools.
+    bundle: analysis                        # the bundle this tool belongs to
+```
+
+`bundle` can be a single name or a list (`bundle: [analysis, event_gen]`) when a tool fits more than one.
+
+**2. Declare the bundle** under `bundles:` if it does not already exist. A bundle carries the pip dependencies installed when that bundle is selected:
+
+```yaml
+bundles:
+  your_area:
+    deps: [numpy>=2.3.5, some-pkg>=1.0]    # use {} for a pure-python bundle with no deps
+    requires: [your_path]                   # optional: config keys that gate the bundle
+```
+
+A bundle listed under `requires:` stays hidden until its config key is set, so tools that need external software (Mathematica, MadGraph, and so on) do not surface as broken when that software is absent.
+
+**3. Declare any new config key** under `config:` if your tool reads a path or setting from toolbase config (a `StateField` such as `mg5_path`):
+
+```yaml
+config:
+  - name: your_path
+    description: What this path points at, and which bundle needs it.
+    type: path
+    required: false
+```
+
+Users then set it with `tb config set heptapod your_path /path/to/thing`, and toolbase injects the value into the matching `StateField` on your tool.
+
+**Validate before committing:**
+
+```bash
+tb validate
+```
+
+`tb validate` parses `toolkit.yaml`, imports every registered module, and prints the resolved tool count, so a mistyped module path or an undeclared bundle is caught right away.
+
+---
+
 ## Testing Your Tool
 
 **Testing is strongly recommended** (though not mandatory). Well-tested tools are more likely to be accepted and easier to maintain.
+
+### Quick development loop
+
+```bash
+tb validate                                         # toolkit.yaml parses and every module imports
+pytest tools/your_area/                             # run your tool's unit tests
+tb install -e . && tb activate heptapod/your_area   # serve it live to an agent to try by hand
+```
+
+Most tool suites in the repo are plain **pytest** files (`def test_*(): assert ...`) that live next to the tool as `tools/<area>/test_<tool>.py`; run them with `pytest tools/<area>/`. The self-contained runnable harness shown below is an equally valid alternative and is what the aggregate [`test_runner.py`](test_runner.py) drives. Either way, run `tb validate` first, since a tool that does not import cannot be served.
 
 ### Test File Structure
 
@@ -594,7 +654,7 @@ return self.format_error(
     error="Dependency Missing",
     reason="wolframscript not found at specified path",
     context=f"path={self.wolframscript_path}",
-    suggestion="Install Mathematica or update wolframscript_path in config.py"
+    suggestion="Install Mathematica, then run: tb config set heptapod wolframscript_path <path>"
 )
 ```
 
@@ -718,10 +778,11 @@ Feel free to propose new categories as needed. Each category should have:
 
 1. Tool follows the structure template above
 2. All critical requirements met (fields, errors, safety, output format)
-3. Docstring clearly explains what, how, and when to use the tool
-4. Tests written and passing (recommended)
-5. Code follows existing style (see [tools/mg5/mg5.py](tools/mg5/mg5.py) for reference)
-6. External dependencies documented in tool docstring
+3. Registered in `toolkit.yaml` (tool entry, bundle, and any new config key), and `tb validate` passes
+4. Docstring clearly explains what, how, and when to use the tool
+5. Tests written and passing (recommended)
+6. Code follows existing style (see [tools/mg5/mg5.py](tools/mg5/mg5.py) for reference)
+7. External dependencies documented in tool docstring
 
 ### Submission Process
 
@@ -730,36 +791,36 @@ Feel free to propose new categories as needed. Each category should have:
 2. **Implement your tool** following the structure above:
    ```
    tools/your_category/
-   ├── __init__.py          # Export your tool classes
-   ├── your_tool.py         # Tool implementation
-   ├── test_your_tool.py    # Tests (recommended)
-   └── test_files/          # Test data (if needed)
-       ├── input/
-       └── expected_output/
+   ├── __init__.py          # export your tool classes
+   ├── your_tool.py         # tool implementation
+   ├── test_your_tool.py    # tests (pytest style; recommended)
+   └── test_files/          # test data (if needed)
    ```
 
-3. **Add tests** (recommended) and integrate with [test_runner.py](test_runner.py)
+3. **Register it in [`toolkit.yaml`](toolkit.yaml)**: add the tool entry, its bundle (`deps` / `requires`), and any new `config:` key, then run `tb validate` (see [Register Your Tool](#register-your-tool-in-toolkityaml)).
 
-4. **Document external dependencies**:
-   - In tool docstring
-   - In [README.md](README.md) (update Installation section if needed)
-   - In [config.example.py](config.example.py) if configuration paths are needed
-     (the tracked template — users copy it to `config.py` locally)
+4. **Add tests** (recommended): pytest files next to the tool, and optionally an entry in [`test_runner.py`](test_runner.py) for the aggregate runner.
 
-5. **Update documentation**:
-   - Add entry to [tools/README.md](tools/README.md) with usage examples
-   - Update main [README.md](README.md) if adding a major feature
+5. **Document external dependencies**:
+   - In the tool docstring
+   - In [README.md](README.md) (Installation / External Dependencies, if needed)
+   - As a `config:` entry in [`toolkit.yaml`](toolkit.yaml) if the tool needs a path or setting (users set it with `tb config set heptapod <key> <value>`)
 
-6. **Submit a pull request** with:
+6. **Update documentation**:
+   - Add an entry to [tools/README.md](tools/README.md) with usage examples
+   - Update the main [README.md](README.md) if adding a major feature
+
+7. **Submit a pull request** with:
    - Clear title describing the tool
    - Description of what the tool does and why it's useful
    - Example usage (input/output)
-   - Any external dependencies and installation instructions
-   - Test results (`python test_runner.py --only your_tool`)
+   - Any external dependencies and how to install them
+   - Test results (`pytest tools/<area>/`) and `tb validate` output
 
 ### PR Checklist
 
 - [ ] Tool implementation complete
+- [ ] Registered in `toolkit.yaml` and `tb validate` passes
 - [ ] Tests written and passing (or explanation if skipped)
 - [ ] Documentation updated (tool docstring, README, etc.)
 - [ ] External dependencies documented

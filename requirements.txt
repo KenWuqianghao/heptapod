@@ -8,8 +8,10 @@
 
 # Orchestral framework — every heptapod tool subclasses BaseTool and uses
 # RuntimeField / StateField; the toolbase serve host needs this to be
-# import-able before any per-bundle tool module loads.
-orchestral-ai>=1.5.0
+# import-able before any per-bundle tool module loads. 1.10 is the first
+# release whose orchestral.mcp speaks MCP SDK 2.x, which is what that host
+# talks to it over.
+orchestral-ai>=1.10.0
 
 # HTTP — tools/inspire/inspire_interface.py imports `requests` at module
 # top level (and tools/inspire/__init__.py eagerly loads the interface).

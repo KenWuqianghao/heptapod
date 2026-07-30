@@ -38,9 +38,7 @@ Useful variations:
 
 ```bash
 tb install . --bundle analysis --bundle mg5 --bundle nda   # only these bundles
-tb install '.[analysis,mg5,nda]'                           # same, pip-extras style
-                                                           # (quote it — zsh globs the brackets)
-tb install -e .                  # editable: live-link the source for development
+tb install -e .                                            # editable: live-link the source for development
 ```
 
 Requires **Python 3.12 or 3.13**; toolbase auto-detects venv/conda and installs each selected bundle's dependencies. See [bundles](#bundles) for what each pulls in and [external Dependencies](#external-dependencies) for software (Mathematica, MadGraph, …) that some bundles expect on the system.
@@ -231,7 +229,7 @@ tb config set heptapod mg5_path "$(pwd)/MG5_aMC_v3.6.6"
 
 #### Pythia8 and Sherpa3 (`event_gen`)
 
-**Installed automatically** as bundle dependencies when you `tb install './heptapod[event_gen]'`. No separate installation needed.
+**Installed automatically** as bundle dependencies when you `tb install . --bundle event_gen`. No separate installation needed.
 
 ---
 

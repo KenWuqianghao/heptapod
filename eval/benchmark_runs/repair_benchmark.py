@@ -130,8 +130,9 @@ def validate(page: str, fr: Path, round_no: int) -> dict:
     """Full chain on one .fr; mirrors validation_benchmark.run_one but for an
     arbitrary file path, and preserves the full logs next to the round dir."""
     row: dict = {"round": round_no, "fr": str(fr)}
-    lag = vb.total_lag_symbol(fr)
+    lag, lag_info = vb.total_lag_symbol(fr)
     row["lag_symbol"] = lag
+    row["lag_resolution"] = lag_info
     if not lag:
         row.update({"compile_ok": False, "status": "no_lagrangian_symbol", "checks": {}})
         return row

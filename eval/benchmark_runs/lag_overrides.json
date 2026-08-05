@@ -1,0 +1,28 @@
+{
+  "_README": [
+    "Human-declared total Lagrangian per model, for models where the harness",
+    "cannot resolve one. validation_benchmark.total_lag_symbol resolves the",
+    "total by reference analysis: the term no other term refers to. When more",
+    "than one such root survives, the model never declared a single total and",
+    "the harness refuses to guess — it reports ambiguous_lagrangian_symbol and",
+    "leaves the model unscored.",
+    "",
+    "Set a value here to declare the total. The value is passed to",
+    "UFO_generator.wl as LagName and is evaluated as Wolfram, so a sum such as",
+    "'LA+LB+LC' is valid, not only a bare symbol.",
+    "",
+    "null means undeclared. See LAGRANGIAN_AMBIGUITY.md for what each model",
+    "defines and why the proposed reading is what it is. NOTHING HERE IS",
+    "APPLIED UNTIL A PHYSICIST SETS IT."
+  ],
+
+  "331": null,
+  "ALRM_general": null,
+  "CHEIDI": null,
+  "ChernSimonsPortal": null,
+  "DMsimp": null,
+  "HNLs": null,
+  "VLC_LN": null,
+  "VLQ": null,
+  "topBSM": null
+}

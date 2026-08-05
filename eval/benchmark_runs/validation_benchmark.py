@@ -47,6 +47,7 @@ sys.path.insert(0, str(REPO))
 
 import config  # noqa: E402
 from tools.feynrules.wl_checks import parse_check_blocks  # noqa: E402
+from tools.frgen.fr_parser import parse_lagrangian_terms  # noqa: E402
 
 DRIVER = REPO / "tools" / "feynrules" / "UFO_generator.wl"
 MG5 = Path(config.mg5_path) / "bin" / "mg5_aMC"
@@ -63,15 +64,166 @@ DEFAULT_SUBSET = [
 ]
 
 
-def total_lag_symbol(fr_path: Path) -> str | None:
-    """The model's grand-total Lagrangian symbol = the last top-level `L... :=|=`
-    assignment (the one that sums the sub-Lagrangians)."""
-    sym = None
-    for line in fr_path.read_text(errors="replace").splitlines():
+_IDENT_RE = re.compile(r"\b([A-Za-z][A-Za-z0-9$]*)\b")
+
+
+def total_lag_symbol(fr_path: Path) -> tuple[str | None, dict]:
+    """The model's grand-total Lagrangian, resolved by reference analysis.
+
+    This used to take the LAST top-level ``L... =`` line in the file. That is
+    a guess about file order, and it was wrong for 11 of the 28 benchmark
+    models: it selected a sub-Lagrangian, FeynRules compiled that fragment
+    alone, and the fragment still passed every Hermiticity / kinetic / mass
+    check and imported into MadGraph. Models counted as passing with most of
+    their physics missing — VLQ compiled 1 of its 11 Lagrangian terms.
+
+    Instead: build the reference graph over top-level ``L*`` assignments and
+    take the **roots**, the terms no other term refers to.
+
+    Exactly one root is the normal case, and it is the total.
+
+    Several roots means the model never declared a single total, and the
+    harness genuinely cannot know which is intended. Summing them is NOT a
+    safe fallback: roots are independent only as *symbols*, not as physics.
+    ChernSimonsPortal defines `LChernSimonsPortal` (symmetric phase, in H and
+    the B/Wi field strengths) and `LChernSimonsPortalBroken` (the same
+    operator expanded in Z/A/W mass eigenstates) — adding them double-counts
+    the interaction. So ambiguity is reported, not resolved, and the model is
+    left unscored until someone declares the total. `lag_overrides.json` maps
+    page -> symbol for exactly that purpose.
+
+    Returns ``(symbol_or_None, info)``; a None symbol with ``ambiguous`` set
+    means "unscoreable", which is different from "failed".
+    """
+    text = fr_path.read_text(errors="replace")
+    try:
+        terms = parse_lagrangian_terms(text)
+    except Exception as e:                                    # noqa: BLE001
+        return None, {"roots": [], "ambiguous": False, "parse_error": str(e)}
+    body = {t["name"]: t["expression"] for t in terms if t["name"].startswith("L")}
+    if not body:
+        return None, {"roots": [], "ambiguous": False}
+
+    referenced: set[str] = set()
+    for name, expr in body.items():
+        for tok in _IDENT_RE.findall(expr):
+            if tok in body and tok != name:
+                referenced.add(tok)
+    roots = [n for n in body if n not in referenced]
+
+    # what the old positional rule would have picked, kept for the report
+    legacy = None
+    for line in text.splitlines():
         m = re.match(r"^(L[A-Za-z0-9]*)\s*:?=", line)
         if m:
-            sym = m.group(1)
-    return sym
+            legacy = m.group(1)
+
+    roots, dropped = _drop_redundant_roots(roots, body)
+    info = {"roots": roots, "legacy_symbol": legacy,
+            "n_terms_defined": len(body), "ambiguous": False}
+    if dropped:
+        info["redundant_roots"] = dropped
+
+    if not roots:                        # every term referenced => cycle
+        info.update({"ambiguous": True, "cyclic": True})
+        return None, info
+
+    # An explicit human declaration always wins.
+    override = _lag_override(fr_path)
+    if override:
+        info.update({"override": override,
+                     "changed_from_legacy": override != legacy})
+        return override, info
+
+    if len(roots) > 1:
+        info["ambiguous"] = True
+        return None, info
+
+    info["changed_from_legacy"] = roots[0] != legacy
+    return roots[0], info
+
+
+_ALIAS_LEFTOVER_RE = re.compile(r"[\s+\-()]")
+_ROOT_NAME_PREFERENCE = ("LTot", "LFull", "LBSM", "LTotal")
+
+
+def _reach(start: str, body: dict) -> set:
+    seen, stack = set(), [start]
+    while stack:
+        cur = stack.pop()
+        if cur in seen:
+            continue
+        seen.add(cur)
+        for tok in _IDENT_RE.findall(body.get(cur, "")):
+            if tok in body:
+                stack.append(tok)
+    return seen
+
+
+def _is_pure_alias(name: str, body: dict) -> bool:
+    """True when a term is only a sum of other terms, contributing no physics.
+
+    ``LD := LD1 + LD2 + LD3`` is a pure alias. ``LSextet := LSextetKin + LD1 +
+    ... + LPot`` is too. Anything with real operators left over after removing
+    term names and ``+ - ( )`` is not.
+    """
+    expr = body.get(name, "")
+    for tok in sorted(set(_IDENT_RE.findall(expr)), key=len, reverse=True):
+        if tok in body:
+            expr = expr.replace(tok, "")
+    return not _ALIAS_LEFTOVER_RE.sub("", expr)
+
+
+def _drop_redundant_roots(roots: list, body: dict) -> tuple[list, list]:
+    """Remove roots that are pure aliases adding nothing another root lacks.
+
+    Two real cases in the benchmark, neither of them a guess:
+      Sextets   `LD := LD1+LD2+LD3` while `LSextet` already reaches LD1..LD3
+      MDMmodel  `LMDMNP` and `LTot` are the same sum written twice
+    Dropping these leaves a single genuine total. Roots that carry physics of
+    their own, or reach terms no other root reaches, are always kept.
+    """
+    if len(roots) < 2:
+        return roots, []
+    reach = {r: _reach(r, body) - {r} for r in roots}
+    kept, dropped = list(roots), []
+    for r in roots:
+        if not _is_pure_alias(r, body):
+            continue
+        others = [s for s in kept if s != r]
+        # covered by a single other root that we are keeping
+        covering = next((s for s in others if reach[r] <= reach[s]), None)
+        if covering is None:
+            continue
+        # mutual duplicates: keep the preferred name, drop the other
+        if reach[covering] <= reach[r]:
+            pref = next((p for p in _ROOT_NAME_PREFERENCE if p in (r, covering)), None)
+            if pref == r:
+                continue
+        kept.remove(r)
+        dropped.append({"root": r, "covered_by": covering})
+    return (kept or roots), dropped
+
+
+def _lag_override(fr_path: Path) -> str | None:
+    """Human-declared total for a model, from lag_overrides.json.
+
+    Shape: ``{"<page>": "LTot", ...}``. The page is the benchmark directory
+    name, i.e. the first path component under this file's directory.
+    """
+    path = HERE / "lag_overrides.json"
+    if not path.is_file():
+        return None
+    try:
+        table = json.loads(path.read_text())
+    except (OSError, json.JSONDecodeError):
+        return None
+    try:
+        page = fr_path.resolve().relative_to(HERE.resolve()).parts[0]
+    except ValueError:
+        return None
+    val = table.get(page)
+    return val if isinstance(val, str) and val else None
 
 
 def _kill_stale_kernels() -> None:
@@ -173,10 +325,15 @@ def run_one(page: str) -> dict:
     if not fr.is_file():
         row["status"] = "missing_fr"
         return row
-    lag = total_lag_symbol(fr)
+    lag, lag_info = total_lag_symbol(fr)
     row["lag_symbol"] = lag
+    row["lag_resolution"] = lag_info
     if not lag:
-        row["status"] = "no_lagrangian_symbol"
+        # Unscoreable is not the same as failed: the model may be perfectly
+        # good, but it never says which symbol is its total Lagrangian, so
+        # there is nothing defensible to compile.
+        row["status"] = ("ambiguous_lagrangian_symbol" if lag_info.get("ambiguous")
+                         else "no_lagrangian_symbol")
         return row
     outdir = OUTROOT / page / f"{page}_UFO"
     comp = compile_to_ufo(page, fr, lag, outdir)

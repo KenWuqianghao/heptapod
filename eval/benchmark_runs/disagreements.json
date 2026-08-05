@@ -1,0 +1,903 @@
+{
+ "models_with_crosscheck": [
+  "368sextets",
+  "ChernSimonsPortal",
+  "DMsimp",
+  "EffLRSM",
+  "GeneralU1",
+  "HeavyN",
+  "HiggsCharacterisation",
+  "LeptoQuark",
+  "MDMmodel",
+  "MSSMD",
+  "Monotops",
+  "NJLComposite",
+  "SMWeinberg",
+  "Sextets",
+  "Top-Philic-Zprime",
+  "Triplets",
+  "VLQ",
+  "Wprime",
+  "pNG",
+  "pSPSS",
+  "topBSM"
+ ],
+ "models_without_crosscheck": [
+  "331",
+  "B-L-SM",
+  "CHEIDI",
+  "VLC_LN"
+ ],
+ "counts": {
+  "convention": 45,
+  "substantive": 79,
+  "cosmetic": 13,
+  "unclassified": 0
+ },
+ "per_model": {
+  "368sextets": [
+   {
+    "issue": "Missing scalar and fermion lepton numbers",
+    "severity": "substantive",
+    "check": "A human should check whether the implementation tracks the accidental lepton-number assignments in Table X or intentionally omits them because they do not affect generated vertices.",
+    "theme": "Overall sign / term ordering"
+   },
+   {
+    "issue": "All higher-dimensional operator coefficients lack explicit EFT cutoff powers",
+    "severity": "substantive",
+    "check": "A human should check whether \\(C_{Fu},C_{Fd},C_{FBu},C_{FBd},C_{Su},C_{Sd}\\) are intended to be dimensionful Wilson coefficients already including \\(1/\\Lambda\\), \\(1/\\Lambda^2\\), or \\(1/\\Lambda^3\\).",
+    "theme": "Normalisation and numeric factors"
+   },
+   {
+    "issue": "Scalar operators are written with \\(\\Phi^\\dagger\\) and reordered barred spinors rather than the paper\u2019s \\(\\Phi(q_R^c\\sigma\\ell_R)\\)",
+    "severity": "convention",
+    "check": "",
+    "theme": "Hermitian conjugation and complex phases"
+   },
+   {
+    "issue": "Fermion operators are written as \\(\\bar\\Psi\\,\\Gamma\\,q_R^c\\) rather than the paper\u2019s \\((q_R^c\\Gamma\\Psi)\\)",
+    "severity": "convention",
+    "check": "A human should check the Dirac-charge-conjugation convention used by the implementation, especially signs for tensor bilinears.",
+    "theme": "Overall sign / term ordering"
+   },
+   {
+    "issue": "Color tensor \\(\\mathcal C\\) is not named \\(J\\) and is expressed through \\(K\\)-type tensors",
+    "severity": "convention",
+    "check": "",
+    "theme": "Overall sign / term ordering"
+   },
+   {
+    "issue": "Implementation default masses \\(500\\) appear in the reconstruction",
+    "severity": "cosmetic",
+    "check": "A human should check whether these are merely UFO/FeynRules benchmark defaults rather than claims about the paper\u2019s physical model.",
+    "theme": "Other"
+   }
+  ],
+  "ChernSimonsPortal": [
+   {
+    "issue": "Replacement of \\(D\\theta_X\\) by \\(X_\\mu\\)",
+    "severity": "convention",
+    "check": "A human should check whether the implementation is explicitly in unitary gauge or whether the St\u00fcckelberg/Goldstone mode was unintentionally omitted.",
+    "theme": "Gauge, metric and derivative convention"
+   },
+   {
+    "issue": "Second gauge-covariant \\(c_2\\) operator differs in Higgs conjugation/order",
+    "severity": "convention",
+    "check": "",
+    "theme": "Hermitian conjugation and complex phases"
+   },
+   {
+    "issue": "Broken \\(XW^+W^-\\) term lacks an explicit antisymmetrized or Hermitian-conjugate contribution",
+    "severity": "substantive",
+    "check": "A human should check the generated Feynman rule and confirm whether it produces the paper\u2019s \\((k_2-k_1)\\) momentum structure in Eq. (28).",
+    "theme": "Hermitian conjugation and complex phases"
+   },
+   {
+    "issue": "UV heavy fermion sector is absent",
+    "severity": "substantive",
+    "check": "",
+    "theme": "Other"
+   },
+   {
+    "issue": "Heavy scalar \\(\\Phi\\) and UV Yukawa terms are absent",
+    "severity": "substantive",
+    "check": "A human should check whether the implementation intentionally integrates out \\(\\Phi\\) and the heavy fermions, leaving only Eq. (5), or whether these fields were expected to be present.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Paper\u2019s St\u00fcckelberg mass-sector normalization is not reconstructed",
+    "severity": "convention",
+    "check": "A human should check whether the vector kinetic and mass normalization in the implementation matches the paper\u2019s \\( -|F_X|^2/(4g_X^2)+M_X^2|D\\theta_X|^2/2\\).",
+    "theme": "Normalisation and numeric factors"
+   },
+   {
+    "issue": "Implementation benchmark values \\(c_1=c_2=0.001\\), \\(M_X=1.0\\), width \\(=1.0\\) are not paper definitions",
+    "severity": "cosmetic",
+    "check": "A human should check whether these are harmless simulation defaults rather than claimed physical predictions from the paper.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Higgs hypercharge normalization differs in presentation",
+    "severity": "convention",
+    "check": "A human should check that the implementation\u2019s \\(Y_H=1/2\\) convention is consistently mapped to the paper\u2019s charge normalization where \\(Q_Y(H)=1\\) appears in the UV charge tables.",
+    "theme": "Normalisation and numeric factors"
+   }
+  ],
+  "DMsimp": [
+   {
+    "issue": "Independent gluon contact operators",
+    "severity": "substantive",
+    "check": "A human should check whether the implementation intentionally extends the paper model with free \\(g^S_g/\\Lambda\\) and \\(g^P_g/\\Lambda\\) operators, or whether these were meant to reproduce Eq. (3), in which case the coefficient mapping is missing.",
+    "theme": "Normalisation and numeric factors"
+   },
+   {
+    "issue": "Eq. (3) coefficient mismatch",
+    "severity": "substantive",
+    "check": "A human should check whether \\(g^S_g/\\Lambda\\) and \\(g^P_g/\\Lambda\\) are externally constrained to \\(\\alpha_s g^S_t/(12\\pi v)\\) and \\(\\alpha_s g^P_t/(8\\pi v)\\); without that mapping, the reconstruction describes a more general EFT than the paper\u2019s top-EFT approximation.",
+    "theme": "Normalisation and numeric factors"
+   },
+   {
+    "issue": "Real scalar dark matter \\(X_r\\)",
+    "severity": "convention",
+    "check": "A human should check whether the review target is the paper\u2019s displayed study model, which uses Dirac \\(\\chi\\), or the broader implementation alluded to by the paper as allowing real scalar dark matter.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Complex scalar dark matter \\(X_c\\)",
+    "severity": "convention",
+    "check": "A human should check whether the implementation file was expected to include scalar-DM options beyond the paper\u2019s explicit Lagrangian.",
+    "theme": "Hermitian conjugation and complex phases"
+   },
+   {
+    "issue": "Complex scalar vector-current coupling to \\(Y_1\\)",
+    "severity": "convention",
+    "check": "A human should check whether this is an implementation extension for scalar DM rather than a mismatch with the fermionic paper model.",
+    "theme": "Hermitian conjugation and complex phases"
+   },
+   {
+    "issue": "Default masses and widths",
+    "severity": "cosmetic",
+    "check": "A human should check whether the reconstruction is reporting UFO/FeynRules default parameter values, because the paper\u2019s physical benchmarks use different mass and width choices.",
+    "theme": "Other"
+   }
+  ],
+  "EffLRSM": [
+   {
+    "issue": "Light-neutrino charged-current conjugation",
+    "severity": "convention",
+    "check": "a human should check the original implementation\u2019s particle class and FeynRules conventions to see whether the field is actually the charge-conjugated light neutrino or whether the reconstruction normalized it away incorrectly.",
+    "theme": "Hermitian conjugation and complex phases"
+   },
+   {
+    "issue": "SM Lagrangian absent from reconstruction",
+    "severity": "convention",
+    "check": "a human should check whether the reconstruction was meant to cover the full UFO/model implementation or only the additional effective LRSM interaction file.",
+    "theme": "Other"
+   }
+  ],
+  "GeneralU1": [
+   {
+    "issue": "Dirac neutrino Yukawa uses \\(H^\\dagger\\) in the reconstruction instead of the Higgs contraction appearing in Eq. (1).",
+    "severity": "substantive",
+    "check": "Check the original implementation\u2019s \\(SU(2)\\), hypercharge, and \\(U(1)_X\\) conventions, because with Table I charges the reconstructed \\(H^\\dagger\\) term is not gauge invariant for general \\(x_H\\).",
+    "theme": "Hermitian conjugation and complex phases"
+   },
+   {
+    "issue": "SM quark and charged-lepton Yukawa terms from Eq. (1) are absent.",
+    "severity": "substantive",
+    "check": "Check whether the implementation intentionally reconstructed only BSM additions or was meant to encode the full minimal \\(U(1)_X\\) Lagrangian.",
+    "theme": "Other"
+   },
+   {
+    "issue": "SM Higgs potential terms \\(-m_h^2H^\\dagger H+\\lambda(H^\\dagger H)^2\\) from Eq. (2) are absent.",
+    "severity": "substantive",
+    "check": "Check whether the base SM Higgs sector is imported elsewhere in the implementation or accidentally omitted.",
+    "theme": "Hermitian conjugation and complex phases"
+   },
+   {
+    "issue": "Full SM field representation table from Table I is not reproduced.",
+    "severity": "cosmetic",
+    "check": "Check whether the reconstruction was intended to document only new fields and derived \\(U(1)_X\\) charges rather than the full model content.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Higgs VEV from Eq. (3) is omitted.",
+    "severity": "convention",
+    "check": "Check whether electroweak symmetry breaking is handled by an external SM model file.",
+    "theme": "Other"
+   },
+   {
+    "issue": "\\(Z'\\) mass relation uses \\(v_\\Phi=M_{Z'}/(2g_X)\\), dropping the \\(x_H^2v^2/4\\) contribution in Eq. (4).",
+    "severity": "convention",
+    "check": "Check whether the implementation is explicitly working in the paper\u2019s \\(v_\\Phi^2\\gg v^2\\), \\(x_\\Phi=1\\) approximation.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Reconstruction includes explicit \\(G_{Z'}\\) and unphysical \\(\\Phi_X\\) fields not shown in the paper\u2019s Eq. (3).",
+    "severity": "cosmetic",
+    "check": "Check the gauge choice in the implementation; this is likely just an implementation-basis detail.",
+    "theme": "Gauge, metric and derivative convention"
+   },
+   {
+    "issue": "Reconstruction lists fixed benchmark parameters such as \\(g_X=0.1\\), \\(x_H=0\\), and \\(m_{\\phi_X}=1000\\).",
+    "severity": "convention",
+    "check": "Check whether these are harmless numerical defaults or whether they restrict scans that the paper treats as free parameters.",
+    "theme": "Other"
+   }
+  ],
+  "HeavyN": [
+   {
+    "issue": "The paper specializes to one heavy mass eigenstate \\(N\\), while the reconstruction contains three \\(N_i\\).",
+    "severity": "substantive",
+    "check": "Check whether `sanitized.fr` intentionally implements a three-state generalization of the public model file, or whether the paper comparison should be restricted to a single selected state such as `n2`.",
+    "theme": "Other"
+   },
+   {
+    "issue": "The reconstruction omits the explicit light-neutrino \\(U_{\\ell m}\\) charged- and neutral-current terms from Eq. (9).",
+    "severity": "substantive",
+    "check": "Check whether these terms are supplied by the imported SM/FeynRules base model or whether the implementation drops PMNS-rotated light-neutrino interactions.",
+    "theme": "Other"
+   },
+   {
+    "issue": "The charged-current and neutral-current heavy-neutrino terms have the opposite displayed overall sign from Eq. (9).",
+    "severity": "convention",
+    "check": "Check the FeynRules sign convention, field ordering, and whether a field or mixing-parameter phase redefinition makes the signs equivalent in generated vertices.",
+    "theme": "Overall sign / term ordering"
+   },
+   {
+    "issue": "The reconstruction treats \\(V_{\\alpha i}\\) as real, while the paper writes \\(V^*_{\\ell N}\\).",
+    "severity": "substantive",
+    "check": "Check whether the implementation is restricted to real active-heavy mixing or whether complex phases are supported elsewhere but lost in the reconstruction.",
+    "theme": "Hermitian conjugation and complex phases"
+   },
+   {
+    "issue": "The reconstruction uses \\(N_i\\) directly, while Eq. (9) writes \\(N^c\\).",
+    "severity": "convention",
+    "check": "For Majorana heavy neutrinos this is usually equivalent, but check the implementation\u2019s Majorana/self-conjugate declaration and fermion-flow conventions.",
+    "theme": "Hermitian conjugation and complex phases"
+   },
+   {
+    "issue": "The reconstruction gives explicit masses and widths for three heavy states, while the paper discusses results as functions of a single \\(m_N\\).",
+    "severity": "substantive",
+    "check": "Check whether the benchmark masses and widths are implementation defaults rather than part of the paper\u2019s analytical model definition.",
+    "theme": "Other"
+   },
+   {
+    "issue": "The Goldstone terms are reconstructed explicitly, but the paper only states that Goldstone couplings are included in Feynman gauge.",
+    "severity": "cosmetic",
+    "check": "Check the actual model file or generated Feynman rules if an exact sign-level validation of Goldstone vertices is required.",
+    "theme": "Overall sign / term ordering"
+   }
+  ],
+  "HiggsCharacterisation": [
+   {
+    "issue": "Reconstruction sums spin-0, spin-1, and spin-2 sectors into one \\(\\mathcal L_{\\rm HCNP}\\), whereas the paper writes \\(\\mathcal L_{\\mathrm{HC},J}\\) for a chosen \\(J\\) sector in eq. (2.1).",
+    "severity": "convention",
+    "check": "Check whether the implementation file intentionally contains all hypotheses simultaneously with couplings used as switches.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Reconstruction omits the SM-like spin-0 \\(X_0ZZ\\) and \\(X_0W^+W^-\\) mass terms proportional to \\(c_\\alpha\\kappa_{\\rm SM}\\) in eq. (2.4).",
+    "severity": "substantive",
+    "check": "Check whether those terms are present elsewhere in the implementation or whether `kSM` being unused is an extraction/reconstruction error.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Charged spin-0 derivative \\(W\\) term uses the complex coefficient on the charge-conjugate structure relative to eq. (2.4).",
+    "severity": "convention",
+    "check": "Check the implementation\u2019s definition of `kHdw`; it may be the complex conjugate of the paper\u2019s \\(\\kappa_{H\\partial W}\\).",
+    "theme": "Hermitian conjugation and complex phases"
+   },
+   {
+    "issue": "Spin-1 \\(W1\\) term has the opposite sign relative to eq. (2.11) if \\(k_{w1}=\\kappa_{W1}\\).",
+    "severity": "substantive",
+    "check": "Check the charged-\\(W\\) field naming and sign convention in the implementation, including the definition of \\(W^\\pm_{\\mu\\nu}\\).",
+    "theme": "Overall sign / term ordering"
+   },
+   {
+    "issue": "Spin-1 \\(W2\\) term has the opposite sign relative to eq. (2.11) because the charged fields carry swapped Lorentz indices contracted with antisymmetric \\(X_1^{\\mu\\nu}\\).",
+    "severity": "substantive",
+    "check": "Check whether the implementation defines `kw2` with an implicit minus sign relative to the paper.",
+    "theme": "Overall sign / term ordering"
+   },
+   {
+    "issue": "Spin-1 \\(W4\\) term has the opposite sign relative to eq. (2.11) for the same antisymmetric-index reason as \\(W2\\).",
+    "severity": "substantive",
+    "check": "Check whether the implementation defines `kw4` with an implicit minus sign relative to the paper.",
+    "theme": "Overall sign / term ordering"
+   },
+   {
+    "issue": "Spin-2 fermion sector introduces a separate \\(k_{q3}\\) third-generation quark coupling and extra mass-trace pieces not present in the compact paper eq. (2.15).",
+    "severity": "substantive",
+    "check": "Check whether the implementation extends the paper\u2019s displayed \\(\\kappa_q,\\kappa_\\ell\\) structure or whether the paper\u2019s \\(\\sum_f\\) notation was intended to allow generation-dependent \\(\\kappa_f\\).",
+    "theme": "Index, flavour and generation labels"
+   },
+   {
+    "issue": "Reconstruction\u2019s fermion energy-momentum tensor differs from the explicit paper tensor in eq. (2.17), especially in \\(g_{\\mu\\nu}\\), mass, and total-derivative terms.",
+    "severity": "substantive",
+    "check": "Check the exact FeynRules definition of `Tfermion` and whether equations of motion or on-shell simplifications were applied in the reconstruction.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Reconstruction\u2019s photon energy-momentum tensor omits derivative terms shown explicitly in paper eq. (2.18).",
+    "severity": "substantive",
+    "check": "Check whether the implementation uses a simplified transverse/on-shell tensor or includes the omitted terms elsewhere through gauge-fixing conventions.",
+    "theme": "Gauge, metric and derivative convention"
+   },
+   {
+    "issue": "Reconstruction retains only \\(t,b,\\tau\\) mass-trace pieces in spin-2 fermion terms.",
+    "severity": "convention",
+    "check": "Check whether light-fermion masses are intentionally neglected in the implementation, as is common phenomenologically.",
+    "theme": "Other"
+   }
+  ],
+  "LeptoQuark": [
+   {
+    "issue": "Missing \\(U_1\\) mass term",
+    "severity": "substantive",
+    "check": "A human should check whether the implementation supplies the vector mass solely through particle declarations in a way that FeynRules/UFO treats equivalently, or whether the Lagrangian object itself is incomplete.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Missing \\(Z'\\) kinetic term",
+    "severity": "substantive",
+    "check": "A human should check whether a separate `LZpKin` exists outside the reconstructed `LLeptoQuark` sum or whether the reconstruction/implementation accidentally omits the propagating \\(Z'\\) kinetic term.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Missing \\(Z'\\) mass term",
+    "severity": "substantive",
+    "check": "A human should check whether the \\(Z'\\) mass is generated from particle metadata only, or whether the Lagrangian used for model export lacks the paper\u2019s \\(\\frac12M_{Z'}^2Z'_\\mu Z'^\\mu\\) term.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Missing \\(G'\\) mass term",
+    "severity": "substantive",
+    "check": "A human should check whether the coloron mass is included elsewhere in the implementation or only assigned as a particle property.",
+    "theme": "Overall sign / term ordering"
+   },
+   {
+    "issue": "Implementation-only lepton-number assignment for `VLQ`",
+    "severity": "cosmetic",
+    "check": "A human should check that this bookkeeping charge does not enforce unintended selection rules or conflict with the intended \\(U_1\\) interactions.",
+    "theme": "Overall sign / term ordering"
+   },
+   {
+    "issue": "Implementation-only unphysical alias `U` for `VLQ`",
+    "severity": "cosmetic",
+    "check": "A human should check that the alias is not exported as an additional physical vector state.",
+    "theme": "Other"
+   }
+  ],
+  "MDMmodel": [
+   {
+    "issue": "Missing full \\(L_{\\rm SM}\\) content",
+    "severity": "substantive",
+    "check": "A human should check whether the implementation intentionally imports the SM Lagrangian elsewhere, since the reconstruction itself only shows the BSM/Higgs-sector subset.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Missing Eq. (5) scalar-parameter relations",
+    "severity": "convention",
+    "check": "A human should check the implementation definitions of \\(\\mu_S^2,\\mu_H^2,\\lambda_H,\\lambda_S,\\kappa\\) against the paper\u2019s formulas, especially the sign and absolute-value conventions.",
+    "theme": "Overall sign / term ordering"
+   },
+   {
+    "issue": "Missing \\(q^u_{3L}\\) left-handed mixing relation from Eq. (9)",
+    "severity": "substantive",
+    "check": "A human should check whether the implementation rotates the SM top component consistently with \\(q^u_{3L}=c_Lt_L+s_Lt'_L\\), not only the heavy \\(T_L\\) component.",
+    "theme": "Chirality and projectors"
+   },
+   {
+    "issue": "Extra right-handed mixing \\(T_R=P_R(-s_rt+c_rt')\\)",
+    "severity": "convention",
+    "check": "A human should check whether this is an implementation-level diagonalization convention compatible with the paper\u2019s approximations \\(m_{t'}\\gg m_t\\) and \\(\\tan\\theta_L\\ll m_{t'}/m_t\\).",
+    "theme": "Chirality and projectors"
+   },
+   {
+    "issue": "Extra Goldstone/full-doublet conventions",
+    "severity": "convention",
+    "check": "A human should check only that the \\(-iG^+\\) and \\(+iG^0\\) phase conventions are used consistently in the implementation\u2019s gauge fixing and Feynman rules.",
+    "theme": "Hermitian conjugation and complex phases"
+   },
+   {
+    "issue": "Top-partner mass mapping \\(M\\leftrightarrow M_\\Delta=M_{T'}c_l\\)",
+    "severity": "convention",
+    "check": "",
+    "theme": "Symbol naming and parameter labels"
+   }
+  ],
+  "MSSMD": [
+   {
+    "issue": "Kinetic mixing replaced by direct muon coupling",
+    "severity": "substantive",
+    "check": "Check whether `gd` was intended as an effective \\(\\epsilon e Q_\\mu\\) coupling after diagonalizing kinetic mixing, or whether the implementation incorrectly omitted photon/dark-photon mixing.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Same `gd` used for dark-sector transition and muon coupling",
+    "severity": "substantive",
+    "check": "Check the original implementation or model card to see whether two physically distinct couplings were collapsed into one parameter.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Missing Higgs decay \\(h\\to2n_1\\)",
+    "severity": "substantive",
+    "check": "Check whether production and Higgs decay were intentionally handled externally by BRIDGE/Pythia rather than encoded in the FeynRules model.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Missing \\(\\epsilon\\)-dependent lifetime/width relation",
+    "severity": "substantive",
+    "check": "Check whether the dark photon lifetime was imposed at event-generation level rather than derived from the model file.",
+    "theme": "Index, flavour and generation labels"
+   },
+   {
+    "issue": "Missing NMSSM \\(h_{1,2}\\to2a_1\\), \\(a_1\\to\\mu^+\\mu^-\\) interactions",
+    "severity": "substantive",
+    "check": "Check whether the reconstruction is only for the dark SUSY benchmark and not meant to cover the NMSSM benchmark also discussed in the paper.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Scalar-sector mismatch: `h0`, `H0`, `A0`, `Hp` versus paper\u2019s \\(h_1,h_2,a_1\\)",
+    "severity": "convention",
+    "check": "Check whether `A0` is intended to represent \\(a_1\\), or whether this is a generic MSSM scaffold unrelated to the paper\u2019s NMSSM benchmark.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Large extra MSSM-like spectrum in reconstruction",
+    "severity": "convention",
+    "check": "Check whether these fields are inherited boilerplate from an MSSM/FeynRules template and unused in the actual generated process.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Majorana assignment for \\(n_1\\) and \\(n_D\\)",
+    "severity": "convention",
+    "check": "Check the underlying dark SUSY model reference or implementation, since the paper calls them neutralinos but does not explicitly state the Majorana convention in the supplied text.",
+    "theme": "Overall sign / term ordering"
+   }
+  ],
+  "Monotops": [
+   {
+    "issue": "\\(L_{\\rm SM}\\) omission",
+    "severity": "convention",
+    "check": "A human should check whether `reconstruction.md` intentionally reconstructs only the BSM FeynRules interactions or whether the full model file should include/import the Standard Model Lagrangian.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Extra electroweak quantum numbers",
+    "severity": "convention",
+    "check": "A human should check the implementation file\u2019s actual class declarations to confirm whether \\(SU(2)_L\\) singlet and hypercharge assignments were explicit model choices or inferred by the reconstruction.",
+    "theme": "Overall sign / term ordering"
+   },
+   {
+    "issue": "Self-conjugate invisible fermion \\(\\chi\\)",
+    "severity": "substantive",
+    "check": "A human should check whether `FMET` is declared self-conjugate in the implementation, because the paper\u2019s Eq. (1) does not require \\(\\chi\\) to be Majorana-like.",
+    "theme": "Hermitian conjugation and complex phases"
+   },
+   {
+    "issue": "Real neutral scalar/vector assumptions",
+    "severity": "convention",
+    "check": "A human should check whether `SMET` and `VMET` are explicitly self-conjugate in the implementation, since the paper only identifies them as neutral invisible bosonic states.",
+    "theme": "Hermitian conjugation and complex phases"
+   },
+   {
+    "issue": "Default mass values versus paper scenarios",
+    "severity": "substantive",
+    "check": "A human should check whether the reconstruction is reporting arbitrary implementation defaults or the benchmark masses used for the paper\u2019s five scenarios.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Notation swap \\(V/X\\)",
+    "severity": "cosmetic",
+    "check": "A human should check any downstream comparison carefully because the reconstruction uses \\(X_\\mu\\) for the paper\u2019s neutral vector \\(V_\\mu\\), and \\(V_\\mu^a\\) for the paper\u2019s colored vector \\(X_{\\mu,i}\\).",
+    "theme": "Symbol naming and parameter labels"
+   }
+  ],
+  "NJLComposite": [
+   {
+    "issue": "Missing \\(SU(2)_L\\) doublet structure and charged-\\(W\\) interactions",
+    "severity": "substantive",
+    "check": "A human should check whether the actual implementation intentionally broke the paper\u2019s Eq. (2) doublet structure into electroweak-component singlets, because this changes gauge interactions involving \\(W^\\pm\\).",
+    "theme": "Gauge, metric and derivative convention"
+   },
+   {
+    "issue": "Neutrino chirality in the \\(Y=1/6\\) leptoquark interactions",
+    "severity": "substantive",
+    "check": "A human should check the implementation file\u2019s chiral projectors for the neutrino vertices against Table I and Eq. (3), since the paper uses \\(\\bar\\nu_R q_L\\) for the positive-charge \\(Y=1/6\\) constituents while the reconstruction reports \\(\\bar\\nu_L q_L\\).",
+    "theme": "Chirality and projectors"
+   },
+   {
+    "issue": "Mass-term sign relative to Eq. (1)",
+    "severity": "convention",
+    "check": "A human should check the paper\u2019s metric/sign convention and the FeynRules scalar mass convention before treating this as a physical mismatch.",
+    "theme": "Overall sign / term ordering"
+   },
+   {
+    "issue": "Flavor-mixed Yukawa terms of Eq. (4) absent from the reconstruction",
+    "severity": "substantive",
+    "check": "A human should check whether Eq. (4) was intended as part of the implemented model or only as a phenomenological possibility, because the reconstruction contains only generation-aligned couplings without explicit mixing-matrix factors.",
+    "theme": "Index, flavour and generation labels"
+   }
+  ],
+  "SMWeinberg": [
+   {
+    "issue": "Charged-current overall sign, Eqs. (8) and (23)",
+    "severity": "convention",
+    "check": "",
+    "theme": "Overall sign / term ordering"
+   },
+   {
+    "issue": "Neutral-current overall sign, Eq. (24)",
+    "severity": "convention",
+    "check": "",
+    "theme": "Overall sign / term ordering"
+   }
+  ],
+  "Sextets": [
+   {
+    "issue": "Missing antitriplet branch",
+    "severity": "substantive",
+    "check": "A human should check whether the implementation was intended to reproduce the full paper parameterization or only the sextet specialization used in parts of the numerical study.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Missing \\(SU(2)_L\\) triplet \\(QQ\\) electroweak option",
+    "severity": "substantive",
+    "check": "A human should check whether Table 1 is meant as required model content for this implementation or only a catalogue of possible diquark assignments.",
+    "theme": "Overall sign / term ordering"
+   },
+   {
+    "issue": "\\(DD\\) hypercharge sign mismatch: paper Table 1 lists \\(Y=+2/3\\), reconstruction uses \\(Y=-2/3\\)",
+    "severity": "convention",
+    "check": "",
+    "theme": "Overall sign / term ordering"
+   },
+   {
+    "issue": "Universal default Yukawa values in reconstruction are broader than Eq. (2.2)",
+    "severity": "substantive",
+    "check": "A human should check whether the implementation defaults were chosen merely as placeholders or are being interpreted as paper-derived constraints.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Three separate sextet masses instead of one generic \\(m_D\\)",
+    "severity": "convention",
+    "check": "A human should check whether analyses using the implementation set these masses consistently when comparing to the paper\u2019s single-diquark production formulas.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Electroweak gauge interactions are reconstructed but not part of the paper\u2019s operative Lagrangian",
+    "severity": "convention",
+    "check": "A human should check whether any calculation uses photon or \\(Z\\) interactions, since the paper\u2019s results are QCD-focused and do not validate those vertices.",
+    "theme": "Gauge, metric and derivative convention"
+   },
+   {
+    "issue": "Higgs-portal and sextet scalar quartic potential terms are extra",
+    "severity": "substantive",
+    "check": "A human should check whether these potential terms came from an implementation extension rather than from the paper.",
+    "theme": "Other"
+   }
+  ],
+  "Top-Philic-Zprime": [
+   {
+    "issue": "Extra Proca kinetic/mass term",
+    "severity": "cosmetic",
+    "check": "A human should check whether the review target is the paper\u2019s displayed interaction-only Lagrangian or the full FeynRules implementation, because the extra term is standard and physically expected for event generation.",
+    "theme": "Index, flavour and generation labels"
+   },
+   {
+    "issue": "Below-threshold width set to zero",
+    "severity": "convention",
+    "check": "A human should check whether the implementation is intended only for \\(M_{V_1}>2m_t\\), since the paper explicitly points to possible sub-threshold decays but does not use them in the TeV analysis.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Contact operator Eq. (2.3) absent",
+    "severity": "cosmetic",
+    "check": "A human should check whether the reconstruction is meant to include derived EFT limits; it is not necessary for reproducing the simplified model Lagrangian Eq. (2.1).",
+    "theme": "Other"
+   },
+   {
+    "issue": "Default numerical values \\(M_{V_1}=1.5\\) TeV, \\(c_t=2\\), \\(\\theta=\\pi/2\\)",
+    "severity": "convention",
+    "check": "A human should check that these are treated as benchmark/default parameter-card values, not as fixed model definitions, because the paper scans \\(M_{V_1}\\) and \\(c_t\\).",
+    "theme": "Other"
+   }
+  ],
+  "Triplets": [
+   {
+    "issue": "Named scalar charge and representation: substantive.** The reconstruction names the fundamental scalar \\(S\\) as a color triplet with \\(Y=Q=-1/3\\), while the paper\u2019s \\(QQ/UD\\) diquark in Table 1 has \\(Y=+1/3\\) and color \\(\\bar3\\) or \\(6\\); a human should check whether the implementation intentionally defines \\(S^\\dagger\\) as the paper\u2019s produced diquark \\(D\\).",
+    "severity": "substantive",
+    "check": "a human should check whether the implementation intentionally defines \\(S^\\dagger\\) as the paper\u2019s produced diquark \\(D\\).",
+    "theme": "Hermitian conjugation and complex phases"
+   },
+   {
+    "issue": "Sextet omission: substantive.** The paper\u2019s model parameterization covers both color antitriplet and sextet diquarks, but the reconstruction only contains the antitriplet/conjugate-triplet epsilon structure; a human should check whether the implementation was intended to reproduce only the antitriplet benchmark rather than the full paper.",
+    "severity": "substantive",
+    "check": "a human should check whether the implementation was intended to reproduce only the antitriplet benchmark rather than the full paper.",
+    "theme": "Hermitian conjugation and complex phases"
+   },
+   {
+    "issue": "Other electroweak assignments omitted: convention/substantive depending on scope.** Table 1 includes \\(QQ\\) triplet, \\(DD\\), and \\(UU\\) singlet possibilities, but the reconstruction only implements the \\(SU(2)_L\\)-singlet \\(QQ/UD\\) case; a human should check whether the implementation target was the full table or one benchmark row.",
+    "severity": "convention",
+    "check": "a human should check whether the implementation target was the full table or one benchmark row.",
+    "theme": "Overall sign / term ordering"
+   },
+   {
+    "issue": "`LUDL` flavor symmetry: substantive if the paper\u2019s antitriplet antisymmetry is meant to apply to all flavor matrices.** The reconstruction gives diagonal right-chiral \\(UD\\) couplings, while the paper says antitriplet couplings must be antisymmetric in flavor; a human should check how the implementation defines flavor indices for \\(U\\)-\\(D\\) couplings and whether antisymmetry is required for non-identical up/down species.",
+    "severity": "substantive",
+    "check": "a human should check how the implementation defines flavor indices for \\(U\\)-\\(D\\) couplings and whether antisymmetry is required for non-identical up/down species.",
+    "theme": "Chirality and projectors"
+   },
+   {
+    "issue": "Scalar potential terms: substantive relative to the paper text, likely harmless for production.** The reconstruction includes Higgs-portal and scalar self-quartic interactions not specified in the paper; a human should check whether these are implementation conveniences/default scalar potential terms or intended claims about the paper\u2019s model.",
+    "severity": "substantive",
+    "check": "a human should check whether these are implementation conveniences/default scalar potential terms or intended claims about the paper\u2019s model.",
+    "theme": "Other"
+   }
+  ],
+  "VLQ": [
+   {
+    "issue": "The reconstruction includes a full vector-like \\(b'\\) model (`LyBP`, `LDBP`, `LWBP`, `LZBP`) while the paper only briefly comments on an analogous down-type case after Eq. (16).",
+    "severity": "substantive",
+    "check": "Check whether the implementation intentionally bundled the paper\u2019s aside as an additional optional model, or whether the target paper model should only include the vector-like up-type \\(t'\\) and fourth-generation cases.",
+    "theme": "Index, flavour and generation labels"
+   },
+   {
+    "issue": "The fourth-generation fields are listed as Dirac fields with no \\(SU(2)_L\\) representation, while the paper\u2019s Sec. 2.2 implies a sequential chiral fourth generation.",
+    "severity": "substantive",
+    "check": "Check the original implementation\u2019s class declarations and gauge quantum numbers, especially whether left- and right-handed components are represented separately elsewhere.",
+    "theme": "Chirality and projectors"
+   },
+   {
+    "issue": "`t4` and `b4` both have listed \\(Y=+1/6\\), and `n4`/`e4` both have listed \\(Y=-1/2\\), without separating left doublets from right singlets.",
+    "severity": "substantive",
+    "check": "Verify whether the reconstruction confused doublet hypercharge with full Dirac-field hypercharge, since right-handed fourth-generation singlets need different hypercharges.",
+    "theme": "Normalisation and numeric factors"
+   },
+   {
+    "issue": "`L4Mass` uses explicit Dirac mass terms for fourth-generation fermions.",
+    "severity": "substantive",
+    "check": "Check whether these are merely post-EWSB physical mass terms in a phenomenological implementation, or intended as gauge-invariant pre-EWSB Lagrangian terms; the latter would not match a chiral sequential fourth generation.",
+    "theme": "Chirality and projectors"
+   },
+   {
+    "issue": "The reconstruction omits explicit fourth-generation Yukawa interactions.",
+    "severity": "substantive",
+    "check": "Check whether the implementation only works in the mass basis for phenomenology, or whether a gauge-invariant Lagrangian reconstruction was expected.",
+    "theme": "Index, flavour and generation labels"
+   },
+   {
+    "issue": "Overall signs in the reconstructed Yukawa and Dirac mass terms differ from the signs printed in Eqs. (11)-(12).",
+    "severity": "convention",
+    "check": "Check the implementation\u2019s Lagrangian sign convention; this likely has no physical effect if used consistently.",
+    "theme": "Overall sign / term ordering"
+   },
+   {
+    "issue": "The reconstruction\u2019s vector-like top charged current omits unchanged \\(u,c\\) SM charged currents from Eq. (7).",
+    "severity": "cosmetic",
+    "check": "Check whether the reconstruction is intentionally listing only modified/new interactions rather than the full SM charged-current Lagrangian.",
+    "theme": "Other"
+   }
+  ],
+  "Wprime": [
+   {
+    "issue": "Reconstruction implements Eq. (2)\u2019s factorized left-right form, while Eq. (1) allows fully arbitrary \\(C^{R,L}_{f_i f_j}\\) couplings that can differ by sector and flavor.",
+    "severity": "convention",
+    "check": "Check whether the implementation is intended to reproduce the paper\u2019s Eq. (2) benchmark parameterization or the maximally general Eq. (1) coupling freedom.",
+    "theme": "Index, flavour and generation labels"
+   },
+   {
+    "issue": "Reconstruction includes an explicit \\(W'\\) kinetic/mass term with an EM-only covariant derivative, which the paper does not specify.",
+    "severity": "substantive",
+    "check": "Check whether photon interactions of \\(W'\\) generated by the EM covariant derivative are intended and whether they are used in processes beyond the paper\u2019s \\(s\\)-channel charged-current calculation.",
+    "theme": "Gauge, metric and derivative convention"
+   },
+   {
+    "issue": "Reconstruction includes three Dirac-type right-handed neutrino fields with explicit kinetic and mass terms, while the paper only uses \\(m_{\\nu_R}\\) as a kinematic condition for \\(W'_R\\) leptonic decays.",
+    "severity": "substantive",
+    "check": "Check whether the implementation\u2019s Dirac, non-self-conjugate \\(\\nu_R\\) choice matches the target phenomenology, especially if neutrino-sector mixing or Majorana assumptions matter.",
+    "theme": "Hermitian conjugation and complex phases"
+   },
+   {
+    "issue": "Reconstruction declares a fixed \\(W'\\) width `WWp = 1.`, whereas the paper computes total widths from the coupling-dependent partial widths in Sec. II.",
+    "severity": "substantive",
+    "check": "Check whether the width is recalculated elsewhere at runtime; if not, the implementation will not reproduce the paper\u2019s width and branching-ratio predictions.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Reconstruction default \\(\\zeta_{Wp}=0\\) makes the default interaction purely right-handed, while the paper treats arbitrary left/right couplings and discusses both left- and right-handed cases.",
+    "severity": "convention",
+    "check": "Check whether parameter cards used for comparisons set \\(\\zeta\\) and couplings to the desired paper scenario rather than relying on the default.",
+    "theme": "Chirality and projectors"
+   }
+  ],
+  "pNG": [
+   {
+    "issue": "The reconstruction does not include the full \\(\\mathcal L_{\\rm SM}\\) from eq. (2.1); a human should check whether the implementation file intentionally imports the SM separately or whether the reconstruction is incomplete.",
+    "severity": "substantive",
+    "check": "a human should check whether the implementation file intentionally imports the SM separately or whether the reconstruction is incomplete.",
+    "theme": "Other"
+   },
+   {
+    "issue": "The reconstruction presents \\(v_s=300\\), \\(\\theta=0.7854\\), \\(M_{h_2}=300\\), and \\(m_X=100\\) as table values, while the paper defines \\(\\{m_\\chi,v_s,\\theta,m_H\\}\\) as free parameters in eq. (2.17); a human should check whether these are merely default benchmark values in the implementation.",
+    "severity": "substantive",
+    "check": "a human should check whether these are merely default benchmark values in the implementation.",
+    "theme": "Other"
+   },
+   {
+    "issue": "The reconstruction includes Goldstone fields in \\(\\Phi\\), including a \\(-iG^+\\) convention, while the paper writes the decomposition in unitary gauge in eq. (2.8); a human should check the FeynRules gauge convention, but this does not change the physical scalar sector if Goldstones are removed.",
+    "severity": "convention",
+    "check": "a human should check the FeynRules gauge convention, but this does not change the physical scalar sector if Goldstones are removed.",
+    "theme": "Gauge, metric and derivative convention"
+   },
+   {
+    "issue": "The reconstruction uses \\(h_2\\) and \\(X\\), while the paper uses \\(H\\) and \\(\\chi\\); a human should confirm that all downstream files consistently identify \\(h_2\\equiv H\\) and \\(X\\equiv\\chi\\).",
+    "severity": "cosmetic",
+    "check": "",
+    "theme": "Other"
+   },
+   {
+    "issue": "The reconstruction\u2019s field table omits the SM-like Higgs mass eigenstate \\(h\\), even though \\(h\\) appears in the reconstructed field decompositions; a human should check whether the reconstruction table was intended to list only BSM/new classes or all scalar mass eigenstates.",
+    "severity": "substantive",
+    "check": "a human should check whether the reconstruction table was intended to list only BSM/new classes or all scalar mass eigenstates.",
+    "theme": "Other"
+   },
+   {
+    "issue": "SM Yukawa interactions and the resulting \\(h/H\\)-fermion couplings in Appendix A, eqs. (A.7)-(A.8), are absent from the reconstruction; a human should check whether those are supplied by an external SM model file.",
+    "severity": "substantive",
+    "check": "a human should check whether those are supplied by an external SM model file.",
+    "theme": "Other"
+   }
+  ],
+  "pSPSS": [
+   {
+    "issue": "Missing LNLS charges",
+    "severity": "substantive",
+    "check": "A human should check whether the reconstruction is intended to document only FeynRules gauge content or also the symmetry structure of the pSPSS, because Eq. (4.1) is central to why the allowed terms have the displayed form.",
+    "theme": "Gauge, metric and derivative convention"
+   },
+   {
+    "issue": "Displayed total Lagrangian omits the SM-with-mixed-neutrinos part",
+    "severity": "substantive",
+    "check": "A human should check whether `LTot` in the reconstruction is meant to be only the new-physics addition or the full `LpSPSS`; the paper\u2019s Section 5.1 says the SM fermion Lagrangian is modified by replacing \\(\\nu\\) with `UnCL nL`.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Real versus complex active-sterile mixings",
+    "severity": "convention",
+    "check": "A human should check the actual implementation parameter declarations: if `theta1`, `theta2`, and `theta3` are real, the reconstruction is faithful to the implementation, but it is narrower than the complex notation used in the paper\u2019s analytic equations.",
+    "theme": "Hermitian conjugation and complex phases"
+   }
+  ],
+  "topBSM": [
+   {
+    "issue": "Reconstruction introduces \\(S0,O0,S1,O1,S2\\) resonance fields absent from the paper.",
+    "severity": "substantive",
+    "check": "Check whether `reconstruction.md` came from a different model file than the paper, possibly a generic resonance implementation.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Paper\u2019s EFT master Lagrangian Eq. (1) is not reproduced.",
+    "severity": "substantive",
+    "check": "Verify whether the implementation was supposed to encode the paper\u2019s dimension-six EFT or a separate phenomenological model.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Missing \\(O^{(1,3)}_{uG}\\), Eq. (2).",
+    "severity": "substantive",
+    "check": "Check for any hidden flavor-changing top-light-quark chromomagnetic operator in the original implementation.",
+    "theme": "Index, flavour and generation labels"
+   },
+   {
+    "issue": "Missing \\(O^{(1,3)}_{u\\phi}\\), Eq. (3).",
+    "severity": "substantive",
+    "check": "Check whether the implementation contains a \\(tuh\\) FCNC Yukawa vertex under another name.",
+    "theme": "Symbol naming and parameter labels"
+   },
+   {
+    "issue": "Missing \\(O^{(3,1)}_{uG}\\), Eq. (4).",
+    "severity": "substantive",
+    "check": "Check whether chirality-flipped or conjugate flavor structures were intentionally omitted.",
+    "theme": "Hermitian conjugation and complex phases"
+   },
+   {
+    "issue": "Missing \\(O^{(3,1)}_{u\\phi}\\), Eq. (5).",
+    "severity": "substantive",
+    "check": "Check whether the implementation supports both \\(t\\to uh/ch\\) chiralities.",
+    "theme": "Chirality and projectors"
+   },
+   {
+    "issue": "Reconstruction lacks the paper\u2019s Hermitian-conjugate FCNC structure.",
+    "severity": "substantive",
+    "check": "Check whether both decay and conjugate amplitudes are generated in the implementation.",
+    "theme": "Hermitian conjugation and complex phases"
+   },
+   {
+    "issue": "Reconstruction uses \\(m_t/v\\) normalization for unrelated scalar-top resonance couplings.",
+    "severity": "convention",
+    "check": "Check whether this normalization was copied from another simplified model and not from the EFT paper.",
+    "theme": "Normalisation and numeric factors"
+   },
+   {
+    "issue": "Missing paper\u2019s tree-level \\(tuh\\) interaction Eq. (8).",
+    "severity": "substantive",
+    "check": "Check generated Feynman rules for a \\(t-u/c-h\\) vertex.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Missing field rotations Eqs. (9)-(10).",
+    "severity": "substantive",
+    "check": "Check whether mass diagonalization or equivalent counterterms are implemented.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Missing physical rotated \\(tuh\\) coupling Eq. (11).",
+    "severity": "substantive",
+    "check": "Check whether the implementation uses the correct factor \\(2y_t/\\sqrt2\\), not the pre-rotation factor \\(3y_t/\\sqrt2\\).",
+    "theme": "Normalisation and numeric factors"
+   },
+   {
+    "issue": "Missing counterterm-subtracted \\(O_{u\\phi}\\) form Eq. (12).",
+    "severity": "substantive",
+    "check": "Check whether vev-induced \\(u_L-t_R\\) mixing is removed consistently.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Missing \\(\\mathcal L_{tu}+\\mathcal L_{tuh}\\) counterterm structure Eqs. (25)-(27).",
+    "severity": "substantive",
+    "check": "Check whether NLO renormalization was implemented at all.",
+    "theme": "Normalisation and numeric factors"
+   },
+   {
+    "issue": "Missing \\(utg\\) dipole interaction Eq. (30).",
+    "severity": "substantive",
+    "check": "Check whether the implementation contains a flavor-changing \\(t-u/c-g\\) dipole vertex rather than only gluon-fusion resonance operators.",
+    "theme": "Index, flavour and generation labels"
+   },
+   {
+    "issue": "Missing EOM-vanishing counterterms Eqs. (33)-(34).",
+    "severity": "substantive",
+    "check": "Check whether the implementation is intended only for tree level or includes the NLO operator-renormalization setup.",
+    "theme": "Normalisation and numeric factors"
+   },
+   {
+    "issue": "Missing renormalized Lagrangian Eq. (37).",
+    "severity": "substantive",
+    "check": "Check whether Wilson-coefficient mixing \\(C_{uG}\\to C_{u\\phi}\\) is encoded elsewhere.",
+    "theme": "Normalisation and numeric factors"
+   },
+   {
+    "issue": "Extra \\(S0\\bar tt\\), \\(S0GG\\), and \\(S0G\\tilde G\\) terms.",
+    "severity": "substantive",
+    "check": "Check whether the source implementation is for a scalar resonance model, not this FCNC Higgs EFT paper.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Extra \\(O0\\bar tT^at\\), \\(O0GG\\), and \\(O0G\\tilde G\\) terms.",
+    "severity": "substantive",
+    "check": "Check whether color-octet scalar resonance interactions belong to another paper or benchmark.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Extra \\(S1\\) flavor-diagonal quark and lepton currents.",
+    "severity": "substantive",
+    "check": "Check whether a \\(Z'\\)-like model was accidentally reconstructed instead of the paper\u2019s EFT.",
+    "theme": "Index, flavour and generation labels"
+   },
+   {
+    "issue": "Extra \\(O1\\) color-octet vector quark currents.",
+    "severity": "substantive",
+    "check": "Check whether an axigluon/coloron model was mixed into the reconstruction.",
+    "theme": "Other"
+   },
+   {
+    "issue": "Extra inert spin-2 field \\(S2\\).",
+    "severity": "substantive",
+    "check": "Check whether the implementation file contains unused benchmark particles unrelated to the paper.",
+    "theme": "Other"
+   }
+  ]
+ }
+}

@@ -1,0 +1,744 @@
+{
+ "rows": [
+  {
+   "page": "368sextets",
+   "fr_source": "repair/final.fr",
+   "lag_symbol": "LTot",
+   "lag_resolution": {
+    "roots": [
+     "LTot"
+    ],
+    "legacy_symbol": "LTot",
+    "n_terms_defined": 6,
+    "ambiguous": false,
+    "changed_from_legacy": false
+   },
+   "compile_ok": true,
+   "timed_out": false,
+   "exit": 0,
+   "seconds": 173.4,
+   "ufo_files": [
+    "particles.py",
+    "parameters.py",
+    "couplings.py",
+    "vertices.py",
+    "lorentz.py"
+   ],
+   "checks": {
+    "hermiticity": true,
+    "kinetic_terms": true,
+    "mass_spectrum": true
+   },
+   "protected_symbol_errors": 0,
+   "log_tail": "",
+   "n_particles_ufo": 28,
+   "madgraph_import_ok": true,
+   "mg5_particles": 21,
+   "lepton_number_violation": false,
+   "mg5_tail": "",
+   "status": "compiled",
+   "full_chain_ok": true
+  },
+  {
+   "page": "B-L-SM",
+   "fr_source": "repair2/final.fr",
+   "lag_symbol": "LTot",
+   "lag_resolution": {
+    "roots": [
+     "LTot"
+    ],
+    "legacy_symbol": "LTot",
+    "n_terms_defined": 7,
+    "ambiguous": false,
+    "changed_from_legacy": false
+   },
+   "compile_ok": true,
+   "timed_out": false,
+   "exit": 0,
+   "seconds": 86.6,
+   "ufo_files": [
+    "particles.py",
+    "parameters.py",
+    "couplings.py",
+    "vertices.py",
+    "lorentz.py"
+   ],
+   "checks": {
+    "hermiticity": true,
+    "kinetic_terms": true,
+    "mass_spectrum": true
+   },
+   "protected_symbol_errors": 0,
+   "log_tail": "",
+   "n_particles_ufo": 30,
+   "madgraph_import_ok": true,
+   "mg5_particles": 22,
+   "lepton_number_violation": true,
+   "mg5_tail": "",
+   "status": "compiled",
+   "full_chain_ok": true
+  },
+  {
+   "page": "EffLRSM",
+   "fr_source": "repair/final.fr",
+   "lag_symbol": "LTot",
+   "lag_resolution": {
+    "roots": [
+     "LTot"
+    ],
+    "legacy_symbol": "LTot",
+    "n_terms_defined": 8,
+    "ambiguous": false,
+    "changed_from_legacy": false
+   },
+   "compile_ok": true,
+   "timed_out": false,
+   "exit": 0,
+   "seconds": 232.0,
+   "ufo_files": [
+    "particles.py",
+    "parameters.py",
+    "couplings.py",
+    "vertices.py",
+    "lorentz.py"
+   ],
+   "checks": {
+    "hermiticity": true,
+    "kinetic_terms": true,
+    "mass_spectrum": true
+   },
+   "protected_symbol_errors": 0,
+   "log_tail": "",
+   "n_particles_ufo": 29,
+   "madgraph_import_ok": true,
+   "mg5_particles": 22,
+   "lepton_number_violation": false,
+   "mg5_tail": "",
+   "status": "compiled",
+   "full_chain_ok": true
+  },
+  {
+   "page": "GeneralU1",
+   "fr_source": "repair/final.fr",
+   "lag_symbol": "LTot",
+   "lag_resolution": {
+    "roots": [
+     "LTot"
+    ],
+    "legacy_symbol": "LTot",
+    "n_terms_defined": 6,
+    "ambiguous": false,
+    "changed_from_legacy": false
+   },
+   "compile_ok": true,
+   "timed_out": false,
+   "exit": 0,
+   "seconds": 59.0,
+   "ufo_files": [
+    "particles.py",
+    "parameters.py",
+    "couplings.py",
+    "vertices.py",
+    "lorentz.py"
+   ],
+   "checks": {
+    "hermiticity": true,
+    "kinetic_terms": true,
+    "mass_spectrum": true
+   },
+   "protected_symbol_errors": 0,
+   "log_tail": "",
+   "n_particles_ufo": 30,
+   "madgraph_import_ok": true,
+   "mg5_particles": 22,
+   "lepton_number_violation": true,
+   "mg5_tail": "",
+   "status": "compiled",
+   "full_chain_ok": true
+  },
+  {
+   "page": "HeavyN",
+   "fr_source": "one-shot",
+   "lag_symbol": "LFull",
+   "lag_resolution": {
+    "roots": [
+     "LFull"
+    ],
+    "legacy_symbol": "LFull",
+    "n_terms_defined": 11,
+    "ambiguous": false,
+    "changed_from_legacy": false
+   },
+   "compile_ok": true,
+   "timed_out": false,
+   "exit": 0,
+   "seconds": 129.7,
+   "ufo_files": [
+    "particles.py",
+    "parameters.py",
+    "couplings.py",
+    "vertices.py",
+    "lorentz.py"
+   ],
+   "checks": {
+    "hermiticity": true,
+    "kinetic_terms": true,
+    "mass_spectrum": true
+   },
+   "protected_symbol_errors": 0,
+   "log_tail": "",
+   "n_particles_ufo": 27,
+   "madgraph_import_ok": true,
+   "mg5_particles": 20,
+   "lepton_number_violation": true,
+   "mg5_tail": "",
+   "status": "compiled",
+   "full_chain_ok": true
+  },
+  {
+   "page": "HiggsCharacterisation",
+   "fr_source": "one-shot",
+   "lag_symbol": "LHCNP",
+   "lag_resolution": {
+    "roots": [
+     "LHCNP"
+    ],
+    "legacy_symbol": "LHCNP",
+    "n_terms_defined": 9,
+    "ambiguous": false,
+    "changed_from_legacy": false
+   },
+   "compile_ok": true,
+   "timed_out": false,
+   "exit": 0,
+   "seconds": 49.1,
+   "ufo_files": [
+    "particles.py",
+    "parameters.py",
+    "couplings.py",
+    "vertices.py",
+    "lorentz.py"
+   ],
+   "checks": {
+    "hermiticity": true,
+    "kinetic_terms": true,
+    "mass_spectrum": true
+   },
+   "protected_symbol_errors": 0,
+   "log_tail": "",
+   "n_particles_ufo": 27,
+   "madgraph_import_ok": true,
+   "mg5_particles": 20,
+   "lepton_number_violation": false,
+   "mg5_tail": "",
+   "status": "compiled",
+   "full_chain_ok": true
+  },
+  {
+   "page": "LeptoQuark",
+   "fr_source": "one-shot",
+   "lag_symbol": "LLeptoQuark",
+   "lag_resolution": {
+    "roots": [
+     "LLeptoQuark"
+    ],
+    "legacy_symbol": "LLeptoQuark",
+    "n_terms_defined": 8,
+    "ambiguous": false,
+    "changed_from_legacy": false
+   },
+   "compile_ok": true,
+   "timed_out": false,
+   "exit": 0,
+   "seconds": 50.1,
+   "ufo_files": [
+    "particles.py",
+    "parameters.py",
+    "couplings.py",
+    "vertices.py",
+    "lorentz.py"
+   ],
+   "checks": {
+    "hermiticity": true,
+    "kinetic_terms": true,
+    "mass_spectrum": true
+   },
+   "protected_symbol_errors": 0,
+   "log_tail": "",
+   "n_particles_ufo": 27,
+   "madgraph_import_ok": true,
+   "mg5_particles": 20,
+   "lepton_number_violation": false,
+   "mg5_tail": "",
+   "status": "compiled",
+   "full_chain_ok": true
+  },
+  {
+   "page": "MDMmodel",
+   "fr_source": "repair/final.fr",
+   "lag_symbol": "LTot",
+   "lag_resolution": {
+    "roots": [
+     "LTot"
+    ],
+    "legacy_symbol": "LTot",
+    "n_terms_defined": 5,
+    "ambiguous": false,
+    "redundant_roots": [
+     {
+      "root": "LMDMNP",
+      "covered_by": "LTot"
+     }
+    ],
+    "changed_from_legacy": false
+   },
+   "compile_ok": true,
+   "timed_out": false,
+   "exit": 0,
+   "seconds": 63.2,
+   "ufo_files": [
+    "particles.py",
+    "parameters.py",
+    "couplings.py",
+    "vertices.py",
+    "lorentz.py"
+   ],
+   "checks": {
+    "hermiticity": true,
+    "kinetic_terms": true,
+    "mass_spectrum": true
+   },
+   "protected_symbol_errors": 0,
+   "log_tail": "",
+   "n_particles_ufo": 26,
+   "madgraph_import_ok": true,
+   "mg5_particles": 19,
+   "lepton_number_violation": false,
+   "mg5_tail": "",
+   "status": "compiled",
+   "full_chain_ok": true
+  },
+  {
+   "page": "MSSMD",
+   "fr_source": "repair/final.fr",
+   "lag_symbol": "LTot",
+   "lag_resolution": {
+    "roots": [
+     "LTot"
+    ],
+    "legacy_symbol": "LTot",
+    "n_terms_defined": 3,
+    "ambiguous": false,
+    "changed_from_legacy": false
+   },
+   "compile_ok": true,
+   "timed_out": false,
+   "exit": 0,
+   "seconds": 50.1,
+   "ufo_files": [
+    "particles.py",
+    "parameters.py",
+    "couplings.py",
+    "vertices.py",
+    "lorentz.py"
+   ],
+   "checks": {
+    "hermiticity": true,
+    "kinetic_terms": true,
+    "mass_spectrum": true
+   },
+   "protected_symbol_errors": 0,
+   "log_tail": "",
+   "n_particles_ufo": 58,
+   "madgraph_import_ok": true,
+   "mg5_particles": 51,
+   "lepton_number_violation": false,
+   "mg5_tail": "",
+   "status": "compiled",
+   "full_chain_ok": true
+  },
+  {
+   "page": "Monotops",
+   "fr_source": "one-shot",
+   "lag_symbol": "LMono",
+   "lag_resolution": {
+    "roots": [
+     "LMono"
+    ],
+    "legacy_symbol": "LMono",
+    "n_terms_defined": 1,
+    "ambiguous": false,
+    "changed_from_legacy": false
+   },
+   "compile_ok": true,
+   "timed_out": false,
+   "exit": 0,
+   "seconds": 76.1,
+   "ufo_files": [
+    "particles.py",
+    "parameters.py",
+    "couplings.py",
+    "vertices.py",
+    "lorentz.py"
+   ],
+   "checks": {
+    "hermiticity": true,
+    "kinetic_terms": true,
+    "mass_spectrum": true
+   },
+   "protected_symbol_errors": 0,
+   "log_tail": "",
+   "n_particles_ufo": 30,
+   "madgraph_import_ok": true,
+   "mg5_particles": 23,
+   "lepton_number_violation": false,
+   "mg5_tail": "",
+   "status": "compiled",
+   "full_chain_ok": true
+  },
+  {
+   "page": "NJLComposite",
+   "fr_source": "one-shot",
+   "lag_symbol": "LBSM",
+   "lag_resolution": {
+    "roots": [
+     "LBSM"
+    ],
+    "legacy_symbol": "LBSM",
+    "n_terms_defined": 4,
+    "ambiguous": false,
+    "changed_from_legacy": false
+   },
+   "compile_ok": true,
+   "timed_out": false,
+   "exit": 0,
+   "seconds": 50.6,
+   "ufo_files": [
+    "particles.py",
+    "parameters.py",
+    "couplings.py",
+    "vertices.py",
+    "lorentz.py"
+   ],
+   "checks": {
+    "hermiticity": true,
+    "kinetic_terms": true,
+    "mass_spectrum": true
+   },
+   "protected_symbol_errors": 0,
+   "log_tail": "",
+   "n_particles_ufo": 36,
+   "madgraph_import_ok": true,
+   "mg5_particles": 29,
+   "lepton_number_violation": false,
+   "mg5_tail": "",
+   "status": "compiled",
+   "full_chain_ok": true
+  },
+  {
+   "page": "SLQrules",
+   "fr_source": "one-shot",
+   "lag_symbol": "LBSM",
+   "lag_resolution": {
+    "roots": [
+     "LBSM"
+    ],
+    "legacy_symbol": "LBSM",
+    "n_terms_defined": 6,
+    "ambiguous": false,
+    "changed_from_legacy": false
+   },
+   "compile_ok": false,
+   "timed_out": false,
+   "exit": 1,
+   "seconds": 14.8,
+   "ufo_files": [],
+   "checks": {},
+   "protected_symbol_errors": 0,
+   "log_tail": "ers/kenwu/Documents/Github/heptapod/eval/benchmark_runs/SLQrules/model/SLQrules_gen.fr\")\n\nGeneral::stop: Further output of Syntax::sntx will be suppressed during this calculation.\nMerging model-files...\n\nSyntax::sntx: Invalid syntax in or before \"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ^\". (line 660 of \"/Users/kenwu/Documents/Github/heptapod/eval/benchmark_runs/SLQrules/model/SLQrules_gen.fr\")\nThis model implementation was created by\nAndreas Crivellin\nLuc Schnell\nModel Version: 1.0\nFor more information, type ModelInformation[].\n\n   - Loading particle classes.\n   - Loading gauge group classes.\n   - Loading parameter classes.\n\nModel SLQrules_gen loaded.\n[INFO] Total Lagrangian: LSM + LBSM\nError: BSM Lagrangian symbol 'LBSM' is undefined in the model.\n",
+   "status": "compile_failed",
+   "full_chain_ok": false
+  },
+  {
+   "page": "SMWeinberg",
+   "fr_source": "one-shot",
+   "lag_symbol": "LFull",
+   "lag_resolution": {
+    "roots": [
+     "LFull"
+    ],
+    "legacy_symbol": "LFull",
+    "n_terms_defined": 13,
+    "ambiguous": false,
+    "changed_from_legacy": false
+   },
+   "compile_ok": true,
+   "timed_out": false,
+   "exit": 0,
+   "seconds": 126.7,
+   "ufo_files": [
+    "particles.py",
+    "parameters.py",
+    "couplings.py",
+    "vertices.py",
+    "lorentz.py"
+   ],
+   "checks": {
+    "hermiticity": true,
+    "kinetic_terms": true,
+    "mass_spectrum": true
+   },
+   "protected_symbol_errors": 0,
+   "log_tail": "",
+   "n_particles_ufo": 25,
+   "madgraph_import_ok": true,
+   "mg5_particles": 18,
+   "lepton_number_violation": true,
+   "mg5_tail": "",
+   "status": "compiled",
+   "full_chain_ok": true
+  },
+  {
+   "page": "Sextets",
+   "fr_source": "one-shot",
+   "lag_symbol": "LSextet",
+   "lag_resolution": {
+    "roots": [
+     "LSextet"
+    ],
+    "legacy_symbol": "LSextet",
+    "n_terms_defined": 10,
+    "ambiguous": false,
+    "redundant_roots": [
+     {
+      "root": "LD",
+      "covered_by": "LSextet"
+     }
+    ],
+    "changed_from_legacy": false
+   },
+   "compile_ok": true,
+   "timed_out": false,
+   "exit": 0,
+   "seconds": 63.7,
+   "ufo_files": [
+    "particles.py",
+    "parameters.py",
+    "couplings.py",
+    "vertices.py",
+    "lorentz.py"
+   ],
+   "checks": {
+    "hermiticity": true,
+    "kinetic_terms": true,
+    "mass_spectrum": true
+   },
+   "protected_symbol_errors": 0,
+   "log_tail": "",
+   "n_particles_ufo": 27,
+   "madgraph_import_ok": true,
+   "mg5_particles": 20,
+   "lepton_number_violation": false,
+   "mg5_tail": "",
+   "status": "compiled",
+   "full_chain_ok": true
+  },
+  {
+   "page": "Top-Philic-Zprime",
+   "fr_source": "one-shot",
+   "lag_symbol": "LBSM",
+   "lag_resolution": {
+    "roots": [
+     "LBSM"
+    ],
+    "legacy_symbol": "LBSM",
+    "n_terms_defined": 5,
+    "ambiguous": false,
+    "changed_from_legacy": false
+   },
+   "compile_ok": true,
+   "timed_out": false,
+   "exit": 0,
+   "seconds": 32.6,
+   "ufo_files": [
+    "particles.py",
+    "parameters.py",
+    "couplings.py",
+    "vertices.py",
+    "lorentz.py"
+   ],
+   "checks": {
+    "hermiticity": true,
+    "kinetic_terms": true,
+    "mass_spectrum": true
+   },
+   "protected_symbol_errors": 0,
+   "log_tail": "",
+   "n_particles_ufo": 25,
+   "madgraph_import_ok": true,
+   "mg5_particles": 18,
+   "lepton_number_violation": false,
+   "mg5_tail": "",
+   "status": "compiled",
+   "full_chain_ok": true
+  },
+  {
+   "page": "Triplets",
+   "fr_source": "one-shot",
+   "lag_symbol": "LTrip",
+   "lag_resolution": {
+    "roots": [
+     "LTrip"
+    ],
+    "legacy_symbol": "LTrip",
+    "n_terms_defined": 5,
+    "ambiguous": false,
+    "changed_from_legacy": false
+   },
+   "compile_ok": true,
+   "timed_out": false,
+   "exit": 0,
+   "seconds": 38.1,
+   "ufo_files": [
+    "particles.py",
+    "parameters.py",
+    "couplings.py",
+    "vertices.py",
+    "lorentz.py"
+   ],
+   "checks": {
+    "hermiticity": true,
+    "kinetic_terms": true,
+    "mass_spectrum": true
+   },
+   "protected_symbol_errors": 0,
+   "log_tail": "",
+   "n_particles_ufo": 25,
+   "madgraph_import_ok": true,
+   "mg5_particles": 18,
+   "lepton_number_violation": false,
+   "mg5_tail": "",
+   "status": "compiled",
+   "full_chain_ok": true
+  },
+  {
+   "page": "Wprime",
+   "fr_source": "one-shot",
+   "lag_symbol": "LBSM",
+   "lag_resolution": {
+    "roots": [
+     "LBSM"
+    ],
+    "legacy_symbol": "LBSM",
+    "n_terms_defined": 6,
+    "ambiguous": false,
+    "changed_from_legacy": false
+   },
+   "compile_ok": true,
+   "timed_out": false,
+   "exit": 0,
+   "seconds": 91.1,
+   "ufo_files": [
+    "particles.py",
+    "parameters.py",
+    "couplings.py",
+    "vertices.py",
+    "lorentz.py"
+   ],
+   "checks": {
+    "hermiticity": true,
+    "kinetic_terms": true,
+    "mass_spectrum": true
+   },
+   "protected_symbol_errors": 0,
+   "log_tail": "",
+   "n_particles_ufo": 28,
+   "madgraph_import_ok": true,
+   "mg5_particles": 21,
+   "lepton_number_violation": false,
+   "mg5_tail": "",
+   "status": "compiled",
+   "full_chain_ok": true
+  },
+  {
+   "page": "pNG",
+   "fr_source": "one-shot",
+   "lag_symbol": "LScalarPng",
+   "lag_resolution": {
+    "roots": [
+     "LScalarPng"
+    ],
+    "legacy_symbol": "LScalarPng",
+    "n_terms_defined": 6,
+    "ambiguous": false,
+    "changed_from_legacy": false
+   },
+   "compile_ok": true,
+   "timed_out": false,
+   "exit": 0,
+   "seconds": 42.0,
+   "ufo_files": [
+    "particles.py",
+    "parameters.py",
+    "couplings.py",
+    "vertices.py",
+    "lorentz.py"
+   ],
+   "checks": {
+    "hermiticity": true,
+    "kinetic_terms": true,
+    "mass_spectrum": true
+   },
+   "protected_symbol_errors": 0,
+   "log_tail": "",
+   "n_particles_ufo": 24,
+   "madgraph_import_ok": true,
+   "mg5_particles": 19,
+   "lepton_number_violation": false,
+   "mg5_tail": "",
+   "status": "compiled",
+   "full_chain_ok": true
+  },
+  {
+   "page": "pSPSS",
+   "fr_source": "repair3/final.fr",
+   "lag_symbol": "LTot",
+   "lag_resolution": {
+    "roots": [
+     "LTot"
+    ],
+    "legacy_symbol": "LTot",
+    "n_terms_defined": 2,
+    "ambiguous": false,
+    "changed_from_legacy": false
+   },
+   "compile_ok": true,
+   "timed_out": false,
+   "exit": 0,
+   "seconds": 98.1,
+   "ufo_files": [
+    "particles.py",
+    "parameters.py",
+    "couplings.py",
+    "vertices.py",
+    "lorentz.py"
+   ],
+   "checks": {
+    "hermiticity": true,
+    "kinetic_terms": true,
+    "mass_spectrum": true
+   },
+   "protected_symbol_errors": 0,
+   "log_tail": "",
+   "n_particles_ufo": 26,
+   "madgraph_import_ok": true,
+   "mg5_particles": 19,
+   "lepton_number_violation": true,
+   "mg5_tail": "",
+   "status": "compiled",
+   "full_chain_ok": true
+  }
+ ],
+ "n_scoreable": 19,
+ "n_pass": 18
+}

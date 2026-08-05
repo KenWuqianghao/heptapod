@@ -313,7 +313,7 @@ def main():
     )
     parser.add_argument(
         "--only",
-        choices=["prereqs", "conversions", "kinematics", "reconstruction", "delta_r_filter", "feynrules", "mg5", "pythia", "sherpa", "llm", "pdg", "inspire", "units", "nda", "eda", "feyngraph", "logging"],
+        choices=["prereqs", "conversions", "kinematics", "reconstruction", "delta_r_filter", "feynrules", "mg5", "pythia", "sherpa", "llm", "pdg", "inspire", "literature", "units", "nda", "eda", "feyngraph", "logging"],
         help="Run only tests for specified component (prereqs = prerequisites check only)"
     )
     parser.add_argument(
@@ -386,6 +386,10 @@ def main():
         "inspire": {
             "script": REPO_ROOT / "tools" / "inspire" / "tests" / "test_inspire_tools.py",
             "description": "INSPIRE tools (paper search, citations, author information)"
+        },
+        "literature": {
+            "script": REPO_ROOT / "tools" / "literature" / "test_literature.py",
+            "description": "Literature tools (TeX-faithful extraction from LaTeX-produced PDFs)"
         },
         "units": {
             "script": REPO_ROOT / "tools" / "units" / "tests" / "test_units.py",

@@ -16,6 +16,26 @@
 "kind": 2,
 "side": "left"
 },
+"CMEX\u0000\t": {
+"kind": 2,
+"side": "right"
+},
+"CMEX\u0000\n": {
+"kind": 5,
+"side": "left"
+},
+"CMEX\u0000\u000b": {
+"kind": 5,
+"side": "right"
+},
+"CMEX\u0000\f": {
+"kind": 3,
+"side": "both"
+},
+"CMEX\u0000\r": {
+"kind": 4,
+"side": "both"
+},
 "CMEX\u0000\u0010": {
 "kind": 0,
 "side": "left"
@@ -47,6 +67,18 @@
 "CMEX\u0000\u001b": {
 "kind": 2,
 "side": "right"
+},
+"CMEX\u0000\u001c": {
+"kind": 5,
+"side": "left"
+},
+"CMEX\u0000\u001d": {
+"kind": 5,
+"side": "right"
+},
+"CMEX\u0000 ": {
+"kind": 0,
+"side": "left"
 },
 "CMEX\u0000!": {
 "kind": 0,
@@ -176,6 +208,14 @@
 "kind": 2,
 "side": "right"
 },
+"LMMathExtension-Regular\u0000\f": {
+"kind": 3,
+"side": "both"
+},
+"LMMathExtension-Regular\u0000\r": {
+"kind": 4,
+"side": "both"
+},
 "LMMathExtension-Regular\u0000\u0010": {
 "kind": 0,
 "side": "left"
@@ -207,6 +247,18 @@
 "LMMathExtension-Regular\u0000\u001b": {
 "kind": 2,
 "side": "right"
+},
+"LMMathExtension-Regular\u0000\u001c": {
+"kind": 5,
+"side": "left"
+},
+"LMMathExtension-Regular\u0000\u001d": {
+"kind": 5,
+"side": "right"
+},
+"LMMathExtension-Regular\u0000 ": {
+"kind": 0,
+"side": "left"
 },
 "LMMathExtension-Regular\u0000!": {
 "kind": 0,
@@ -344,6 +396,26 @@
 "kind": 2,
 "side": "left"
 },
+"txexs\u0000\t": {
+"kind": 2,
+"side": "right"
+},
+"txexs\u0000\n": {
+"kind": 5,
+"side": "left"
+},
+"txexs\u0000\u000b": {
+"kind": 5,
+"side": "right"
+},
+"txexs\u0000\f": {
+"kind": 3,
+"side": "both"
+},
+"txexs\u0000\r": {
+"kind": 4,
+"side": "both"
+},
 "txexs\u0000\u0010": {
 "kind": 0,
 "side": "left"
@@ -375,6 +447,18 @@
 "txexs\u0000\u001b": {
 "kind": 2,
 "side": "right"
+},
+"txexs\u0000\u001c": {
+"kind": 5,
+"side": "left"
+},
+"txexs\u0000\u001d": {
+"kind": 5,
+"side": "right"
+},
+"txexs\u0000 ": {
+"kind": 0,
+"side": "left"
 },
 "txexs\u0000!": {
 "kind": 0,

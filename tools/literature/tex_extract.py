@@ -83,12 +83,19 @@ def _read_chars(page):
     out = []
     for i in range(tp.count_chars()):
         c = tp.get_text_range(i, 1)
-        if not c.strip():
+        if not c:
             continue
         buf = ctypes.create_string_buffer(160)
         flags = ctypes.c_int()
         n = pdfium_c.FPDFText_GetFontInfo(tp, i, buf, 160, ctypes.byref(flags))
         x0, y0, x1, y1 = tp.get_charbox(i)
+        # Filter on whether this is a real positioned glyph, NOT on whether the
+        # character looks like whitespace. TeX's extensible vertical bar is
+        # U+000C (form feed) in CMEX, and str.strip() counts form feed as
+        # whitespace -- so a whitespace test silently discards every vmatrix
+        # fence. Layout separators carry no font and a degenerate box.
+        if n <= 1 or (x1 - x0 <= 0 and y1 - y0 <= 0):
+            continue
         # The glyph's baseline origin, NOT the bounding box, is what script
         # level must be measured against: a descender such as p or j sits
         # below the baseline, which would otherwise make its own subscript

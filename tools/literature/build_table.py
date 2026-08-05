@@ -51,9 +51,14 @@ def read_glyphs(pdf):
         tp = pg.get_textpage()
         for i in range(tp.count_chars()):
             c = tp.get_text_range(i, 1)
-            if not c.strip(): continue
+            if not c: continue
             buf = ctypes.create_string_buffer(160); fl = ctypes.c_int()
             n = pc.FPDFText_GetFontInfo(tp, i, buf, 160, ctypes.byref(fl))
+            x0, y0, x1, y1 = tp.get_charbox(i)
+            # Keep real positioned glyphs, not "non-whitespace" ones: TeX's
+            # extensible vertical bar is U+000C in CMEX and str.strip() counts
+            # form feed as whitespace, which would drop every | fence.
+            if n <= 1 or (x1 - x0 <= 0 and y1 - y0 <= 0): continue
             seq.append((c, fontfamily(buf.raw[:max(0,n-1)].decode("utf-8","replace"))))
     return seq
 
@@ -159,7 +164,7 @@ for fam, pre in FAMILIES.items():
             if idx < len(spec):
                 kind, side = spec[idx]
                 for c, f in g:
-                    if not c.strip() or not EXTENSION_FONT.search(f):
+                    if not EXTENSION_FONT.search(f):
                         continue
                     key = f"{f}\x00{c}"
                     prev = delims.get(key)

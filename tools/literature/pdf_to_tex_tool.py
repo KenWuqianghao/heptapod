@@ -63,11 +63,14 @@ class PDFToTeXTool(BaseTool):
         self.name = "PDFToTeX"
         self.description = (
             "Extract TeX-flavoured text from a LaTeX-produced PDF. Recovers Greek "
-            "letters, operators, sub/superscripts, accents, fractions and radicals "
-            "as TeX macros by reading the embedded math fonts. Writes the result to "
-            "a file and returns the path plus a summary. Best for papers with no "
-            "arXiv source available; prefer the LaTeX source when there is one, "
-            "since it is authoritative."
+            "letters, operators, sub/superscripts, accents, fractions, radicals and "
+            "matrices as TeX macros by reading the embedded math fonts. Writes the "
+            "result to a file and returns the path plus a summary. Best for papers "
+            "with no arXiv source available; prefer the LaTeX source when there is "
+            "one, since it is authoritative. Output is TeX-flavoured for reading, "
+            "not guaranteed to compile: upright math styles (\\mathrm) are "
+            "unrecoverable, aligned environments flatten, and a fraction inside a "
+            "matrix cell may read as an extra row."
         )
 
     def _setup(self):
@@ -179,7 +182,10 @@ class PDFToTeXTool(BaseTool):
             f"  TeX macros  : {len(macros):,} ({len(set(macros))} distinct)\n"
             f"  most common : {', '.join('\\\\' + m for m in top) if top else '(none)'}\n"
             f"\n"
-            f"Read the file to inspect the content. Note: \\mathrm and other upright "
-            f"math styles render in the prose font and cannot be recovered; where an "
-            f"arXiv LaTeX source exists it remains the authoritative version."
+            f"Read the file to inspect the content. Output is TeX-flavoured for "
+            f"reading and is not guaranteed to compile: \\mathrm and other upright "
+            f"math styles render in the prose font and cannot be recovered, aligned "
+            f"environments flatten, and a fraction inside a matrix cell may read as "
+            f"an extra row. Where an arXiv LaTeX source exists it remains the "
+            f"authoritative version."
         )

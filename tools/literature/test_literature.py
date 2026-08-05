@@ -130,6 +130,7 @@ $$ \Sigma = \begin{pmatrix} m_1 & 0 & 0 \\ 0 & m_2 & \epsilon \\
    0 & \epsilon & m_3 \end{pmatrix} $$
 $$ V = \begin{bmatrix} \alpha \\ \beta \\ \gamma \end{bmatrix} $$
 $$ S = \begin{Bmatrix} x \\ y \end{Bmatrix} $$
+$$ D = \begin{vmatrix} a & b \\ c & d \end{vmatrix} $$
 $$ R = \left( \frac{a}{b} \right) $$
 \end{document}
 """
@@ -170,6 +171,11 @@ class TestMatrices:
 
     def test_brace_matrix(self, matrices):
         assert r"\begin{Bmatrix} x \\ y \end{Bmatrix}" in matrices
+
+    def test_determinant_bars(self, matrices):
+        """TeX's extensible vertical bar is U+000C (form feed) in CMEX, so any
+        whitespace-based glyph filter silently drops every vmatrix fence."""
+        assert r"\begin{vmatrix} a & b \\ c & d \end{vmatrix}" in matrices
 
     def test_non_grid_fence_is_left_right(self, matrices):
         """A tall fence around a non-grid must still render as a fence."""

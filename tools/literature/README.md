@@ -50,6 +50,13 @@ Two sources of information that survive where Unicode does not:
    sharing a kind, side and column are merged into one fence, openers matched
    to closers by height, and the enclosed glyphs read off as a grid.
 
+   One trap worth knowing: the extensible vertical bar is `U+000C` (form feed)
+   in CMEX, and Python's `str.strip()` counts form feed as whitespace. Any
+   filter phrased as "skip whitespace characters" therefore discards every
+   `vmatrix` fence before anything can see it. Glyphs are filtered on whether
+   they are real positioned glyphs — a font and a non-degenerate box — not on
+   what their Unicode mapping looks like.
+
 Script level is measured against each glyph's **baseline origin**, not its
 bounding box — a descender like `p` sits below the baseline, which would
 otherwise make its own subscript appear higher than its base.
@@ -85,12 +92,8 @@ agent's context.
 - **`\mathrm` and other upright math styles are unrecoverable.** They render in
   the same font as prose, so nothing distinguishes them. `\mathrm{fb}` comes
   back as `fb`.
-- **Matrices work for `pmatrix`, `bmatrix`, `Bmatrix` and `array`** with atomic
-  entries. Three cases do not yet:
-  - `vmatrix`/`Vmatrix` — at ordinary heights the vertical bars come from the
-    symbol font rather than the extension font, and the fence table admits only
-    extension fonts (admitting the others would make every paren in running
-    prose look like a fence). Their rows flatten.
+- **Matrices work for `pmatrix`, `bmatrix`, `Bmatrix`, `vmatrix` and `array`**
+  with atomic entries. Two cases do not yet:
   - A `\frac` or `\sqrt` **inside a cell** puts its parts on baselines of their
     own and currently reads as extra matrix rows.
   - A big operator inside a tall fence is read as a two-row grid.

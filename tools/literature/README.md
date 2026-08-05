@@ -43,6 +43,13 @@ Two sources of information that survive where Unicode does not:
    Reading them back gives the structure needed to rebuild `\frac{}{}` and
    `\sqrt{}` by partitioning glyphs above/below/left/right of each rule.
 
+3. **Fence geometry.** A matrix's rows sit on separate baselines, so vertical
+   clustering splits them; the enclosing delimiter is what says they form one
+   expression. Tall fences are either one large glyph or a vertical stack of
+   extensible pieces in the private use area (`U+F8EB`, `U+F8EC`, …), so pieces
+   sharing a kind, side and column are merged into one fence, openers matched
+   to closers by height, and the enclosed glyphs read off as a grid.
+
 Script level is measured against each glyph's **baseline origin**, not its
 bounding box — a descender like `p` sits below the baseline, which would
 otherwise make its own subscript appear higher than its base.
@@ -78,8 +85,17 @@ agent's context.
 - **`\mathrm` and other upright math styles are unrecoverable.** They render in
   the same font as prose, so nothing distinguishes them. `\mathrm{fb}` comes
   back as `fb`.
-- **Matrices, arrays and multi-line aligned environments** are not
-  reconstructed; their rows flatten.
+- **Matrices work for `pmatrix`, `bmatrix`, `Bmatrix` and `array`** with atomic
+  entries. Three cases do not yet:
+  - `vmatrix`/`Vmatrix` — at ordinary heights the vertical bars come from the
+    symbol font rather than the extension font, and the fence table admits only
+    extension fonts (admitting the others would make every paren in running
+    prose look like a fence). Their rows flatten.
+  - A `\frac` or `\sqrt` **inside a cell** puts its parts on baselines of their
+    own and currently reads as extra matrix rows.
+  - A big operator inside a tall fence is read as a two-row grid.
+- **Multi-line aligned environments** (`align`, `eqnarray`) are not
+  reconstructed; their rows become separate output lines.
 - **Big-operator limits** (`\sum_{i=0}^{N}` in display style) are read as
   ordinary sub/superscripts rather than limits.
 - **Spacing macros** (`\,`, `\quad`) are lost; they leave no glyph.

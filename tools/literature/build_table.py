@@ -11,6 +11,8 @@ RELS    = "leq geq ll gg subset supset subseteq supseteq in ni equiv sim simeq a
 ARROWS  = "leftarrow rightarrow leftrightarrow Leftarrow Rightarrow Leftrightarrow mapsto longrightarrow hookrightarrow rightharpoonup".split()
 MISC    = "partial infty nabla surd top bot angle forall exists neg flat natural sharp ell hbar imath jmath wp Re Im aleph prime emptyset".split()
 BIGOPS  = "sum prod int oint coprod bigcup bigcap bigoplus bigotimes".split()
+BIGOPS += ["displaystyle\\" + m for m in
+           "sum prod int oint coprod bigcup bigcap bigoplus bigotimes".split()]
 AMS     = "lesssim gtrsim varnothing square blacksquare hslash therefore because".split()
 BB      = ["mathbb{%s}" % c for c in "RCZNQ"]
 CAL     = ["mathcal{%s}" % c for c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"]
@@ -75,6 +77,8 @@ for fam, pre in FAMILIES.items():
             while j < len(seq) and not is_tag(seq, j): g.append(seq[j]); j += 1
             if idx < len(ALL) and g:
                 macro = ALL[idx]
+                if macro.startswith("displaystyle\\"):
+                    macro = macro.split("\\", 1)[1]
                 fonts = {f for _, f in g}
                 if len(fonts) == 1:                      # single-font glyph run
                     key = f"{g[0][1]}\x00" + "".join(c for c, _ in g)
@@ -90,7 +94,91 @@ for fam, pre in FAMILIES.items():
     os.remove("p.pdf")
     print(f"  {fam:<6} {n:>3}/{len(ALL)} macros")
 
-json.dump({"symbols": table, "radicals": radicals}, open("tex_table.json","w"), indent=0, ensure_ascii=False, sort_keys=True)
+
+# --------------------------------------------------------------------------
+# delimiters
+# --------------------------------------------------------------------------
+# Tall fences are what enclose a matrix. TeX renders them either as a single
+# large glyph or, past a certain height, as a vertical stack of extensible
+# pieces in the private use area. Probe each side on its own (\left( ... \right.
+# yields only the opener) at a range of heights, so every piece of every size
+# is recorded against the delimiter it belongs to.
+
+DELIMS = [("(", ")"), ("[", "]"), (r"\{", r"\}"),
+          ("|", "|"), (r"\|", r"\|"),
+          (r"\langle", r"\rangle")]
+# TeX picks fence glyphs from a discrete size chain, and sizes them about the
+# math axis using both height and depth. A \rule with height but no depth
+# therefore misses sizes that real content hits, so the probe sweeps rules with
+# matched depth *and* arrays of 1..8 rows -- the construct matrices actually
+# use -- to cover the whole chain.
+HEIGHTS = [(6, 2), (10, 4), (14, 6), (18, 8), (24, 10), (30, 14),
+           (40, 18), (55, 25), (75, 35), (100, 45)]
+ROWS = [1, 2, 3, 4, 5, 6, 8]
+
+def make_delim_tex(preamble):
+    body, spec = [], []
+    for kind, (lft, rgt) in enumerate(DELIMS):
+        exprs = []
+        for h, d in HEIGHTS:
+            exprs.append(r"\rule[-%dpt]{0pt}{%dpt}" % (d, h))
+        for n in ROWS:
+            grid = r"\\".join(["x"] * n)
+            exprs.append(r"\begin{array}{c}%s\end{array}" % grid)
+        for expr in exprs:
+            for side in ("left", "right"):
+                idx = len(spec)
+                if side == "left":
+                    full = r"\left%s %s \right." % (lft, expr)
+                else:
+                    full = r"\left. %s \right%s" % (expr, rgt)
+                spec.append((kind, side))
+                body.append(r"Q%04dQ $\displaystyle %s$\par" % (idx, full))
+    return (r"\documentclass[12pt]{article}\usepackage{amsmath,amssymb}" + preamble +
+            r"\usepackage[margin=0.4in]{geometry}\pagestyle{empty}"
+            r"\begin{document}\raggedright " + "\n".join(body) + r"\end{document}"), spec
+
+# Only extension fonts may contribute. Ordinary-size delimiters live in the
+# text/symbol fonts and are already handled as plain characters; admitting them
+# here would make every paren in running prose look like a matrix fence.
+EXTENSION_FONT = re.compile(r"CMEX|txex|MathExtension", re.I)
+
+delims = {}   # "FAMILY\x00glyph" -> {"kind": <index>, "side": "left"|"right"}
+for fam, pre in FAMILIES.items():
+    tex, spec = make_delim_tex(pre)
+    open("p.tex", "w").write(tex)
+    subprocess.run(["pdflatex", "-interaction=nonstopmode", "p.tex"],
+                   capture_output=True, text=True)
+    if not os.path.exists("p.pdf"):
+        print(f"  {fam}: delimiter probe FAILED"); continue
+    seq = read_glyphs("p.pdf"); i = 0
+    while i < len(seq):
+        if is_tag(seq, i):
+            idx = int("".join(seq[i+k][0] for k in range(1, 5))); j = i + 6; g = []
+            while j < len(seq) and not is_tag(seq, j): g.append(seq[j]); j += 1
+            if idx < len(spec):
+                kind, side = spec[idx]
+                for c, f in g:
+                    if not c.strip() or not EXTENSION_FONT.search(f):
+                        continue
+                    key = f"{f}\x00{c}"
+                    prev = delims.get(key)
+                    if prev is None:
+                        delims[key] = {"kind": kind, "side": side}
+                    elif prev["kind"] == kind and prev["side"] != side:
+                        prev["side"] = "both"      # symmetric fence, e.g. |
+            i = j
+        else: i += 1
+    os.remove("p.pdf")
+
+for _tmp in ("p.tex", "p.aux", "p.log", "p.pdf"):
+    if os.path.exists(_tmp):
+        os.remove(_tmp)
+
+json.dump({"symbols": table, "radicals": radicals, "delims": delims,
+           "delim_kinds": [l for l, _ in DELIMS]},
+          open("tex_table.json", "w"), indent=0, ensure_ascii=False, sort_keys=True)
 print(f"  radicals: {len(radicals)} -> {sorted(radicals)[:4]}")
+print(f"  delimiters: {len(delims)} glyph pieces")
 fams = sorted({k.split("\x00")[0] for k in table})
 print(f"\n{len(table)} entries across {len(fams)} font families:\n  {', '.join(fams)}")

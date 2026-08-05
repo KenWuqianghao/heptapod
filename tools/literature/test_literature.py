@@ -120,6 +120,66 @@ class TestStructure:
         assert "m_{Z}" in extracted
 
 
+MATRIX_SOURCE = r"""
+\documentclass{article}
+\usepackage{amsmath}
+\pagestyle{empty}
+\begin{document}
+$$ M = \begin{pmatrix} a & b \\ c & d \end{pmatrix} $$
+$$ \Sigma = \begin{pmatrix} m_1 & 0 & 0 \\ 0 & m_2 & \epsilon \\
+   0 & \epsilon & m_3 \end{pmatrix} $$
+$$ V = \begin{bmatrix} \alpha \\ \beta \\ \gamma \end{bmatrix} $$
+$$ S = \begin{Bmatrix} x \\ y \end{Bmatrix} $$
+$$ R = \left( \frac{a}{b} \right) $$
+\end{document}
+"""
+
+
+@pytest.fixture(scope="module")
+def matrices():
+    tmp = tempfile.mkdtemp(prefix="heptapod-mat-")
+    try:
+        tex = os.path.join(tmp, "m.tex")
+        with open(tex, "w") as f:
+            f.write(MATRIX_SOURCE)
+        subprocess.run(
+            ["pdflatex", "-interaction=nonstopmode", "-output-directory", tmp, tex],
+            capture_output=True, text=True,
+        )
+        pdf = os.path.join(tmp, "m.pdf")
+        if not os.path.exists(pdf):
+            pytest.skip("pdflatex failed")
+        yield pdf_to_tex(pdf)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+class TestMatrices:
+    """Matrix rows sit on separate baselines and the enclosing fence -- often a
+    stack of extensible glyphs -- is what says they form one expression."""
+
+    def test_pmatrix_2x2(self, matrices):
+        assert r"\begin{pmatrix} a & b \\ c & d \end{pmatrix}" in matrices
+
+    def test_pmatrix_3x3_with_subscripts(self, matrices):
+        assert (r"\begin{pmatrix} m_{1} & 0 & 0 \\ 0 & m_{2} & \epsilon \\ "
+                r"0 & \epsilon & m_{3} \end{pmatrix}") in matrices
+
+    def test_bmatrix_column_vector(self, matrices):
+        assert r"\begin{bmatrix} \alpha \\ \beta \\ \gamma \end{bmatrix}" in matrices
+
+    def test_brace_matrix(self, matrices):
+        assert r"\begin{Bmatrix} x \\ y \end{Bmatrix}" in matrices
+
+    def test_non_grid_fence_is_left_right(self, matrices):
+        """A tall fence around a non-grid must still render as a fence."""
+        assert r"\left(" in matrices and r"\right)" in matrices
+
+    def test_no_control_characters(self, matrices):
+        """Extensible delimiter pieces must never leak as raw glyph codes."""
+        assert not [c for c in matrices if ord(c) < 32 and c not in "\n\r\t"]
+
+
 class TestProse:
     """Prose must survive untouched: no macro leakage into running text."""
 

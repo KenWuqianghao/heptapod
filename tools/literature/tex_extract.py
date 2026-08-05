@@ -40,7 +40,13 @@ import pypdfium2.raw as pdfium_c
 _TABLE_PATH = Path(__file__).with_name("tex_table.json")
 _T = json.loads(_TABLE_PATH.read_text(encoding="utf-8"))
 SYMBOLS, RADICALS = _T["symbols"], _T["radicals"]
+DELIMS = _T.get("delims", {})
+DELIM_KINDS = _T.get("delim_kinds", [])
 MAXSEQ = max((len(k.split("\x00")[1]) for k in SYMBOLS), default=1)
+
+#: delimiter kind -> amsmath matrix environment
+MATRIX_ENV = {"(": "pmatrix", "[": "bmatrix", "\\{": "Bmatrix",
+              "|": "vmatrix", "\\|": "Vmatrix"}
 
 #: font families whose glyphs are mathematical rather than prose
 MATH_FAMILIES = re.compile(
@@ -183,6 +189,18 @@ def _lookup(chars, i):
 
 def _emit(macro, ch):
     if macro is None:
+        info = DELIMS.get(ch["fam"] + "\x00" + ch["c"])
+        if info is not None:
+            # An extensible delimiter piece that no fence pair claimed. Its
+            # glyph code is meaningless outside its font (often a control
+            # character), so emit the delimiter it stands for.
+            kind = DELIM_KINDS[info["kind"]] if info["kind"] < len(DELIM_KINDS) else "("
+            if info["side"] == "right":
+                kind = {"(": ")", "[": "]", "\\{": "\\}",
+                        "\\langle": "\\rangle"}.get(kind, kind)
+            return kind + " "
+        if ord(ch["c"][0]) < 32:
+            return ""            # never leak raw control codes
         tok = TEX_ESCAPE.get(ch["c"]) or LITERAL.get(ch["c"]) or ch["c"]
     elif len(macro) == 1 and macro.isalpha():
         tok = macro                                   # math-italic letter
@@ -315,6 +333,135 @@ def _parse_region(chars, rules, body_size):
 
 
 # --------------------------------------------------------------------------
+# fences and matrices
+# --------------------------------------------------------------------------
+
+def _find_fences(chars, body_size):
+    """Group delimiter glyphs into fences.
+
+    A tall fence is either one large glyph or a vertical stack of extensible
+    pieces at the same x, so pieces sharing a kind, a side and a column are
+    merged into a single fence spanning their combined height.
+    """
+    pieces = []
+    for ch in chars:
+        info = DELIMS.get(ch["fam"] + "\x00" + ch["c"])
+        if info:
+            pieces.append((ch, info))
+    fences = []
+    used = set()
+    for i, (ch, info) in enumerate(pieces):
+        if i in used:
+            continue
+        group = [ch]
+        used.add(i)
+        for j, (other, oinfo) in enumerate(pieces):
+            if j in used or oinfo != info:
+                continue
+            if abs(other["xc"] - ch["xc"]) < 0.4 * body_size:
+                group.append(other)
+                used.add(j)
+        fences.append({
+            "kind": info["kind"], "side": info["side"], "glyphs": group,
+            "x0": min(g["x0"] for g in group), "x1": max(g["x1"] for g in group),
+            "y0": min(g["y0"] for g in group), "y1": max(g["y1"] for g in group),
+        })
+    return fences
+
+
+def _match_fences(fences, body_size):
+    """Pair each opener with the nearest closer of the same kind and height."""
+    # symmetric fences (| and \|) use one glyph for both sides, so they appear
+    # in each list and are paired left-to-right by position
+    lefts = sorted((f for f in fences if f["side"] in ("left", "both")),
+                   key=lambda f: f["x0"])
+    rights = sorted((f for f in fences if f["side"] in ("right", "both")),
+                    key=lambda f: f["x0"])
+    pairs, taken = [], set()
+    for lf in lefts:
+        best = None
+        for k, rt in enumerate(rights):
+            if k in taken or rt["x0"] < lf["x1"] or rt is lf:
+                continue
+            if rt["kind"] != lf["kind"]:
+                continue
+            # same vertical extent, within a tolerance of one body height
+            if (abs(rt["y0"] - lf["y0"]) < body_size
+                    and abs(rt["y1"] - lf["y1"]) < body_size):
+                best = k
+                break
+        if best is not None:
+            taken.add(best)
+            pairs.append((lf, rights[best]))
+    return pairs
+
+
+def _columns(cells, body_size):
+    """Find column boundaries from gaps in the horizontal projection."""
+    spans = sorted((c["x0"], c["x1"]) for c in cells)
+    bounds, cur_end = [], None
+    for x0, x1 in spans:
+        if cur_end is not None and x0 - cur_end > 0.6 * body_size:
+            bounds.append((cur_end + x0) / 2.0)
+        cur_end = max(cur_end or x1, x1)
+    return bounds
+
+
+def _render_matrix(content, kind, body_size, rules):
+    """Render fenced content as a matrix environment, or None if it is not a
+    grid (a single row of a single cell is just a parenthesised group)."""
+    if not content:
+        return None
+    rows = []
+    for ch in sorted(content, key=lambda c: (-c["base"], c["x0"])):
+        if rows and abs(rows[-1][0]["base"] - ch["base"]) <= 0.5 * body_size:
+            rows[-1].append(ch)
+        else:
+            rows.append([ch])
+    # scripts sit on their own baseline; fold short rows into the nearest row
+    merged = []
+    for row in rows:
+        if merged and all(c["size"] < 0.95 * body_size for c in row):
+            merged[-1].extend(row)
+        else:
+            merged.append(row)
+    # a \frac inside a cell puts its numerator and denominator on baselines of
+    # their own, which would otherwise read as extra matrix rows; the fraction
+    # rule is what says they belong to one entry
+    rows = _merge_rows_by_rules(merged, rules, body_size)
+
+    bounds = _columns(content, body_size)
+    if len(rows) < 2 and len(bounds) < 1:
+        return None
+
+    body = []
+    for row in rows:
+        cells = [[] for _ in range(len(bounds) + 1)]
+        for ch in row:
+            idx = sum(1 for b in bounds if ch["xc"] > b)
+            cells[idx].append(ch)
+        rendered = []
+        for cell in cells:
+            if not cell:
+                rendered.append("")
+                continue
+            cx0 = min(c["x0"] for c in cell)
+            cx1 = max(c["x1"] for c in cell)
+            local = [r for r in rules if r["x0"] >= cx0 - 1 and r["x1"] <= cx1 + 1]
+            rendered.append(_squash(_parse_region(cell, local, body_size)))
+        body.append(" & ".join(rendered).rstrip(" &"))
+
+    env = MATRIX_ENV.get(DELIM_KINDS[kind] if kind < len(DELIM_KINDS) else "(")
+    grid = " \\\\ ".join(r for r in body if r.strip())
+    if env is None:      # no standard environment (e.g. angle brackets)
+        opener = DELIM_KINDS[kind]
+        closer = {"\\langle": "\\rangle"}.get(opener, opener)
+        return "\\left%s \\begin{array}{%s} %s \\end{array} \\right%s" % (
+            opener, "c" * (len(bounds) + 1), grid, closer)
+    return "\\begin{%s} %s \\end{%s}" % (env, grid, env)
+
+
+# --------------------------------------------------------------------------
 # block segmentation
 # --------------------------------------------------------------------------
 
@@ -329,6 +476,36 @@ def _cluster_rows(chars, body_size):
     if current:
         rows.append(current)
     return rows
+
+
+def _merge_rows_by_fences(rows, pairs, body_size):
+    """Join the rows a matched fence pair encloses.
+
+    A matrix's rows sit on separate baselines, so vertical clustering splits
+    them; the enclosing fence is what says they belong to one expression.
+    """
+    parent = list(range(len(rows)))
+
+    def find(a):
+        while parent[a] != a:
+            parent[a] = parent[parent[a]]
+            a = parent[a]
+        return a
+
+    for lf, rt in pairs:
+        touching = [idx for idx, row in enumerate(rows)
+                    if any(lf["x0"] - 1 <= c["xc"] <= rt["x1"] + 1
+                           and lf["y0"] - 1 <= c["yc"] <= lf["y1"] + 1 for c in row)]
+        for a, b in zip(touching, touching[1:]):
+            ra, rb = find(a), find(b)
+            if ra != rb:
+                parent[max(ra, rb)] = min(ra, rb)
+
+    groups = {}
+    for idx in range(len(rows)):
+        groups.setdefault(find(idx), []).append(idx)
+    return [[c for i in sorted(idxs) for c in rows[i]]
+            for _, idxs in sorted(groups.items())]
 
 
 def _merge_rows_by_rules(rows, rules, body_size):
@@ -395,7 +572,14 @@ def page_to_tex(page):
         if RADICALS.get(ch["fam"] + "\x00" + ch["c"]):
             ch["radical"] = True
 
+    # Fences must be resolved before row clustering is finalised: a matrix's
+    # rows sit on separate baselines and only the enclosing fence says they
+    # belong together.
+    fences = _find_fences(chars, body_size)
+    pairs = _match_fences(fences, body_size)
+
     rows = _cluster_rows(chars, body_size)
+    rows = _merge_rows_by_fences(rows, pairs, body_size)
     blocks = _merge_rows_by_rules(rows, rules, body_size)
 
     # Each rule belongs to exactly one block: the one whose glyphs under the
@@ -419,12 +603,20 @@ def page_to_tex(page):
 
     lines = []
     for idx, block in enumerate(blocks):
-        lines.append(_render_block(block, assignment[idx], body_size))
+        lines.append(_render_block(block, assignment[idx], body_size, pairs))
     return "\n".join(l for l in lines if l.strip())
 
 
-def _render_block(block, rules, body_size):
+def _render_block(block, rules, body_size, pairs=()):
     """Render one block, wrapping maximal math runs in ``$``."""
+    ids = {id(c) for c in block}
+    local_pairs = [(lf, rt) for lf, rt in pairs
+                   if all(id(g) in ids for g in lf["glyphs"] + rt["glyphs"])]
+    if local_pairs:
+        rendered = _render_fenced(block, local_pairs, rules, body_size)
+        if rendered is not None:
+            return rendered
+
     if rules:
         # structural math: the whole block is one expression
         return "$" + _squash(_parse_region(block, rules, body_size)) + "$"
@@ -463,6 +655,44 @@ def _render_block(block, rules, body_size):
     if in_math:
         out.append("$")
     return _squash("".join(out))
+
+
+def _render_fenced(block, pairs, rules, body_size):
+    """Render a block containing matched fences, substituting each fenced grid
+    for a matrix environment. Returns None if no pair encloses a real grid."""
+    pair = max(pairs, key=lambda p: p[0]["y1"] - p[0]["y0"])
+    lf, rt = pair
+    fence_ids = {id(g) for g in lf["glyphs"] + rt["glyphs"]}
+
+    inside, before, after = [], [], []
+    for ch in block:
+        if id(ch) in fence_ids:
+            continue
+        if ch["x1"] <= lf["x0"] + 1:
+            before.append(ch)
+        elif ch["x0"] >= rt["x1"] - 1:
+            after.append(ch)
+        else:
+            inside.append(ch)
+
+    inner_rules = [r for r in rules if lf["x1"] - 1 <= r["x0"] and r["x1"] <= rt["x0"] + 1]
+    matrix = _render_matrix(inside, lf["kind"], body_size, inner_rules)
+    if matrix is None:
+        # A tall fence around something that is not a grid — \left( \frac{a}{b}
+        # \right), a big operator, a single column of one entry. It must still
+        # be rendered as a fence, otherwise the extensible delimiter pieces
+        # leak into the output as raw control characters.
+        opener = DELIM_KINDS[lf["kind"]] if lf["kind"] < len(DELIM_KINDS) else "("
+        closer = {"(": ")", "[": "]", "\\{": "\\}", "\\langle": "\\rangle"}.get(
+            opener, opener)
+        body = _squash(_parse_region(inside, inner_rules, body_size))
+        matrix = "\\left%s %s \\right%s" % (opener, body, closer)
+
+    lead = _squash(_parse_region(before, [r for r in rules if r["x1"] <= lf["x0"]],
+                                 body_size)) if before else ""
+    tail = _squash(_parse_region(after, [r for r in rules if r["x0"] >= rt["x1"]],
+                                 body_size)) if after else ""
+    return _squash("$" + " ".join(p for p in (lead, matrix, tail) if p) + "$")
 
 
 def _squash(s):

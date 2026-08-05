@@ -1,4 +1,510 @@
 {
+"delim_kinds": [
+"(",
+"[",
+"\\{",
+"|",
+"\\|",
+"\\langle"
+],
+"delims": {
+"CMEX\u0000\u0001": {
+"kind": 0,
+"side": "right"
+},
+"CMEX\u0000\b": {
+"kind": 2,
+"side": "left"
+},
+"CMEX\u0000\u0010": {
+"kind": 0,
+"side": "left"
+},
+"CMEX\u0000\u0011": {
+"kind": 0,
+"side": "right"
+},
+"CMEX\u0000\u0012": {
+"kind": 0,
+"side": "left"
+},
+"CMEX\u0000\u0013": {
+"kind": 0,
+"side": "right"
+},
+"CMEX\u0000\u0014": {
+"kind": 1,
+"side": "left"
+},
+"CMEX\u0000\u0015": {
+"kind": 1,
+"side": "right"
+},
+"CMEX\u0000\u001a": {
+"kind": 2,
+"side": "left"
+},
+"CMEX\u0000\u001b": {
+"kind": 2,
+"side": "right"
+},
+"CMEX\u0000!": {
+"kind": 0,
+"side": "right"
+},
+"CMEX\u0000\"": {
+"kind": 1,
+"side": "left"
+},
+"CMEX\u0000#": {
+"kind": 1,
+"side": "right"
+},
+"CMEX\u0000(": {
+"kind": 2,
+"side": "left"
+},
+"CMEX\u0000)": {
+"kind": 2,
+"side": "right"
+},
+"CMEX\u0000*": {
+"kind": 5,
+"side": "left"
+},
+"CMEX\u0000+": {
+"kind": 5,
+"side": "right"
+},
+"CMEX\u0000D": {
+"kind": 5,
+"side": "left"
+},
+"CMEX\u0000E": {
+"kind": 5,
+"side": "right"
+},
+"CMEX\u0000h": {
+"kind": 1,
+"side": "left"
+},
+"CMEX\u0000i": {
+"kind": 1,
+"side": "right"
+},
+"CMEX\u0000n": {
+"kind": 2,
+"side": "left"
+},
+"CMEX\u0000o": {
+"kind": 2,
+"side": "right"
+},
+"CMEX\u0000": {
+"kind": 0,
+"side": "left"
+},
+"CMEX\u0000": {
+"kind": 0,
+"side": "left"
+},
+"CMEX\u0000": {
+"kind": 0,
+"side": "left"
+},
+"CMEX\u0000": {
+"kind": 1,
+"side": "left"
+},
+"CMEX\u0000": {
+"kind": 1,
+"side": "left"
+},
+"CMEX\u0000": {
+"kind": 1,
+"side": "left"
+},
+"CMEX\u0000": {
+"kind": 2,
+"side": "left"
+},
+"CMEX\u0000": {
+"kind": 2,
+"side": "left"
+},
+"CMEX\u0000": {
+"kind": 2,
+"side": "left"
+},
+"CMEX\u0000": {
+"kind": 2,
+"side": "both"
+},
+"CMEX\u0000": {
+"kind": 0,
+"side": "right"
+},
+"CMEX\u0000": {
+"kind": 0,
+"side": "right"
+},
+"CMEX\u0000": {
+"kind": 0,
+"side": "right"
+},
+"CMEX\u0000": {
+"kind": 1,
+"side": "right"
+},
+"CMEX\u0000": {
+"kind": 1,
+"side": "right"
+},
+"CMEX\u0000": {
+"kind": 1,
+"side": "right"
+},
+"CMEX\u0000": {
+"kind": 2,
+"side": "right"
+},
+"CMEX\u0000": {
+"kind": 2,
+"side": "right"
+},
+"CMEX\u0000": {
+"kind": 2,
+"side": "right"
+},
+"LMMathExtension-Regular\u0000\u0010": {
+"kind": 0,
+"side": "left"
+},
+"LMMathExtension-Regular\u0000\u0011": {
+"kind": 0,
+"side": "right"
+},
+"LMMathExtension-Regular\u0000\u0012": {
+"kind": 0,
+"side": "left"
+},
+"LMMathExtension-Regular\u0000\u0013": {
+"kind": 0,
+"side": "right"
+},
+"LMMathExtension-Regular\u0000\u0014": {
+"kind": 1,
+"side": "left"
+},
+"LMMathExtension-Regular\u0000\u0015": {
+"kind": 1,
+"side": "right"
+},
+"LMMathExtension-Regular\u0000\u001a": {
+"kind": 2,
+"side": "left"
+},
+"LMMathExtension-Regular\u0000\u001b": {
+"kind": 2,
+"side": "right"
+},
+"LMMathExtension-Regular\u0000!": {
+"kind": 0,
+"side": "right"
+},
+"LMMathExtension-Regular\u0000\"": {
+"kind": 1,
+"side": "left"
+},
+"LMMathExtension-Regular\u0000#": {
+"kind": 1,
+"side": "right"
+},
+"LMMathExtension-Regular\u0000(": {
+"kind": 2,
+"side": "left"
+},
+"LMMathExtension-Regular\u0000)": {
+"kind": 2,
+"side": "right"
+},
+"LMMathExtension-Regular\u0000*": {
+"kind": 5,
+"side": "left"
+},
+"LMMathExtension-Regular\u0000+": {
+"kind": 5,
+"side": "right"
+},
+"LMMathExtension-Regular\u0000D": {
+"kind": 5,
+"side": "left"
+},
+"LMMathExtension-Regular\u0000E": {
+"kind": 5,
+"side": "right"
+},
+"LMMathExtension-Regular\u0000h": {
+"kind": 1,
+"side": "left"
+},
+"LMMathExtension-Regular\u0000i": {
+"kind": 1,
+"side": "right"
+},
+"LMMathExtension-Regular\u0000n": {
+"kind": 2,
+"side": "left"
+},
+"LMMathExtension-Regular\u0000o": {
+"kind": 2,
+"side": "right"
+},
+"LMMathExtension-Regular\u0000": {
+"kind": 0,
+"side": "left"
+},
+"LMMathExtension-Regular\u0000": {
+"kind": 0,
+"side": "left"
+},
+"LMMathExtension-Regular\u0000": {
+"kind": 0,
+"side": "left"
+},
+"LMMathExtension-Regular\u0000": {
+"kind": 1,
+"side": "left"
+},
+"LMMathExtension-Regular\u0000": {
+"kind": 1,
+"side": "left"
+},
+"LMMathExtension-Regular\u0000": {
+"kind": 1,
+"side": "left"
+},
+"LMMathExtension-Regular\u0000": {
+"kind": 2,
+"side": "left"
+},
+"LMMathExtension-Regular\u0000": {
+"kind": 2,
+"side": "left"
+},
+"LMMathExtension-Regular\u0000": {
+"kind": 2,
+"side": "left"
+},
+"LMMathExtension-Regular\u0000": {
+"kind": 2,
+"side": "both"
+},
+"LMMathExtension-Regular\u0000": {
+"kind": 0,
+"side": "right"
+},
+"LMMathExtension-Regular\u0000": {
+"kind": 0,
+"side": "right"
+},
+"LMMathExtension-Regular\u0000": {
+"kind": 0,
+"side": "right"
+},
+"LMMathExtension-Regular\u0000": {
+"kind": 1,
+"side": "right"
+},
+"LMMathExtension-Regular\u0000": {
+"kind": 1,
+"side": "right"
+},
+"LMMathExtension-Regular\u0000": {
+"kind": 1,
+"side": "right"
+},
+"LMMathExtension-Regular\u0000": {
+"kind": 2,
+"side": "right"
+},
+"LMMathExtension-Regular\u0000": {
+"kind": 2,
+"side": "right"
+},
+"LMMathExtension-Regular\u0000": {
+"kind": 2,
+"side": "right"
+},
+"txexs\u0000\u0001": {
+"kind": 0,
+"side": "right"
+},
+"txexs\u0000\b": {
+"kind": 2,
+"side": "left"
+},
+"txexs\u0000\u0010": {
+"kind": 0,
+"side": "left"
+},
+"txexs\u0000\u0011": {
+"kind": 0,
+"side": "right"
+},
+"txexs\u0000\u0012": {
+"kind": 0,
+"side": "left"
+},
+"txexs\u0000\u0013": {
+"kind": 0,
+"side": "right"
+},
+"txexs\u0000\u0014": {
+"kind": 1,
+"side": "left"
+},
+"txexs\u0000\u0015": {
+"kind": 1,
+"side": "right"
+},
+"txexs\u0000\u001a": {
+"kind": 2,
+"side": "left"
+},
+"txexs\u0000\u001b": {
+"kind": 2,
+"side": "right"
+},
+"txexs\u0000!": {
+"kind": 0,
+"side": "right"
+},
+"txexs\u0000\"": {
+"kind": 1,
+"side": "left"
+},
+"txexs\u0000#": {
+"kind": 1,
+"side": "right"
+},
+"txexs\u0000(": {
+"kind": 2,
+"side": "left"
+},
+"txexs\u0000)": {
+"kind": 2,
+"side": "right"
+},
+"txexs\u0000*": {
+"kind": 5,
+"side": "left"
+},
+"txexs\u0000+": {
+"kind": 5,
+"side": "right"
+},
+"txexs\u0000D": {
+"kind": 5,
+"side": "left"
+},
+"txexs\u0000E": {
+"kind": 5,
+"side": "right"
+},
+"txexs\u0000h": {
+"kind": 1,
+"side": "left"
+},
+"txexs\u0000i": {
+"kind": 1,
+"side": "right"
+},
+"txexs\u0000n": {
+"kind": 2,
+"side": "left"
+},
+"txexs\u0000o": {
+"kind": 2,
+"side": "right"
+},
+"txexs\u0000©": {
+"kind": 0,
+"side": "left"
+},
+"txexs\u0000ª": {
+"kind": 0,
+"side": "right"
+},
+"txexs\u0000«": {
+"kind": 0,
+"side": "left"
+},
+"txexs\u0000¬": {
+"kind": 0,
+"side": "right"
+},
+"txexs\u0000­": {
+"kind": 0,
+"side": "left"
+},
+"txexs\u0000®": {
+"kind": 0,
+"side": "right"
+},
+"txexs\u0000": {
+"kind": 1,
+"side": "left"
+},
+"txexs\u0000": {
+"kind": 1,
+"side": "left"
+},
+"txexs\u0000": {
+"kind": 1,
+"side": "left"
+},
+"txexs\u0000": {
+"kind": 2,
+"side": "left"
+},
+"txexs\u0000": {
+"kind": 2,
+"side": "left"
+},
+"txexs\u0000": {
+"kind": 2,
+"side": "left"
+},
+"txexs\u0000": {
+"kind": 2,
+"side": "both"
+},
+"txexs\u0000": {
+"kind": 1,
+"side": "right"
+},
+"txexs\u0000": {
+"kind": 1,
+"side": "right"
+},
+"txexs\u0000": {
+"kind": 1,
+"side": "right"
+},
+"txexs\u0000": {
+"kind": 2,
+"side": "right"
+},
+"txexs\u0000": {
+"kind": 2,
+"side": "right"
+},
+"txexs\u0000": {
+"kind": 2,
+"side": "right"
+}
+},
 "radicals": {
 "CMEX\u0000p": "sqrt",
 "CMEX\u0000q": "sqrt",
@@ -9,14 +515,23 @@
 },
 "symbols": {
 "CMEX\u0000H": "oint",
+"CMEX\u0000I": "oint",
 "CMEX\u0000L": "bigoplus",
+"CMEX\u0000M": "bigoplus",
 "CMEX\u0000N": "bigotimes",
+"CMEX\u0000O": "bigotimes",
 "CMEX\u0000P": "sum",
 "CMEX\u0000Q": "prod",
 "CMEX\u0000R": "int",
 "CMEX\u0000S": "bigcup",
 "CMEX\u0000T": "bigcap",
+"CMEX\u0000X": "sum",
+"CMEX\u0000Y": "prod",
+"CMEX\u0000Z": "int",
+"CMEX\u0000[": "bigcup",
+"CMEX\u0000\\": "bigcap",
 "CMEX\u0000`": "coprod",
+"CMEX\u0000a": "coprod",
 "CMMI\u0000A": "A",
 "CMMI\u0000B": "B",
 "CMMI\u0000C": "C",
@@ -209,14 +724,23 @@
 "CMSY\u0000◦": "circ",
 "CMSY\u0000⨿": "amalg",
 "LMMathExtension-Regular\u0000H": "oint",
+"LMMathExtension-Regular\u0000I": "oint",
 "LMMathExtension-Regular\u0000L": "bigoplus",
+"LMMathExtension-Regular\u0000M": "bigoplus",
 "LMMathExtension-Regular\u0000N": "bigotimes",
+"LMMathExtension-Regular\u0000O": "bigotimes",
 "LMMathExtension-Regular\u0000P": "sum",
 "LMMathExtension-Regular\u0000Q": "prod",
 "LMMathExtension-Regular\u0000R": "int",
 "LMMathExtension-Regular\u0000S": "bigcup",
 "LMMathExtension-Regular\u0000T": "bigcap",
+"LMMathExtension-Regular\u0000X": "sum",
+"LMMathExtension-Regular\u0000Y": "prod",
+"LMMathExtension-Regular\u0000Z": "int",
+"LMMathExtension-Regular\u0000[": "bigcup",
+"LMMathExtension-Regular\u0000\\": "bigcap",
 "LMMathExtension-Regular\u0000`": "coprod",
+"LMMathExtension-Regular\u0000a": "coprod",
 "LMMathItalic-Regular\u0000A": "A",
 "LMMathItalic-Regular\u0000B": "B",
 "LMMathItalic-Regular\u0000C": "C",
@@ -568,12 +1092,19 @@
 "rsfs\u0000Y": "mathcal{Y}",
 "rsfs\u0000Z": "mathcal{Z}",
 "txexs\u0000É": "bigoplus",
+"txexs\u0000Ê": "bigoplus",
 "txexs\u0000Ë": "bigotimes",
+"txexs\u0000Ì": "bigotimes",
 "txexs\u0000Í": "sum",
 "txexs\u0000Î": "prod",
 "txexs\u0000Ð": "bigcup",
 "txexs\u0000Ñ": "bigcap",
+"txexs\u0000Ö": "prod",
+"txexs\u0000Ø": "bigcup",
+"txexs\u0000Ù": "bigcap",
 "txexs\u0000Ý": "coprod",
+"txexs\u0000Þ": "coprod",
+"txexs\u0000∑︁": "sum",
 "txexs\u0000√︁": "sqrt{\\frac{a}{b}}",
 "txexs\u0000√︃": "sqrt{\\frac{\\frac{a}{b}}{c}}",
 "txexs\u0000∫": "int",

@@ -18,7 +18,7 @@ a Pythia forward flux. The pipeline is three stages, each a BaseTool:
   3. DecayInVolumeVsCouplingTool / DecayInVolumeVsLifetimeTool: LLP records +
      geometry -> signal yields over a coupling grid (portal g^2 reweighting,
      the usual reach scan) or an explicit lab-frame ctau grid (model-agnostic),
-     with exact reweighting, the z_prod absorber, off-axis geometry, and a
+     with exact reweighting, the z_shield absorber, off-axis geometry, and a
      selectable two_track / photon / none acceptance.
 
 The experimental setting (collider-forward vs beam-dump) lives in the run

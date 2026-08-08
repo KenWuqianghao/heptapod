@@ -1,0 +1,48 @@
+{
+  "schema": "llpyields-1.0",
+  "conventions": {
+    "acceptance": "midpoint",
+    "weight": "g2_stripped",
+    "propagation": "straight_line_from_production_vertex"
+  },
+  "acceptance": "two_track",
+  "lifetime_mode": "portal",
+  "m_phi_gev": 0.25,
+  "daughter_masses_gev": [
+    0.1056584,
+    0.1056584
+  ],
+  "width_ref_gev": 0.0015176185240410216,
+  "ctau_ref_g1_m": 1.3002409846353865e-13,
+  "n_int": 2.7e+18,
+  "n_events": 500,
+  "sum_weights": 0.5000000000000002,
+  "n_pass_geometry": 500,
+  "n_pass_acceptance": 500,
+  "inputs": [
+    {
+      "path": "flux.jsonl",
+      "n_records": 500
+    }
+  ],
+  "normalization": {
+    "n_int": 2.7e+18,
+    "br_visible_effective": 0.5,
+    "width_ref_gev_effective": 0.0015176185240410216,
+    "sum_weights_per_collision": 0.5000000000000002,
+    "mean_weight_per_event": 0.0010000000000000005,
+    "n_events": 500,
+    "geometry_efficiency": 1.0,
+    "acceptance_efficiency": 1.0,
+    "overall_efficiency": 1.0,
+    "note": "N_sig = n_int * [g^2 in portal mode] * br_visible_effective * sum_i w_i * P_dec,i * acc_i. If a yield is off by orders of magnitude, compare these factors one at a time against your own calculation: sum_weights_per_collision is the upstream flux normalization, br_visible_effective the branching into the detected state, and the efficiencies the geometric and kinematic acceptance."
+  },
+  "grid_diagnostic": null,
+  "lifetime_offscale": null,
+  "yields": [
+    {
+      "g": 1e-08,
+      "n_sig": 0.0039682812956008135
+    }
+  ]
+}

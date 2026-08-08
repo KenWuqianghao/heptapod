@@ -30,7 +30,7 @@ base_directory = str(TOOL_DIR / "test_files_meson")
 M_PARENT = 0.493677        # kaon
 M_PHI = 0.25
 M_MU = 0.1056584
-KAPPA = 1.3e-5
+B_HAT = 1.3e-5
 CTAU_K = 3.712             # kaon proper decay length [m]
 N_PARENTS = 200
 W_PER = 3.6 / N_PARENTS    # per-collision weight per harvested parent
@@ -82,7 +82,7 @@ def _run(m_phi=M_PHI, ctau=CTAU_K, n_strata=8, seed=42, out="llp/phi_K.jsonl"):
         spectrum_spec="spectrum.csv",
         m_phi_gev=m_phi,
         parent_mass_gev=M_PARENT,
-        kappa=KAPPA,
+        B_hat=B_HAT,
         ctau_parent_m=ctau,
         n_strata=n_strata,
         seed=seed,
@@ -106,9 +106,9 @@ def test_grid_mode():
     print(">> grid mode: one call sweeps the mass grid, shared vertices ...")
     _setup()
     K = 8
-    grid = [{"m_phi_gev": 0.22, "spectrum_spec": "spectrum.csv", "kappa": 1e-5},
-            {"m_phi_gev": 0.24, "spectrum_spec": "spectrum.csv", "kappa": 2e-5},
-            {"m_phi_gev": 0.25, "spectrum_spec": "spectrum.csv", "kappa": 3e-5}]
+    grid = [{"m_phi_gev": 0.22, "spectrum_spec": "spectrum.csv", "B_hat": 1e-5},
+            {"m_phi_gev": 0.24, "spectrum_spec": "spectrum.csv", "B_hat": 2e-5},
+            {"m_phi_gev": 0.25, "spectrum_spec": "spectrum.csv", "B_hat": 3e-5}]
     tool = MesonDecayToLLPTool(
         base_directory=base_directory, parent_flux_path="parents_K.jsonl",
         parent_mass_gev=M_PARENT, ctau_parent_m=CTAU_K, n_strata=K, seed=1,
@@ -126,9 +126,9 @@ def test_grid_mode():
         for r in recs[:30]:
             m2 = r["E"] ** 2 - r["px"] ** 2 - r["py"] ** 2 - r["pz"] ** 2
             assert abs(math.sqrt(max(m2, 0.0)) - mval) < 1e-6, (mval, r)
-        # weight scales with that mass's kappa
-        assert abs(m["sum_weights"] - N_PARENTS * W_PER * m["kappa"]) \
-            / (N_PARENTS * W_PER * m["kappa"]) < 1e-9
+        # weight scales with that mass's B_hat
+        assert abs(m["sum_weights"] - N_PARENTS * W_PER * m["B_hat"]) \
+            / (N_PARENTS * W_PER * m["B_hat"]) < 1e-9
     # SHARED vertices: production points are mass-independent (sampled once),
     # so vz per event index is identical across masses
     r0 = _recs(per[0.22]["path"])
@@ -145,7 +145,7 @@ def test_path_traversal_prevention():
         base_directory=base_directory,
         parent_flux_path="../../../etc/passwd",
         spectrum_spec="spectrum.csv", m_phi_gev=M_PHI,
-        parent_mass_gev=M_PARENT, kappa=KAPPA, seed=1,
+        parent_mass_gev=M_PARENT, B_hat=B_HAT, seed=1,
         output_path="llp/o.jsonl")
     tool._setup()
     assert "denied" in tool._run().lower()
@@ -153,7 +153,7 @@ def test_path_traversal_prevention():
         base_directory=base_directory,
         parent_flux_path="parents_K.jsonl",
         spectrum_spec="spectrum.csv", m_phi_gev=M_PHI,
-        parent_mass_gev=M_PARENT, kappa=KAPPA, seed=1,
+        parent_mass_gev=M_PARENT, B_hat=B_HAT, seed=1,
         output_path="../../../tmp/evil.jsonl")
     tool._setup()
     assert "denied" in tool._run().lower()
@@ -170,8 +170,8 @@ def test_decay_and_weights():
     assert res["n_strata"] == K
     assert res["weight_convention"] == "g2_stripped_per_primary_interaction"
     assert not res["above_kinematic_cutoff"]
-    # sum of LLP weights = sum(parent weights) * kappa (the 1/K strata sum to 1)
-    expected = N_PARENTS * W_PER * KAPPA
+    # sum of LLP weights = sum(parent weights) * B_hat (the 1/K strata sum to 1)
+    expected = N_PARENTS * W_PER * B_HAT
     assert abs(res["sum_weights"] - expected) / expected < 1e-9, \
         (res["sum_weights"], expected)
     recs = _records(res)
@@ -182,7 +182,7 @@ def test_decay_and_weights():
         assert all(k in r for k in ("vx", "vy", "vz"))
         assert r["parent_channel"] == "K+"
         assert abs(r["event_weight_g2_stripped"]
-                   - W_PER * KAPPA / K) / (W_PER * KAPPA / K) < 1e-9
+                   - W_PER * B_HAT / K) / (W_PER * B_HAT / K) < 1e-9
     print("[OK] N*K records, sum_weights exact, LLP on-shell, vertex present")
 
 
@@ -227,7 +227,7 @@ def test_ctau_auto_from_pid():
     tool = MesonDecayToLLPTool(
         base_directory=base_directory, parent_flux_path="parents_unknown.jsonl",
         spectrum_spec="spectrum.csv", m_phi_gev=M_PHI, parent_mass_gev=M_PARENT,
-        kappa=KAPPA, ctau_parent_m=-1.0, n_strata=1, seed=1,
+        B_hat=B_HAT, ctau_parent_m=-1.0, n_strata=1, seed=1,
         output_path="llp/unknown.jsonl")
     tool._setup()
     res_unk = json.loads(tool._run())
@@ -244,7 +244,7 @@ def test_scheme_prefix_and_optional_single_fields():
     tool = MesonDecayToLLPTool(
         base_directory=base_directory, parent_flux_path="parents_K.jsonl",
         spectrum_spec="table:spectrum.csv", m_phi_gev=M_PHI,
-        parent_mass_gev=M_PARENT, kappa=KAPPA, ctau_parent_m=CTAU_K,
+        parent_mass_gev=M_PARENT, B_hat=B_HAT, ctau_parent_m=CTAU_K,
         n_strata=4, seed=1, output_path="llp/scheme.jsonl")
     tool._setup()
     res = json.loads(tool._run())
@@ -256,7 +256,7 @@ def test_scheme_prefix_and_optional_single_fields():
     # single mode without them gives a CLEAR error (not an opaque path error)
     bad = MesonDecayToLLPTool(
         base_directory=base_directory, parent_flux_path="parents_K.jsonl",
-        m_phi_gev=M_PHI, parent_mass_gev=M_PARENT, kappa=KAPPA, seed=1)
+        m_phi_gev=M_PHI, parent_mass_gev=M_PARENT, B_hat=B_HAT, seed=1)
     bad._setup()
     out = bad._run()
     assert "single-mass mode needs" in out, out

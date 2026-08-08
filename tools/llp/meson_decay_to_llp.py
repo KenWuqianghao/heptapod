@@ -74,20 +74,22 @@ class MesonDecayToLLPTool(BaseTool):
     channel and concatenate across channels.
 
     Grid mode (preferred): pass `grid` (a list of {m_phi_gev, spectrum_spec,
-    kappa}) + `output_dir` to sweep the whole mass grid in one call, one LLP
+    B_hat}) + `output_dir` to sweep the whole mass grid in one call, one LLP
     file per mass; the flux and the mass-independent decay-in-flight vertices
     are loaded/sampled once and reused across masses. Single-mass mode
-    (`m_phi_gev` + `spectrum_spec` + `kappa` + `output_path`, no `grid`) is
+    (`m_phi_gev` + `spectrum_spec` + `B_hat` + `output_path`, no `grid`) is
     kept for one-off use.
 
     Model-agnostic: the production amplitude is NOT in the tool. The LLP
     energy distribution is the declared `spectrum_spec` (a `table` for 3-body
     radiation M -> l nu X, a `two_body` delta for M -> X Y) and the
-    g^2-stripped branching is `kappa`; the tool supplies only the mechanics --
+    g^2-stripped branching is `B_hat`; the tool supplies only the mechanics --
     rest-frame -> lab boost, isotropic LLP direction (unpolarised parent), and
     the decay-in-flight vertex. That vertex: a parent of lab momentum p decays
-    at ell ~ Exp(lambda), lambda = beta*gamma * c*tau, sampled by deterministic
-    stratification (`n_strata`). The parent c*tau defaults to the SM value for
+    at ell ~ Exp(lambda), lambda = beta*gamma * c*tau, drawn by STRATIFIED
+    sampling (`n_strata` equal-probability strata, one point drawn uniformly
+    inside each) -- unbiased even against the hard absorber cut applied
+    downstream. The parent c*tau defaults to the SM value for
     the parent PID that travels with the flux (auto): finite for long-lived
     parents (kaons, pions, charm, bottom) so their decay-in-flight vertices are
     resolved, and 0 for prompt parents (vectors, charmonia) which collapse to
@@ -96,7 +98,7 @@ class MesonDecayToLLPTool(BaseTool):
 
     Output (one JSON line per LLP, schema "llpflux-2.0"): E, px, py, pz (GeV);
     vx, vy, vz (m, production vertex); theta_lab; parent_channel;
-    event_weight_g2_stripped = parent_weight * kappa / n_strata. Downstream:
+    event_weight_g2_stripped = parent_weight * B_hat / n_strata. Downstream:
     N_sig(g) = N_int * g^2 * BR_vis * sum_i w_i * P_dec,i(g) * acc_i. Grid mode
     writes `output_dir/llp_<channel>_m<mass>.jsonl` + `meson_decay_manifest.json`;
     single mode writes `output_path` + `.manifest.json`. A kinematically closed
@@ -124,7 +126,7 @@ class MesonDecayToLLPTool(BaseTool):
         description="LLP mass in GeV (single-mass mode; ignored when `grid` "
                     "is given)")
     parent_mass_gev: float = RuntimeField(description="Parent mass in GeV")
-    kappa: float = RuntimeField(
+    B_hat: float = RuntimeField(
         default=0.0,
         description="g^2-stripped branching Br(parent -> ... LLP) at g=1 "
                     "(single-mass mode; ignored when `grid` is given)")
@@ -134,12 +136,12 @@ class MesonDecayToLLPTool(BaseTool):
                     "in ONE call, reusing the loaded flux and the "
                     "(mass-independent) decay-in-flight vertices; one LLP file "
                     "is written per mass into `output_dir`. A list of entries, "
-                    "each {m_phi_gev, spectrum_spec, kappa} -- spectrum_spec is "
+                    "each {m_phi_gev, spectrum_spec, B_hat} -- spectrum_spec is "
                     "a plain path (no scheme prefix). Example: "
                     "[{\"m_phi_gev\":0.23,\"spectrum_spec\":\"spectra/spec_K_"
-                    "m0.230.csv\",\"kappa\":1.2e-3}, ...]. In grid mode you do "
+                    "m0.230.csv\",\"B_hat\":1.2e-3}, ...]. In grid mode you do "
                     "NOT pass the single-mass fields (m_phi_gev/spectrum_spec/"
-                    "kappa/output_path); pass `grid` + `output_dir` only.")
+                    "B_hat/output_path); pass `grid` + `output_dir` only.")
     output_dir: str = RuntimeField(
         default="",
         description="GRID MODE: relative directory for the per-mass LLP files "
@@ -199,12 +201,12 @@ class MesonDecayToLLPTool(BaseTool):
                 try:
                     entries.append((float(e["m_phi_gev"]),
                                     _strip_spec_scheme(str(e["spectrum_spec"])),
-                                    float(e["kappa"])))
+                                    float(e["B_hat"])))
                 except (KeyError, TypeError, ValueError) as ex:
                     return self.format_error(
                         error="Invalid Parameter",
                         reason=f"grid[{j}] must be "
-                               f"{{m_phi_gev, spectrum_spec, kappa}} ({ex})",
+                               f"{{m_phi_gev, spectrum_spec, B_hat}} ({ex})",
                         suggestion="Each grid entry needs those three keys")
         else:
             if not self.spectrum_spec or not self.output_path:
@@ -217,7 +219,7 @@ class MesonDecayToLLPTool(BaseTool):
                                "none of the single-mass fields)")
             entries = [(float(self.m_phi_gev),
                         _strip_spec_scheme(str(self.spectrum_spec)),
-                        float(self.kappa))]
+                        float(self.B_hat))]
             dst = self._safe_path(self.output_path)
             if not dst:
                 return self.format_error(
@@ -243,8 +245,8 @@ class MesonDecayToLLPTool(BaseTool):
             if m_phi <= 0.0 or kap < 0.0:
                 return self.format_error(
                     error="Invalid Parameter",
-                    reason=f"need m_phi>0 and kappa>=0 (got {m_phi}, {kap})",
-                    suggestion="kappa is Br(parent -> ... LLP) at g=1")
+                    reason=f"need m_phi>0 and B_hat>=0 (got {m_phi}, {kap})",
+                    suggestion="B_hat is the reduced branching fraction, i.e. Br(h -> ... LLP) with the g^2 factored out")
             sp = self._safe_path(spec_rel)
             if not sp:
                 return self.format_error(
@@ -373,7 +375,7 @@ class MesonDecayToLLPTool(BaseTool):
                     m_phi, specs[spec_rel], kap, out_full)
                 total_n += n_w; total_w += s_w
                 masses.append({
-                    "m_phi_gev": m_phi, "kappa": kap,
+                    "m_phi_gev": m_phi, "B_hat": kap,
                     "spectrum_spec": os.path.relpath(
                         self._safe_path(spec_rel), self.base_directory),
                     "path": os.path.relpath(out_full, self.base_directory),
@@ -395,7 +397,7 @@ class MesonDecayToLLPTool(BaseTool):
             "schema": MANIFEST_SCHEMA_VERSION,
             "weight_convention": WEIGHT_CONVENTION,
             "weight_definition": "event_weight_g2_stripped = parent_weight * "
-                                 "kappa / n_strata; N_sig(g) = N_int * g^2 * "
+                                 "B_hat / n_strata; N_sig(g) = N_int * g^2 * "
                                  "BR_vis * sum_i w_i * P_dec,i(g) * acc_i",
             "mode": "grid" if grid_mode else "single",
             "parent_flux_path": os.path.relpath(flux_src, self.base_directory),

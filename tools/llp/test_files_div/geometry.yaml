@@ -1,0 +1,8 @@
+
+geometry:
+  z_min_m: 112.0
+  z_max_m: 163.0
+  r_volume_m: 0.92
+  z_det_m: 165.0
+  r_det_m: 0.92
+  z_prod_m: 50.0

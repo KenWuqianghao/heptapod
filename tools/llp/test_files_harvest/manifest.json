@@ -1,0 +1,10 @@
+{
+  "schema": "evtjsonl-1.0",
+  "outputs": {
+    "events_jsonl": "events.jsonl",
+    "n_events_written": 50,
+    "xsec": {
+      "sigmaGen_mb": 60.0
+    }
+  }
+}

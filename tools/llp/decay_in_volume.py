@@ -66,7 +66,7 @@ class _DecayInVolumeBase(BaseTool):
                     "are echoed as `inputs` so a dropped channel is visible.")
     geometry_path: str = RuntimeField(
         description="Path to geometry YAML (z_min_m, z_max_m, r_volume_m, "
-                    "z_det_m, r_det_m in meters; optional z_prod_m end of "
+                    "z_det_m, r_det_m in meters; optional z_shield_m start of "
                     "production region and x_off_m detector offset)")
     m_phi_gev: float = RuntimeField(
         description="LLP (phi) mass in GeV")
@@ -336,7 +336,7 @@ class _DecayInVolumeBase(BaseTool):
             dirs = p4[:, 1:] / np.maximum(pmag, 1e-300)[:, None]
             beta_gamma = pmag / m_phi
             # in-volume segment measured FROM the production vertex, along
-            # the LLP direction (handles decay-in-flight + off-axis + z_prod)
+            # the LLP direction (handles decay-in-flight + off-axis + z_shield)
             L1, L2, ok = geom.segment_from_vertex(vtx, dirs)
             # in-volume decay MIDPOINT for the lifetime-independent acceptance
             Lmid = 0.5 * (L1 + L2)

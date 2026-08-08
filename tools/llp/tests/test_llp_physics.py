@@ -138,9 +138,27 @@ def test_larger_K_reduces_variance():
     print(f"[OK] sd {s_lo:.3e} (K=2) -> {s_hi:.3e} (K=32)")
 
 
+def test_z_shield_and_deprecated_alias():
+    """`z_shield_m` is canonical; `z_prod_m` still loads for old geometries."""
+    print(">> z_shield naming + deprecated alias ...")
+    base = {"z_min_m": 112.0, "z_max_m": 163.0, "r_volume_m": 0.92,
+            "z_det_m": 165.0, "r_det_m": 0.92}
+    g_new = phys.DecayVolume({**base, "z_shield_m": 50.0})
+    g_old = phys.DecayVolume({**base, "z_prod_m": 50.0})
+    g_def = phys.DecayVolume(dict(base))
+    assert g_new.z_shield == 50.0
+    assert g_old.z_shield == 50.0, "legacy z_prod_m must still be honoured"
+    assert g_def.z_shield == g_def.z_min, "default is the fiducial face"
+    # the canonical key wins if somebody supplies both
+    g_both = phys.DecayVolume({**base, "z_shield_m": 40.0, "z_prod_m": 50.0})
+    assert g_both.z_shield == 40.0
+    print("[OK] z_shield_m canonical, z_prod_m accepted, canonical wins")
+
+
 if __name__ == "__main__":
     test_sampler_is_unbiased_under_a_hard_cut()
     test_sampler_converges_over_seeds()
     test_sampler_respects_geometry_and_weighting()
     test_larger_K_reduces_variance()
+    test_z_shield_and_deprecated_alias()
     print("\nall llp_physics tests passed")

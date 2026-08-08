@@ -1,0 +1,46 @@
+{
+  "schema": "parentflux-manifest-1.0",
+  "weight_convention": "per_inelastic_collision",
+  "weight_definition": "weight_per_collision = (sigma_gen_mb / (n_gen * sigma_inel_mb)) * prescale * fold_factor * cap_factor (n_total/cap when subsampled); sum over parents = mean parents per inelastic collision",
+  "pythia_events_path": "events.jsonl",
+  "sigma_gen_mb": 60.0,
+  "sigma_inel_mb": 80.0,
+  "n_gen": 50,
+  "n_events_read": 50,
+  "theta_max_rad": 0.01,
+  "fold_hemispheres": true,
+  "cap": 50,
+  "w_per_collision_base": 0.015,
+  "species": [
+    {
+      "name": "D",
+      "path": "flux/parents_D.jsonl",
+      "n_parents": 50,
+      "n_total": 50,
+      "capped": false,
+      "weight_per_collision": 0.0075,
+      "prescale": 1,
+      "sum_weights": 0.375
+    },
+    {
+      "name": "K",
+      "path": "flux/parents_K.jsonl",
+      "n_parents": 50,
+      "n_total": 100,
+      "capped": true,
+      "weight_per_collision": 0.015,
+      "prescale": 1,
+      "sum_weights": 0.75
+    },
+    {
+      "name": "pi",
+      "path": "flux/parents_pi.jsonl",
+      "n_parents": 50,
+      "n_total": 50,
+      "capped": false,
+      "weight_per_collision": 0.0075,
+      "prescale": 1,
+      "sum_weights": 0.375
+    }
+  ]
+}

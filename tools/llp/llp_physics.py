@@ -31,7 +31,7 @@ Conventions (declared, and mirrored from the validated reference):
   - The LLP energy in the parent rest frame is drawn from the declared
     spectrum in x = 2 E*/m_parent; the LLP direction is isotropic in the
     parent rest frame (spin-0 parent convention).
-  - Event weights are g^2-stripped: w_i = n_per_int * kappa_M / n_samples,
+  - Event weights are g^2-stripped: w_i = n_per_int * B_hat_h / n_samples,
     so N_sig(g) = N_int * g^2 * sum_i w_i * P_dec,i(g) * acc_i.
   - The LLP travels in a straight line from the primary vertex at its lab
     angle; the parent flight length is absorbed into the kernel.
@@ -320,15 +320,22 @@ class DecayVolume:
 
     Loaded from a YAML spec carrying (optionally nested under a top-level
     `geometry:` key): z_min_m, z_max_m, r_volume_m, z_det_m, r_det_m, and
-    optionally z_prod_m and x_off_m. All distances in meters from the primary
+    optionally z_shield_m and x_off_m. All distances in meters from the primary
     interaction point.
 
-    - z_prod_m (default z_min): end of the parent PRODUCTION REGION. Parents
-      decay/are swept in [0, z_prod]; the gap [z_prod, z_min] is empty
-      baseline. An LLP counts only if its production vertex has z < z_prod.
-      The gap sets a minimum survival distance, which bounds (well-conditions)
-      the decay-length contour branch. Set z_prod = z_min for the absorber at
-      the fiducial face (or the prompt-at-IP limit, where all vertices are 0).
+    - z_shield_m (default z_min): where the ABSORBER (shielding) begins, i.e.
+      the last longitudinal position at which a parent decay can still yield a
+      detectable LLP. Parents decay or are swept in [0, z_shield]; the gap
+      [z_shield, z_min] is empty baseline. An LLP counts only if its production
+      vertex has z < z_shield. The gap sets a minimum survival distance, which
+      bounds (well-conditions) the decay-length contour branch. Set
+      z_shield = z_min for the absorber at the fiducial face (or the
+      prompt-at-IP limit, where all vertices are 0).
+
+      Accepts the legacy key `z_prod_m` as a deprecated alias. That name was
+      ambiguous -- it reads as the LLP production point rather than the end of
+      the shielding -- and `z_shield_m` is the notation used in the reference
+      write-up.
     - x_off_m (default 0 = on-axis): transverse displacement of the detector
       from the beam line; the cylinder axis and the detector plane are centred
       on (x_off, 0) at all z. Off-axis sees a softer, lower-rate LLP flux."""
@@ -345,7 +352,10 @@ class DecayVolume:
             self.r_det = float(g["r_det_m"])
         except KeyError as e:
             raise ValueError(f"geometry spec missing {e}")
-        self.z_prod = float(g.get("z_prod_m", self.z_min))
+        if "z_shield_m" in g:
+            self.z_shield = float(g["z_shield_m"])
+        else:                                   # deprecated alias
+            self.z_shield = float(g.get("z_prod_m", self.z_min))
         self.x_off = float(g.get("x_off_m", 0.0))
 
     @classmethod
@@ -377,7 +387,7 @@ class DecayVolume:
         (decay-in-flight, off-axis) case. The segment is where the ray
         {vtx + s u : s>0} is inside the radius about the (off-axis) axis AND in
         the z-window [z_min, z_max]; L1, L2 are path lengths from vtx (the LLP
-        decay clock starts at production). A vertex at or beyond z_prod is
+        decay clock starts at production). A vertex at or beyond z_shield is
         absorbed/swept (ok=False); a vertex of 0 reduces to segment(theta)."""
         vtx = np.asarray(vtx, dtype=float)
         u = np.asarray(u, dtype=float)
@@ -404,7 +414,7 @@ class DecayVolume:
         z_hi = (self.z_max - z0) / uz_safe
         s_lo = np.maximum(np.maximum(r_lo, z_lo), 0.0)
         s_hi = np.minimum(r_hi, z_hi)
-        ok = fwd & (z0 < self.z_prod) & (s_hi > s_lo)
+        ok = fwd & (z0 < self.z_shield) & (s_hi > s_lo)
         L1 = np.where(ok, s_lo, 0.0)
         L2 = np.where(ok, s_hi, 0.0)
         return L1, L2, ok

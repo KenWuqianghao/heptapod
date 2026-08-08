@@ -208,6 +208,11 @@ class ProductionSpectrumTool(BaseTool):
             fh.write(f"# parent={p.name} lepton={self.lepton} "
                      f"interaction={self.interaction} "
                      f"m_phi_gev={_f(m_phi)}\n")
+            # B_hat travels WITH the spectrum: they come from one integral, and
+            # the downstream sampler reads it from here rather than having the
+            # caller carry it by hand and risk pairing a spectrum with the
+            # wrong normalisation.
+            fh.write(f"# B_hat={_f(b_hat)}\n")
             fh.write(f"# f_h(x) normalised to 1 over [{_f(x_lo)}, "
                      f"{_f(x_hi)}]; x = 2 E*_LLP / m_h\n")
             fh.write("x,pdf\n")

@@ -133,6 +133,37 @@ def sample_decay_vertices(pvec_par, ctau_par_m, m_par, n_strata, rng):
 # ---------------------------------------------------------------------------
 # parent-rest-frame LLP energy spectrum (a declared data product)
 # ---------------------------------------------------------------------------
+def read_spectrum_header(path):
+    """Parse the `# key=value` metadata a ProductionSpectrumTool CSV carries.
+
+    Returns a dict of strings (possibly empty). The spectrum data product is
+    deliberately self-describing: the file records the parent, the LLP mass and
+    the reduced branching fraction B_hat it was computed for, so a consumer can
+    take B_hat from the same integral that produced f(x) instead of having the
+    caller carry it separately -- and can refuse a spectrum that was built for
+    a different mass.
+
+    Tolerant by design: a hand-written table with no header is still a valid
+    spectrum, and simply yields {}.
+    """
+    meta = {}
+    try:
+        with open(path) as fh:
+            for line in fh:
+                line = line.strip()
+                if not line:
+                    continue
+                if not line.startswith("#"):
+                    break                       # header ends at the first data
+                for tok in line.lstrip("#").split():
+                    if "=" in tok:
+                        k, _, v = tok.partition("=")
+                        meta[k.strip()] = v.strip()
+    except OSError:
+        return {}
+    return meta
+
+
 class LLPSpectrum:
     """The parent-rest-frame LLP energy spectrum, declared as a pinned
     data product rather than computed from a hard-coded amplitude.

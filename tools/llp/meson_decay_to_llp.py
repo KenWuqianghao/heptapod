@@ -152,9 +152,17 @@ class MesonDecayToLLPTool(BaseTool):
                     "the SM value for the parent PID carried by the flux; set "
                     ">= 0 to override (0 = prompt, LLP at the IP)")
     n_strata: int = RuntimeField(
-        default=1,
-        description="Decay-length strata per parent (deterministic; >1 for a "
-                    "long-lived parent to sample the decay-length branch)")
+        default=16,
+        description="Equal-probability strata of the parent decay-length "
+                    "distribution, one point drawn at random inside each "
+                    "(default 16). UNBIASED at any value -- K only trades "
+                    "cost against variance, and the record count scales "
+                    "linearly with it. Measured on a fixed kaon flux: at K=16 "
+                    "the yield and the weak-coupling reach boundary are "
+                    "reproducible to ~0.4%, which is the reference's own "
+                    "Monte-Carlo precision. The STRONG-coupling boundary is "
+                    "harder and keeps improving: ~4.8% at K=16, ~2.1% at "
+                    "K=32, ~1.0% at K=64. Raise K if that boundary matters.")
     seed: int = RuntimeField(description="RNG seed for deterministic sampling")
     output_path: str = RuntimeField(
         default="",
@@ -199,15 +207,23 @@ class MesonDecayToLLPTool(BaseTool):
             entries = []
             for j, e in enumerate(self.grid):
                 try:
+                    # B_hat is OPTIONAL: a ProductionSpectrumTool spectrum
+                    # carries it in its header, and reading it from there keeps
+                    # the spectrum and its normalisation from being paired by
+                    # hand (and mis-paired).
+                    b = e.get("B_hat")
                     entries.append((float(e["m_phi_gev"]),
                                     _strip_spec_scheme(str(e["spectrum_spec"])),
-                                    float(e["B_hat"])))
+                                    None if b is None else float(b)))
                 except (KeyError, TypeError, ValueError) as ex:
                     return self.format_error(
                         error="Invalid Parameter",
                         reason=f"grid[{j}] must be "
-                               f"{{m_phi_gev, spectrum_spec, B_hat}} ({ex})",
-                        suggestion="Each grid entry needs those three keys")
+                               f"{{m_phi_gev, spectrum_spec}} with optional "
+                               f"B_hat ({ex})",
+                        suggestion="Each grid entry needs m_phi_gev and "
+                                   "spectrum_spec; B_hat is read from the "
+                                   "spectrum header when omitted")
         else:
             if not self.spectrum_spec or not self.output_path:
                 return self.format_error(
@@ -219,7 +235,7 @@ class MesonDecayToLLPTool(BaseTool):
                                "none of the single-mass fields)")
             entries = [(float(self.m_phi_gev),
                         _strip_spec_scheme(str(self.spectrum_spec)),
-                        float(self.B_hat))]
+                        float(self.B_hat) if self.B_hat else None)]
             dst = self._safe_path(self.output_path)
             if not dst:
                 return self.format_error(
@@ -239,14 +255,16 @@ class MesonDecayToLLPTool(BaseTool):
                 reason=f"parent_flux_path not found: {self.parent_flux_path}",
                 suggestion="Provide the harvest_forward_flux output")
 
-        # validate + load every declared spectrum up front
+        # validate + load every declared spectrum up front, resolving B_hat
+        # from the spectrum header where the caller did not supply one
         specs = {}
+        resolved = []
         for (m_phi, spec_rel, kap) in entries:
-            if m_phi <= 0.0 or kap < 0.0:
+            if m_phi <= 0.0:
                 return self.format_error(
                     error="Invalid Parameter",
-                    reason=f"need m_phi>0 and B_hat>=0 (got {m_phi}, {kap})",
-                    suggestion="B_hat is the reduced branching fraction, i.e. Br(h -> ... LLP) with the g^2 factored out")
+                    reason=f"need m_phi > 0 (got {m_phi})",
+                    suggestion="Pass the LLP mass in GeV")
             sp = self._safe_path(spec_rel)
             if not sp:
                 return self.format_error(
@@ -265,6 +283,56 @@ class MesonDecayToLLPTool(BaseTool):
                     return self.format_error(
                         error="Spectrum Error", reason=str(e),
                         suggestion="Provide a valid table/two_body spectrum")
+
+            # ---- reconcile B_hat and the mass against the spectrum ----- #
+            meta = phys.read_spectrum_header(sp)
+            hdr_b = meta.get("B_hat")
+            hdr_m = meta.get("m_phi_gev")
+            if hdr_m is not None:
+                try:
+                    if abs(float(hdr_m) - m_phi) > 1e-9 * max(1.0, m_phi):
+                        return self.format_error(
+                            error="Spectrum Mismatch",
+                            reason=f"{spec_rel} was computed for m_phi_gev="
+                                   f"{hdr_m}, but this call asks for {m_phi}",
+                            suggestion="Spectra are mass-specific. Use the "
+                                       "spectrum generated for THIS mass, or "
+                                       "regenerate it with "
+                                       "ProductionSpectrumTool.")
+                except ValueError:
+                    pass
+            if kap is None:
+                if hdr_b is None:
+                    return self.format_error(
+                        error="Invalid Parameter",
+                        reason=f"no B_hat given and {spec_rel} carries none "
+                               f"in its header",
+                        suggestion="Either pass B_hat (the reduced branching "
+                                   "fraction, Br(h -> ... LLP) with g^2 "
+                                   "factored out), or generate the spectrum "
+                                   "with ProductionSpectrumTool, which records "
+                                   "it alongside f(x).")
+                kap = float(hdr_b)
+            elif hdr_b is not None:
+                # both present: they must agree, or a wrong normalisation is
+                # about to be applied to a correct spectrum
+                hb = float(hdr_b)
+                if hb > 0.0 and abs(kap / hb - 1.0) > 1e-6:
+                    return self.format_error(
+                        error="Spectrum Mismatch",
+                        reason=f"B_hat={kap} was supplied but {spec_rel} was "
+                               f"generated with B_hat={hb}",
+                        suggestion="Drop the explicit B_hat and let it be read "
+                                   "from the spectrum -- they come from one "
+                                   "integral and must not be paired by hand.")
+            if kap < 0.0:
+                return self.format_error(
+                    error="Invalid Parameter",
+                    reason=f"need B_hat >= 0 (got {kap})",
+                    suggestion="B_hat is a branching fraction with g^2 "
+                               "factored out; it cannot be negative")
+            resolved.append((m_phi, spec_rel, kap))
+        entries = resolved
 
         # --------------------- load parent flux ONCE ------------------- #
         E, PX, PY, PZ, W, chan, chan_pid = [], [], [], [], [], None, None

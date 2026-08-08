@@ -236,3 +236,77 @@ if __name__ == "__main__":
                if k.startswith("test_")]:
         fn()
     print("\nall production-spectrum tests passed")
+
+
+# --------------------------------------------------- the two-tool seam --
+def _write_parent_flux(path, n=400, w=1.0e-6):
+    """A minimal forward kaon flux, in harvest_forward_flux's output format."""
+    import random
+    rng = random.Random(11)
+    os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+    with open(path, "w") as fh:
+        for _ in range(n):
+            p = rng.uniform(20.0, 400.0)
+            th = rng.uniform(0.0, 2.0e-3)
+            m = sm.get("K").mass_gev
+            pz = p * math.cos(th)
+            px = p * math.sin(th)
+            fh.write(json.dumps({
+                "parent": "K", "pdg": 321,
+                "E": math.sqrt(p * p + m * m), "px": px, "py": 0.0, "pz": pz,
+                "weight_per_collision": w}) + "\n")
+
+
+def test_B_hat_flows_from_the_spectrum_into_the_sampler():
+    """The whole point of the split: one path, no hand-carried number."""
+    print(">> B_hat flows automatically into MesonDecayToLLPTool ...")
+    from tools.llp.meson_decay_to_llp import MesonDecayToLLPTool
+    _setup()
+    _write_parent_flux(os.path.join(base_directory, "parents_K.jsonl"))
+    spec = _run(parent="K", m_phi_gev=0.06, output_path="spec/K.csv")
+    b_hat = spec["masses"][0]["B_hat"]
+
+    # NOTE: no B_hat passed here at all
+    dec = json.loads(MesonDecayToLLPTool(
+        base_directory=base_directory, parent_flux_path="parents_K.jsonl",
+        spectrum_spec="spec/K.csv", m_phi_gev=0.06,
+        parent_mass_gev=sm.get("K").mass_gev, n_strata=4, seed=1,
+        output_path="llp/K.jsonl")._run())
+    assert dec["status"] == "ok", dec
+
+    recs = [json.loads(l) for l in
+            open(os.path.join(base_directory, "llp/K.jsonl")) if l.strip()]
+    assert recs, "no LLP records written"
+    # w = parent_weight * B_hat / n_strata -- so B_hat is recoverable
+    got = recs[0]["event_weight_g2_stripped"] * 4 / 1.0e-6
+    assert abs(got / b_hat - 1.0) < 1e-9, (got, b_hat)
+    print(f"[OK] B_hat={b_hat:.6e} read from the spectrum and applied "
+          f"({len(recs)} records)")
+
+
+def test_mismatched_pairing_is_refused():
+    """A spectrum for one mass must not be usable at another, and a
+    hand-supplied B_hat must not silently override the file's own."""
+    print(">> mismatched spectrum/normalisation pairings are refused ...")
+    from tools.llp.meson_decay_to_llp import MesonDecayToLLPTool
+    _setup()
+    _write_parent_flux(os.path.join(base_directory, "parents_K.jsonl"))
+    spec = _run(parent="K", m_phi_gev=0.06, output_path="spec/K.csv")
+    b_hat = spec["masses"][0]["B_hat"]
+
+    def call(**kw):
+        base = dict(base_directory=base_directory,
+                    parent_flux_path="parents_K.jsonl",
+                    spectrum_spec="spec/K.csv",
+                    parent_mass_gev=sm.get("K").mass_gev, n_strata=2, seed=1,
+                    output_path="llp/x.jsonl")
+        base.update(kw)
+        return MesonDecayToLLPTool(**base)._run()
+
+    wrong_mass = call(m_phi_gev=0.12)
+    assert "Mismatch" in wrong_mass, wrong_mass
+    wrong_norm = call(m_phi_gev=0.06, B_hat=b_hat * 2.0)
+    assert "Mismatch" in wrong_norm, wrong_norm
+    ok = json.loads(call(m_phi_gev=0.06, B_hat=b_hat))
+    assert ok["status"] == "ok", ok
+    print("[OK] wrong mass refused, wrong B_hat refused, matching pair ok")

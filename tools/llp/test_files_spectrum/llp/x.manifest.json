@@ -1,0 +1,28 @@
+{
+  "schema": "llpflux-manifest-2.0",
+  "weight_convention": "g2_stripped_per_primary_interaction",
+  "weight_definition": "event_weight_g2_stripped = parent_weight * B_hat / n_strata; N_sig(g) = N_int * g^2 * BR_vis * sum_i w_i * P_dec,i(g) * acc_i",
+  "mode": "single",
+  "parent_flux_path": "parents_K.jsonl",
+  "parent": "K",
+  "parent_pid": null,
+  "parent_mass_gev": 0.493677,
+  "ctau_parent_m": 0.0,
+  "ctau_source": "auto_fallback_prompt",
+  "n_strata": 2,
+  "seed": 1,
+  "n_samples_total": 800,
+  "sum_weights_total": 9.116318712031102e-06,
+  "masses": [
+    {
+      "m_phi_gev": 0.06,
+      "B_hat": 0.022790796780077758,
+      "spectrum_spec": "spec/K.csv",
+      "path": "llp/x.jsonl",
+      "n_samples": 800,
+      "sum_weights": 9.116318712031102e-06,
+      "kinematic_cutoff_gev": 0.23917793214561445,
+      "above_kinematic_cutoff": false
+    }
+  ]
+}

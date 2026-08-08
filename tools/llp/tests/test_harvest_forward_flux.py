@@ -121,21 +121,54 @@ def test_forward_selection_and_normalization():
     w_exp = SIGMA_GEN / (N_GEN * SIGMA_INEL)
     assert abs(res["w_per_collision_base"] - w_exp) / w_exp < 1e-12
     # forward K: one per event kept, plus the backward K folded in => 2 * N_GEN
+    # RECORDS, but only 2x the STATISTICS -- the physical forward cone still
+    # holds one K per collision, so each folded record carries w_exp / 2.
     kK = _species(res, "K")
     assert kK["n_parents"] == 2 * N_GEN, kK
     kD = _species(res, "D")
     kpi = _species(res, "pi")
     assert kD["n_parents"] == N_GEN
     assert kpi["n_parents"] == N_GEN
-    # each kept parent carries exactly the per-collision weight (no prescale)
+    # folding halves the per-record weight (cf. prescale / cap, which likewise
+    # carry compensating factors)
     recs = _records(kK["path"])
-    assert all(abs(r["weight_per_collision"] - w_exp) < 1e-18 for r in recs)
+    assert all(abs(r["weight_per_collision"] - 0.5 * w_exp) < 1e-18
+               for r in recs)
     # folded backward K has pz > 0 in the output
     assert all(r["pz"] > 0.0 for r in recs), "folding must make pz forward"
-    # sum of K weights = mean K per collision
-    assert abs(kK["sum_weights"] - 2 * N_GEN * w_exp) < 1e-15
+    # sum of K weights = mean K per collision ENTERING ONE FORWARD CONE, which
+    # the fixture fixes at exactly one per event
+    assert abs(kK["sum_weights"] - N_GEN * w_exp) < 1e-15
     print(f"[OK] K={kK['n_parents']} D={kD['n_parents']} pi={kpi['n_parents']}, "
           f"w={w_exp:.3e}/coll")
+
+
+def test_folding_preserves_normalisation():
+    """Folding is variance reduction, NOT extra flux.
+
+    This is the invariant the 2.4.0 tool violated: it harvested both cones and
+    stored them all as forward WITHOUT halving the weight, so every flux -- and
+    every yield built on one -- was 2x too large. A single-arm detector sees one
+    cone; a genuinely backward parent can never reach it. Folding must double
+    the sample size and leave the summed weight alone.
+    """
+    print(">> folding preserves the per-collision normalisation ...")
+    _setup()
+    on = json.loads(_tool(manifest_path="manifest.json",
+                          fold_hemispheres=True)._run())
+    _setup()
+    off = json.loads(_tool(manifest_path="manifest.json",
+                           fold_hemispheres=False)._run())
+    assert on["status"] == "ok" and off["status"] == "ok"
+    kon, koff = _species(on, "K"), _species(off, "K")
+    # twice the records ...
+    assert kon["n_parents"] == 2 * koff["n_parents"], (kon, koff)
+    # ... and the SAME summed weight
+    assert abs(kon["sum_weights"] - koff["sum_weights"]) < 1e-15, (
+        f"folding changed the flux normalisation: "
+        f"{kon['sum_weights']} vs {koff['sum_weights']}")
+    print(f"[OK] records {koff['n_parents']} -> {kon['n_parents']}, "
+          f"sum_weights unchanged at {kon['sum_weights']:.4e}")
 
 
 def test_theta_cut_excludes_wide_and_folding_off():

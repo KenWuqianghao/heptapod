@@ -315,7 +315,7 @@ class MesonDecayToLLPTool(BaseTool):
                              np.asarray(PZ, float)], axis=1)
             pw = np.asarray(W, float)
             rep, vertex = phys.sample_decay_vertices(
-                pvec, ctau_used, mM, K)
+                pvec, ctau_used, mM, K, rng)
             pv = pvec[rep]
             e_par = np.sqrt(np.einsum("ij,ij->i", pv, pv) + mM * mM)
             pw_rep = pw[rep]

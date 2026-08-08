@@ -70,7 +70,12 @@ class HarvestForwardFluxTool(BaseTool):
     fold_hemispheres: bool = RuntimeField(
         default=True,
         description="Fold both beam directions into the forward window using "
-                    "|pz| (default true)")
+                    "|pz| (default true). Both cones are harvested and stored "
+                    "as forward-going, which DOUBLES the sample; each parent "
+                    "therefore carries HALF the per-collision weight, so the "
+                    "summed weight still equals the mean number of parents per "
+                    "collision entering ONE forward cone -- which is what a "
+                    "single-arm detector sees. Set false to keep only pz>0.")
     cap: int = RuntimeField(
         default=100000,
         description="Max harvested parents per species (default 100000; 0 = no "
@@ -244,6 +249,14 @@ class HarvestForwardFluxTool(BaseTool):
         # per-inelastic-collision base weight
         w_per = sigma_gen / (n_gen * sigma_inel)
 
+        # Folding harvests BOTH beam cones and stores them all as forward, so
+        # the sample is doubled and each parent must carry half the weight --
+        # exactly as `prescale` and `cap` carry their own compensating factors.
+        # Without this the flux, and every yield derived from it, is 2x too
+        # large: a single-arm detector sees one cone, and a genuinely backward
+        # parent can never reach it.
+        fold_factor = 0.5 if fold else 1.0
+
         # --------------------------- write ----------------------------- #
         # Cap abundant species to bound downstream record volume: subsample
         # to `cap` and inflate the weight by n_total/cap so the summed weight
@@ -261,7 +274,7 @@ class HarvestForwardFluxTool(BaseTool):
                 if capped:
                     rows = [rows[i] for i in rng.sample(range(n_total), cap)]
                     cap_factor = n_total / float(cap)
-                w = w_per * prescale.get(name, 1) * cap_factor
+                w = w_per * prescale.get(name, 1) * cap_factor * fold_factor
                 fpath = os.path.join(out_dir, f"parents_{name}.jsonl")
                 with open(fpath, "w") as fh:
                     for (E, px, py, pz) in rows:
@@ -291,6 +304,7 @@ class HarvestForwardFluxTool(BaseTool):
             "weight_convention": WEIGHT_CONVENTION,
             "weight_definition": "weight_per_collision = (sigma_gen_mb / "
                                  "(n_gen * sigma_inel_mb)) * prescale * "
+                                 "fold_factor * "
                                  "cap_factor (n_total/cap when subsampled); "
                                  "sum over parents = mean parents per "
                                  "inelastic collision",

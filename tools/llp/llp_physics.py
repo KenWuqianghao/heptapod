@@ -82,16 +82,40 @@ C_LIGHT_M_S = 2.99792458e8
 # before the absorber, and a fixed grid removes the Monte-Carlo jitter there
 # while keeping the exact g-reweighting.
 # ---------------------------------------------------------------------------
-def sample_decay_vertices(pvec_par, ctau_par_m, m_par, n_strata):
-    """Deterministic stratified decay-in-flight production vertices.
+def sample_decay_vertices(pvec_par, ctau_par_m, m_par, n_strata, rng):
+    """Stratified decay-in-flight production vertices.
 
     pvec_par: (N, 3) parent lab 3-momenta; ctau_par_m: parent proper decay
     length [m] (an SM constant); m_par: parent mass [GeV]; n_strata: K strata
-    per parent. Returns (rep, vertex): rep (N*K,) the source-parent index of
-    each LLP replica, and vertex (N*K, 3) its production point, placed at the
-    stratum-k quantile ell_k = -lambda ln(1 - (k+1/2)/K) of the parent's lab
-    decay-length distribution. Each replica carries 1/K of the parent weight
-    (the caller applies the 1/K)."""
+    per parent; rng: a numpy Generator (REQUIRED -- see below).
+
+    Returns (rep, vertex): rep (N*K,) the source-parent index of each LLP
+    replica, and vertex (N*K, 3) its production point. Each replica carries
+    1/K of the parent weight (the caller applies the 1/K).
+
+    The parent's lab decay-length distribution Exp(lambda) is split into K
+    equal-probability strata and ONE point is drawn UNIFORMLY AT RANDOM inside
+    each:
+
+        u_k = (k + U_k)/K,   U_k ~ Uniform(0,1),   ell_k = -lambda ln(1 - u_k)
+
+    WHY RANDOM AND NOT THE STRATUM MIDPOINT. Until 2.5.0 this used the fixed
+    quantile u_k = (k + 1/2)/K. That is not stratified sampling, it is a
+    midpoint QUADRATURE rule, and a quadrature rule has O(1) error whenever a
+    discontinuity falls inside a panel. Downstream geometry supplies exactly
+    such a discontinuity: an LLP counts only if its parent decayed upstream of
+    the absorber, and for a forward kaon that acceptance window is the first
+    ~2% of the exponential. A stratum straddling the cut was scored
+    all-or-nothing, and because the nodes were DETERMINISTIC the error did not
+    average out over seeds -- it was a silent bias, invisible to the usual
+    seed-variation check, and it understated yields by orders of magnitude at
+    strong coupling (five, at K=6).
+
+    Drawing uniformly inside each stratum makes the estimator UNBIASED for any
+    integrand, discontinuous ones included, while keeping the variance
+    reduction that stratification buys. `rng` is required rather than optional
+    precisely so this cannot be silently skipped; pass a seeded Generator to
+    keep runs reproducible."""
     pvec_par = np.asarray(pvec_par, dtype=float)
     N = len(pvec_par)
     K = max(1, int(n_strata))
@@ -99,7 +123,7 @@ def sample_decay_vertices(pvec_par, ctau_par_m, m_par, n_strata):
     lam = (p_par_mag / m_par) * float(ctau_par_m)      # (N,) lab decay length
     rep = np.repeat(np.arange(N), K)
     strat = np.tile(np.arange(K), N)
-    u = (strat + 0.5) / K
+    u = (strat + rng.uniform(0.0, 1.0, N * K)) / K     # random WITHIN stratum
     ell = -np.maximum(lam[rep], 1e-300) * np.log1p(-u)
     d_par = pvec_par[rep] / np.maximum(p_par_mag[rep], 1e-300)[:, None]
     vertex = ell[:, None] * d_par

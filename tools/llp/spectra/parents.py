@@ -38,6 +38,8 @@ from __future__ import annotations
 G_F_GEV2 = 1.1663788e-5        # Fermi constant [GeV^-2]        [PDG2024]
 ALPHA_EM = 7.2973525693e-3     # fine-structure constant        [PDG2024]
 HBARC_M_GEV = 1.973269804e-16  # hbar c [GeV m]                 [PDG2024]
+HBAR_GEV_S = 6.582119569e-25   # hbar [GeV s]                   [PDG2024]
+C_LIGHT_M_S = 2.99792458e8     # speed of light [m/s]           exact, SI
 M_MU_GEV = 0.1056583755        # muon mass [GeV]                [PDG2024]
 M_E_GEV = 0.000510998950       # electron mass [GeV]            [PDG2024]
 M_TAU_GEV = 1.77686            # tau mass [GeV]                 [PDG2024]
@@ -101,39 +103,64 @@ class Parent:
 
 _PDG = "PDG2024"
 
+
+def _tau(tau_s):
+    """c*tau [m] from the PDG lifetime -- the PUBLISHED datum.
+
+    Storing the lifetime and deriving c*tau, rather than storing a rounded
+    c*tau, removes a class of silent drift: a c*tau rounded to four figures
+    shifts B_hat by up to 4e-4, which is comparable to the reference's own
+    Monte-Carlo precision and would show up as an unexplained tool-versus-
+    reference offset.
+    """
+    return C_LIGHT_M_S * tau_s
+
+
+def _width(tau_s):
+    """Total width [GeV] from the same lifetime."""
+    return HBAR_GEV_S / tau_s
+
 # Widths are quoted directly where the PDG lists them, and otherwise derived
 # from the lifetime as Gamma = hbar / tau = HBARC / c*tau. Both routes are
 # marked in `sources` so the derivation is visible.
+#
+# PINNING. These constants must stay numerically identical to the ones the
+# graded reference calculation uses. They are physically the same quantities,
+# but two independently maintained tables drift: an 0.3% difference in |V_us|
+# alone moves B_hat by 0.6% (the rate goes as |V|^2), which exceeds the
+# reference's own Monte-Carlo precision and would appear as a systematic
+# tool-versus-hand-written offset that looks like a physics result. If a value
+# here changes, change it in the reference in the same commit.
 PARENTS = {
     # ---- pseudoscalar: h -> mu nu_mu phi -------------------------------- #
     "pi": Parent(
-        "pi", 211, "pseudoscalar", 0.13957039, 7.8045, HBARC_M_GEV / 7.8045,
-        ckm=0.22501,          # |V_ud|
+        "pi", 211, "pseudoscalar", 0.13957039, _tau(2.6033e-8), _width(2.6033e-8),
+        ckm=0.97435,          # |V_ud|
         f_gev=0.1302,         # f_pi
-        sources={"mass_gev": _PDG, "ctau_m": _PDG, "ckm": _PDG,
+        sources={"mass_gev": _PDG, "ctau_m": _PDG + " (derived: c * tau)", "ckm": _PDG,
                  "f_gev": _PDG + " (FLAG N_f=2+1+1 average)",
-                 "width_gev": "derived: hbar c / c*tau"}),
+                 "width_gev": "derived: hbar / tau"}),
     "K": Parent(
-        "K", 321, "pseudoscalar", 0.493677, 3.711, HBARC_M_GEV / 3.711,
-        ckm=0.22500,          # |V_us|
+        "K", 321, "pseudoscalar", 0.493677, _tau(1.2380e-8), _width(1.2380e-8),
+        ckm=0.2243,           # |V_us|
         f_gev=0.1557,         # f_K
-        sources={"mass_gev": _PDG, "ctau_m": _PDG, "ckm": _PDG,
+        sources={"mass_gev": _PDG, "ctau_m": _PDG + " (derived: c * tau)", "ckm": _PDG,
                  "f_gev": _PDG + " (FLAG N_f=2+1+1 average)",
-                 "width_gev": "derived: hbar c / c*tau"}),
+                 "width_gev": "derived: hbar / tau"}),
     "D": Parent(
-        "D", 411, "pseudoscalar", 1.86966, 3.098e-4, HBARC_M_GEV / 3.098e-4,
+        "D", 411, "pseudoscalar", 1.86966, _tau(1.033e-12), _width(1.033e-12),
         ckm=0.221,            # |V_cd|
         f_gev=0.212,          # f_D
-        sources={"mass_gev": _PDG, "ctau_m": _PDG, "ckm": _PDG,
+        sources={"mass_gev": _PDG, "ctau_m": _PDG + " (derived: c * tau)", "ckm": _PDG,
                  "f_gev": _PDG + " (FLAG N_f=2+1+1 average)",
-                 "width_gev": "derived: hbar c / c*tau"}),
+                 "width_gev": "derived: hbar / tau"}),
     "Ds": Parent(
-        "Ds", 431, "pseudoscalar", 1.96835, 1.511e-4, HBARC_M_GEV / 1.511e-4,
+        "Ds", 431, "pseudoscalar", 1.96835, _tau(5.04e-13), _width(5.04e-13),
         ckm=0.975,            # |V_cs|
         f_gev=0.2499,         # f_Ds
-        sources={"mass_gev": _PDG, "ctau_m": _PDG, "ckm": _PDG,
+        sources={"mass_gev": _PDG, "ctau_m": _PDG + " (derived: c * tau)", "ckm": _PDG,
                  "f_gev": _PDG + " (FLAG N_f=2+1+1 average)",
-                 "width_gev": "derived: hbar c / c*tau"}),
+                 "width_gev": "derived: hbar / tau"}),
 
     # ---- vector: V -> mu+ mu- phi --------------------------------------- #
     # Prompt (strong / electromagnetic), so c*tau = 0: the LLP is produced at

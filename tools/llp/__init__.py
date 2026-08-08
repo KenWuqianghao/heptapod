@@ -7,8 +7,14 @@
 Long-lived-particle (LLP) reach tools.
 
 Setting- and model-agnostic tools for decay-in-volume LLP studies, driven by
-a Pythia forward flux. The pipeline is three stages, each a BaseTool:
+a Pythia forward flux. The pipeline is four stages, each a BaseTool:
 
+  0. ProductionSpectrumTool (optional): a hosted SM parent + an LLP mass ->
+     the normalised rest-frame energy spectrum f_h(x) AND the reduced
+     branching fraction B_hat, computed from the amplitude rather than
+     supplied. Optional because stage 2 still consumes a DECLARED spectrum:
+     this tool is one producer of that data product, not a replacement for
+     the seam. Supply your own table and the chain is unchanged.
   1. HarvestForwardFluxTool: a Pythia event sample (evtjsonl-1.0) ->
      weighted forward parent-flux files (per-inelastic-collision weights).
   2. MesonDecayToLLPTool: a parent flux + a DECLARED parent-rest-frame LLP
@@ -22,11 +28,15 @@ a Pythia forward flux. The pipeline is three stages, each a BaseTool:
      selectable two_track / photon / none acceptance.
 
 The experimental setting (collider-forward vs beam-dump) lives in the run
-card, geometry YAML, and cross-section normalization; the production physics
-lives in the spectrum data product -- never in the tools.
+card, geometry YAML, and cross-section normalization. The production physics
+lives in the spectrum DATA PRODUCT, which stages 1-3 never look inside;
+ProductionSpectrumTool is an optional, separately validated producer of that
+product for hosted SM parents, and adding an interaction there leaves the rest
+of the chain untouched.
 """
 
 from .harvest_forward_flux import HarvestForwardFluxTool
+from .production_spectrum import ProductionSpectrumTool
 from .meson_decay_to_llp import MesonDecayToLLPTool
 from .decay_in_volume import (
     DecayInVolumeVsCouplingTool,
@@ -34,6 +44,7 @@ from .decay_in_volume import (
 )
 
 __all__ = [
+    "ProductionSpectrumTool",
     "HarvestForwardFluxTool",
     "MesonDecayToLLPTool",
     "DecayInVolumeVsCouplingTool",

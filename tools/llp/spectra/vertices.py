@@ -70,10 +70,10 @@ def _tr4(ab, cd, ac, bd, ad, bc):
 
 
 def msq_scalar_pseudoscalar_parent(P, p_l, p_nu, p_phi, m_l, m_phi):
-    """Spin-summed |M|^2 for h -> l nu phi with a SCALAR L = -g phi lbar l.
+    """Spin-summed |M|^2 for P -> l nu phi with a SCALAR L = -g phi lbar l.
 
-    Unit coupling: the physical rate carries C_h^2 g^2 on top, with
-    C_h = (G_F |V_h| f_h / sqrt(2)) supplied by the caller.
+    Unit coupling: the physical rate carries C_P^2 g^2 on top, with
+    C_P = (G_F |V_P| f_P / sqrt(2)) supplied by the caller.
 
     Evaluated from the trace closed form
 

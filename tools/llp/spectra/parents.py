@@ -18,13 +18,13 @@ K-), matching the harvested forward flux.
 
 Two production families are hosted, following the reference write-up:
 
-    h -> mu nu_mu phi      h in {pi, K, D, Ds}          (pseudoscalar)
+    P -> mu nu_mu phi      P in {pi, K, D, Ds}          (pseudoscalar)
     V -> mu+ mu- phi       V in {rho, omega, phi(1020), (pseudoscalar)
                                  Jpsi, psi2S}            (vector)
 
 For a pseudoscalar the weak amplitude is fixed by G_F, the CKM element and the
 meson decay constant, giving the overall factor
-C_h^2 = (G_F |V_h| f_h / sqrt(2))^2. For a vector the effective dimuon coupling
+C_P^2 = (G_F |V_P| f_P / sqrt(2))^2. For a vector the effective dimuon coupling
 is instead normalised to the MEASURED V -> mu+ mu- partial width, so the hosted
 datum is that width rather than a decay constant.
 """
@@ -54,7 +54,7 @@ REFERENCES = {
                 "Prog. Theor. Exp. Phys. 2024, 083C01 (2024)"),
     "CarlsonRislow2012": ("C. E. Carlson and B. C. Rislow, "
                           "Phys. Rev. D 86, 035013 (2012), arXiv:1206.3587 -- "
-                          "pseudoscalar h -> l nu X amplitude"),
+                          "pseudoscalar P -> l nu X amplitude"),
     "MitraSahoo2021": ("M. Mitra and D. Sahoo, Phys. Rev. D 104, 015002 "
                        "(2021), arXiv:2103.08284 -- vector V -> mu+ mu- X "
                        "amplitude"),
@@ -69,12 +69,12 @@ class Parent:
 
     name         short key, charge conjugates folded
     pdg          |PDG id|
-    family       'pseudoscalar' (h -> l nu phi) or 'vector' (V -> l+ l- phi)
+    family       'pseudoscalar' (P -> l nu phi) or 'vector' (V -> l+ l- phi)
     mass_gev     parent mass
     ctau_m       proper decay length [m]; 0.0 for strong/EM decays (prompt)
     width_gev    total width Gamma_{h,tot}
     ckm          |V_ij| governing the leptonic decay      (pseudoscalar only)
-    f_gev        decay constant f_h                        (pseudoscalar only)
+    f_gev        decay constant f_P                        (pseudoscalar only)
     gamma_ll_gev measured V -> l+ l- partial width          (vector only)
     sources      per-field citation keys
     """
@@ -132,7 +132,7 @@ def _width(tau_s):
 # tool-versus-hand-written offset that looks like a physics result. If a value
 # here changes, change it in the reference in the same commit.
 PARENTS = {
-    # ---- pseudoscalar: h -> mu nu_mu phi -------------------------------- #
+    # ---- pseudoscalar: P -> mu nu_mu phi -------------------------------- #
     "pi": Parent(
         "pi", 211, "pseudoscalar", 0.13957039, _tau(2.6033e-8), _width(2.6033e-8),
         ckm=0.97435,          # |V_ud|
@@ -216,7 +216,7 @@ def get(name):
 def kinematic_limit(name, lepton="mu"):
     """Largest LLP mass this channel can produce [GeV].
 
-    Pseudoscalar h -> l nu phi closes at m_h - m_l (the neutrino is massless).
+    Pseudoscalar P -> l nu phi closes at m_P - m_l (the neutrino is massless).
     Vector V -> l+ l- phi closes at m_V - 2 m_l.
     """
     p = get(name)

@@ -354,9 +354,14 @@ class DecayVolume:
     optionally z_shield_m and x_off_m. All distances in meters from the primary
     interaction point.
 
-    - z_shield_m (default z_min): where the ABSORBER (shielding) begins, i.e.
-      the last longitudinal position at which a parent decay can still yield a
-      detectable LLP. Parents decay or are swept in [0, z_shield]; the gap
+    - z_shield_m (default z_min): the SHIELD FRONT. Operationally: an LLP
+      counts only if its PRODUCTION VERTEX satisfies z < z_shield_m. The
+      shielding BEGINS here and absorbs everything of the Standard Model
+      downstream of it, so a parent decaying inside it yields nothing that can
+      reach the detector; the region upstream, [0, z_shield_m], is the open
+      parent decay region. (The earlier wording, "end of the parent production
+      region", described the same plane from the other side and was read
+      ambiguously in practice.) Parents decay or are swept in [0, z_shield]; the gap
       [z_shield, z_min] is empty baseline. An LLP counts only if its production
       vertex has z < z_shield. The gap sets a minimum survival distance, which
       bounds (well-conditions) the decay-length contour branch. Set

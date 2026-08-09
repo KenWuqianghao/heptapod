@@ -50,8 +50,9 @@ class ProductionSpectrumTool(BaseTool):
     from it and refuses a mismatch, so the pair cannot drift apart.
 
     HOSTED PARENTS
-      pseudoscalar  h -> l nu LLP    pi, K, D, Ds
-      vector        V -> l+ l- LLP   rho, omega, phi, Jpsi, psi2S
+      pseudoscalar  h -> l nu LLP    pi, K, D, Ds        IMPLEMENTED
+      vector        V -> l+ l- LLP   rho, omega, phi,    NOT YET -- see the
+                                     Jpsi, psi2S         `parent` field
     A channel is open while m_LLP < m_h - m_l (pseudoscalar) or
     m_h - 2 m_l (vector); a closed channel returns ok with `open: false` and
     no file, never an error, so a mass grid can span the threshold.
@@ -74,10 +75,16 @@ class ProductionSpectrumTool(BaseTool):
 
     parent: str = RuntimeField(
         default="",
-        description="Hosted SM parent hadron. Pseudoscalar (h -> l nu LLP): "
-                    "pi, K, D, Ds. Vector (V -> l+ l- LLP): rho, omega, phi, "
-                    "Jpsi, psi2S. Charge conjugates are folded, matching the "
-                    "harvested forward flux.")
+        description="SM parent hadron. IMPLEMENTED: the pseudoscalars pi, K, "
+                    "D, Ds (h -> l nu LLP). NOT YET IMPLEMENTED: the vector "
+                    "parents rho, omega, phi, Jpsi, psi2S (V -> l+ l- LLP) -- "
+                    "their data is hosted but the scalar-vector vertex is not, "
+                    "so they are rejected with a pointer to the workaround "
+                    "rather than silently. For a vector channel, supply your "
+                    "own f(x) table and B_hat directly to MesonDecayToLLP, "
+                    "which is model-agnostic and needs no change. Charge "
+                    "conjugates are folded, matching the harvested forward "
+                    "flux.")
     m_phi_gev: float = RuntimeField(
         default=0.0,
         description="LLP mass in GeV (single-mass mode; ignored when `masses` "
@@ -245,6 +252,23 @@ class ProductionSpectrumTool(BaseTool):
                 error="Invalid Parameter",
                 reason=f"unknown lepton {self.lepton!r}",
                 suggestion=f"One of {sorted(sm.LEPTON_MASS_GEV)}")
+        if p.family == "vector":
+            return self.format_error(
+                error="Not Implemented",
+                reason=f"{name} is a vector parent (V -> l+ l- LLP). Its SM "
+                       f"data is hosted, but the scalar-vector production "
+                       f"vertex is not implemented in this release, so this "
+                       f"tool cannot produce f(x) or B_hat for it.",
+                suggestion="WORKAROUND: compute the V -> l+ l- LLP spectrum "
+                           "yourself and pass it straight to MesonDecayToLLP "
+                           "-- that tool is model-agnostic and takes any "
+                           "normalised (x, pdf) table plus a B_hat, so no "
+                           "other step in the chain changes. The vector "
+                           "amplitude is in Mitra & Sahoo, Phys. Rev. D 104, "
+                           "015002 (2021) [arXiv:2103.08284]. Pseudoscalar "
+                           f"parents {list(sm.PSEUDOSCALARS)} are fully "
+                           "supported here.")
+
         try:
             msq = vtx.get(p.family, self.interaction)
         except KeyError as e:
@@ -252,13 +276,6 @@ class ProductionSpectrumTool(BaseTool):
                 error="Unsupported Interaction", reason=str(e),
                 suggestion="Use interaction='scalar', or add the vertex to "
                            "spectra/vertices.py.")
-        if p.family == "vector":
-            return self.format_error(
-                error="Not Implemented",
-                reason=f"{name} is a vector parent; only the pseudoscalar "
-                       f"normalisation is implemented in this release",
-                suggestion=f"Use a pseudoscalar parent "
-                           f"({list(sm.PSEUDOSCALARS)}) for now.")
 
         ml = sm.LEPTON_MASS_GEV[self.lepton]
         grid_mode = bool(self.masses)

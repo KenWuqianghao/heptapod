@@ -21,9 +21,23 @@ construction. The natural next entries are a pseudoscalar coupling
 (gamma_5 at the emission vertex), a vector coupling (gamma^mu), and an
 axial-vector coupling (gamma^mu gamma_5).
 
-Only the SCALAR vertex is implemented and validated here. An unvalidated
-amplitude is worse than a missing one, so the others are left to be added
-alongside their own cross-checks rather than stubbed out speculatively.
+Only the SCALAR vertex for PSEUDOSCALAR parents is implemented and validated
+here. An unvalidated amplitude is worse than a missing one, so the others are
+left to be added alongside their own cross-checks rather than stubbed out
+speculatively.
+
+THE VECTOR PARENT GAP is the known one, and it is worth stating what "adding
+it" requires. V -> l+ l- phi has two diagrams (the LLP radiated off either
+lepton leg) which interfere, and the polarisation sum must be averaged over the
+parent's three states. Validating it therefore needs more than agreement with
+another implementation of the same formula: it needs the Ward identity to hold
+numerically, and it needs the rate to reproduce the MEASURED V -> l+ l- partial
+width when the LLP-emission vertex is removed. Both checks are physics, not
+self-consistency, and both should be in the test suite before the vertex is
+advertised as available. Until then ProductionSpectrumTool rejects vector
+parents with a pointer to the workaround: MesonDecayToLLP is model-agnostic and
+accepts a hand-supplied (x, pdf) table plus B_hat, so a vector channel costs
+the caller one spectrum, not a change to the chain.
 
 PHYSICS
 -------

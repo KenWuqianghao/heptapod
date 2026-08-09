@@ -44,7 +44,9 @@ class _DecayInVolumeBase(BaseTool):
     """
     # ------------------- Runtime fields (shared, all modes) --------------- #
     events_path: str = RuntimeField(
-        description="Path to line-delimited JSON LLP records with E, px, py, "
+        default="",
+        description="EITHER this or `events_paths` (not both required). Path to "
+                    "line-delimited JSON LLP records with E, px, py, "
                     "pz, the production vertex vx, vy, vz (absent => the IP) "
                     "and event_weight_g2_stripped (concatenation of multiple "
                     "parent channels is fine). The result echoes n_events and "
@@ -66,7 +68,9 @@ class _DecayInVolumeBase(BaseTool):
                     "are echoed as `inputs` so a dropped channel is visible.")
     geometry_path: str = RuntimeField(
         description="Path to geometry YAML (z_min_m, z_max_m, r_volume_m, "
-                    "z_det_m, r_det_m in meters; optional z_shield_m start of "
+                    "z_det_m, r_det_m in meters; optional z_shield_m = SHIELD "
+                    "FRONT, i.e. the LLP production vertex must satisfy "
+                    "z < z_shield_m, "
                     "production region and x_off_m detector offset)")
     m_phi_gev: float = RuntimeField(
         description="LLP (phi) mass in GeV")
@@ -681,7 +685,10 @@ class DecayInVolumeVsCouplingTool(_DecayInVolumeBase):
     scalar pair still works unchanged.
     """
     width_ref_gev: float = RuntimeField(
-        description="PHYSICAL g^2-stripped TOTAL width of phi at g = 1, in GeV: "
+        default=0.0,
+        description="EITHER this or `partial_widths_ref_gev` (not both "
+                    "required); the latter takes precedence when given. "
+                    "PHYSICAL g^2-stripped TOTAL width of phi at g = 1, in GeV: "
                     "Gamma_tot(g) / g^2, summed over EVERY decay channel open at "
                     "this mass. This sets the lifetime ctau(g) = "
                     "hbar*c/(g^2*width_ref_gev) and is a required physics input -- "

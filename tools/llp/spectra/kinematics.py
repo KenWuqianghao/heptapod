@@ -56,18 +56,34 @@ def mdot(p, q):
             - p[..., 2] * q[..., 2] - p[..., 3] * q[..., 3])
 
 
-def x_domain(m_h, m_l, m_phi):
+def x_domain(m_h, m_l, m_phi, m_l2=0.0):
     """Physical range of x = 2 E*_phi / m_h.
 
     Lower edge: the LLP must be at least at rest, E* >= m_phi.
-    Upper edge: the recoil system must be at least the lepton system's mass.
+    Upper edge: the recoil system must be at least its constituents' mass,
+    m_12 >= m_l + m_l2 -- m_l2 = 0 for P -> l nu phi (massless neutrino),
+    m_l2 = m_l for V -> l+ l- phi.
     """
+    m_rec = m_l + m_l2
     x_min = 2.0 * m_phi / m_h
-    x_max = 1.0 + (m_phi * m_phi - m_l * m_l) / (m_h * m_h)
+    x_max = 1.0 + (m_phi * m_phi - m_rec * m_rec) / (m_h * m_h)
     return x_min, x_max
 
 
-def momenta(m_h, m_l, m_phi, x, c):
+def _recoil_split(m12sq, m12, m_l, m_l2):
+    """(E, p) of particle 1 in the recoil rest frame, for masses (m_l, m_l2).
+
+    General two-body split, so the same kinematics serves P -> l nu phi
+    (m_l2 = 0) and V -> l+ l- phi (m_l2 = m_l). Writing p as
+    sqrt(E^2 - m_l^2) rather than the massless shortcut (m12^2 - m_l^2)/2m12
+    is what makes the massive-massive case correct.
+    """
+    Es = (m12sq + m_l * m_l - m_l2 * m_l2) / (2.0 * m12)
+    ps = np.sqrt(np.maximum(Es * Es - m_l * m_l, 0.0))
+    return Es, ps
+
+
+def momenta(m_h, m_l, m_phi, x, c, m_l2=0.0):
     """Parent-rest-frame four-momenta (P, p_l, p_nu, p_phi) on a grid.
 
     x, c are broadcast against each other; the return arrays carry a trailing
@@ -83,18 +99,18 @@ def momenta(m_h, m_l, m_phi, x, c):
     c = np.asarray(c, dtype=float)
     x, c = np.broadcast_arrays(x, c)
 
+    m_rec = m_l + m_l2
     E3 = 0.5 * x * m_h
     p3sq = E3 * E3 - m_phi * m_phi
     m12sq = m_h * m_h + m_phi * m_phi - 2.0 * m_h * E3
-    ok = (p3sq > 0.0) & (m12sq > m_l * m_l)
+    ok = (p3sq > 0.0) & (m12sq > m_rec * m_rec)
 
     p3mag = np.sqrt(np.maximum(p3sq, 0.0))
     m12 = np.sqrt(np.maximum(m12sq, 0.0))
     safe = np.where(ok, m12, 1.0)
 
     # charged lepton in the recoil rest frame
-    Es = (m12sq + m_l * m_l) / (2.0 * safe)
-    ps = (m12sq - m_l * m_l) / (2.0 * safe)
+    Es, ps = _recoil_split(m12sq, safe, m_l, m_l2)
     # boost of the recoil system in the parent frame (along +z)
     E12 = m_h - E3
     gam = E12 / safe
@@ -106,11 +122,13 @@ def momenta(m_h, m_l, m_phi, x, c):
                     gam * ps * c + gb * Es], axis=-1)
     p_phi = np.stack([E3, zeros, zeros, -p3mag], axis=-1)
     P = np.stack([np.full_like(x, m_h), zeros, zeros, zeros], axis=-1)
+    # The partner is fixed by momentum conservation, so it is on-shell at
+    # m_l2 by construction rather than by a second boost.
     p_nu = P - p_l - p_phi
     return P, p_l, p_nu, p_phi, ok
 
 
-def jacobian(m_h, m_l, m_phi, x):
+def jacobian(m_h, m_l, m_phi, x, m_l2=0.0):
     """|d(m12^2, m23^2) / d(x, c)|, which is independent of c.
 
     m12^2 = m_h^2 + m_phi^2 - x m_h^2      -> |dm12^2/dx| = m_h^2
@@ -124,16 +142,16 @@ def jacobian(m_h, m_l, m_phi, x):
     p3mag = np.sqrt(np.maximum(E3 * E3 - m_phi * m_phi, 0.0))
     m12sq = m_h * m_h + m_phi * m_phi - 2.0 * m_h * E3
     m12 = np.sqrt(np.maximum(m12sq, 0.0))
-    good = m12 > m_l
+    good = m12 > (m_l + m_l2)
     safe = np.where(good, m12, 1.0)
-    ps = (m12sq - m_l * m_l) / (2.0 * safe)
+    _, ps = _recoil_split(m12sq, safe, m_l, m_l2)
     gb = p3mag / safe
     return np.where(good, (m_h * m_h) * (2.0 * m_h * gb * ps), 0.0)
 
 
-def _gl_nodes_x(m_h, m_l, m_phi, n_x):
+def _gl_nodes_x(m_h, m_l, m_phi, n_x, m_l2=0.0):
     """Gauss-Legendre nodes in x under x = x_min + t^2, with dx weights."""
-    x_lo, x_hi = x_domain(m_h, m_l, m_phi)
+    x_lo, x_hi = x_domain(m_h, m_l, m_phi, m_l2)
     if not (x_hi > x_lo):
         return np.zeros(0), np.zeros(0)
     t_node, t_w = np.polynomial.legendre.leggauss(int(n_x))
@@ -143,7 +161,8 @@ def _gl_nodes_x(m_h, m_l, m_phi, n_x):
     return x_lo + t * t, w * 2.0 * t          # dx = 2t dt
 
 
-def dgamma_dx(m_h, m_l, m_phi, msq, n_x=N_X_DEFAULT, n_c=N_C_DEFAULT):
+def dgamma_dx(m_h, m_l, m_phi, msq, n_x=N_X_DEFAULT, n_c=N_C_DEFAULT,
+              m_l2=0.0):
     """(x nodes, dGamma/dx at those nodes, dx quadrature weights).
 
     `msq` is a callable (P, p_l, p_nu, p_phi, m_l, m_phi) -> spin-summed
@@ -151,30 +170,30 @@ def dgamma_dx(m_h, m_l, m_phi, msq, n_x=N_X_DEFAULT, n_c=N_C_DEFAULT):
     c-integral is done at each x node, so the return is already the
     single-differential rate.
     """
-    xs, wx = _gl_nodes_x(m_h, m_l, m_phi, n_x)
+    xs, wx = _gl_nodes_x(m_h, m_l, m_phi, n_x, m_l2)
     if xs.size == 0:
         return xs, xs.copy(), xs.copy()
     cs, wc = np.polynomial.legendre.leggauss(int(n_c))
 
     X = xs[:, None]
     C = cs[None, :]
-    P, p_l, p_nu, p_phi, ok = momenta(m_h, m_l, m_phi, X, C)
+    P, p_l, p_nu, p_phi, ok = momenta(m_h, m_l, m_phi, X, C, m_l2)
     val = msq(P, p_l, p_nu, p_phi, m_l, m_phi)
     val = np.where(ok, val, 0.0)
     # PDG 50.22 three-body phase space, with the (x, c) Jacobian
-    pref = jacobian(m_h, m_l, m_phi, xs) / ((2.0 * np.pi) ** 3
-                                            * 32.0 * m_h ** 3)
+    pref = jacobian(m_h, m_l, m_phi, xs, m_l2) / ((2.0 * np.pi) ** 3
+                                                  * 32.0 * m_h ** 3)
     return xs, pref * (val @ wc), wx
 
 
 def width_and_spectrum(m_h, m_l, m_phi, msq, n_x=N_X_DEFAULT,
-                       n_c=N_C_DEFAULT):
+                       n_c=N_C_DEFAULT, m_l2=0.0):
     """(Gamma, x nodes, normalised f(x)) with the coupling factored out.
 
     Gamma is the integral of dGamma/dx; f(x) = (1/Gamma) dGamma/dx integrates
     to one, which is the normalisation the downstream sampler expects.
     """
-    xs, dg, wx = dgamma_dx(m_h, m_l, m_phi, msq, n_x=n_x, n_c=n_c)
+    xs, dg, wx = dgamma_dx(m_h, m_l, m_phi, msq, n_x=n_x, n_c=n_c, m_l2=m_l2)
     if xs.size == 0:
         return 0.0, xs, dg
     gamma = float(np.dot(dg, wx))

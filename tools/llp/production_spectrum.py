@@ -50,12 +50,16 @@ class ProductionSpectrumTool(BaseTool):
     from it and refuses a mismatch, so the pair cannot drift apart.
 
     HOSTED PARENTS
-      pseudoscalar  h -> l nu LLP    pi, K, D, Ds        IMPLEMENTED
-      vector        V -> l+ l- LLP   rho, omega, phi,    NOT YET -- see the
-                                     Jpsi, psi2S         `parent` field
-    A channel is open while m_LLP < m_h - m_l (pseudoscalar) or
-    m_h - 2 m_l (vector); a closed channel returns ok with `open: false` and
-    no file, never an error, so a mass grid can span the threshold.
+      pseudoscalar  h -> l nu LLP    pi, K, D, Ds
+      vector        V -> l+ l- LLP   rho, omega, phi, Jpsi, psi2S
+    Both families are implemented. A channel is open while
+    m_LLP < m_h - m_l (pseudoscalar) or m_h - 2 m_l (vector); a closed channel
+    returns ok with `open: false` and no file, never an error, so a mass grid
+    can span the threshold.
+
+    The vector channels matter more than their multiplicity suggests: above
+    the pseudoscalar wall (m_LLP ~ 1.76 GeV) the charmonia are the ONLY open
+    production channel, so they carry the entire high-mass reach on their own.
 
     ACCURACY. The Dalitz integral is done by Gauss-Legendre in both directions
     with the substitution x = x_min + t^2, which absorbs the square-root edge
@@ -75,16 +79,13 @@ class ProductionSpectrumTool(BaseTool):
 
     parent: str = RuntimeField(
         default="",
-        description="SM parent hadron. IMPLEMENTED: the pseudoscalars pi, K, "
-                    "D, Ds (h -> l nu LLP). NOT YET IMPLEMENTED: the vector "
-                    "parents rho, omega, phi, Jpsi, psi2S (V -> l+ l- LLP) -- "
-                    "their data is hosted but the scalar-vector vertex is not, "
-                    "so they are rejected with a pointer to the workaround "
-                    "rather than silently. For a vector channel, supply your "
-                    "own f(x) table and B_hat directly to MesonDecayToLLP, "
-                    "which is model-agnostic and needs no change. Charge "
-                    "conjugates are folded, matching the harvested forward "
-                    "flux.")
+        description="SM parent hadron. Pseudoscalars pi, K, D, Ds "
+                    "(h -> l nu LLP) and vectors rho, omega, phi, Jpsi, psi2S "
+                    "(V -> l+ l- LLP) are all supported. Charge conjugates are "
+                    "folded, matching the harvested forward flux. Above the "
+                    "pseudoscalar kinematic wall the charmonia are the only "
+                    "open channel, so Jpsi/psi2S carry the whole high-mass "
+                    "reach.")
     m_phi_gev: float = RuntimeField(
         default=0.0,
         description="LLP mass in GeV (single-mass mode; ignored when `masses` "
@@ -176,12 +177,37 @@ class ProductionSpectrumTool(BaseTool):
             ],
         }
 
-    def _coupling_sq(self, p):
-        """Overall factor multiplying the unit-coupling squared amplitude."""
+    def _coupling_sq(self, p, ml):
+        """Overall factor multiplying the unit-coupling squared amplitude.
+
+        PSEUDOSCALAR: fixed by electroweak theory, C_P^2 = (G_F |V| f / sqrt2)^2.
+
+        VECTOR: there is no decay constant to appeal to, so the effective
+        coupling of V to the lepton current is fixed EMPIRICALLY, by requiring
+        the same amplitude machinery to reproduce the MEASURED V -> l+ l-
+        partial width:
+
+            g_V^2 = Gamma_meas(V -> l+ l-) / Gamma_unit(V -> l+ l-)
+
+        Both sides use this module's own trace and polarisation average, so the
+        normalisation cancels any convention choice rather than depending on
+        one. That is also what makes it testable: `Gamma_unit` is checked
+        against the closed form M/(12 pi) (1 + 2m^2/M^2) sqrt(1 - 4m^2/M^2).
+        """
         if p.family == "pseudoscalar":
             return (sm.G_F_GEV2 * p.ckm * p.f_gev / np.sqrt(2.0)) ** 2
+        if p.family == "vector":
+            if not p.gamma_ll_gev or p.gamma_ll_gev <= 0.0:
+                raise ValueError(
+                    f"vector parent {p.name!r} has no measured V -> l+ l- "
+                    f"width; it is required to fix the coupling")
+            unit = vtx.gamma_v_to_ll_unit(p.mass_gev, ml)
+            if unit <= 0.0:
+                raise ValueError(
+                    f"V -> l+ l- is closed for {p.name!r} at m_l={ml}")
+            return p.gamma_ll_gev / unit
         raise NotImplementedError(
-            "vector-parent normalisation is not implemented yet")
+            f"no normalisation for parent family {p.family!r}")
 
     def _one_mass(self, p, m_phi, msq, ml, out_file):
         """Compute and write one spectrum; returns the summary record."""
@@ -189,16 +215,21 @@ class ProductionSpectrumTool(BaseTool):
             return {"m_phi_gev": m_phi, "open": False,
                     "reason": f"closed: limit is "
                               f"{sm.kinematic_limit(p.name, self.lepton):.6f} GeV"}
+        # The recoil partner is a massless neutrino for a pseudoscalar and the
+        # second CHARGED lepton for a vector; that mass enters both the Dalitz
+        # boundary and the recoil split.
+        ml2 = ml if p.family == "vector" else 0.0
         gamma, xs, fx = kin.width_and_spectrum(
-            p.mass_gev, ml, m_phi, msq, n_x=int(self.n_x), n_c=int(self.n_c))
+            p.mass_gev, ml, m_phi, msq, n_x=int(self.n_x), n_c=int(self.n_c),
+            m_l2=ml2)
         if gamma <= 0.0 or xs.size == 0:
             return {"m_phi_gev": m_phi, "open": False,
                     "reason": "vanishing phase space"}
-        gamma *= self._coupling_sq(p)
+        gamma *= self._coupling_sq(p, ml)
         b_hat = gamma / p.width_gev
 
         # resample the spectrum onto a uniform grid for the CSV
-        x_lo, x_hi = kin.x_domain(p.mass_gev, ml, m_phi)
+        x_lo, x_hi = kin.x_domain(p.mass_gev, ml, m_phi, ml2)
         grid = np.linspace(x_lo, x_hi, int(self.n_table))
         pdf = np.interp(grid, xs, fx, left=0.0, right=0.0)
 
@@ -252,23 +283,6 @@ class ProductionSpectrumTool(BaseTool):
                 error="Invalid Parameter",
                 reason=f"unknown lepton {self.lepton!r}",
                 suggestion=f"One of {sorted(sm.LEPTON_MASS_GEV)}")
-        if p.family == "vector":
-            return self.format_error(
-                error="Not Implemented",
-                reason=f"{name} is a vector parent (V -> l+ l- LLP). Its SM "
-                       f"data is hosted, but the scalar-vector production "
-                       f"vertex is not implemented in this release, so this "
-                       f"tool cannot produce f(x) or B_hat for it.",
-                suggestion="WORKAROUND: compute the V -> l+ l- LLP spectrum "
-                           "yourself and pass it straight to MesonDecayToLLP "
-                           "-- that tool is model-agnostic and takes any "
-                           "normalised (x, pdf) table plus a B_hat, so no "
-                           "other step in the chain changes. The vector "
-                           "amplitude is in Mitra & Sahoo, Phys. Rev. D 104, "
-                           "015002 (2021) [arXiv:2103.08284]. Pseudoscalar "
-                           f"parents {list(sm.PSEUDOSCALARS)} are fully "
-                           "supported here.")
-
         try:
             msq = vtx.get(p.family, self.interaction)
         except KeyError as e:

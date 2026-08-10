@@ -465,3 +465,59 @@ def test_normalization_breakdown_is_reported():
     assert abs(nz["overall_efficiency"]
                - nz["geometry_efficiency"] * nz["acceptance_efficiency"]) < 1e-9
     print("[OK] normalization factors reported and self-consistent")
+
+
+def test_g_grid_path_matches_an_inline_g_grid():
+    """A dense reach grid can come from a file, not a hand-copied array."""
+    print(">> g_grid_path: file-supplied couplings == inline ...")
+    _setup()
+    wref = _width_ref(M_PHI, M_MU)
+    grid = [1e-9, 2e-9, 5e-9]
+    inline = json.loads(_tool(width_ref_gev=wref, g_grid=grid,
+                              acceptance="two_track")._run())
+    Path(base_directory, "gs.json").write_text(json.dumps(grid))
+    viafile = json.loads(_tool(width_ref_gev=wref, g_grid_path="gs.json",
+                               acceptance="two_track")._run())
+    assert viafile["status"] == "ok", viafile
+    assert [y["n_sig"] for y in viafile["yields"]] == \
+           [y["n_sig"] for y in inline["yields"]]
+    # the wrapped form too
+    Path(base_directory, "gs2.json").write_text(json.dumps({"g_grid": grid}))
+    wrapped = json.loads(_tool(width_ref_gev=wref, g_grid_path="gs2.json",
+                               acceptance="two_track")._run())
+    assert len(wrapped["yields"]) == 3
+    print("[OK] g_grid_path reproduces the inline grid exactly")
+
+
+def test_events_paths_glob_collects_the_channel_files():
+    """One glob replaces a hand-assembled per-parent list.
+
+    Assembling that list by hand is where a channel gets dropped (silently
+    lowering every yield) or repeated (silently inflating it), so the glob is
+    sorted and an empty match is refused rather than run as an empty sample.
+    """
+    print(">> events_paths_glob: sorted match, empty refused ...")
+    _setup()
+    base = Path(base_directory)
+    ch = base / "chan"
+    ch.mkdir(exist_ok=True)
+    for name in ("llp_K_m0.2500.jsonl", "llp_D_m0.2500.jsonl"):
+        _write_llp(ch / name)
+    wref = _width_ref(M_PHI, M_MU)
+
+    explicit = json.loads(_tool(
+        events_path="", events_paths=["chan/llp_D_m0.2500.jsonl",
+                                      "chan/llp_K_m0.2500.jsonl"],
+        width_ref_gev=wref, g_grid=[1e-9], acceptance="two_track")._run())
+    globbed = json.loads(_tool(
+        events_path="", events_paths_glob="chan/llp_*_m0.2500.jsonl",
+        width_ref_gev=wref, g_grid=[1e-9], acceptance="two_track")._run())
+    assert globbed["status"] == "ok", globbed
+    assert globbed["n_events"] == explicit["n_events"]
+    assert globbed["yields"][0]["n_sig"] == explicit["yields"][0]["n_sig"]
+    assert len(globbed.get("inputs", [])) == 2, globbed.get("inputs")
+
+    empty = _tool(events_path="", events_paths_glob="chan/nothing_*.jsonl",
+                  width_ref_gev=wref, g_grid=[1e-9])._run()
+    assert empty.lstrip().startswith("Error:") and "matched no files" in empty
+    print("[OK] glob == explicit list; empty match refused")

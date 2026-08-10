@@ -4,6 +4,7 @@
 # HEPTAPOD is licensed under the GNU GPL v3 or later, see LICENSE for details.
 # Please respect the MCnet Guidelines, see GUIDELINES for details.
 """
+import glob
 import json
 import os
 from typing import Dict, List, Optional
@@ -66,6 +67,16 @@ class _DecayInVolumeBase(BaseTool):
                     "inflate every yield downstream. Takes precedence over "
                     "`events_path` when non-empty; the per-file record counts "
                     "are echoed as `inputs` so a dropped channel is visible.")
+    events_paths_glob: str = RuntimeField(
+        default="",
+        description="Alternative to `events_paths`: ONE glob matching the "
+                    "record files, e.g. 'llp/*/llp_*_m0.2300.jsonl'. Resolved "
+                    "relative to base_directory and sorted, so a per-parent "
+                    "sweep needs no hand-assembled list -- which is where a "
+                    "channel gets dropped or duplicated. Matches are echoed as "
+                    "`inputs` with their record counts; an empty match is an "
+                    "error rather than a silently empty sample. Ignored when "
+                    "`events_paths` is non-empty.")
     geometry_path: str = RuntimeField(
         description="Path to geometry YAML (z_min_m, z_max_m, r_volume_m, "
                     "z_det_m, r_det_m in meters; optional z_shield_m = SHIELD "
@@ -171,14 +182,30 @@ class _DecayInVolumeBase(BaseTool):
         from . import llp_physics as phys
 
         rel_srcs = [str(x) for x in (self.events_paths or []) if str(x).strip()]
+        if not rel_srcs and str(self.events_paths_glob).strip():
+            # Resolve inside base_directory and sort, so the sample is
+            # reproducible and a per-parent sweep needs no hand-built list.
+            pattern = os.path.join(self.base_directory,
+                                   str(self.events_paths_glob).strip())
+            hits = sorted(glob.glob(pattern))
+            if not hits:
+                return self.format_error(
+                    error="File Not Found",
+                    reason=f"events_paths_glob matched no files: "
+                           f"{self.events_paths_glob}",
+                    suggestion="Check the pattern; an empty match is refused "
+                               "rather than run as an empty sample")
+            rel_srcs = [os.path.relpath(h, self.base_directory) for h in hits]
         if not rel_srcs:
             rel_srcs = [self.events_path] if self.events_path else []
         if not rel_srcs:
             return self.format_error(
                 error="Invalid Parameter",
-                reason="no input given: both events_path and events_paths empty",
-                suggestion="Set events_path, or events_paths for several "
-                           "parent-channel files at the same mass")
+                reason="no input given: events_path, events_paths and "
+                       "events_paths_glob are all empty",
+                suggestion="Set events_path, or events_paths / "
+                           "events_paths_glob for several parent-channel "
+                           "files at the same mass")
         srcs = [self._safe_path(r) for r in rel_srcs]
         geo = self._safe_path(self.geometry_path)
         dst = self._safe_path(self.output_path)
@@ -703,9 +730,19 @@ class DecayInVolumeVsCouplingTool(_DecayInVolumeBase):
                     "the implied ctau at g=1 (hbar*c/width_ref_gev) -- sanity-check "
                     "it against your own lifetime.")
     g_grid: List[float] = RuntimeField(
+        default=[],
         description="Couplings g at which to evaluate N_sig (non-empty, all "
                     "> 0). One event set covers the whole list by exact "
-                    "reweighting, e.g. [1e-7, 3e-7, 1e-6, 3e-6, 1e-5]")
+                    "reweighting, e.g. [1e-7, 3e-7, 1e-6, 3e-6, 1e-5]. Supply "
+                    "this OR `g_grid_path`.")
+    g_grid_path: str = RuntimeField(
+        default="",
+        description="Alternative to `g_grid`: a path to a JSON file holding "
+                    "the coupling list (a bare list, or {\"g_grid\": [...]}). "
+                    "A reach scan wants a dense log-spaced grid, which is "
+                    "natural to build with numpy and error-prone to hand-copy "
+                    "into a call; point at the file instead. Ignored when "
+                    "`g_grid` is non-empty.")
     partial_widths_ref_gev: Dict[str, float] = RuntimeField(
         default={},
         description="PREFERRED over width_ref_gev: the g^2-stripped PARTIAL "
@@ -780,6 +817,28 @@ class DecayInVolumeVsCouplingTool(_DecayInVolumeBase):
             return err
         wref = derived if derived is not None else float(self.width_ref_gev or 0.0)
         g_grid = [float(g) for g in (self.g_grid or [])]
+        if not g_grid and str(self.g_grid_path).strip():
+            gp = self._safe_path(self.g_grid_path)
+            if not gp or not os.path.isfile(gp):
+                return self.format_error(
+                    error="File Not Found",
+                    reason=f"g_grid_path does not resolve to a file inside "
+                           f"base_directory: {self.g_grid_path}",
+                    suggestion="Pass a relative path to a JSON file holding "
+                               "the coupling list")
+            try:
+                with open(gp) as fh:
+                    loaded = json.load(fh)
+                if isinstance(loaded, dict):
+                    loaded = loaded.get("g_grid")
+                g_grid = [float(g) for g in loaded]
+            except Exception as exc:
+                return self.format_error(
+                    error="Invalid Input",
+                    reason=f"could not read g_grid_path as a list of "
+                           f"couplings: {exc}",
+                    suggestion="The file must hold a JSON list of positive "
+                               "numbers, or {'g_grid': [...]}")
         if wref <= 0.0:
             return self.format_error(
                 error="Invalid Parameter",

@@ -21,23 +21,31 @@ construction. The natural next entries are a pseudoscalar coupling
 (gamma_5 at the emission vertex), a vector coupling (gamma^mu), and an
 axial-vector coupling (gamma^mu gamma_5).
 
-Only the SCALAR vertex for PSEUDOSCALAR parents is implemented and validated
-here. An unvalidated amplitude is worse than a missing one, so the others are
-left to be added alongside their own cross-checks rather than stubbed out
-speculatively.
+The SCALAR vertex is implemented and validated for BOTH parent families.
 
-THE VECTOR PARENT GAP is the known one, and it is worth stating what "adding
-it" requires. V -> l+ l- phi has two diagrams (the LLP radiated off either
-lepton leg) which interfere, and the polarisation sum must be averaged over the
-parent's three states. Validating it therefore needs more than agreement with
-another implementation of the same formula: it needs the Ward identity to hold
-numerically, and it needs the rate to reproduce the MEASURED V -> l+ l- partial
-width when the LLP-emission vertex is removed. Both checks are physics, not
-self-consistency, and both should be in the test suite before the vertex is
-advertised as available. Until then ProductionSpectrumTool rejects vector
-parents with a pointer to the workaround: MesonDecayToLLP is model-agnostic and
-accepts a hand-supplied (x, pdf) table plus B_hat, so a vector channel costs
-the caller one spectrum, not a change to the chain.
+THE VECTOR CASE is the harder one and was added last. V -> l+ l- phi has two
+diagrams (the LLP radiated off either lepton leg) which interfere, and the
+polarisation sum must be averaged over the parent's three states. Neither
+diagram conserves the leptonic current on its own, so an omitted diagram or a
+flipped relative sign still yields a smooth, positive, entirely plausible
+spectrum with the wrong normalisation -- which is why it is evaluated as an
+explicit numerical trace and pinned by two checks that are physics rather than
+self-consistency:
+
+    Ward identity     P_mu T^{mu nu} = 0 numerically   (< 1e-10 on a
+                                                        physical Dalitz grid)
+    closed-form limit Gamma(V -> l+ l-) at unit coupling reproduces
+                      M/(12 pi) (1 + 2 m^2/M^2) sqrt(1 - 4 m^2/M^2) to 1e-12
+
+Both are in the test suite. The second doubles as the coupling normalisation:
+there is no decay constant for a vector, so g_V is fixed by dividing the
+MEASURED V -> l+ l- width by that same unit-coupling quantity, which cancels
+this module's trace and polarisation conventions rather than assuming they
+agree with a textbook formula's.
+
+These channels are not a completeness exercise. Above the pseudoscalar
+kinematic wall (m_phi ~ 1.76 GeV) the charmonia are the ONLY open production
+mode, so they carry the entire high-mass reach on their own.
 
 PHYSICS
 -------
@@ -62,6 +70,34 @@ from __future__ import annotations
 import numpy as np
 
 from .kinematics import mdot
+
+
+#: Dirac representation, metric (+,-,-,-). Used by the VECTOR amplitude, which
+#: is evaluated as an explicit numerical trace rather than a hand-derived
+#: closed form. V -> l+ l- phi has two diagrams that interfere plus a
+#: polarisation average, and an algebra slip there is SILENT: it yields a
+#: plausible-looking spectrum with the wrong normalisation. The numerical route
+#: is pinned by two physics checks a wrong trace cannot pass -- the Ward
+#: identity, and reproducing the MEASURED V -> l+ l- width.
+_ID4 = np.eye(4, dtype=complex)
+_METRIC = np.array([1.0, -1.0, -1.0, -1.0])
+_GAMMA = np.array([
+    [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, -1, 0], [0, 0, 0, -1]],
+    [[0, 0, 0, 1], [0, 0, 1, 0], [0, -1, 0, 0], [-1, 0, 0, 0]],
+    [[0, 0, 0, -1j], [0, 0, 1j, 0], [0, 1j, 0, 0], [-1j, 0, 0, 0]],
+    [[0, 0, 1, 0], [0, 0, 0, -1], [-1, 0, 0, 0], [0, 1, 0, 0]],
+], dtype=complex)
+
+
+def slash(p):
+    """p_slash = gamma^mu p_mu, vectorised over any leading shape."""
+    return np.einsum('...m,mij->...ij', np.asarray(p, dtype=float) * _METRIC,
+                     _GAMMA)
+
+
+def _bar(A):
+    """gamma^0 A^dagger gamma^0, the Dirac adjoint of a 4x4 vertex block."""
+    return np.einsum('ij,...kj,kl->...il', _GAMMA[0], A.conj(), _GAMMA[0])
 
 
 def _tr4(ab, cd, ac, bd, ad, bc):
@@ -110,9 +146,119 @@ def msq_scalar_pseudoscalar_parent(P, p_l, p_nu, p_phi, m_l, m_phi):
     return T / (D * D)
 
 
+def _vector_tensor(P, p_m, p_p, p_phi, m_l, m_phi):
+    """T^{mu nu} = sum_spins M^mu (M^nu)* for V -> l-(p_m) l+(p_p) phi.
+
+    The LLP is radiated from either lepton leg, so there are TWO diagrams and
+    they interfere -- unlike the pseudoscalar case, where a single internal
+    line carries the whole amplitude:
+
+        Gamma^mu = (p_m/ + k/ + m) gamma^mu / D_m
+                 + gamma^mu (-p_p/ - k/ + m) / D_p
+
+    with D_m = 2 p_m.k + m_phi^2 and D_p = 2 p_p.k + m_phi^2 the two propagator
+    denominators. The vector's coupling to the lepton current is factored out
+    (unit coupling), exactly as C_P is for a pseudoscalar; `parents.py`
+    restores it by normalising to the measured V -> l+ l- width.
+
+    Returned with the Lorentz indices UNCONTRACTED so the caller can apply the
+    polarisation sum and, separately, test the Ward identity.
+    """
+    k = p_phi
+    D_m = 2.0 * mdot(p_m, k) + m_phi * m_phi
+    D_p = 2.0 * mdot(p_p, k) + m_phi * m_phi
+
+    sl_m, sl_p, sl_k = slash(p_m), slash(p_p), slash(k)
+    num_m = sl_m + sl_k + m_l * _ID4          # (p_m + k)/ + m
+    num_p = -sl_p - sl_k + m_l * _ID4         # -(p_p + k)/ + m
+
+    # Gamma^mu, one 4x4 block per Lorentz index; gamma^mu carries an UPPER
+    # index here, so no metric factor enters the vertex itself.
+    G = (np.einsum('...ij,mjk->...mik', num_m, _GAMMA) / D_m[..., None, None, None]
+         + np.einsum('mij,...jk->...mik', _GAMMA, num_p) / D_p[..., None, None, None])
+    Gb = _bar(G)
+
+    A = sl_m + m_l * _ID4                     # sum over l- spins
+    B = sl_p - m_l * _ID4                     # sum over l+ spins
+    # T^{mu nu} = Tr[A Gamma^mu B Gammabar^nu]
+    left = np.einsum('...ij,...mjk->...mik', A, G)
+    right = np.einsum('...ij,...njk->...nik', B, Gb)
+    return np.einsum('...mij,...nji->...mn', left, right)
+
+
+def _polarisation_average(T, P, m_h):
+    """(1/3) (-g_{mu nu} + P_mu P_nu / m_h^2) T^{mu nu}.
+
+    The average over the parent's three polarisation states. The P P term
+    vanishes for a conserved current, but it is applied rather than dropped:
+    keeping it means `msq_scalar_vector_parent` stays correct if the vertex is
+    ever changed to something non-conserving, and its size is a live check on
+    the amplitude (see the Ward-identity test).
+    """
+    g_term = -(T[..., 0, 0] - T[..., 1, 1] - T[..., 2, 2] - T[..., 3, 3])
+    P_low = np.asarray(P, dtype=float) * _METRIC
+    pp_term = np.einsum('...m,...n,...mn->...', P_low, P_low, T) / (m_h * m_h)
+    return (g_term + pp_term).real / 3.0
+
+
+def msq_scalar_vector_parent(P, p_l, p_nu, p_phi, m_l, m_phi):
+    """Spin-summed, polarisation-AVERAGED |M|^2 for V -> l+ l- phi.
+
+    Signature matches the pseudoscalar vertex so `kinematics.py` needs no
+    special case: `p_l` is the l-, `p_nu` is the l+ (both massive here, which
+    is why the recoil split in `kinematics.momenta` had to be generalised).
+
+    Unit coupling: the physical rate carries g_V^2 g^2 on top, with g_V fixed
+    by the measured V -> l+ l- width rather than by a decay constant.
+    """
+    m_h = np.sqrt(np.maximum(mdot(P, P), 0.0))
+    T = _vector_tensor(P, p_l, p_nu, p_phi, m_l, m_phi)
+    return _polarisation_average(T, P, m_h)
+
+
+def gamma_v_to_ll_unit(m_h, m_l):
+    """Gamma(V -> l+ l-) at UNIT coupling, from this module's own machinery.
+
+    Used to convert a measured V -> l+ l- width into the effective coupling
+    that multiplies the three-body amplitude. Computing it here, rather than
+    substituting the textbook closed form, means the conversion cancels
+    whatever trace and polarisation conventions this module uses instead of
+    silently assuming they agree with a formula's. The test suite pins it
+    against M/(12 pi) (1 + 2 m^2/M^2) sqrt(1 - 4 m^2/M^2).
+    """
+    if m_h <= 2.0 * m_l:
+        return 0.0
+    E = 0.5 * m_h
+    p = np.sqrt(E * E - m_l * m_l)
+    p_m = np.array([[E, 0.0, 0.0, p]])
+    p_p = np.array([[E, 0.0, 0.0, -p]])
+    P = np.array([[m_h, 0.0, 0.0, 0.0]])
+    T = np.einsum('...ij,mjk,...kl,nli->...mn',
+                  slash(p_m) + m_l * _ID4, _GAMMA,
+                  slash(p_p) - m_l * _ID4, _GAMMA)
+    msq = _polarisation_average(T, P, m_h)[0]
+    return float(p / (8.0 * np.pi * m_h * m_h) * msq)
+
+
+def ward_residual(P, p_l, p_nu, p_phi, m_l, m_phi):
+    """|P_mu T^{mu nu}| relative to |T|, which must vanish for a conserved current.
+
+    Exposed rather than kept in the test file because it is the cheapest real
+    check on the vector amplitude: it is sensitive to a wrong relative sign or
+    a missing diagram, both of which leave the spectrum's SHAPE plausible.
+    """
+    T = _vector_tensor(P, p_l, p_nu, p_phi, m_l, m_phi)
+    P_low = np.asarray(P, dtype=float) * _METRIC
+    contracted = np.einsum('...m,...mn->...n', P_low, T)
+    scale = np.sqrt(np.einsum('...mn,...mn->...', abs(T) ** 2, np.ones_like(T.real)))
+    scale = np.where(scale > 0, scale, 1.0)
+    return np.max(np.abs(contracted), axis=-1) / scale
+
+
 # Registry: (family, interaction) -> squared amplitude at unit coupling.
 VERTICES = {
     ("pseudoscalar", "scalar"): msq_scalar_pseudoscalar_parent,
+    ("vector", "scalar"): msq_scalar_vector_parent,
 }
 
 #: Interactions available per parent family, for error messages and discovery.

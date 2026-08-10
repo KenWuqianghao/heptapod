@@ -310,3 +310,128 @@ def test_mismatched_pairing_is_refused():
     ok = json.loads(call(m_phi_gev=0.06, B_hat=b_hat))
     assert ok["status"] == "ok", ok
     print("[OK] wrong mass refused, wrong B_hat refused, matching pair ok")
+
+
+# ── vector parents: V -> l+ l- phi ────────────────────────────────────────
+#
+# These channels carry the ENTIRE reach above the pseudoscalar kinematic wall
+# (~1.76 GeV), where the charmonia are the only open production mode. They are
+# also the easiest place to be silently wrong: two diagrams interfere and the
+# parent's polarisations must be averaged, so an algebra slip yields a
+# plausible spectrum with the wrong normalisation. Hence three independent
+# checks -- gauge invariance, a closed-form limit, and quadrature convergence.
+
+import csv
+
+import numpy as np
+
+from tools.llp.spectra import kinematics as kin
+from tools.llp.spectra import parents as sm
+from tools.llp.spectra import vertices as vtx
+
+M_MU = sm.LEPTON_MASS_GEV["mu"]
+
+
+def test_dirac_algebra_is_consistent():
+    """The trace machinery is only as good as its gamma matrices."""
+    print(">> Clifford algebra and slash^2 = p^2 ...")
+    anti = (np.einsum('mij,njk->mnik', vtx._GAMMA, vtx._GAMMA)
+            + np.einsum('nij,mjk->mnik', vtx._GAMMA, vtx._GAMMA))
+    target = 2 * np.diag(vtx._METRIC)[:, :, None, None] * np.eye(4)
+    assert np.max(np.abs(anti - target)) < 1e-12
+    rng = np.random.default_rng(0)
+    p = rng.normal(size=(6, 4))
+    s = vtx.slash(p)
+    ss = np.einsum('...ij,...jk->...ik', s, s)
+    assert np.max(np.abs(ss - kin.mdot(p, p)[:, None, None] * np.eye(4))) < 1e-12
+    print("[OK] {gamma^mu, gamma^nu} = 2 g^{mu nu} and p_slash^2 = p^2")
+
+
+def test_vector_amplitude_satisfies_the_ward_identity():
+    """P_mu T^{mu nu} = 0: the check a wrong relative sign cannot survive.
+
+    Both diagrams are individually non-conserving; only their sum satisfies
+    current conservation. A dropped diagram, or a flipped sign between them,
+    still produces a smooth positive spectrum -- but fails here.
+    """
+    print(">> Ward identity on a physical Dalitz grid ...")
+    for parent in ("Jpsi", "phi", "rho"):
+        p = sm.get(parent)
+        m_phi = 0.3 * (p.mass_gev - 2 * M_MU)
+        xs, _ = kin._gl_nodes_x(p.mass_gev, M_MU, m_phi, 12, M_MU)
+        cs = np.linspace(-0.9, 0.9, 7)
+        P, pl, pn, pk, ok = kin.momenta(p.mass_gev, M_MU, m_phi,
+                                        xs[:, None], cs[None, :], M_MU)
+        w = vtx.ward_residual(P, pl, pn, pk, M_MU, m_phi)
+        assert np.max(w[ok]) < 1e-10, (parent, float(np.max(w[ok])))
+        msq = vtx.msq_scalar_vector_parent(P, pl, pn, pk, M_MU, m_phi)
+        assert np.all(msq[ok] > 0.0), parent
+    print("[OK] |P.T|/|T| < 1e-10 and |M|^2 > 0 for rho, phi, Jpsi")
+
+
+def test_unit_two_body_width_matches_the_closed_form():
+    """Fixes the polarisation average and the coupling normalisation.
+
+    g_V is set by dividing the MEASURED V -> l+ l- width by this quantity, so
+    an error here would rescale every vector spectrum by a constant -- exactly
+    the kind of mistake that survives every shape check.
+    """
+    print(">> Gamma(V -> l+ l-) at unit coupling vs the closed form ...")
+    for name in ("rho", "omega", "phi", "Jpsi", "psi2S"):
+        M = sm.get(name).mass_gev
+        r = 4 * M_MU * M_MU / (M * M)
+        closed = M / (12 * np.pi) * (1 + r / 2) * np.sqrt(max(1 - r, 0.0))
+        got = vtx.gamma_v_to_ll_unit(M, M_MU)
+        assert abs(got / closed - 1) < 1e-12, (name, got, closed)
+    assert vtx.gamma_v_to_ll_unit(0.1, M_MU) == 0.0     # closed channel
+    print("[OK] matches M/(12 pi)(1+2m^2/M^2)sqrt(1-4m^2/M^2) to 1e-12")
+
+
+def test_vector_spectrum_is_normalised_and_converged():
+    """f(x) integrates to 1, and the default quadrature is already converged."""
+    print(">> vector spectra: normalisation and n_x convergence ...")
+    _setup()
+    res = json.loads(_tool(parent="Jpsi", masses=[0.06, 0.7, 2.3],
+                           output_dir="vec").  _run())
+    assert res["status"] == "ok", res
+    opened = [m for m in res["masses"] if m.get("open")]
+    assert len(opened) == 3, res["masses"]
+    for m in opened:
+        assert m["B_hat"] > 0.0
+        xs, pdf = [], []
+        with open(os.path.join(base_directory, m["spectrum_path"])) as fh:
+            for row in csv.reader(fh):
+                if not row or row[0].startswith("#"):
+                    continue
+                try:
+                    xs.append(float(row[0])); pdf.append(float(row[1]))
+                except ValueError:
+                    continue
+        area = np.trapezoid(np.array(pdf), np.array(xs))
+        assert abs(area - 1.0) < 5e-3, (m["m_phi_gev"], area)
+
+    # the default n_x is converged: refining must not move B_hat
+    ref = None
+    for nx in (kin.N_X_DEFAULT, 4 * kin.N_X_DEFAULT):
+        r = json.loads(_tool(parent="Jpsi", m_phi_gev=0.06, n_x=nx,
+                             output_path=f"vconv_{nx}.csv")._run())
+        rec = r["masses"][0] if "masses" in r else r
+        if ref is None:
+            ref = rec["B_hat"]
+        else:
+            assert abs(rec["B_hat"] / ref - 1) < 1e-4, (ref, rec["B_hat"])
+    print("[OK] f(x) normalised; B_hat stable under 4x refinement")
+
+
+def test_vector_parents_are_no_longer_rejected():
+    """The gap a 2026-08 trial had to work around by hand."""
+    print(">> every hosted vector parent produces a spectrum ...")
+    _setup()
+    for name in sm.VECTORS:
+        limit = sm.kinematic_limit(name, "mu")
+        r = json.loads(_tool(parent=name, m_phi_gev=0.5 * limit,
+                             output_path=f"v_{name}.csv")._run())
+        assert r.get("status") == "ok", (name, str(r)[:200])
+        rec = r["masses"][0] if "masses" in r else r
+        assert rec["open"] and rec["B_hat"] > 0.0, (name, rec)
+    print(f"[OK] {list(sm.VECTORS)} all supported")

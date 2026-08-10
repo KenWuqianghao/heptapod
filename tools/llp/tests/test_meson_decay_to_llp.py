@@ -290,3 +290,86 @@ def run_all():
 
 if __name__ == "__main__":
     run_all()
+
+
+def test_grid_path_is_equivalent_to_an_inline_grid():
+    """A long grid can come from a file instead of a hand-copied array.
+
+    A 2026-08 trial reported hand-copying `grid`/`events_paths`/`g_grid` into
+    tool calls 20+ times and typo'd one entry (a duplicated coupling) that was
+    harmless only by luck. Generating the list with a script and pointing at it
+    removes that whole class of transcription error, so the file route must
+    produce byte-identical output to the inline route.
+    """
+    print(">> grid_path: file-supplied grid == inline grid ...")
+    grid = [{"m_phi_gev": 0.22, "spectrum_spec": "spectrum.csv", "B_hat": 1e-5},
+            {"m_phi_gev": 0.24, "spectrum_spec": "spectrum.csv", "B_hat": 2e-5}]
+
+    def run(**kw):
+        _setup()
+        tool = MesonDecayToLLPTool(
+            base_directory=base_directory, parent_flux_path="parents_K.jsonl",
+            parent_mass_gev=M_PARENT, ctau_parent_m=CTAU_K, n_strata=4, seed=1,
+            output_dir="gridout", **kw)
+        tool._setup()
+        res = json.loads(tool._run())
+        assert res["status"] == "ok", res
+        return res, [_recs(m["path"]) for m in res["masses"]]
+
+    inline_res, inline_recs = run(grid=grid)
+    Path(base_directory, "grid.json").write_text(json.dumps(grid))
+    file_res, file_recs = run(grid_path="grid.json")
+
+    assert file_res["mode"] == "grid" and file_res["n_masses"] == 2
+    assert file_res["n_samples_total"] == inline_res["n_samples_total"]
+    assert inline_recs == file_recs, "file-supplied grid must be identical"
+
+    # the wrapped form is accepted too
+    Path(base_directory, "grid2.json").write_text(json.dumps({"grid": grid}))
+    wrapped, _ = run(grid_path="grid2.json")
+    assert wrapped["n_masses"] == 2, wrapped
+    print("[OK] grid_path reproduces the inline grid exactly; {'grid': [...]} ok")
+
+
+def test_grid_path_failures_are_actionable():
+    print(">> grid_path: missing / malformed files fail loudly ...")
+    _setup()
+
+    def err(path):
+        """Tool errors come back as a formatted STRING, not JSON."""
+        tool = MesonDecayToLLPTool(
+            base_directory=base_directory, parent_flux_path="parents_K.jsonl",
+            parent_mass_gev=M_PARENT, ctau_parent_m=CTAU_K, n_strata=4, seed=1,
+            output_dir="gridout", grid_path=path)
+        tool._setup()
+        out = tool._run()
+        assert out.lstrip().startswith("Error:"), out[:200]
+        return out
+
+    assert "grid_path" in err("nope.json")
+    Path(base_directory, "bad.json").write_text("{not json")
+    assert "JSON" in err("bad.json")
+    Path(base_directory, "empty.json").write_text("[]")
+    assert "non-empty" in err("empty.json")
+    print("[OK] missing, malformed and empty grid files all refused")
+
+
+def test_n_strata_advice_appears_only_when_coarse():
+    """Which boundary K controls, said where the caller will see it."""
+    print(">> n_strata advice surfaces in the result at coarse K ...")
+    for K, expect in ((16, True), (64, False)):
+        _setup()
+        tool = MesonDecayToLLPTool(
+            base_directory=base_directory, parent_flux_path="parents_K.jsonl",
+            parent_mass_gev=M_PARENT, ctau_parent_m=CTAU_K, n_strata=K, seed=1,
+            m_phi_gev=M_PHI, spectrum_spec="spectrum.csv", B_hat=B_HAT,
+            output_path="llp/phi_K.jsonl")
+        tool._setup()
+        res = json.loads(tool._run())
+        assert res["status"] == "ok", res
+        has = "n_strata_advice" in res
+        assert has is expect, (K, res.get("n_strata_advice"))
+        if has:
+            adv = res["n_strata_advice"]
+            assert "STRONG" in adv and "64" in adv, adv
+    print("[OK] advice at K=16, silent at K=64")

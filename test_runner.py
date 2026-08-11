@@ -247,7 +247,8 @@ def check_prerequisites():
 
     return all_ok, has_ollama
 
-def run_test_script(script_path, verbose=False, keep_files=False, description=None):
+def run_test_script(script_path, verbose=False, keep_files=False, description=None,
+                    use_pytest=False):
     """
     Run a test script and return success status.
 
@@ -263,12 +264,21 @@ def run_test_script(script_path, verbose=False, keep_files=False, description=No
     if description:
         print(f">> {description}")
 
-    # Build command
-    cmd = [sys.executable, str(script_path)]
-    if verbose:
-        cmd.append("-v")
-    if keep_files:
-        cmd.append("--keep-files")
+    # Build command. `use_pytest` suites are ordinary pytest modules rather
+    # than self-running scripts: their tests share fixtures built by earlier
+    # tests in the same file, so executing the file directly fails on a clean
+    # checkout while pytest collects and orders them correctly.
+    if use_pytest:
+        cmd = [sys.executable, "-m", "pytest", "-q", str(script_path)]
+        if verbose:
+            cmd.append("-v")
+        return_on = None
+    else:
+        cmd = [sys.executable, str(script_path)]
+        if verbose:
+            cmd.append("-v")
+        if keep_files:
+            cmd.append("--keep-files")
 
     print(f"   Running: {' '.join(cmd)}\n")
 
@@ -415,8 +425,18 @@ def main():
             "description": "EDA tools (FeynCalc codegen, Wolfram runner, symbolic-to-Python conversion)"
         },
         "llp": {
-            "script": REPO_ROOT / "tools" / "llp" / "tests" / "test_llp_tools.py",
-            "description": "LLP tools (flux sampling from meson decay, decay-in-volume yields, g^4 scaling)"
+            "use_pytest": True,
+            # f0b735f split test_llp_tools.py into per-tool suites; this
+            # entry still named the deleted file, so the runner reported
+            # FAIL for a bundle whose tests all pass.
+            "scripts": [
+                REPO_ROOT / "tools" / "llp" / "tests" / "test_decay_in_volume.py",
+                REPO_ROOT / "tools" / "llp" / "tests" / "test_harvest_forward_flux.py",
+                REPO_ROOT / "tools" / "llp" / "tests" / "test_llp_physics.py",
+                REPO_ROOT / "tools" / "llp" / "tests" / "test_meson_decay_to_llp.py",
+                REPO_ROOT / "tools" / "llp" / "tests" / "test_production_spectrum.py",
+            ],
+            "description": "LLP tools (flux sampling from meson decay, decay-in-volume yields, g^4 scaling)",
         },
         "logging": {
             "script": REPO_ROOT / "tools" / "logging" / "tests" / "test_findings.py",
@@ -463,7 +483,8 @@ def main():
                 script_path,
                 verbose=args.verbose,
                 keep_files=args.keep_files,
-                description=description
+                description=description,
+                use_pytest=config.get("use_pytest", False),
             )
             if not success:
                 all_passed = False

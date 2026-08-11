@@ -1,0 +1,135 @@
+(* ******************************************************************* *)
+(* MINIMAL TESTED BSM TEMPLATE                                          *)
+(*                                                                      *)
+(* Adds to the SM:                                                      *)
+(*   - one massive vector  V[100] = Aprime  (PDG 9000022)               *)
+(*   - one real scalar     S[100] = phid    (PDG 9000006)               *)
+(*   - kinetic mixing of A' to SM EM current (eps * ee)                 *)
+(*   - phid -> A' A' coupling                                           *)
+(*   - LFV scalar Yukawa  yLFV * phid * (taubar P_R mu + h.c.)          *)
+(*                                                                      *)
+(* This template was derived from a working FR -> UFO -> MG5 pipeline.  *)
+(* It exhibits all four "must do" patterns:                             *)
+(*   - InteractionOrderHierarchy with NP                                *)
+(*   - InteractionOrder tag on each BSM parameter                       *)
+(*   - Mass/Width auto-declaration via the particle class only          *)
+(*   - Distinct Lorentz indices to avoid muon-name clashes              *)
+(*                                                                      *)
+(* Usage in Mathematica:                                                *)
+(*   SetDirectory[$FeynRulesPath]; <<FeynRules`;                        *)
+(*   LoadModel["Models/SM/SM.fr", "<this file>"];                       *)
+(*   WriteUFO[LSM + LBSM, Output -> "UFO_dir"];                         *)
+(* ******************************************************************* *)
+
+M$ModelName = "BSM_Template";
+
+M$Information = {
+  Authors      -> {"YOUR NAME"},
+  Date         -> "YYYY-MM-DD",
+  Institutions -> {"YOUR_INSTITUTE"},
+  References   -> {"YOUR PAPER"},
+  Version      -> "0.1"
+};
+
+(* ----- Interaction order hierarchy: REQUIRED for BSM couplings ----- *)
+M$InteractionOrderHierarchy = {
+  {QCD, 1},
+  {QED, 2},
+  {NP,  1}
+};
+
+M$InteractionOrderLimit = {
+  {QCD, 99},
+  {QED, 99},
+  {NP,  99}
+};
+
+(* ----- Parameters: only NEW external params here. ----- *)
+(* DO NOT redeclare masses or widths that come from particle class.     *)
+M$Parameters = {
+
+  eps == {
+    ParameterType    -> External,
+    BlockName        -> NPSEC,
+    OrderBlock       -> 1,
+    Value            -> 1.0*^-4,
+    InteractionOrder -> {NP, 1},
+    Description      -> "Kinetic mixing parameter"
+  },
+
+  gphiAA == {
+    ParameterType    -> External,
+    BlockName        -> NPSEC,
+    OrderBlock       -> 2,
+    Value            -> 0.1,
+    InteractionOrder -> {NP, 1},
+    Description      -> "phi-A'-A' coupling (GeV)"
+  },
+
+  yLFV == {
+    ParameterType    -> External,
+    BlockName        -> NPSEC,
+    OrderBlock       -> 3,
+    Value            -> 1.0*^-3,
+    InteractionOrder -> {NP, 1},
+    Description      -> "LFV scalar Yukawa for taubar mu phid"
+  }
+
+  (* Masses MAprime, Mphid and widths WAprime, Wphid are auto-declared *)
+  (* below in the particle classes -- DO NOT add them here.            *)
+};
+
+(* ----- New particles ----- *)
+M$ClassesDescription = {
+
+  V[100] == {
+    ClassName        -> Aprime,
+    SelfConjugate    -> True,
+    Mass             -> {MAprime, 0.3},
+    Width            -> {WAprime, 1.0*^-9},
+    PDG              -> 9000022,
+    ParticleName     -> "Ap",
+    PropagatorLabel  -> "A'",
+    PropagatorType   -> Sine,
+    PropagatorArrow  -> None,
+    FullName         -> "DarkPhoton"
+  },
+
+  S[100] == {
+    ClassName        -> phid,
+    SelfConjugate    -> True,
+    Mass             -> {Mphid, 1.0},
+    Width            -> {Wphid, 1.0*^-9},
+    PDG              -> 9000006,
+    ParticleName     -> "phid",
+    PropagatorLabel  -> "phid",
+    PropagatorType   -> ScalarDash,
+    PropagatorArrow  -> None,
+    FullName         -> "DarkHiggs"
+  }
+};
+
+(* ----- BSM Lagrangian ----- *)
+(* Use distinct Lorentz indices (lor1, lor2) to avoid clashes with the  *)
+(* muon symbol mu in SM Lagrangian terms.                               *)
+
+LAprimeKin := -(1/4) FS[Aprime, lor1, lor2] FS[Aprime, lor1, lor2]
+              + (1/2) MAprime^2 Aprime[lor1] Aprime[lor1];
+
+LphidKin   := (1/2) del[phid, lor1] del[phid, lor1]
+              - (1/2) Mphid^2 phid^2;
+
+(* phi -> A' A' interaction *)
+LphiAA     := gphiAA phid Aprime[lor1] Aprime[lor1];
+
+(* A' coupling to SM charged-lepton EM current via kinetic mixing.      *)
+(* Q_lepton = -1, so coefficient is -eps*ee.                            *)
+LAprimeSM  := - eps ee Aprime[lor1] (
+                 ebar.Ga[lor1].e
+               + mubar.Ga[lor1].mu
+               + tabar.Ga[lor1].ta );
+
+(* LFV scalar Yukawa: yLFV * phid * (taubar P_R mu) + h.c.              *)
+LLFV       := - yLFV phid ( tabar.ProjP.mu + mubar.ProjM.ta );
+
+LBSM := LAprimeKin + LphidKin + LphiAA + LAprimeSM + LLFV;

@@ -28,23 +28,21 @@ from orchestral.tools import (RunCommandTool, WriteFileTool, ReadFileTool,
                               RunPythonTool, WebSearchTool, TodoWrite, TodoRead)
 from orchestral.tools.hooks import TruncateOutputHook
 
-# LLM imports.
-from orchestral.llm import GPT, Claude, Gemini, Groq
+# LLM imports. Gemini is imported at its selection below; it needs the `google` extra.
+from orchestral.llm import GPT, Claude, Groq
 from llm import get_ollama, get_reasoning_ollama, get_vllm, get_litellm
 
-# Tool imports — EDA study group: symbolic FeynCalc + NDA cross-checks + PDG.
-from tools.eda import (RunWolframScript, RunWolframScriptBatch,
-                       ComputeSymbolicAmplitude, ConvertToPython,
-                       SimplifyResult, SimplifyResultBatch)
-from tools.nda import EstimateDecayWidthNDATool, EstimateDecayWidthFormulaNDATool
-from tools.pdg import PDGDatabaseTool
+# HEPTAPOD tools are served by toolbase from the toolkit's own env.
+from toolbase.connect.orchestral import toolbase_tools
 
 # Configuration imports.
 from config import wolframscript_path
 
 # Import sandbox utilities and app server.
 from sandbox_utils import create_new_sandbox
-import app.server as app_server
+# Import the Orchestral app server (qualified path; bare `app` is not
+# top-level on the installed orchestral package).
+import orchestral.ui.app.server as app_server
 
 print("Using wolframscript path:", wolframscript_path)
 
@@ -58,11 +56,11 @@ demo_files_dir = Path(__file__).resolve().parent
 CREATE_NEW_SANDBOX = True  # Set to True to create a new sandbox, False to use existing
 
 # Load system prompt.
-SYSTEM_PROMPT_PATH = REPO_ROOT / 'prompts' / 'examples' / 'eda' / 'system' / 'eda_system_prompt.md'
+SYSTEM_PROMPT_PATH = Path(__file__).resolve().parent / 'prompts' / 'system_prompt.md'
 system_prompt = SYSTEM_PROMPT_PATH.read_text()
 
 if CREATE_NEW_SANDBOX:
-    base_directory, _ = create_new_sandbox(demo_files_dir, mode="explorer")
+    base_directory = create_new_sandbox(demo_files_dir, mode="explorer")
     # Override the default system prompt with the EDA-specific one
 else:
     base_directory = str(demo_files_dir / 'sandbox000')
@@ -71,6 +69,7 @@ else:
 # ========================= TOOLS ========================== #
 # =========================================================== #
 
+# Define tools. HEPTAPOD's are served by toolbase further down.
 tools = [
     # Core tools.
     RunCommandTool(base_directory=base_directory),
@@ -81,18 +80,6 @@ tools = [
     FileSearchTool(base_directory=base_directory),
     RunPythonTool(base_directory=base_directory, timeout=1000),
     WebSearchTool(),
-    # EDA tools — exact tree-level calculations via FeynCalc.
-    ComputeSymbolicAmplitude(base_directory=base_directory),
-    RunWolframScript(base_directory=base_directory, wolframscript_path=wolframscript_path),
-    RunWolframScriptBatch(base_directory=base_directory, wolframscript_path=wolframscript_path),
-    SimplifyResult(base_directory=base_directory),
-    SimplifyResultBatch(base_directory=base_directory),
-    ConvertToPython(base_directory=base_directory),
-    # NDA tools — order-of-magnitude cross-checks.
-    EstimateDecayWidthNDATool(base_directory=base_directory),
-    EstimateDecayWidthFormulaNDATool(base_directory=base_directory),
-    # PDG tools — reference experimental values.
-    PDGDatabaseTool(base_directory=base_directory),
     TodoRead(),
     TodoWrite(base_directory=base_directory),
 ]
@@ -111,6 +98,7 @@ hooks = [
 # Cloud providers (requires API key in .env)
 LLM = Claude()
 #LLM = GPT()
+#from orchestral.llm import Gemini
 #LLM = Gemini()
 #LLM = Groq()
 
@@ -128,12 +116,18 @@ LLM = Claude()
 # ========================== RUN =========================== #
 # =========================================================== #
 
-# Create agent.
-agent = Agent(llm=LLM,
-              tools=tools,
-              tool_hooks=hooks,
-              system_prompt=system_prompt,
-              debug=False)
+# Serve HEPTAPOD's tools (profile: .toolbase/profiles/eda-demo.yaml).
+# bare=True keeps names un-namespaced, as the system prompt expects.
+with toolbase_tools(profile='eda-demo', project_root=REPO_ROOT, bare=True,
+                    config_overrides={'base_directory': base_directory,
+                                      'wolframscript_path': wolframscript_path}) as heptapod_tools:
 
-# Run the app server.
-app_server.run_server(agent, host="127.0.0.1", port=8000, open_browser=True, max_tool_iterations=100)
+    # Create agent.
+    agent = Agent(llm=LLM,
+                  tools=tools + list(heptapod_tools),
+                  tool_hooks=hooks,
+                  system_prompt=system_prompt,
+                  debug=False)
+
+    # Run the app server.
+    app_server.run_server(agent, host="127.0.0.1", port=8000, open_browser=True, max_tool_iterations=100)

@@ -1,0 +1,44 @@
+# MG5 command card template for BSM event generation.
+# Replace placeholders {UFO_PATH}, {OUTPUT_NAME}, {NEVENTS}, {SEED}.
+#
+# Key patterns embedded here:
+#   - Explicit n-body matrix element with NP=N order constraint
+#     (more reliable than 3-level decay chain syntax — see P3/P10).
+#   - compute_widths BEFORE generate so widths land in UFO/param_card.dat
+#     and propagate to the process Cards/ via output (see P12).
+#   - 1-particle "beam" config for tau decays at rest (no e+e- production).
+#   - Fast-mode tweaks to skip extras we don't need.
+
+# 1. Load model. Heptapod tool replaces UFO_PATH from ufo_path arg.
+import model {UFO_PATH}
+
+# 2. Compute realistic widths into UFO/param_card.dat FIRST.
+#    Doing this AFTER output/launch erases the generated process state and
+#    makes launch fail with "No processes generated" — see P12.
+#    Comment out if you deliberately want narrow-width approximation.
+compute_widths phid Ap
+
+# 3. Generate the explicit n-body matrix element.
+#    Constrain NP=<n_BSM_vertices> to isolate the cascade topology.
+#    Example for tau- -> 5mu via LFV + phi->A'A' + 2*A'->mumu (4 NP vertices):
+generate ta- > mu- mu- mu- mu+ mu+ NP=4
+
+# 4. Output process directory. This copies UFO/param_card.dat (with the
+#    widths from step 2) into {OUTPUT_NAME}/Cards/param_card.dat.
+output {OUTPUT_NAME}
+
+# 5. Launch event generation.
+launch
+
+# Run-card overrides (provided to launch's interactive prompt):
+set nevents {NEVENTS}
+set iseed  {SEED}
+
+# For a 1-particle initial state (decay), set both beams to no PDF / 0 lpp,
+# and set ebeam = M_initial / 2. Adjust to your initial mass.
+set ebeam1 0.88843
+set ebeam2 0.88843
+set lpp1   0
+set lpp2   0
+
+done

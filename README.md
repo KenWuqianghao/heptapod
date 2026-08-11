@@ -37,8 +37,8 @@ tb install .
 Useful variations:
 
 ```bash
-tb install .[analysis,mg5,nda]   # install only specific bundles
-tb install -e .                  # editable: live-link the source for development
+tb install . --bundle analysis --bundle mg5 --bundle nda   # only these bundles
+tb install -e .                                            # editable: live-link the source for development
 ```
 
 Requires **Python 3.12 or 3.13**; toolbase auto-detects venv/conda and installs each selected bundle's dependencies. See [bundles](#bundles) for what each pulls in and [external Dependencies](#external-dependencies) for software (Mathematica, MadGraph, …) that some bundles expect on the system.
@@ -59,32 +59,52 @@ These are self-contained snapshots produced with `tb export`; hand one to a coll
 
 toolbase serves the toolkit's tools to any MCP-compatible client. The typical flow is **install → activate → connect**.
 
-### Serve to a coding agent (Claude Code / Codex)
+### Serve to a coding agent (Claude Code / Codex / OpenCode)
+
+Begin with the `pdg` bundle:
 
 ```bash
-tb activate heptapod                  # add the whole toolkit to what gets served
-tb activate heptapod/nda              # …or just one bundle (nda auto-installs, no external deps)
-tb list                               # show installed toolkits and what's active
+mkdir my_session && cd my_session
 
-tb connect claude-code                # wire into Claude Code (this project's .mcp.json)
-tb connect claude-code -g             # …or user-level (~/.claude.json, every session)
-tb connect codex                      # OpenAI Codex
+tb activate heptapod/pdg    # Particle Data Group lookups; `tb activate heptapod` for everything
+tb connect claude-code      # writes this project's .mcp.json (-g for user-level)
+claude                      # or codex / opencode
 ```
 
-`tb connect` writes the MCP server entry; your agent then spawns `tb serve` automatically upon launch. In Claude Code or Codex, type `/mcp` to confirm the `toolbase` server is connected. Run `tb connect --harnesses` to see all supported harnesses and `tb connect --list` to see where toolbase is currently wired.
+Confirm the server is connected with the `/mcp` slash command (`/mcps` in open code), `toolbase` should appear there with three tools. From toolbase's side, `tb connect --list` shows where it is currently wired and `tb serve --dry-run` prints what the active profile would serve.
 
-To load a system prompt, copy one into your working directory as `CLAUDE.md` (Claude Code) or `AGENTS.md` (Codex). Example system prompts for the EDA and NDA bundles are in `prompts/examples/`.
+Then ask something the tools can answer:
+
+> What is the measured width of the $Z$ boson?
+
+> What is the branching ratio of $K^+ → 3\pi^0 e^+ ν_e$?
+
+`tb connect` writes the MCP server entry and your harness starts `tb serve` on launch. Substitute `codex` or `opencode` for `claude-code`; `tb connect --harnesses` lists the supported harnesses and `tb connect --list` reports where toolbase is currently wired. `tb list` shows what is installed and active.
+
+To supply a system prompt, copy one into the working directory as `CLAUDE.md` (Claude Code) or `AGENTS.md` (Codex, OpenCode); each example keeps its own under `examples/<name>/prompts/`.
+
+### Worked examples
+
+Each example ships a launcher that runs the whole setup above (sandbox, system prompt, bundles, external-software paths, wiring) and then starts the agent in it:
+
+```bash
+python examples/nda/launch.py --harness claude-code            # or codex, opencode
+python examples/eda/launch.py --harness codex
+python examples/sim/s1_lq_rr/launch.py --harness claude-code   # brings the MC run cards
+```
+
+Each sandbox is its own toolbase project, so the bundles it activates don't touch your global config. See the per-example READMEs for what each covers.
 
 ### Orchestral
 
-All tools inherit from Orchestral's `BaseTool` class. All such instances are natively supported by `toolbase`. Wire it up or run a demo (after configuring an API key, see [Configuration](#configuration)):
+All tools inherit from Orchestral's `BaseTool` class and instances are natively supported by `toolbase`. Wire it up or run a demo (after configuring an API key, see [Configuration](#configuration)):
 
 ```bash
 tb connect orchestral                        # writes a runnable agent script
 
 python examples/eda/eda_demo.py              # symbolic calculations (EDA)
 python examples/nda/nda_demo.py              # diagram enumeration + NDA estimation
-python examples/workflows/hep_bsm_demo.py    # Monte Carlo event generation pipeline
+python examples/sim/s1_lq_rr/s1_lq_rr_demo.py  # S1 leptoquark simulation pipeline
 ```
 
 Each demo creates a sandboxed workspace, loads the relevant tools and system prompt, and launches a web UI at `http://127.0.0.1:8000`. Configure the LLM provider by editing the demo script (Claude, GPT, Gemini, Groq, Ollama).
@@ -124,6 +144,26 @@ Tools are grouped into **bundles**, so you install only what a workflow needs. B
 | `feynrules` | BSM UFO model generation via FeynRules | `feynrules_path`, `wolframscript_path` |
 
 Additional domain bundles (e.g. `hepmc`/`delphes` detector simulation, `pythia`-only showering, `llp` long-lived-particle reach studies) ship on their respective feature branches. Inspect [`toolkit.yaml`](toolkit.yaml) for the authoritative, up-to-date list.
+
+---
+
+## Skills
+
+Some bundles ship a **skill** — a written guide to using their tools well, covering the failure modes that are predictable but not obvious. They live in [`skills/`](skills/):
+
+| Skill | Covers | Bundle |
+|-------|--------|--------|
+| `feynrules` | Declaring mass and width once, tagging BSM couplings with an interaction order, checking the UFO before MG5 sees it | `feynrules` |
+| `mg5` | Shallow comma decay chains and the `NP=N` alternative, `compute_widths` ordering, reading past MG5's auto-conversion error mask | `mg5` |
+
+Each skill names a bundle, and `tb connect` surfaces it only when that bundle's tools are actually being served — so the `mg5` guide stays hidden until `mg5_path` is set, since without it the tools it describes aren't there either. `tb deactivate heptapod__mg5` turns one off; `tb activate` turns it back on.
+
+How a skill reaches the agent depends on the harness:
+
+- **Claude Code, Antigravity** load it automatically when the conversation looks relevant, and also expose it as a `/heptapod__mg5` slash command.
+- **Codex, OpenCode** have no model-facing skill concept, so it arrives as a `/heptapod__mg5` slash command you invoke yourself.
+
+Skills are surfaced by `tb connect` alongside the MCP server, so nothing extra is needed — connect a harness and its guides come with it. Requires toolbase ≥ 0.11.
 
 ---
 
@@ -189,7 +229,7 @@ tb config set heptapod mg5_path "$(pwd)/MG5_aMC_v3.6.6"
 
 #### Pythia8 and Sherpa3 (`event_gen`)
 
-**Installed automatically** as bundle dependencies when you `tb install ./heptapod[event_gen]`. No separate installation needed.
+**Installed automatically** as bundle dependencies when you `tb install . --bundle event_gen`. No separate installation needed.
 
 ---
 
@@ -204,6 +244,8 @@ python test_runner.py --help         # all options
 
 Individual tool suites can also be run directly with `pytest` (e.g. `pytest tools/analysis/`). During development, `tb validate` checks that `toolkit.yaml` and the tool modules are well-formed and servable.
 
+`test_runner.py` runs against your own interpreter, not the isolated environment `tb install` builds, so components whose bundle deps you haven't installed fail on import (`--only pdg` without `pdg`, for instance). Install the ones you want to exercise: `pip install pdg feyngraph pylhe`.
+
 ---
 
 ## Usage
@@ -211,16 +253,16 @@ Individual tool suites can also be run directly with `pytest` (e.g. `pytest tool
 Once toolbase is connected (or an Orchestral demo is running), interact with the agent in natural language:
 
 **Symbolic calculations (EDA):**
-> Compute the tree-level decay width for H -> b bbar with a Yukawa vertex.
+> Compute the tree-level decay width for $H \to b \bar{b}$ with a Yukawa vertex.
 
 **Diagram enumeration and NDA estimation:**
-> Enumerate the tree-level diagrams for muon decay to e+ nu_e nu_mubar and estimate the branching ratio for each diagram class.
+> Enumerate the tree-level diagrams for muon decay to $e^+ \nu_e \bar{\nu}_\mu$ and estimate the branching ratio for each diagram class.
 
 **Particle data and literature:**
-> What is the measured width of the Z boson? Find recent papers on Higgs rare decays on INSPIRE.
+> What is the measured width of the $Z$ boson? Find recent papers on Higgs rare decays on INSPIRE.
 
 **Monte Carlo event generation:**
-> Generate 10,000 pp -> tt events at 13 TeV using MadGraph, shower with Pythia, and plot the invariant mass distribution.
+> Generate 10,000 $pp \to tt$ events at 13 TeV using MadGraph, shower with Pythia, and plot the invariant mass distribution.
 
 For detailed tool documentation, see [tools/README.md](tools/README.md).
 

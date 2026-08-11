@@ -1,0 +1,16 @@
+# Profile: nda-demo
+#
+# The tool set for examples/nda/nda_demo.py — the NDA study group: diagram
+# enumeration, order-of-magnitude estimation, PDG reference values, and an
+# exact MadGraph cross-check.
+#
+# The demo passes `profile="nda-demo"` to toolbase_tools(), so editing this
+# file changes what that agent can reach. `mg5` is gated on `mg5_path`; the
+# demo supplies it from this repo's config.py, so the MadGraph tools appear
+# without `tb config set` as well.
+toolkits:
+  heptapod:
+    bundles:
+    - nda
+    - pdg
+    - mg5

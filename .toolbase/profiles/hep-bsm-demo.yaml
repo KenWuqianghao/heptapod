@@ -1,0 +1,19 @@
+# Profile: hep-bsm-demo
+#
+# The tool set for examples/workflows/hep_bsm_demo.py — the full BSM
+# event-generation pipeline: FeynRules model to UFO, MadGraph parton level,
+# Pythia/Sherpa showering and jet clustering, then the analysis stack
+# (conversions, kinematics, event selection, resonance reconstruction).
+#
+# The demo passes `profile="hep-bsm-demo"` to toolbase_tools(), so editing this
+# file changes what that agent can reach. `feynrules` and `mg5` are gated on
+# external-software paths; the demo supplies them from this repo's config.py,
+# so those tools appear once config.py points at real installs — no
+# `tb config set` needed as well.
+toolkits:
+  heptapod:
+    bundles:
+    - feynrules
+    - mg5
+    - event_gen
+    - analysis

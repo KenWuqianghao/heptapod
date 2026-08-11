@@ -1,5 +1,5 @@
 """
-# hep_bsm_demo.py is a part of the HEPTAPOD package.
+# s1_lq_rr_demo.py is a part of the HEPTAPOD package.
 # Copyright (C) 2025 HEPTAPOD authors (see AUTHORS for details).
 # HEPTAPOD is licensed under the GNU GPL v3 or later, see LICENSE for details.
 # Please respect the MCnet Guidelines, see GUIDELINES for details.
@@ -10,11 +10,11 @@ import sys
 from pathlib import Path
 
 # Add repository root to path for local imports (prompts, tools, etc.)
-REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+REPO_ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO_ROOT))
 
 # Add shared utilities directory to path
-SHARED_DIR = Path(__file__).resolve().parent.parent / 'shared'
+SHARED_DIR = REPO_ROOT / 'examples' / 'shared'
 sys.path.insert(0, str(SHARED_DIR))
 
 # Load .env so tools that read API keys at construction time (e.g.
@@ -33,29 +33,14 @@ from orchestral.tools import (RunCommandTool, DummyRunCommandTool, WebSearchTool
                               TodoWrite, TodoRead)
 from orchestral.tools.hooks import TruncateOutputHook, DangerousCommandHook, SafeguardHook, UserApprovalHook
 
-# LLM imports.
-from orchestral.llm import GPT, Claude, Gemini, Groq
+# LLM imports. Gemini is imported at Option 3 below; it needs the `google` extra.
+from orchestral.llm import GPT, Claude, Groq
 from llm import get_ollama, get_reasoning_ollama, get_vllm, get_litellm
 
-# Prompt and tool imports.
-from prompts import HEP_BSM_EVT_GEN_EXPLORER_PROMPT
-from tools.analysis.conversions import EventJSONLToNumpyTool, JetsJSONLToNumpyTool
-from tools.analysis.kinematics import (
-    CalculateInvariantMassTool,
-    CalculateTransverseMomentumTool,
-    CalculateDeltaRTool,
-    ApplyCutsTool,
-    GetHardestNTool,
-    GetHardestNJetsTool,
-    FilterByPDGIDTool,
-    SortByPtTool,
-    FilterByDeltaRTool
-)
-from tools.analysis.reconstruction import ResonanceReconstructionTool
-from tools.feynrules import FeynRulesToUFOTool
-from tools.mg5 import MadGraphFromRunCardTool
-from tools.pythia import PythiaFromRunCardTool, JetClusterSlowJetTool
-from tools.sherpa import SherpaFromRunCardTool
+# Prompt imports.
+
+# HEPTAPOD tools are served by toolbase from the toolkit's own env.
+from toolbase.connect.orchestral import toolbase_tools
 
 # Configuration imports.
 from config import feynrules_path, mg5_path, wolframscript_path
@@ -72,19 +57,20 @@ import orchestral.ui.app.server as app_server
 from sandbox_utils import create_new_sandbox
 
 # Configure workspace - either use existing or create new sandbox.
-demo_files_dir = REPO_ROOT / 'examples' / 'hep_bsm_sandbox'
+demo_files_dir = Path(__file__).resolve().parent
 
 CREATE_NEW_SANDBOX = True  # Set to True to create a new sandbox, False to use existing
 MODE = "explorer"          # Options: "todo", "plan", "explorer"
 
 if CREATE_NEW_SANDBOX:
-    base_directory, system_prompt = create_new_sandbox(demo_files_dir, mode=MODE)
+    base_directory = create_new_sandbox(demo_files_dir, mode=MODE)
+    system_prompt = (Path(__file__).resolve().parent / 'prompts' / f'{MODE}.md').read_text()
 else:
     # When using existing sandbox, manually specify the prompt
     base_directory = str(demo_files_dir / 'sandbox000')
-    system_prompt = HEP_BSM_EVT_GEN_EXPLORER_PROMPT  # Or use TODO/PLAN prompts
+    system_prompt = (Path(__file__).resolve().parent / 'prompts' / f'{MODE}.md').read_text()
 
-# Define tools.
+# Define tools. HEPTAPOD's are served by toolbase further down.
 tools = [
     # Core tools.
     RunCommandTool(base_directory=base_directory),
@@ -95,28 +81,6 @@ tools = [
     FileSearchTool(base_directory=base_directory),
     RunPythonTool(base_directory=base_directory, timeout=1000),
     WebSearchTool(),
-    # Event generation tools.
-    FeynRulesToUFOTool(base_directory=base_directory, feynrules_path=feynrules_path, wolframscript_path=wolframscript_path),
-    MadGraphFromRunCardTool(base_directory=base_directory, mg5_path=mg5_path),
-    PythiaFromRunCardTool(base_directory=base_directory),
-    JetClusterSlowJetTool(base_directory=base_directory),
-    SherpaFromRunCardTool(base_directory=base_directory),
-    # Data conversion tools.
-    EventJSONLToNumpyTool(base_directory=base_directory),
-    JetsJSONLToNumpyTool(base_directory=base_directory),
-    # Analysis tools - Kinematics.
-    CalculateInvariantMassTool(base_directory=base_directory),
-    CalculateTransverseMomentumTool(base_directory=base_directory),
-    CalculateDeltaRTool(base_directory=base_directory),
-    ApplyCutsTool(base_directory=base_directory),
-    # Analysis tools - Event selection.
-    GetHardestNTool(base_directory=base_directory),
-    GetHardestNJetsTool(base_directory=base_directory),
-    FilterByPDGIDTool(base_directory=base_directory),
-    SortByPtTool(base_directory=base_directory),
-    #FilterByDeltaRTool(base_directory=base_directory),
-    # Analysis tools - Invariant mass.
-    ResonanceReconstructionTool(base_directory=base_directory),
     TodoRead(),
     TodoWrite(base_directory=base_directory)
 ]
@@ -142,6 +106,7 @@ LLM = GPT()
 #LLM = Claude()
 
 # Option 3: Google Gemini
+#from orchestral.llm import Gemini
 #LLM = Gemini()
 
 # Option 4: Groq
@@ -191,12 +156,20 @@ LLM = GPT()
 # Option 14: LiteLLM with host override (advanced - prefer config.py)
 #LLM = get_litellm(host='http://localhost:4000/v1', model='ollama/gpt-oss:20b')
 
-# Create agent.
-agent = Agent(llm=LLM,
-              tools=tools,
-              tool_hooks=hooks,
-              system_prompt=system_prompt,
-              debug=False)
+# Serve HEPTAPOD's tools (profile: .toolbase/profiles/hep-bsm-demo.yaml).
+# bare=True keeps names un-namespaced, as the system prompts expect.
+with toolbase_tools(profile='hep-bsm-demo', project_root=REPO_ROOT, bare=True,
+                    config_overrides={'base_directory': base_directory,
+                                      'feynrules_path': feynrules_path,
+                                      'mg5_path': mg5_path,
+                                      'wolframscript_path': wolframscript_path}) as heptapod_tools:
 
-# Run the app server.
-app_server.run_server(agent, host="127.0.0.1", port=8000, open_browser=True, max_tool_iterations=100)
+    # Create agent.
+    agent = Agent(llm=LLM,
+                  tools=tools + list(heptapod_tools),
+                  tool_hooks=hooks,
+                  system_prompt=system_prompt,
+                  debug=False)
+
+    # Run the app server.
+    app_server.run_server(agent, host="127.0.0.1", port=8000, open_browser=True, max_tool_iterations=100)

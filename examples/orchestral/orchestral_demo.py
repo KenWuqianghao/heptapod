@@ -25,7 +25,9 @@ from orchestral.tools import (
 from orchestral.tools.hooks import TruncateOutputHook
 from orchestral.llm import GPT, Claude
 
-import app.server as app_server
+# Import the Orchestral app server (qualified path; bare `app` is not
+# top-level on the installed orchestral package).
+import orchestral.ui.app.server as app_server
 
 DEMO_DIR = Path(__file__).resolve().parent
 base_directory = str(DEMO_DIR / 'sandbox_000')

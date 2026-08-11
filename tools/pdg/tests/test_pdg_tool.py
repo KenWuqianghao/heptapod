@@ -181,6 +181,89 @@ def test_get_branching_fractions():
     return True
 
 
+def test_get_property_by_pdgid():
+    """Test direct PDGID lookup across the three shapes api.get() returns.
+
+    Regression: get_property_by_pdgid indexed the result unconditionally, which
+    only works for a particle identifier. api.get() returns a list-like
+    PdgParticleList for those, but a bare PdgMass / PdgBranchingFraction for a
+    property one, so every non-particle identifier raised
+    "'PdgMass' object is not subscriptable" -- including S126M, the example in
+    the tool's own docstring. The unit was also read from a 'unit' attribute
+    that does not exist ('units' does), so it was silently None throughout.
+    """
+    print("=" * 60)
+    print("Testing get_property_by_pdgid()")
+    print("=" * 60)
+
+    interface = PDGInterface()
+
+    # (identifier, kind, expect a numeric value?, expect a unit?)
+    cases = [
+        ("S126M",   "mass (PdgMass)",                    True,  True),
+        ("S010.1",  "branching fraction (PdgBranching)", True,  False),
+        ("S010",    "particle (PdgParticleList)",        False, False),
+    ]
+
+    ok = True
+    for pdgid, kind, wants_value, wants_unit in cases:
+        try:
+            result = interface.get_property_by_pdgid(pdgid)
+        except Exception as e:
+            print(f"  {pdgid}: ERROR - {e}")
+            ok = False
+            continue
+
+        desc = result.get("description")
+        value = result.get("value")
+        unit = result.get("unit")
+        print(f"\n  {pdgid} -- {kind}")
+        print(f"    description: {desc}")
+        print(f"    value:       {value} {unit or ''}")
+
+        if desc is None:
+            print(f"    FAIL: no description")
+            ok = False
+        if wants_value and not isinstance(value, (int, float)):
+            print(f"    FAIL: expected a numeric value, got {value!r}")
+            ok = False
+        if wants_unit and not unit:
+            print(f"    FAIL: expected a unit, got {unit!r}")
+            ok = False
+
+    # A bad identifier should raise cleanly rather than return junk.
+    try:
+        interface.get_property_by_pdgid("NOT_A_PDGID")
+        print("\n  FAIL: a bogus PDGID returned instead of raising")
+        ok = False
+    except ValueError:
+        print("\n  bogus PDGID raises ValueError: OK")
+
+    print()
+    return ok
+
+
+def test_higgs_mass_via_pdgid():
+    """The docstring example: S126M is the Higgs mass, ~125 GeV."""
+    print("=" * 60)
+    print("Testing S126M (Higgs mass) via PDGID")
+    print("=" * 60)
+
+    result = PDGInterface().get_property_by_pdgid("S126M")
+    value, unit = result.get("value"), result.get("unit")
+    print(f"  H mass: {value} {unit}")
+
+    if not isinstance(value, (int, float)) or not (120 < value < 130):
+        print(f"  FAIL: expected ~125 GeV, got {value!r}")
+        return False
+    if unit != "GeV":
+        print(f"  FAIL: expected GeV, got {unit!r}")
+        return False
+
+    print()
+    return True
+
+
 def test_photon_mass_limit():
     """Test that photon mass returns as a limit."""
     print("=" * 60)
@@ -233,6 +316,8 @@ def run_all_tests():
         ("Get Lifetime", test_get_lifetime),
         ("Get Width", test_get_width),
         ("Get Branching Fractions", test_get_branching_fractions),
+        ("Get Property By PDGID", test_get_property_by_pdgid),
+        ("Higgs Mass via PDGID", test_higgs_mass_via_pdgid),
         ("Photon Mass Limit", test_photon_mass_limit),
         ("Quantum Numbers", test_quantum_numbers),
     ]

@@ -424,16 +424,25 @@ class PDGInterface:
             Dictionary with property information
         """
         try:
-            items = self.api.get(pdgid)
-            if not items:
+            obj = self.api.get(pdgid)
+            if obj is None:
                 raise ValueError(f"No data found for PDGID: {pdgid}")
 
-            item = items[0]
+            # api.get() returns a list-like PdgParticleList for a particle
+            # identifier, but a single object (PdgMass, PdgBranchingFraction, …)
+            # for a property one. Only index when there is something to index.
+            if hasattr(obj, '__getitem__'):
+                if len(obj) == 0:
+                    raise ValueError(f"No data found for PDGID: {pdgid}")
+                item = obj[0]
+            else:
+                item = obj
+
             result = {
                 "pdgid": pdgid,
                 "description": getattr(item, 'description', None),
                 "value": getattr(item, 'value', None),
-                "unit": getattr(item, 'unit', None)
+                "unit": getattr(item, 'units', None)
             }
 
             if hasattr(item, 'error_positive'):

@@ -1,0 +1,16 @@
+# Profile: eda-demo
+#
+# The tool set for examples/eda/eda_demo.py — the EDA study group: exact
+# symbolic amplitudes via Mathematica/FeynCalc, with NDA order-of-magnitude
+# cross-checks and PDG reference values to validate against.
+#
+# The demo passes `profile="eda-demo"` to toolbase_tools(), so editing this
+# file changes what that agent can reach. `eda` is gated on
+# `wolframscript_path`; the demo supplies it from this repo's config.py, so
+# the FeynCalc tools appear without `tb config set` as well.
+toolkits:
+  heptapod:
+    bundles:
+    - eda
+    - nda
+    - pdg

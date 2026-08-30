@@ -320,6 +320,13 @@ def vertex_factor(gen, vertex: Optional[Vertex], legs: List[VLeg],
         )
 
     if spins == [1.0, 1.0, 1.0]:
+        # ------------------------------------------------------------------
+        # UNRESOLVED CONVENTION -- see VVV_CONVENTION_NOTE at the bottom of
+        # this module before trusting a VVV result. This builder uses the
+        # textbook ALL-INCOMING momenta; heptapod's DECAY path
+        # (feyncalc_codegen._amplitude_decay_no_prop) uses the physical
+        # momenta as drawn. The two are NOT equal at finite masses.
+        # ------------------------------------------------------------------
         # VVV triple gauge, all-incoming convention:
         #   g [ g^{m1 m2}(k1-k2)^{m3} + g^{m2 m3}(k2-k3)^{m1}
         #                             + g^{m3 m1}(k3-k1)^{m2} ]
@@ -806,3 +813,50 @@ def cross_section_block(diagram: Diagram) -> str:
         "  NIntegrate[fInt, {t, tLo, tHi}]];",
     ]
     return "\n".join(lines) + "\n"
+
+
+# ---------------------------------------------------------------------------
+# VVV_CONVENTION_NOTE
+# ---------------------------------------------------------------------------
+# The triple-gauge vertex is written in this module with ALL MOMENTA INCOMING,
+# the textbook statement (Peskin & Schroeder ch. 16):
+#
+#     V^{m1 m2 m3}(k1,k2,k3) = g[ eta^{m1 m2}(k1-k2)^{m3}
+#                               + eta^{m2 m3}(k2-k3)^{m1}
+#                               + eta^{m3 m1}(k3-k1)^{m2} ],   k1+k2+k3 = 0.
+#
+# heptapod's DECAY path writes the same functional form but evaluates it at the
+# PHYSICAL momenta as drawn -- parent P incoming, daughters q1, q2 outgoing:
+#
+#     g[ eta^{mu nu}(P-q1)^rho + eta^{nu rho}(q1-q2)^mu + eta^{rho mu}(q2-P)^nu ]
+#
+# Those momenta satisfy P - q1 - q2 = 0, not P + q1 + q2 = 0, so this is the
+# standard form evaluated off its defining constraint. The two are NOT
+# equivalent. Measured on hepbench's decay_V_to_VVp part (a)
+# (g=0.8, mV=900, m1=200, m2=250 GeV):
+#
+#     as-drawn (decay path)   128.5515157524 GeV
+#     all-incoming (here)     374.5880874852 GeV      ratio 2.9139
+#
+# What is settled:
+#   * BOTH forms are totally antisymmetric in their (index, momentum) pairs,
+#     as f^{abc} requires.
+#   * BOTH converge to the standard longitudinal asymptotics
+#     Gamma -> g^2 mV^5 / (192 pi m^4) for mV >> m (measured: 0.00520832 and
+#     0.00520835 against 1/192 = 0.00520833), so that limit does not
+#     discriminate. They differ only in the subleading terms -- which is
+#     exactly where the benchmark parameter points sit (mV/m ~ 4).
+#   * On shell the as-drawn form COLLAPSES to a single structure,
+#     g (eps1.eps2)((q1-q2).eps0), because its other two terms are
+#     proportional to q2.eps2 and q1.eps1. The all-incoming form keeps three.
+#
+# What is NOT settled: which one hepbench's decay_V_to_VVp ground truth SHOULD
+# encode. Its derivation.py uses the as-drawn form and validates it by two
+# contractions OF THAT SAME EXPRESSION (explicit polarisation vectors vs a
+# completeness-tensor einsum), which checks the contraction algebra, not the
+# vertex definition -- so agreement between heptapod's decay path and that
+# truth is circular and does not anchor the convention to the literature.
+#
+# Nothing here is changed unilaterally: decay_V_to_VVp grading and heptapod's
+# shipped decay behaviour both depend on the answer. test_scattering.py has a
+# test that DETECTS the mismatch so it cannot be quietly forgotten.

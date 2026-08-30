@@ -349,12 +349,144 @@ def test_numeric_crosscheck():
     return all_passed
 
 
+def test_literature_anchors():
+    """Anchor the harness itself to published results, in their own conventions.
+
+    Without this the harness only proves that two things the same author
+    wrote agree with each other. These are external:
+      * P&S eq. (5.13)  -- s-channel massless-vector annihilation;
+      * P&S eq. (5.87)  -- Compton |M|^2, pointwise in the invariants;
+      * Klein-Nishina   -- the Compton total cross section;
+      * Thomson limit   -- sigma -> 8 pi r_e^2 / 3 as omega/m -> 0.
+    Compton is the load-bearing one: it exercises the fermion-mediated
+    threading, the VFF vertex normalisation, massless-photon polarisation
+    sums, the u-channel and the coherent sum, all against a published
+    formula.
+    """
+    import math
+
+    print("=" * 60)
+    print("Literature anchors for the numeric harness")
+    print("=" * 60)
+    all_passed = True
+
+    alpha = 1 / 137.035999084
+    e = math.sqrt(4 * math.pi * alpha)
+    m = 0.51099895e-3
+
+    # P&S (5.13)
+    g, s = 0.55, 730.0 ** 2
+    got = NUM.cross_section(
+        lambda ct: NUM.m2_ffbar_to_ffbar_vector(g, g, (0, 0, 0, 0), 0.0, s, ct) / 4.0,
+        s, (0, 0, 0, 0))
+    ref = NUM.sigma_ps_5_13(g, s)
+    ok = abs(got - ref) / ref < 1e-10
+    all_passed = all_passed and ok
+    print(f"  {'[v] PASS' if ok else '[x] FAIL'}: P&S (5.13)  "
+          f"{got:.10e} vs {ref:.10e}")
+
+    # P&S (5.87), pointwise
+    worst = 0.0
+    for x in (0.05, 0.5, 5.0):
+        s = m * m * (1 + 2 * x)
+        for ct in (-0.7, 0.0, 0.6):
+            a = NUM.m2_compton(e, m, s, ct) / 4.0
+            b = NUM.m2_compton_peskin_5_87(e, m, s, ct)
+            worst = max(worst, abs(a - b) / abs(b))
+    ok = worst < 1e-12
+    all_passed = all_passed and ok
+    print(f"  {'[v] PASS' if ok else '[x] FAIL'}: P&S (5.87) pointwise, "
+          f"worst rel {worst:.2e}")
+
+    # Klein-Nishina total cross section
+    worst = 0.0
+    for x in (0.05, 0.5, 5.0):
+        s = m * m * (1 + 2 * x)
+        got = NUM.cross_section(lambda ct, s=s: NUM.m2_compton(e, m, s, ct) / 4.0,
+                                s, (m, 0.0, m, 0.0), n_points=600)
+        worst = max(worst, abs(got - NUM.sigma_klein_nishina(e, m, s))
+                    / NUM.sigma_klein_nishina(e, m, s))
+    ok = worst < 1e-10
+    all_passed = all_passed and ok
+    print(f"  {'[v] PASS' if ok else '[x] FAIL'}: Klein-Nishina sigma, "
+          f"worst rel {worst:.2e}")
+
+    # Thomson limit
+    s0 = m * m * (1 + 2e-4)
+    got = NUM.cross_section(lambda ct: NUM.m2_compton(e, m, s0, ct) / 4.0,
+                            s0, (m, 0.0, m, 0.0), n_points=600)
+    ref = 8 * math.pi / 3 * (e * e / (4 * math.pi * m)) ** 2
+    ok = abs(got - ref) / ref < 1e-3          # O(omega/m) correction
+    all_passed = all_passed and ok
+    print(f"  {'[v] PASS' if ok else '[x] FAIL'}: Thomson limit "
+          f"{got:.6e} vs 8 pi r_e^2/3 {ref:.6e}")
+    print()
+    return all_passed
+
+
+def test_vvv_convention_consistency():
+    """DETECTOR for the unresolved VVV momentum convention.
+
+    scattering.py uses the textbook all-incoming triple-gauge vertex;
+    feyncalc_codegen's decay path uses the physical momenta as drawn. They
+    are not equal at finite masses. This test does not assert which is
+    right -- it asserts that the discrepancy is still the KNOWN one, so it
+    cannot silently change or be forgotten. See VVV_CONVENTION_NOTE in
+    scattering.py.
+    """
+    import math
+    import numpy as np
+
+    print("=" * 60)
+    print("VVV convention: decay path vs scattering builder")
+    print("=" * 60)
+
+    g, mV, m1, m2 = 0.8, 900.0, 200.0, 250.0
+    TRUTH_AS_DRAWN = 128.55151575236184        # hepbench decay_V_to_VVp part (a)
+    KNOWN_RATIO = 2.913914202356               # all-incoming / as-drawn
+
+    lam = NUM.kallen(mV ** 2, m1 ** 2, m2 ** 2)
+    pmag = math.sqrt(lam) / (2 * mV)
+    p = np.array([mV, 0.0, 0.0, 0.0])
+    p1 = np.array([math.sqrt(pmag ** 2 + m1 ** 2), 0.0, 0.0, pmag])
+    p2 = np.array([math.sqrt(pmag ** 2 + m2 ** 2), 0.0, 0.0, -pmag])
+
+    def width(k0, k1, k2):
+        tot = 0.0
+        for e0 in NUM.pol_vectors(p, mV):
+            for e1 in NUM.pol_vectors(p1, m1):
+                for e2 in NUM.pol_vectors(p2, m2):
+                    a1, a2 = e1.conj(), e2.conj()
+                    amp = 1j * g * (NUM.dot(e0, a1) * NUM.dot(k0 - k1, a2)
+                                    + NUM.dot(a1, a2) * NUM.dot(k1 - k2, e0)
+                                    + NUM.dot(a2, e0) * NUM.dot(k2 - k0, a1))
+                    tot += abs(amp) ** 2
+        return pmag / (8 * math.pi * mV ** 2) * tot / 3.0
+
+    as_drawn = width(p, p1, p2)
+    all_inc = width(p, -p1, -p2)
+
+    ok1 = abs(as_drawn - TRUTH_AS_DRAWN) / TRUTH_AS_DRAWN < 1e-12
+    ok2 = abs(all_inc / as_drawn - KNOWN_RATIO) / KNOWN_RATIO < 1e-9
+    print(f"  as-drawn (decay path) {as_drawn:.10f}  vs hepbench truth "
+          f"{TRUTH_AS_DRAWN:.10f}")
+    print(f"  all-incoming (here)   {all_inc:.10f}  ratio {all_inc / as_drawn:.9f}")
+    print(f"  {'[v] PASS' if ok1 else '[x] FAIL'}: as-drawn form still reproduces "
+          f"hepbench decay truth")
+    print(f"  {'[v] PASS' if ok2 else '[x] FAIL'}: discrepancy is still the known "
+          f"{KNOWN_RATIO:.4f}x -- UNRESOLVED, see VVV_CONVENTION_NOTE")
+    print()
+    return ok1 and ok2
+
+
 def main():
     want_numeric = "--numeric" in sys.argv
     results = [
         ("Harness conventions", test_harness_conventions()),
         ("Structural sweep", test_structural_sweep()),
         ("Loud refusals", test_unsupported_is_loud()),
+        ("Literature anchors", test_literature_anchors()),
+        ("VVV convention detector", test_vvv_convention_consistency()),
     ]
     if want_numeric:
         results.append(("Numeric cross-check", test_numeric_crosscheck()))

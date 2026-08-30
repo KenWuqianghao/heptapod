@@ -444,3 +444,69 @@ def m2_ss_to_ss_stu_scalar(g: float, masses, mprop: float,
     for q in (qs, qt, qu):
         amp += (1j * g) * (1j * g) * (1j / (dot(q, q) - mprop * mprop))
     return abs(amp) ** 2
+
+
+# ---------------------------------------------------------------------------
+# Literature anchors
+# ---------------------------------------------------------------------------
+
+def m2_compton(e: float, m: float, s: float, ct: float) -> float:
+    """gamma e -> gamma e, s + u diagrams summed coherently.
+
+    Legs (p1, p2, p3, p4) = (e in, gamma in, e out, gamma out).  Summed over
+    all spins and polarisations; divide by 4 for the average.
+    """
+    masses = (m, 0.0, m, 0.0)
+    p1, p2, p3, p4 = cm_momenta(s, masses, ct)
+    qs, qu = p1 + p2, p1 - p4
+    Ds, Du = dot(qs, qs) - m * m, dot(qu, qu) - m * m
+
+    def gdot(v):
+        return v[0] * GAMMA[0] - v[1] * GAMMA[1] - v[2] * GAMMA[2] - v[3] * GAMMA[3]
+
+    I4 = np.eye(4)
+    tot = 0.0
+    for e2 in pol_vectors(p2, 0.0):
+        for e4 in pol_vectors(p4, 0.0):
+            g2, g4 = gdot(e2), gdot(e4.conj())
+            # s: absorb the incoming photon, then emit the outgoing one
+            Ms = (1j * e * g4) @ (1j * (slash(qs) + m * I4) / Ds) @ (1j * e * g2)
+            # u: emit the outgoing photon first, then absorb the incoming one
+            Mu = (1j * e * g2) @ (1j * (slash(qu) + m * I4) / Du) @ (1j * e * g4)
+            core = Ms + Mu
+            for s1 in (0, 1):
+                u1 = spinor_u(p1, m, s1)
+                for s3 in (0, 1):
+                    u3 = spinor_u(p3, m, s3)
+                    tot += abs(bar(u3) @ core @ u1) ** 2
+    return tot
+
+
+def m2_compton_peskin_5_87(e: float, m: float, s: float, ct: float) -> float:
+    """Peskin & Schroeder eq. (5.87): the spin-averaged Compton |M|^2."""
+    masses = (m, 0.0, m, 0.0)
+    p1, p2, _, p4 = cm_momenta(s, masses, ct)
+    pk = dot(p1, p2).real       # p . k
+    pk2 = dot(p1, p4).real      # p . k'
+    return float((2 * e ** 4 * (pk2 / pk + pk / pk2
+                                + 2 * m * m * (1 / pk - 1 / pk2)
+                                + m ** 4 * (1 / pk - 1 / pk2) ** 2)).real)
+
+
+def sigma_klein_nishina(e: float, m: float, s: float) -> float:
+    """Klein-Nishina total cross section in GeV^-2.
+
+    x = omega/m with omega the photon energy in the electron rest frame;
+    r_e = e^2/(4 pi m) = alpha/m.
+    """
+    r_e = e * e / (4 * math.pi * m)
+    x = (s - m * m) / (2 * m * m)
+    L = math.log(1 + 2 * x)
+    return 2 * math.pi * r_e ** 2 * (
+        (1 + x) / x ** 3 * (2 * x * (1 + x) / (1 + 2 * x) - L)
+        + L / (2 * x) - (1 + 3 * x) / (1 + 2 * x) ** 2)
+
+
+def sigma_ps_5_13(g: float, s: float) -> float:
+    """P&S eq. (5.13) integrated: sigma = g^4 / (12 pi s), massless fermions."""
+    return g ** 4 / (12 * math.pi * s)

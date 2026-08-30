@@ -646,6 +646,63 @@ def build_amplitude(gen, diagram: Diagram, channel: Channel,
     return "\n".join(head + body + tail) + "\n"
 
 
+
+def identical_final_particles(diagram: Diagram) -> Dict[str, int]:
+    """Labels appearing more than once in the final state, with multiplicity."""
+    counts = Counter(p.label for p in diagram.final if p.label)
+    return {lab: n for lab, n in counts.items() if n > 1}
+
+
+def _check_identical_particle_exchange(channels: Sequence[Channel],
+                                       diagram: Diagram,
+                                       relative_signs) -> None:
+    """Guard the two places identical final-state particles bite.
+
+    They are ONE problem, not two: the 1/S in the cross section is only
+    correct alongside the exchange diagram, and for identical FERMIONS the
+    exchange diagram enters with a relative minus sign. Getting 1/S right
+    while omitting the exchange partner is a silently wrong answer, which
+    is exactly what this refuses to emit.
+    """
+    ident = identical_final_particles(diagram)
+    if not ident:
+        return
+
+    exch = {c for c in channels if c is not Channel.CONTACT}
+    # t and u are the exchange pair; s does not have an identical-particle
+    # partner of its own.
+    if Channel.T in exch and Channel.U not in exch:
+        raise UnsupportedScattering(
+            f"Final state has identical particles {sorted(ident)} and the sum "
+            "includes a t-channel diagram but not its u-channel exchange "
+            "partner. The 1/S symmetry factor in the cross section assumes "
+            "both are present; emitting one alone is silently wrong. Add the "
+            "u-channel diagram, or relabel the final legs if they are not "
+            "actually identical."
+        )
+    if Channel.U in exch and Channel.T not in exch:
+        raise UnsupportedScattering(
+            f"Final state has identical particles {sorted(ident)} and the sum "
+            "includes a u-channel diagram but not its t-channel exchange "
+            "partner. See the t-channel message."
+        )
+
+    fermionic = any(float(p.spin or 0.0) == 0.5
+                    for p in diagram.final if p.label in ident)
+    if fermionic and Channel.T in exch and Channel.U in exch:
+        signs = list(relative_signs) if relative_signs is not None else [1] * len(channels)
+        t_i = channels.index(Channel.T)
+        u_i = channels.index(Channel.U)
+        if signs[t_i] * signs[u_i] > 0:
+            raise UnsupportedScattering(
+                f"Final state has identical FERMIONS {sorted(ident)}, so the "
+                "t- and u-channel diagrams differ by interchange of two "
+                "external fermion lines and must enter with OPPOSITE signs. "
+                "Pass relative_signs (e.g. [1, -1]) rather than letting them "
+                "default to +1 -- the interference term, not just its "
+                "magnitude, depends on it."
+            )
+
 def build_amplitude_sum(gen, diagrams: Sequence[Tuple[Diagram, Channel]],
                         relative_signs: Optional[Sequence[int]] = None) -> str:
     """Emit several diagrams and add their amplitudes COHERENTLY.
@@ -675,6 +732,9 @@ def build_amplitude_sum(gen, diagrams: Sequence[Tuple[Diagram, Channel]],
         raise UnsupportedScattering(
             f"relative_signs has {len(signs)} entries for {len(diagrams)} diagrams."
         )
+
+    _check_identical_particle_exchange([ch for _, ch in diagrams],
+                                       diagrams[0][0], relative_signs)
 
     ref_spins = external_spins(diagrams[0][0])
     ref_masses = _leg_masses(diagrams[0][0])

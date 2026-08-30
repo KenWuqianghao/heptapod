@@ -31,6 +31,7 @@ sys.path.insert(0, str(REPO_ROOT))
 from tools.eda.feyncalc_codegen import SymbolicFeynCalcCodeGenerator, ProcessType
 from tools.eda.scattering import (
     CHANNEL_PAIRING,
+    compute_symmetry_factor,
     Channel,
     UnsupportedScattering,
     allowed_contact_structures,
@@ -197,6 +198,41 @@ def test_unsupported_is_loud():
           and bool(r.warnings))
     all_passed = all_passed and ok
     print(f"  {'[v] PASS' if ok else '[x] FAIL'}: impossible vertex refused with a reason")
+
+    # Identical final-state particles: the 1/S factor and the exchange
+    # diagram are ONE problem, so a lone t-channel must be refused.
+    spec = dict(initial=[{"label": "e", "spin": 0.5, "mass": 0.0},
+                         {"label": "e", "spin": 0.5, "mass": 0.0}],
+                final=[{"label": "e", "spin": 0.5, "mass": 0.0},
+                       {"label": "e", "spin": 0.5, "mass": 0.0}],
+                propagators=[{"label": "ph", "spin": 1, "mass": 0.0}],
+                vertices=[{"type": "vector", "coupling": "g"},
+                          {"type": "vector", "coupling": "g"}])
+    dm = build_diagram_from_symbolic(parse_symbolic_diagram(spec))
+    g0 = SymbolicFeynCalcCodeGenerator()
+
+    def _refuses(diags, signs=None):
+        try:
+            build_amplitude_sum(g0, diags, relative_signs=signs)
+            return False
+        except UnsupportedScattering:
+            return True
+
+    ok = _refuses([(dm, Channel.T)])
+    all_passed = all_passed and ok
+    print(f"  {'[v] PASS' if ok else '[x] FAIL'}: identical final state without "
+          f"its exchange partner refused")
+    ok = _refuses([(dm, Channel.T), (dm, Channel.U)])
+    all_passed = all_passed and ok
+    print(f"  {'[v] PASS' if ok else '[x] FAIL'}: identical FERMIONS with "
+          f"default +1 signs refused")
+    ok = not _refuses([(dm, Channel.T), (dm, Channel.U)], [1, -1])
+    all_passed = all_passed and ok
+    print(f"  {'[v] PASS' if ok else '[x] FAIL'}: t - u with explicit signs accepted")
+    ok = compute_symmetry_factor(dm) == 2
+    all_passed = all_passed and ok
+    print(f"  {'[v] PASS' if ok else '[x] FAIL'}: symmetry factor S = 2 for an "
+          f"identical-fermion final state")
 
     # An assumed channel must be recorded, never silent.
     d2 = _make_diagram((0.5, 0.5, 0.5, 0.5), Channel.S, 1.0)
@@ -410,6 +446,24 @@ def test_literature_anchors():
     all_passed = all_passed and ok
     print(f"  {'[v] PASS' if ok else '[x] FAIL'}: Klein-Nishina sigma, "
           f"worst rel {worst:.2e}")
+
+    # Moller: the relative fermion sign and the interference term
+    g, s = 0.55, 400.0 ** 2
+    worst, worst_wrong = 0.0, 1e9
+    for ct in (-0.6, -0.2, 0.3, 0.7):
+        a = NUM.m2_moller(g, s, ct) / 4.0
+        b = NUM.m2_moller_literature(g, s, ct)
+        c = NUM.m2_moller(g, s, ct, relative_sign=+1) / 4.0
+        worst = max(worst, abs(a - b) / abs(b))
+        worst_wrong = min(worst_wrong, abs(c - b) / abs(b))
+    ok = worst < 1e-12
+    all_passed = all_passed and ok
+    print(f"  {'[v] PASS' if ok else '[x] FAIL'}: Moller <|M|^2> (t - u), "
+          f"worst rel {worst:.2e}")
+    ok = worst_wrong > 0.1          # the wrong sign must be visibly wrong
+    all_passed = all_passed and ok
+    print(f"  {'[v] PASS' if ok else '[x] FAIL'}: dropping the fermion sign is "
+          f"detectable (min rel error {worst_wrong:.2f})")
 
     # Thomson limit
     s0 = m * m * (1 + 2e-4)

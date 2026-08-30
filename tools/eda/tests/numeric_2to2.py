@@ -510,3 +510,52 @@ def sigma_klein_nishina(e: float, m: float, s: float) -> float:
 def sigma_ps_5_13(g: float, s: float) -> float:
     """P&S eq. (5.13) integrated: sigma = g^4 / (12 pi s), massless fermions."""
     return g ** 4 / (12 * math.pi * s)
+
+
+def m2_moller(g: float, s: float, ct: float, relative_sign: int = -1) -> float:
+    """e- e- -> e- e- (massless), t and u channels summed coherently.
+
+    The two diagrams differ by interchange of the two identical external
+    fermions, so they enter with OPPOSITE signs.  ``relative_sign=+1`` is
+    exposed only so a test can show the wrong choice gives a visibly
+    different answer -- the interference term, not just its size, depends
+    on it.  Returned summed over all four spins.
+    """
+    masses = (0.0, 0.0, 0.0, 0.0)
+    p1, p2, p3, p4 = cm_momenta(s, masses, ct)
+    qt, qu = p1 - p3, p1 - p4
+    t, u = dot(qt, qt).real, dot(qu, qu).real
+    tot = 0.0
+    for s1 in (0, 1):
+        u1 = spinor_u(p1, 0.0, s1)
+        for s2 in (0, 1):
+            u2 = spinor_u(p2, 0.0, s2)
+            for s3 in (0, 1):
+                u3 = spinor_u(p3, 0.0, s3)
+                for s4 in (0, 1):
+                    u4 = spinor_u(p4, 0.0, s4)
+                    A = np.array([bar(u3) @ (1j * g * GAMMA[m]) @ u1 for m in range(4)])
+                    B = np.array([bar(u4) @ (1j * g * GAMMA[m]) @ u2 for m in range(4)])
+                    Mt = (1j / t) * _vec_prop_contract(A, B, qt, 0.0)
+                    C = np.array([bar(u4) @ (1j * g * GAMMA[m]) @ u1 for m in range(4)])
+                    D = np.array([bar(u3) @ (1j * g * GAMMA[m]) @ u2 for m in range(4)])
+                    Mu = (1j / u) * _vec_prop_contract(C, D, qu, 0.0)
+                    tot += abs(Mt + relative_sign * Mu) ** 2
+    return tot
+
+
+def m2_moller_literature(g: float, s: float, ct: float) -> float:
+    """Moller scattering, spin-averaged, massless limit:
+
+        <|M|^2> = 2 g^4 [ (s^2+u^2)/t^2 + (s^2+t^2)/u^2 + 2 s^2/(t u) ]
+
+    The last term IS the interference; its coefficient is what the
+    relative fermion sign controls.
+    """
+    masses = (0.0, 0.0, 0.0, 0.0)
+    p1, p2, p3, p4 = cm_momenta(s, masses, ct)
+    t = dot(p1 - p3, p1 - p3).real
+    u = dot(p1 - p4, p1 - p4).real
+    return 2 * g ** 4 * ((s * s + u * u) / (t * t)
+                         + (s * s + t * t) / (u * u)
+                         + 2 * s * s / (t * u))

@@ -385,10 +385,19 @@ def propagator_numerator(prop: Propagator, q_expr: str,
 
 
 def propagator_denominator(prop: Propagator, channel: Channel) -> str:
+    """i / (q^2 - M^2), with q^2 the channel invariant.
+
+    The explicit ``I`` matters only once amplitudes are SUMMED: every
+    propagator carries it, so the relative phase between two exchange
+    diagrams survives either way, but between a contact diagram (no
+    propagator) and an exchange diagram it does not. Carrying it here keeps
+    the amplitude absolutely normalised, which is what a coherent sum needs.
+    It has no effect on a single diagram, where |i| = 1.
+    """
     inv = CHANNEL_INVARIANT[channel]
     if _is_massless(prop.mass):
-        return f"1/({inv})"
-    return f"1/({inv} - {PROP_MASS}^2)"
+        return f"I/({inv})"
+    return f"I/({inv} - {PROP_MASS}^2)"
 
 
 # ---------------------------------------------------------------------------
@@ -442,17 +451,18 @@ def _vertex_expr(gen, vertex, legs_at_vertex, couplings) -> str:
 
 
 def _exchange_bosonic(gen, diagram: Diagram, legs: List[VLeg],
-                      channel: Channel, prop: Propagator) -> List[str]:
+                      channel: Channel, prop: Propagator,
+                      amp_var: str = "amp", q_var: str = "qMom") -> List[str]:
     (a, b), (c, d) = CHANNEL_PAIRING[channel]
     A_ext, B_ext = [legs[a], legs[b]], [legs[c], legs[d]]
     med_spin = float(prop.spin if prop.spin is not None else 0.0)
 
     q_expr = _mom_sum(A_ext)
     # The mediator leaves vertex A and enters vertex B.
-    medA = VLeg(None, "qMom", flows_in=False,
+    medA = VLeg(None, q_var, flows_in=False,
                 index="muP" if med_spin == 1.0 else None,
                 spin=med_spin, is_mediator=True)
-    medB = VLeg(None, "qMom", flows_in=True,
+    medB = VLeg(None, q_var, flows_in=True,
                 index="nuP" if med_spin == 1.0 else None,
                 spin=med_spin, is_mediator=True)
 
@@ -461,18 +471,20 @@ def _exchange_bosonic(gen, diagram: Diagram, legs: List[VLeg],
 
     exprA = _vertex_expr(gen, v0, A_ext + [medA], diagram.couplings)
     exprB = _vertex_expr(gen, v1, B_ext + [medB], diagram.couplings)
-    num = propagator_numerator(prop, "qMom", "muP", "nuP")
+    num = propagator_numerator(prop, q_var, "muP", "nuP")
     den = propagator_denominator(prop, channel)
     pol = _pol_factors(legs)
 
     parts = [f"({exprA})", f"({num})", f"({exprB})", f"({den})"]
     if pol:
         parts.append(pol)
-    return [f"qMom = {q_expr};", "amp = " + " ".join(parts) + ";"]
+    return [f"{q_var} = {q_expr};",
+            f"{amp_var} = " + " ".join(parts) + ";"]
 
 
 def _exchange_fermionic(gen, diagram: Diagram, legs: List[VLeg],
-                        channel: Channel, prop: Propagator) -> List[str]:
+                        channel: Channel, prop: Propagator,
+                        amp_var: str = "amp", q_var: str = "qMom") -> List[str]:
     """Mediator is a fermion: the propagator sits INSIDE the spinor chain."""
     (a, b), (c, d) = CHANNEL_PAIRING[channel]
     A_ext, B_ext = [legs[a], legs[b]], [legs[c], legs[d]]
@@ -512,8 +524,8 @@ def _exchange_fermionic(gen, diagram: Diagram, legs: List[VLeg],
         right_ext, right_v, right_spinor = A_ext, v0, sA
 
     q_expr = _mom_sum(right_ext)
-    medR = VLeg(None, "qMom", flows_in=False, index=None, spin=0.5, is_mediator=True)
-    medL = VLeg(None, "qMom", flows_in=True, index=None, spin=0.5, is_mediator=True)
+    medR = VLeg(None, q_var, flows_in=False, index=None, spin=0.5, is_mediator=True)
+    medL = VLeg(None, q_var, flows_in=True, index=None, spin=0.5, is_mediator=True)
 
     vfL = vertex_factor(gen, left_v, left_ext + [medL], diagram.couplings)
     vfR = vertex_factor(gen, right_v, right_ext + [medR], diagram.couplings)
@@ -523,7 +535,7 @@ def _exchange_fermionic(gen, diagram: Diagram, legs: List[VLeg],
             "vertices."
         )
 
-    num = f"(GSD[qMom] + {PROP_MASS})"
+    num = f"(GSD[{q_var}] + {PROP_MASS})"
     den = propagator_denominator(prop, channel)
     pol = _pol_factors(legs)
 
@@ -533,23 +545,25 @@ def _exchange_fermionic(gen, diagram: Diagram, legs: List[VLeg],
     parts = [f"({chain})", f"({den})"]
     if pol:
         parts.append(pol)
-    return [f"qMom = {q_expr};", "amp = " + " ".join(parts) + ";"]
+    return [f"{q_var} = {q_expr};",
+            f"{amp_var} = " + " ".join(parts) + ";"]
 
 
-def _contact_amplitude(gen, diagram: Diagram, legs: List[VLeg]) -> List[str]:
+def _contact_amplitude(gen, diagram: Diagram, legs: List[VLeg],
+                       amp_var: str = "amp") -> List[str]:
     vertex = diagram.vertices[0] if diagram.vertices else None
     g = _coupling_value(vertex, diagram.couplings) if vertex else "g"
     vt = _vtype(vertex)
     ms = _multiset(external_spins(diagram))
 
     if ms == _multiset([0.0, 0.0, 0.0, 0.0]):
-        return [f"amp = I ({g});"]
+        return [f"{amp_var} = I ({g});"]
 
     if ms == _multiset([0.0, 0.0, 1.0, 1.0]):
         vecs = [l for l in legs if l.spin == 1.0]
         pol = _pol_factors(legs)
         return [
-            f"amp = I ({g}) MTD[{vecs[0].index}, {vecs[1].index}] {pol};"
+            f"{amp_var} = I ({g}) MTD[{vecs[0].index}, {vecs[1].index}] {pol};"
         ]
 
     if ms == _multiset([0.5, 0.5, 0.5, 0.5]):
@@ -569,7 +583,7 @@ def _contact_amplitude(gen, diagram: Diagram, legs: List[VLeg]) -> List[str]:
                 "Supported: vector, scalar, left-handed."
             )
         return [
-            f"amp = I ({g}) ({bar1} . ({s1}) . {non1}) "
+            f"{amp_var} = I ({g}) ({bar1} . ({s1}) . {non1}) "
             f"({bar2} . ({s2}) . {non2});"
         ]
 
@@ -578,11 +592,19 @@ def _contact_amplitude(gen, diagram: Diagram, legs: List[VLeg]) -> List[str]:
     )
 
 
-def build_amplitude(gen, diagram: Diagram, channel: Channel) -> str:
+def build_amplitude(gen, diagram: Diagram, channel: Channel,
+                    amp_var: str = "amp", q_var: str = "qMom",
+                    normalise_dimension: bool = True) -> str:
     """Emit the ``amp = ...`` section for one 2->2 tree diagram.
 
     Raises :class:`UnsupportedScattering` rather than emitting a
     structurally empty amplitude.
+
+    ``amp_var`` / ``q_var`` let a caller build several diagrams into
+    distinct variables; :func:`build_amplitude_sum` uses that to add them
+    coherently. ``normalise_dimension=False`` defers the
+    ``ChangeDimension`` to the caller, which is what a sum wants: the
+    normalisation is applied ONCE, to the total.
     """
     check_supported(diagram, channel)
     legs = _external_legs(diagram)
@@ -595,22 +617,83 @@ def build_amplitude(gen, diagram: Diagram, channel: Channel) -> str:
     ]
 
     if channel is Channel.CONTACT:
-        body = _contact_amplitude(gen, diagram, legs)
+        body = _contact_amplitude(gen, diagram, legs, amp_var=amp_var)
     else:
         prop = diagram.propagators[0]
         med_spin = float(prop.spin if prop.spin is not None else 0.0)
         if med_spin == 0.5:
-            body = _exchange_fermionic(gen, diagram, legs, channel, prop)
+            body = _exchange_fermionic(gen, diagram, legs, channel, prop,
+                                       amp_var=amp_var, q_var=q_var)
         else:
-            body = _exchange_bosonic(gen, diagram, legs, channel, prop)
+            body = _exchange_bosonic(gen, diagram, legs, channel, prop,
+                                     amp_var=amp_var, q_var=q_var)
 
-    tail = [
-        "(* Tree level lives in 4 dimensions; normalising here lets the "
-        "D-dimensional *)",
-        "(* vertex library be reused without tripping DiracTrace::mixmsg. *)",
-        "amp = ChangeDimension[amp, 4];",
-    ]
+    tail = []
+    if normalise_dimension:
+        tail = [
+            "(* Tree level lives in 4 dimensions; normalising here lets the "
+            "D-dimensional *)",
+            "(* vertex library be reused without tripping DiracTrace::mixmsg. *)",
+            f"{amp_var} = ChangeDimension[{amp_var}, 4];",
+        ]
     return "\n".join(head + body + tail) + "\n"
+
+
+def build_amplitude_sum(gen, diagrams: Sequence[Tuple[Diagram, Channel]],
+                        relative_signs: Optional[Sequence[int]] = None) -> str:
+    """Emit several diagrams and add their amplitudes COHERENTLY.
+
+    Most real 2->2 processes are a sum: phi phi -> phi phi with a cubic
+    coupling is s + t + u; identical-fermion scattering is s + t. A tool
+    that only ever emits one diagram is silently wrong whenever more than
+    one contributes, which is why this exists.
+
+    WHAT THIS DOES NOT DO. It cannot work out WHICH diagrams contribute --
+    that needs a Lagrangian, and heptapod's diagram spec deliberately
+    carries topology rather than a model. The caller supplies the list.
+
+    ``relative_signs`` carries the (-1) between diagrams related by
+    interchange of two external fermion lines. It defaults to all +1, which
+    is correct only when no such interchange relates them; pass it
+    explicitly for identical-fermion final states.
+
+    All diagrams must share external legs and masses, since they are added
+    before squaring; that is checked here rather than left to produce a
+    meaningless sum.
+    """
+    if not diagrams:
+        raise UnsupportedScattering("build_amplitude_sum needs at least one diagram.")
+    signs = list(relative_signs) if relative_signs is not None else [1] * len(diagrams)
+    if len(signs) != len(diagrams):
+        raise UnsupportedScattering(
+            f"relative_signs has {len(signs)} entries for {len(diagrams)} diagrams."
+        )
+
+    ref_spins = external_spins(diagrams[0][0])
+    ref_masses = _leg_masses(diagrams[0][0])
+    for d, _ in diagrams[1:]:
+        if external_spins(d) != ref_spins or _leg_masses(d) != ref_masses:
+            raise UnsupportedScattering(
+                "All diagrams in a coherent sum must share the same external "
+                "legs and masses; got "
+                f"{ref_spins}/{ref_masses} and {external_spins(d)}/{_leg_masses(d)}."
+            )
+
+    sections: List[str] = []
+    terms: List[str] = []
+    for i, (d, ch) in enumerate(diagrams, start=1):
+        sections.append(
+            build_amplitude(gen, d, ch, amp_var=f"amp{i}", q_var=f"qMom{i}",
+                            normalise_dimension=False)
+        )
+        terms.append(("- " if signs[i - 1] < 0 else "+ ") + f"amp{i}")
+    total = " ".join(terms).lstrip("+ ").strip()
+    sections.append(
+        "(* Coherent sum of the diagrams above, normalised to 4 dimensions "
+        "ONCE. *)\n"
+        f"amp = ChangeDimension[{total}, 4];\n"
+    )
+    return "\n".join(sections)
 
 
 # ---------------------------------------------------------------------------
@@ -701,5 +784,25 @@ def cross_section_block(diagram: Diagram) -> str:
         "dSigmaDt = ampSqKin colorFactor/(16 Pi lam12 nInit symmetryFactor);",
         "sigma = Integrate[dSigmaDt, {t, tMin, tMax}];",
         "sigma = sigma // Simplify;",
+        "",
+        "(* Symbolic integration is not guaranteed to close: a coherent sum of",
+        "   several diagrams gives a rational integrand whose antiderivative can",
+        "   come back Undefined or unevaluated even though the integral is",
+        "   perfectly finite. Say so rather than letting a bad symbol propagate,",
+        "   and provide the numeric route. *)",
+        "If[!FreeQ[sigma, Integrate],",
+        "  Print[\"WARNING: the symbolic t-integration did not close. \" <>",
+        "        \"Use sigmaNIntegrate[rules] for a number.\"]];",
+        "",
+        "(* Numeric fallback. The symbolic antiderivative can be well formed and",
+        "   STILL evaluate to Undefined at a parameter point, when the endpoints",
+        "   cancel -- so this is the reliable numeric route, not just a rescue",
+        "   for an unevaluated Integrate. Substitutes values FIRST, then",
+        "   integrates:  sigmaNIntegrate[{mphi -> 60., mProp0 -> 300., g -> 55.,",
+        "                                 s -> 700.^2}]  *)",
+        "sigmaNIntegrate[rules_] := Module[{fInt, tLo, tHi},",
+        "  fInt = N[dSigmaDt /. rules];",
+        "  tLo = N[tMin /. rules]; tHi = N[tMax /. rules];",
+        "  NIntegrate[fInt, {t, tLo, tHi}]];",
     ]
     return "\n".join(lines) + "\n"

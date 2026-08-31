@@ -750,14 +750,24 @@ class FeynCalcCodeGenerator:
                     )
 
         elif spins == [1, 1, 1]:
-            # VVV: triple gauge — all three are vectors
+            # VVV: triple gauge, ALL-INCOMING momenta (see
+            # scattering.VVV_CONVENTION_NOTE). For P -> q1 q2 the incoming
+            # momenta are k0 = P, k1 = -q1, k2 = -q2, which satisfy the
+            # k0 + k1 + k2 = 0 the Feynman rule is derived under.
+            #
+            # This CHANGED in the scattering-hardening work. The previous
+            # code evaluated the same expression at (P, q1, q2), momenta
+            # summing to 2P rather than 0, and was wrong at finite masses:
+            # it reproduced the standard Z' -> W+W- width only
+            # asymptotically (0.209 of it at mV/m = 3), while the form
+            # below reproduces it exactly at every mass ratio.
             mu0, mu1, mu2 = "mu0", "mu1", "mu2"
             lines.append(
                 f"amp = I ({g}) PolarizationVector[{p}, {mu0}] "
                 f"PolarizationVector[{p1}, {mu1}] PolarizationVector[{p2}, {mu2}] ("
-                f"MTD[{mu0}, {mu1}] FVD[{p} - {p1}, {mu2}] + "
-                f"MTD[{mu1}, {mu2}] FVD[{p1} - {p2}, {mu0}] + "
-                f"MTD[{mu2}, {mu0}] FVD[{p2} - {p}, {mu1}]);"
+                f"MTD[{mu0}, {mu1}] FVD[{p} + {p1}, {mu2}] + "
+                f"MTD[{mu1}, {mu2}] FVD[{p2} - {p1}, {mu0}] + "
+                f"MTD[{mu2}, {mu0}] FVD[-{p2} - {p}, {mu1}]);"
             )
 
         else:

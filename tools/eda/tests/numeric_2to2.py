@@ -559,3 +559,27 @@ def m2_moller_literature(g: float, s: float, ct: float) -> float:
     return 2 * g ** 4 * ((s * s + u * u) / (t * t)
                          + (s * s + t * t) / (u * u)
                          + 2 * s * s / (t * u))
+
+
+def m2_vv_to_vv_contact(a: float, b: float, c: float, masses,
+                        s: float, ct: float) -> float:
+    """V V -> V V through a four-vector CONTACT vertex.
+
+        M = i [ a (e1.e2)(e3*.e4*) + b (e1.e3*)(e2.e4*) + c (e1.e4*)(e2.e3*) ]
+
+    the three-structure basis the generator uses.  Summed over all
+    polarisations.
+    """
+    m1, m2, m3, m4 = masses
+    p1, p2, p3, p4 = cm_momenta(s, masses, ct)
+    tot = 0.0
+    for e1 in pol_vectors(p1, m1):
+        for e2 in pol_vectors(p2, m2):
+            for e3 in pol_vectors(p3, m3):
+                for e4 in pol_vectors(p4, m4):
+                    c3, c4 = e3.conj(), e4.conj()
+                    amp = 1j * (a * dot(e1, e2) * dot(c3, c4)
+                                + b * dot(e1, c3) * dot(e2, c4)
+                                + c * dot(e1, c4) * dot(e2, c3))
+                    tot += abs(amp) ** 2
+    return tot

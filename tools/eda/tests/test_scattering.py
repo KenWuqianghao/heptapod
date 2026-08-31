@@ -105,10 +105,13 @@ def _make_diagram(ext, channel, med):
         "final": [{"label": labels[i], "spin": ext[i]} for i in (2, 3)],
     }
     if channel is Channel.CONTACT:
-        spec["vertices"] = [{
-            "type": "vector" if sorted(ext) == [0.5] * 4 else "contact",
-            "coupling": "g",
-        }]
+        v = {"type": "vector" if sorted(ext) == [0.5] * 4 else "contact",
+             "coupling": "g"}
+        if sorted(ext) == [1.0] * 4:
+            # four vectors: three independent Lorentz structures, no default
+            v = {"type": "quartic",
+                 "coupling": {"a": "ga", "b": "gb", "c": "gc"}}
+        spec["vertices"] = [v]
     else:
         (a, b), (c, d) = CHANNEL_PAIRING[channel]
         spec["propagators"] = [{"label": "P", "spin": med}]
@@ -178,10 +181,11 @@ def test_structural_sweep():
         tag = "".join(SPIN_NAME[s] for s in ext)
         print(f"    [x] {tag} {ch.name}: {why[:80]}")
 
-    # Only the VVVV quartic is allowed to refuse: its colour structure is not
-    # expressible in a spec carrying a single scalar colour_factor.
-    ok = not crashed and len(refused) == 1
-    print(f"  {'[v] PASS' if ok else '[x] FAIL'}: full coverage, no silent fallbacks")
+    # Every allowed topology must now build: VVVV is covered by the explicit
+    # three-structure basis, so nothing is left to refuse.
+    ok = not crashed and not refused
+    print(f"  {'[v] PASS' if ok else '[x] FAIL'}: full coverage "
+          f"({generated}/{len(targets)}), no silent fallbacks")
     print()
     return ok
 
@@ -570,59 +574,103 @@ def test_literature_anchors():
     return all_passed
 
 
-def test_vvv_convention_consistency():
-    """DETECTOR for the unresolved VVV momentum convention.
+def test_vvv_convention():
+    """VVV uses ALL-INCOMING momenta; verified against the Z' -> W+W- width.
 
-    scattering.py uses the textbook all-incoming triple-gauge vertex;
-    feyncalc_codegen's decay path uses the physical momenta as drawn. They
-    are not equal at finite masses. This test does not assert which is
-    right -- it asserts that the discrepancy is still the KNOWN one, so it
-    cannot silently change or be forgotten. See VVV_CONVENTION_NOTE in
-    scattering.py.
+    Also pins the fact that hepbench's decay_V_to_VVp ground truth does NOT
+    match, because it is built from the other (as-drawn) momentum assignment
+    -- so that benchmark needs regenerating rather than heptapod changing
+    back. See VVV_CONVENTION_NOTE in scattering.py.
     """
     import math
     import numpy as np
 
     print("=" * 60)
-    print("VVV convention: decay path vs scattering builder")
+    print("VVV convention: all-incoming, against Z' -> W+W-")
     print("=" * 60)
+    all_passed = True
 
-    g, mV, m1, m2 = 0.8, 900.0, 200.0, 250.0
-    TRUTH_AS_DRAWN = 128.55151575236184        # hepbench decay_V_to_VVp part (a)
-    KNOWN_RATIO = 2.913914202356               # all-incoming / as-drawn
-
-    lam = NUM.kallen(mV ** 2, m1 ** 2, m2 ** 2)
-    pmag = math.sqrt(lam) / (2 * mV)
-    p = np.array([mV, 0.0, 0.0, 0.0])
-    p1 = np.array([math.sqrt(pmag ** 2 + m1 ** 2), 0.0, 0.0, pmag])
-    p2 = np.array([math.sqrt(pmag ** 2 + m2 ** 2), 0.0, 0.0, -pmag])
-
-    def width(k0, k1, k2):
+    def width(kfun, g, mV, m):
+        lam = NUM.kallen(mV ** 2, m ** 2, m ** 2)
+        pm = math.sqrt(lam) / (2 * mV)
+        P = np.array([mV, 0.0, 0.0, 0.0])
+        q1 = np.array([math.sqrt(pm ** 2 + m ** 2), 0.0, 0.0, pm])
+        q2 = np.array([math.sqrt(pm ** 2 + m ** 2), 0.0, 0.0, -pm])
+        k1, k2, k3 = kfun(P, q1, q2)
         tot = 0.0
-        for e0 in NUM.pol_vectors(p, mV):
-            for e1 in NUM.pol_vectors(p1, m1):
-                for e2 in NUM.pol_vectors(p2, m2):
+        for e0 in NUM.pol_vectors(P, mV):
+            for e1 in NUM.pol_vectors(q1, m):
+                for e2 in NUM.pol_vectors(q2, m):
                     a1, a2 = e1.conj(), e2.conj()
-                    amp = 1j * g * (NUM.dot(e0, a1) * NUM.dot(k0 - k1, a2)
-                                    + NUM.dot(a1, a2) * NUM.dot(k1 - k2, e0)
-                                    + NUM.dot(a2, e0) * NUM.dot(k2 - k0, a1))
+                    amp = 1j * g * (NUM.dot(e0, a1) * NUM.dot(k1 - k2, a2)
+                                    + NUM.dot(a1, a2) * NUM.dot(k2 - k3, e0)
+                                    + NUM.dot(a2, e0) * NUM.dot(k3 - k1, a1))
                     tot += abs(amp) ** 2
-        return pmag / (8 * math.pi * mV ** 2) * tot / 3.0
+        return pm / (8 * math.pi * mV ** 2) * tot / 3.0
 
-    as_drawn = width(p, p1, p2)
-    all_inc = width(p, -p1, -p2)
+    def zprime(g, mV, m):
+        x = m * m / (mV * mV)
+        return (g * g / (192 * math.pi)) * mV * (mV / m) ** 4 \
+            * (1 - 4 * x) ** 1.5 * (1 + 20 * x + 12 * x * x)
 
-    ok1 = abs(as_drawn - TRUTH_AS_DRAWN) / TRUTH_AS_DRAWN < 1e-12
-    ok2 = abs(all_inc / as_drawn - KNOWN_RATIO) / KNOWN_RATIO < 1e-9
-    print(f"  as-drawn (decay path) {as_drawn:.10f}  vs hepbench truth "
-          f"{TRUTH_AS_DRAWN:.10f}")
-    print(f"  all-incoming (here)   {all_inc:.10f}  ratio {all_inc / as_drawn:.9f}")
-    print(f"  {'[v] PASS' if ok1 else '[x] FAIL'}: as-drawn form still reproduces "
-          f"hepbench decay truth")
-    print(f"  {'[v] PASS' if ok2 else '[x] FAIL'}: discrepancy is still the known "
-          f"{KNOWN_RATIO:.4f}x -- UNRESOLVED, see VVV_CONVENTION_NOTE")
+    allinc = lambda P, q1, q2: (P, -q1, -q2)
+    asdrawn = lambda P, q1, q2: (P, q1, q2)
+
+    worst, best_wrong = 0.0, 1e9
+    for r in (3.0, 5.0, 10.0, 50.0):
+        m, mV = 100.0, 100.0 * r
+        lit = zprime(1.0, mV, m)
+        worst = max(worst, abs(width(allinc, 1.0, mV, m) - lit) / lit)
+        best_wrong = min(best_wrong, abs(width(asdrawn, 1.0, mV, m) - lit) / lit)
+    ok = worst < 1e-12
+    all_passed = all_passed and ok
+    print(f"  {'[v] PASS' if ok else '[x] FAIL'}: all-incoming reproduces the "
+          f"Z' width, worst rel {worst:.2e}")
+    ok = best_wrong > 0.005
+    all_passed = all_passed and ok
+    print(f"  {'[v] PASS' if ok else '[x] FAIL'}: as-drawn does not (min rel "
+          f"error {best_wrong:.3f}) -- the test discriminates")
+
+    # The scattering builder must use the same assignment as the decay path.
+    from tools.eda.scattering import VLeg
+    leg_in = VLeg(None, "p1", flows_in=True, index="mu1", spin=1.0)
+    leg_out = VLeg(None, "p3", flows_in=False, index="mu3", spin=1.0)
+    ok = leg_in.p_in == "p1" and leg_out.p_in == "(-p3)"
+    all_passed = all_passed and ok
+    print(f"  {'[v] PASS' if ok else '[x] FAIL'}: scattering legs enter "
+          f"all-incoming (outgoing -> -p)")
+
+    # hepbench's committed value corresponds to the OTHER assignment.
+    HEPBENCH_V_TO_VVP_A = 128.55151575236184
+    g0, mV0, m1, m2 = 0.8, 900.0, 200.0, 250.0
+
+    def width_unequal(kfun):
+        lam = NUM.kallen(mV0 ** 2, m1 ** 2, m2 ** 2)
+        pm = math.sqrt(lam) / (2 * mV0)
+        P = np.array([mV0, 0.0, 0.0, 0.0])
+        q1 = np.array([math.sqrt(pm ** 2 + m1 ** 2), 0.0, 0.0, pm])
+        q2 = np.array([math.sqrt(pm ** 2 + m2 ** 2), 0.0, 0.0, -pm])
+        k1, k2, k3 = kfun(P, q1, q2)
+        tot = 0.0
+        for e0 in NUM.pol_vectors(P, mV0):
+            for e1 in NUM.pol_vectors(q1, m1):
+                for e2 in NUM.pol_vectors(q2, m2):
+                    a1, a2 = e1.conj(), e2.conj()
+                    amp = 1j * g0 * (NUM.dot(e0, a1) * NUM.dot(k1 - k2, a2)
+                                     + NUM.dot(a1, a2) * NUM.dot(k2 - k3, e0)
+                                     + NUM.dot(a2, e0) * NUM.dot(k3 - k1, a1))
+                    tot += abs(amp) ** 2
+        return pm / (8 * math.pi * mV0 ** 2) * tot / 3.0
+
+    ok = abs(width_unequal(asdrawn) - HEPBENCH_V_TO_VVP_A) / HEPBENCH_V_TO_VVP_A < 1e-12
+    all_passed = all_passed and ok
+    print(f"  {'[v] PASS' if ok else '[x] FAIL'}: hepbench decay_V_to_VVp truth "
+          f"traced to the as-drawn form")
+    print(f"      heptapod now gives {width_unequal(allinc):.6f}, hepbench has "
+          f"{HEPBENCH_V_TO_VVP_A:.6f}")
+    print(f"      -> that benchmark's ground truth needs REGENERATING.")
     print()
-    return ok1 and ok2
+    return all_passed
 
 
 def main():
@@ -633,7 +681,7 @@ def main():
         ("Loud refusals", test_unsupported_is_loud()),
         ("Tool surface", test_tool_surface()),
         ("Literature anchors", test_literature_anchors()),
-        ("VVV convention detector", test_vvv_convention_consistency()),
+        ("VVV convention", test_vvv_convention()),
     ]
     if want_numeric:
         results.append(("Numeric cross-check", test_numeric_crosscheck()))

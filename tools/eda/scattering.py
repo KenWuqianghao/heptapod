@@ -176,13 +176,6 @@ def check_supported(diagram: Diagram, channel: Channel) -> None:
                 f"External spins {ext} do not form a valid 4-point vertex. "
                 f"Valid contact classes: SSSS, VVVV, FFFF, SSVV."
             )
-        if _multiset(ext) == _multiset([1.0, 1.0, 1.0, 1.0]):
-            raise UnsupportedScattering(
-                "The VVVV quartic gauge vertex is not implemented: its colour "
-                "structure is not expressible in heptapod's diagram spec, which "
-                "carries a single scalar colour_factor. Supply the process as a "
-                "sum of exchange diagrams instead."
-            )
         return
 
     med = diagram.propagators[0].spin if diagram.propagators else None
@@ -330,14 +323,11 @@ def vertex_factor(gen, vertex: Optional[Vertex], legs: List[VLeg],
         )
 
     if spins == [1.0, 1.0, 1.0]:
-        # ------------------------------------------------------------------
-        # UNRESOLVED CONVENTION -- see VVV_CONVENTION_NOTE at the bottom of
-        # this module before trusting a VVV result. This builder uses the
-        # textbook ALL-INCOMING momenta; heptapod's DECAY path
-        # (feyncalc_codegen._amplitude_decay_no_prop) uses the physical
-        # momenta as drawn. The two are NOT equal at finite masses.
-        # ------------------------------------------------------------------
-        # VVV triple gauge, all-incoming convention:
+        # CONVENTION: ALL-INCOMING momenta, k1+k2+k3 = 0 -- the textbook
+        # statement, and the one the decay path now shares. Verified against
+        # the Z' -> W+W- width at every mass ratio. See
+        # VVV_CONVENTION_NOTE at the bottom of this module.
+        # VVV triple gauge:
         #   g [ g^{m1 m2}(k1-k2)^{m3} + g^{m2 m3}(k2-k3)^{m1}
         #                             + g^{m3 m1}(k3-k1)^{m2} ]
         v1, v2, v3 = legs
@@ -590,30 +580,204 @@ def _contact_amplitude(gen, diagram: Diagram, legs: List[VLeg],
         ]
 
     if ms == _multiset([0.5, 0.5, 0.5, 0.5]):
-        # Four-fermion contact operator.  The pairing (p1 p2)(p3 p4) is the
-        # operator's own definition, not something the tool can infer.
-        bar1, non1 = _split_fermion_pair([legs[0], legs[1]])
-        bar2, non2 = _split_fermion_pair([legs[2], legs[3]])
-        if vt in ("", "vector", "gaugevector", "currentcurrent"):
-            s1, s2 = "GAD[muC]", "GAD[muC]"
-        elif vt in ("scalar", "yukawa"):
-            s1, s2 = "1", "1"
-        elif vt in ("lefthanded", "va", "vectoraxial", "chiral"):
-            s1, s2 = "GAD[muC].GA[7]", "GAD[muC].GA[7]"
-        else:
-            raise UnsupportedScattering(
-                f"Unknown 4-fermion contact structure {vertex.type!r}. "
-                "Supported: vector, scalar, left-handed."
-            )
-        return [
-            f"{amp_var} = I ({g}) ({bar1} . ({s1}) . {non1}) "
-            f"({bar2} . ({s2}) . {non2});"
-        ]
+        return _contact_ffff(diagram, legs, vertex, g, amp_var=amp_var)
 
-    raise UnsupportedScattering(
+    if ms == _multiset([1.0, 1.0, 1.0, 1.0]):
+        return _contact_vvvv(diagram, legs, vertex, g)
+
+    raise UnsupportedTopology(
         f"No contact amplitude for external spins {external_spins(diagram)}."
     )
 
+
+#: The three independent Lorentz structures of a four-vector contact vertex.
+#: Any such vertex built from metric tensors is a combination of these, so
+#: taking them as the basis is fully general -- and it keeps the colour
+#: algebra out of a diagram spec that has no way to express it.
+VVVV_STRUCTURES = ("a", "b", "c")
+
+
+def _contact_vvvv(diagram: Diagram, legs: List[VLeg],
+                  vertex: Optional[Vertex], g) -> List[str]:
+    """Four-vector contact vertex in the explicit three-structure basis.
+
+    CONVENTION (chosen, not inferred):
+
+        V^{m1 m2 m3 m4} = i [ a eta^{m1 m2} eta^{m3 m4}
+                            + b eta^{m1 m3} eta^{m2 m4}
+                            + c eta^{m1 m4} eta^{m2 m3} ]
+
+    with legs numbered in the order (p1, p2, p3, p4) = (in, in, out, out).
+    Those three products span every Lorentz structure a four-vector contact
+    vertex can have, so nothing is lost by taking them as the basis.
+
+    WHY THE CALLER SUPPLIES a, b, c. The Yang-Mills quartic is
+
+        -i g^2 [ f^{abe}f^{cde}(eta^{m1 m3}eta^{m2 m4} - eta^{m1 m4}eta^{m2 m3})
+               + f^{ace}f^{bde}(eta^{m1 m2}eta^{m3 m4} - eta^{m1 m4}eta^{m2 m3})
+               + f^{ade}f^{bce}(eta^{m1 m2}eta^{m3 m4} - eta^{m1 m3}eta^{m2 m4}) ]
+
+    -- three DIFFERENT colour contractions multiplying three different
+    Lorentz structures. A diagram spec carrying one scalar `color_factor`
+    cannot say which is which, so the tool asks for the already-contracted
+    coefficients rather than guessing a gauge group. For pure SU(N) Yang-Mills
+    contract the structure constants yourself and pass
+
+        a = -i g^2 (f^{ace}f^{bde} + f^{ade}f^{bce})
+        b = -i g^2 (f^{abe}f^{cde} - f^{ade}f^{bce})
+        c = -i g^2 (-f^{abe}f^{cde} - f^{ace}f^{bde})
+
+    For an effective operator such as (lambda/4)(V.V)^2 the fully symmetric
+    choice a = b = c = lambda is what you want.
+    """
+    m1, m2, m3, m4 = (l.index for l in legs)
+    pol = _pol_factors(legs)
+
+    if isinstance(g, dict):
+        missing = [k for k in VVVV_STRUCTURES if k not in g]
+        if missing:
+            raise UnsupportedTopology(
+                f"A four-vector contact vertex needs coefficients "
+                f"{list(VVVV_STRUCTURES)}; missing {missing}. See "
+                "_contact_vvvv for the basis and the Yang-Mills mapping."
+            )
+        a, b, c = (g[k] for k in VVVV_STRUCTURES)
+    else:
+        vt = _vtype(vertex)
+        if vt in ("symmetric", "contact", "", "quartic"):
+            # (V.V)^2-type effective operator: fully symmetric.
+            a = b = c = g
+        else:
+            raise UnsupportedTopology(
+                "A four-vector contact vertex is not fixed by a single "
+                f"coupling and type {vertex.type!r}: it has THREE independent "
+                "Lorentz structures, and the Yang-Mills quartic multiplies "
+                "each by a different colour contraction that a scalar "
+                "color_factor cannot express. Pass coupling as "
+                "{'a': ..., 'b': ..., 'c': ...} (see _contact_vvvv for the "
+                "basis and the Yang-Mills mapping), or use type 'symmetric' "
+                "for a (V.V)^2 operator where a = b = c."
+            )
+
+    return [
+        f"amp = I (({a}) MTD[{m1}, {m2}] MTD[{m3}, {m4}] "
+        f"+ ({b}) MTD[{m1}, {m3}] MTD[{m2}, {m4}] "
+        f"+ ({c}) MTD[{m1}, {m4}] MTD[{m2}, {m3}]) {pol};"
+    ]
+
+
+#: Dirac structures for a four-fermion bilinear, as (expression, rank).
+#: Rank-0 structures carry no Lorentz index; rank-1 ones share the index
+#: muC between the two bilinears, which is what makes the operator a scalar.
+#: GA[5] = gamma_5, GA[7] = P_L, GA[6] = P_R in FeynCalc.
+FOUR_FERMION_STRUCTURES: Dict[str, Tuple[str, int]] = {
+    "S": ("1", 0),                    # scalar        1 (x) 1
+    "P": ("GA[5]", 0),                # pseudoscalar  g5 (x) g5
+    "V": ("GAD[muC]", 1),             # vector        g^mu (x) g_mu
+    "A": ("GAD[muC].GA[5]", 1),       # axial         g^mu g5 (x) g_mu g5
+    "L": ("GAD[muC].GA[7]", 1),       # left-handed   g^mu P_L (x) g_mu P_L
+    "R": ("GAD[muC].GA[6]", 1),       # right-handed  g^mu P_R (x) g_mu P_R
+}
+
+
+def _contact_ffff(diagram: Diagram, legs: List[VLeg],
+                  vertex: Optional[Vertex], g,
+                  amp_var: str = "amp") -> List[str]:
+    """Four-fermion contact operator.
+
+    A four-fermion operator is NOT determined by "four fermion legs plus a
+    type name". Three things must come from the operator itself, and the
+    previous implementation guessed all three:
+
+    1. WHICH LEGS FORM WHICH BILINEAR. It hardcoded (p1 p2)(p3 p4), i.e.
+       (in,in)(out,out) -- while its own comment said the pairing "is the
+       operator's own definition, not something the tool can infer".
+       (psibar_e G psi_e)(psibar_mu G psi_mu) driving e mu -> e mu pairs
+       (in_e, out_e)(in_mu, out_mu) = legs (0,2)(1,3) instead. Worse, the
+       hardcoded choice forces the incoming pair to be
+       particle-antiparticle, so e- e- -> e- e- could not be expressed at
+       all: it died in _split_fermion_pair on a fermion-number message.
+
+    2. THE DIRAC STRUCTURE ON EACH BILINEAR, INDEPENDENTLY. It forced the
+       same structure on both, so (V-A) (x) (V+A) was inexpressible, and it
+       offered three crude options against the standard S, P, V, A, L, R
+       basis.
+
+    3. BOTH CONTRACTIONS, WHEN THE FERMIONS ARE IDENTICAL. Only one pairing
+       was ever emitted. For identical fermions the second (exchange)
+       contraction contributes too, with a relative minus -- the same class
+       of omission as a missing exchange diagram, and just as silently
+       wrong. That case is refused here rather than half-computed.
+
+    The two structures must share a rank: a rank-1 bilinear contracts its
+    index against the other, so pairing S with V is not a Lorentz scalar.
+    """
+    struct = list(vertex.structures) if vertex is not None and vertex.structures else None
+    if struct is None:
+        vt = _vtype(vertex)
+        legacy = {"vector": ["V", "V"], "gaugevector": ["V", "V"],
+                  "currentcurrent": ["V", "V"], "scalar": ["S", "S"],
+                  "yukawa": ["S", "S"], "lefthanded": ["L", "L"],
+                  "": ["V", "V"]}
+        if vt not in legacy:
+            raise UnsupportedTopology(
+                "A four-fermion contact operator needs `structures`, e.g. "
+                '"structures": ["V", "A"]. Available: '
+                f"{sorted(FOUR_FERMION_STRUCTURES)} (S scalar, P pseudoscalar, "
+                "V vector, A axial, L left-handed, R right-handed). The type "
+                f"{vertex.type!r} does not determine one."
+            )
+        struct = legacy[vt]
+
+    if len(struct) != 2:
+        raise UnsupportedTopology(
+            "`structures` needs exactly two entries, one per bilinear; got "
+            f"{struct}."
+        )
+    for name in struct:
+        if name not in FOUR_FERMION_STRUCTURES:
+            raise UnsupportedTopology(
+                f"Unknown four-fermion structure {name!r}. Available: "
+                f"{sorted(FOUR_FERMION_STRUCTURES)}."
+            )
+    (e1, r1), (e2, r2) = (FOUR_FERMION_STRUCTURES[n] for n in struct)
+    if r1 != r2:
+        raise UnsupportedTopology(
+            f"structures {struct} mix a rank-{r1} and a rank-{r2} bilinear, "
+            "which is not a Lorentz scalar. Pair S/P with S/P, or V/A/L/R "
+            "with V/A/L/R."
+        )
+
+    pairing = vertex.pairing if vertex is not None and vertex.pairing else None
+    ident = identical_final_particles(diagram)
+    if pairing is None:
+        if ident:
+            raise UnsupportedTopology(
+                f"Final state has identical fermions {sorted(ident)}, so BOTH "
+                "contractions of the four-fermion operator contribute, with a "
+                "relative minus sign between them. Emitting one is silently "
+                "wrong. Supply them as two diagrams with explicit \"pairing\" "
+                "(e.g. [[0,1],[2,3]] and [[0,3],[2,1]]) and add them with "
+                "relative_signs=[1, -1]."
+            )
+        pairing = [[0, 1], [2, 3]]
+
+    flat = [i for pr in pairing for i in pr]
+    if len(pairing) != 2 or any(len(pr) != 2 for pr in pairing) \
+            or sorted(flat) != [0, 1, 2, 3]:
+        raise UnsupportedTopology(
+            "`pairing` must split legs 0..3 into two pairs, e.g. "
+            f"[[0,1],[2,3]] or [[0,2],[1,3]]; got {pairing}."
+        )
+
+    bar1, non1 = _split_fermion_pair([legs[pairing[0][0]], legs[pairing[0][1]]])
+    bar2, non2 = _split_fermion_pair([legs[pairing[1][0]], legs[pairing[1][1]]])
+    return [
+        f"(* four-fermion operator: ({struct[0]}) x ({struct[1]}), "
+        f"pairing {pairing} *)",
+        f"{amp_var} = I ({g}) ({bar1} . ({e1}) . {non1}) "
+        f"({bar2} . ({e2}) . {non2});",
+    ]
 
 def build_amplitude(gen, diagram: Diagram, channel: Channel,
                     amp_var: str = "amp", q_var: str = "qMom",
@@ -898,47 +1062,51 @@ def cross_section_block(diagram: Diagram,
 
 
 # ---------------------------------------------------------------------------
-# VVV_CONVENTION_NOTE
+# VVV_CONVENTION_NOTE -- RESOLVED. The convention is ALL-INCOMING MOMENTA.
 # ---------------------------------------------------------------------------
-# The triple-gauge vertex is written in this module with ALL MOMENTA INCOMING,
-# the textbook statement (Peskin & Schroeder ch. 16):
+# The triple-gauge vertex is written everywhere in heptapod as
 #
 #     V^{m1 m2 m3}(k1,k2,k3) = g[ eta^{m1 m2}(k1-k2)^{m3}
 #                               + eta^{m2 m3}(k2-k3)^{m1}
-#                               + eta^{m3 m1}(k3-k1)^{m2} ],   k1+k2+k3 = 0.
+#                               + eta^{m3 m1}(k3-k1)^{m2} ]
 #
-# heptapod's DECAY path writes the same functional form but evaluates it at the
-# PHYSICAL momenta as drawn -- parent P incoming, daughters q1, q2 outgoing:
+# with ALL THREE MOMENTA FLOWING INTO THE VERTEX, so that k1+k2+k3 = 0. A leg
+# whose physical momentum flows outward enters as -p. For a decay P -> q1 q2
+# that means (k1,k2,k3) = (P, -q1, -q2); for a 2->2 vertex the mediator
+# enters as -q at one end and +q at the other. This is the textbook statement
+# (Peskin & Schroeder ch. 16, Schwartz ch. 25, Srednicki ch. 72) and it is
+# what the `p_in` property on VLeg implements.
 #
-#     g[ eta^{mu nu}(P-q1)^rho + eta^{nu rho}(q1-q2)^mu + eta^{rho mu}(q2-P)^nu ]
+# WHY IT IS NOT A FREE CHOICE. The formula is DERIVED under k1+k2+k3 = 0 --
+# the cyclic structure is what momentum conservation at the vertex buys you.
+# heptapod's decay path used to evaluate the same expression at the physical
+# momenta as drawn, (P, q1, q2), which sum to 2P rather than 0. That is the
+# formula applied outside its domain, not an alternative convention, and it
+# is wrong at finite masses.
 #
-# Those momenta satisfy P - q1 - q2 = 0, not P + q1 + q2 = 0, so this is the
-# standard form evaluated off its defining constraint. The two are NOT
-# equivalent. Measured on hepbench's decay_V_to_VVp part (a)
-# (g=0.8, mV=900, m1=200, m2=250 GeV):
+# THE MEASUREMENT THAT SETTLED IT. Against the standard Z' -> W+W- width
 #
-#     as-drawn (decay path)   128.5515157524 GeV
-#     all-incoming (here)     374.5880874852 GeV      ratio 2.9139
+#     Gamma = (g^2/192 pi) mV (mV/m)^4 (1-4x)^{3/2} [1 + 20x + 12x^2],
+#     x = m^2/mV^2, equal daughter masses,
 #
-# What is settled:
-#   * BOTH forms are totally antisymmetric in their (index, momentum) pairs,
-#     as f^{abc} requires.
-#   * BOTH converge to the standard longitudinal asymptotics
-#     Gamma -> g^2 mV^5 / (192 pi m^4) for mV >> m (measured: 0.00520832 and
-#     0.00520835 against 1/192 = 0.00520833), so that limit does not
-#     discriminate. They differ only in the subleading terms -- which is
-#     exactly where the benchmark parameter points sit (mV/m ~ 4).
-#   * On shell the as-drawn form COLLAPSES to a single structure,
-#     g (eps1.eps2)((q1-q2).eps0), because its other two terms are
-#     proportional to q2.eps2 and q1.eps1. The all-incoming form keeps three.
+# the two assignments give (ratio to the literature value):
 #
-# What is NOT settled: which one hepbench's decay_V_to_VVp ground truth SHOULD
-# encode. Its derivation.py uses the as-drawn form and validates it by two
-# contractions OF THAT SAME EXPRESSION (explicit polarisation vectors vs a
-# completeness-tensor einsum), which checks the contraction algebra, not the
-# vertex definition -- so agreement between heptapod's decay path and that
-# truth is circular and does not anchor the convention to the literature.
+#     mV/m        all-incoming      as-drawn
+#        3         1.000000000     0.208791209
+#        5         1.000000000     0.472295515
+#       10         1.000000000     0.800199800
+#      300         1.000000000     0.999733393
 #
-# Nothing here is changed unilaterally: decay_V_to_VVp grading and heptapod's
-# shipped decay behaviour both depend on the answer. test_scattering.py has a
-# test that DETECTS the mismatch so it cannot be quietly forgotten.
+# All-incoming is exact at every mass ratio. As-drawn converges only
+# asymptotically, which is why both share the leading longitudinal
+# coefficient 1/192 and why that limit could not discriminate. The generated
+# decay script reproduces the literature number to 16 digits:
+# 567.7435624334261 vs 567.7435624334262 at (g, mV, m) = (0.8, 900, 200).
+#
+# CONSEQUENCE FOR hepbench. Its decay_V_to_VVp ground truth is built from the
+# as-drawn form (see that benchmark's derivation.py, which states the vertex
+# with (P-q1), (q1-q2), (q2-P)) and validates it by two contractions of that
+# same expression -- which checks the contraction algebra, not the vertex.
+# Both of its parameter points sit at mV/m ~ 4, deep in the regime where the
+# two disagree, so those committed widths are wrong by roughly 3x and need
+# regenerating. heptapod no longer agrees with them, deliberately.

@@ -100,13 +100,23 @@ CHANNEL_INVARIANT = {Channel.S: "s", Channel.T: "t", Channel.U: "uExpr"}
 
 PROP_MASS = "mProp0"
 
+#: Seconds allowed for the symbolic t-integration before falling through to
+#: the numeric route. Unbounded Integrate is not a theoretical concern: a
+#: coherent sum with massless-mediator poles (Moller, Bhabha) grinds for
+#: >10 minutes and would consume an agent's entire wall-clock budget.
+DEFAULT_INTEGRATE_TIMEOUT_S = 120
 
-class UnsupportedScattering(ValueError):
-    """Raised when a requested 2->2 structure is outside the covered space.
+
+class UnsupportedTopology(ValueError):
+    """Raised when a requested structure is outside the covered space.
 
     Deliberately an exception rather than a warning-plus-nonsense: a
     silently wrong amplitude is worse than a refusal.
     """
+
+
+#: Former name, kept so existing callers and tests keep working.
+UnsupportedScattering = UnsupportedTopology
 
 
 # ---------------------------------------------------------------------------
@@ -428,12 +438,18 @@ def _split_fermion_pair(pair: Sequence[VLeg]) -> Tuple[str, str]:
     barred = [e for e, b in exprs if b]
     unbarred = [e for e, b in exprs if not b]
     if len(barred) != 1 or len(unbarred) != 1:
-        raise UnsupportedScattering(
-            "A fermion bilinear needs exactly one barred and one unbarred "
-            "spinor; got labels "
-            f"{[l.particle.label if l.particle else '?' for l in pair]}. "
-            "Check the particle/antiparticle labelling (a 'bar'/'~'/'+' "
-            "suffix marks an antiparticle)."
+        labels = [l.particle.label if l.particle else "?" for l in pair]
+        direction = ["incoming" if l.flows_in else "outgoing" for l in pair]
+        raise UnsupportedTopology(
+            f"No vertex joins {labels[0]} ({direction[0]}) and {labels[1]} "
+            f"({direction[1]}): fermion number is not conserved there, so "
+            "this channel's diagram does not exist. Two fermions meet at a "
+            "vertex only as a particle-antiparticle pair (both incoming, or "
+            "both outgoing) or as one line passing through (one incoming, "
+            "one outgoing). e- e- -> e- e- for instance has t- and "
+            "u-channel diagrams but no s-channel one. Check the channel, and "
+            "the particle/antiparticle labelling (a 'bar'/'~'/'+' suffix "
+            "marks an antiparticle)."
         )
     return barred[0], unbarred[0]
 
@@ -816,7 +832,8 @@ def initial_state_multiplicity(diagram: Diagram) -> int:
     return n
 
 
-def cross_section_block(diagram: Diagram) -> str:
+def cross_section_block(diagram: Diagram,
+                       integrate_timeout_s: float = DEFAULT_INTEGRATE_TIMEOUT_S) -> str:
     """The 2->2 master formula, symbolic in s.
 
     sigma = (1/S)(1/N_init) C Int dt |M|^2 / (16 pi lambda(s, m1^2, m2^2))
@@ -849,15 +866,20 @@ def cross_section_block(diagram: Diagram) -> str:
         "",
         "(* dsigma/dt = |M|^2 / (16 pi lambda(s, m1^2, m2^2)) *)",
         "dSigmaDt = ampSqKin colorFactor/(16 Pi lam12 nInit symmetryFactor);",
-        "sigma = Integrate[dSigmaDt, {t, tMin, tMax}];",
-        "sigma = sigma // Simplify;",
-        "",
-        "(* Symbolic integration is not guaranteed to close: a coherent sum of",
-        "   several diagrams gives a rational integrand whose antiderivative can",
-        "   come back Undefined or unevaluated even though the integral is",
-        "   perfectly finite. Say so rather than letting a bad symbol propagate,",
-        "   and provide the numeric route. *)",
-        "If[!FreeQ[sigma, Integrate],",
+        "(* Symbolic integration is bounded. It is not guaranteed to close --",
+        "   a coherent sum gives a rational integrand whose antiderivative can",
+        "   come back Undefined or unevaluated even when the integral is finite",
+        "   -- and with massless-mediator poles it can grind indefinitely.",
+        "   Neither should hang the caller, so cap it and fall through. *)",
+        f"sigmaSym = TimeConstrained[Integrate[dSigmaDt, {{t, tMin, tMax}}], "
+        f"{_fmt_mma(integrate_timeout_s)}, $Failed];",
+        "If[sigmaSym === $Failed,",
+        f"  Print[\"WARNING: the symbolic t-integration exceeded "
+        f"{_fmt_mma(integrate_timeout_s)} s; \" <>",
+        "        \"no closed form. Use sigmaNIntegrate[rules] for a number.\"];",
+        "  sigma = $Failed,",
+        "  sigma = Simplify[sigmaSym]];",
+        "If[sigma =!= $Failed && !FreeQ[sigma, Integrate],",
         "  Print[\"WARNING: the symbolic t-integration did not close. \" <>",
         "        \"Use sigmaNIntegrate[rules] for a number.\"]];",
         "",

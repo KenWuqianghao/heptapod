@@ -385,6 +385,98 @@ def test_numeric_crosscheck():
     return all_passed
 
 
+def test_tool_surface():
+    """The agent-facing tool must reach coherent sums and channel selection.
+
+    Before this, ComputeSymbolicAmplitude exposed neither: every exchange
+    diagram silently became s-channel, and interference was unreachable
+    outside the library. A tool an agent cannot drive correctly is not a
+    tool the campaign can measure.
+    """
+    import json
+    import tempfile
+    from tools.eda.compute_symbolic_amplitude_tool import ComputeSymbolicAmplitude
+
+    print("=" * 60)
+    print("Agent-facing tool surface")
+    print("=" * 60)
+    td = tempfile.mkdtemp()
+    all_passed = True
+
+    def ee():
+        return dict(
+            initial=[{"label": "e", "spin": 0.5, "mass": 0.0},
+                     {"label": "e", "spin": 0.5, "mass": 0.0}],
+            final=[{"label": "e", "spin": 0.5, "mass": 0.0},
+                   {"label": "e", "spin": 0.5, "mass": 0.0}],
+            propagators=[{"label": "ph", "spin": 1, "mass": 0.0}],
+            vertices=[{"type": "vector", "coupling": "g"},
+                      {"type": "vector", "coupling": "g"}])
+
+    def run(**kw):
+        return ComputeSymbolicAmplitude(base_directory=td, **kw)._run()
+
+    # coherent sum with explicit fermion signs
+    r = json.loads(run(diagrams=[dict(ee(), channel="t"), dict(ee(), channel="u")],
+                       relative_signs=[1, -1]))
+    ok = r["status"] == "ok" and r.get("channels") == ["T", "U"] \
+        and r.get("n_diagrams_summed") == 2
+    all_passed = all_passed and ok
+    print(f"  {'[v] PASS' if ok else '[x] FAIL'}: coherent t - u sum reachable "
+          f"from the tool")
+
+    # same sum without signs must refuse
+    r = json.loads(run(diagrams=[dict(ee(), channel="t"), dict(ee(), channel="u")]))
+    ok = r["status"] == "unsupported" and any("FERMIONS" in w for w in r.get("warnings", []))
+    all_passed = all_passed and ok
+    print(f"  {'[v] PASS' if ok else '[x] FAIL'}: identical fermions without "
+          f"relative_signs refused")
+
+    # explicit channel honoured
+    r = json.loads(run(diagram=ee(), channel="t"))
+    ok = r["status"] == "ok" and r.get("channel") == "T"
+    all_passed = all_passed and ok
+    print(f"  {'[v] PASS' if ok else '[x] FAIL'}: explicit channel honoured")
+
+    # omitted channel: refuses AND says the assumption is what failed
+    r = json.loads(run(diagram=ee()))
+    ok = r["status"] == "unsupported" and any("assumed" in w for w in r.get("warnings", []))
+    all_passed = all_passed and ok
+    print(f"  {'[v] PASS' if ok else '[x] FAIL'}: assumed channel named as the "
+          f"cause when it fails")
+
+    # mutually exclusive inputs
+    ok = "Ambiguous Input" in run(diagram=ee(), diagrams=[ee()])
+    all_passed = all_passed and ok
+    print(f"  {'[v] PASS' if ok else '[x] FAIL'}: diagram + diagrams refused")
+
+    # 1 -> 2 with a propagator: the other old silent-nonsense path
+    r = json.loads(run(diagram=dict(
+        initial=[{"label": "A", "spin": 0}],
+        final=[{"label": "f", "spin": 0.5}, {"label": "fbar", "spin": 0.5}],
+        propagators=[{"label": "X", "spin": 1, "mass": 0.0}],
+        vertices=[{"type": "vector", "coupling": "g1"},
+                  {"type": "vector", "coupling": "g2"}])))
+    ok = r["status"] == "unsupported" and any("line-ends" in w for w in r.get("warnings", []))
+    all_passed = all_passed and ok
+    print(f"  {'[v] PASS' if ok else '[x] FAIL'}: 1->2 with a propagator refused "
+          f"with the counting argument")
+
+    # the generated script must bound its own symbolic integration
+    from tools.eda.feyncalc_codegen import SymbolicFeynCalcCodeGenerator
+    from tools.nda.symbolic_diagram import (build_diagram_from_symbolic,
+                                            parse_symbolic_diagram)
+    d = build_diagram_from_symbolic(parse_symbolic_diagram(ee()))
+    code = SymbolicFeynCalcCodeGenerator().generate_sum(
+        [(d, "t"), (d, "u")], relative_signs=[1, -1]).code
+    ok = "TimeConstrained[" in code and "sigmaNIntegrate[" in code
+    all_passed = all_passed and ok
+    print(f"  {'[v] PASS' if ok else '[x] FAIL'}: symbolic integration is "
+          f"time-bounded with a numeric fallback")
+    print()
+    return all_passed
+
+
 def test_literature_anchors():
     """Anchor the harness itself to published results, in their own conventions.
 
@@ -539,6 +631,7 @@ def main():
         ("Harness conventions", test_harness_conventions()),
         ("Structural sweep", test_structural_sweep()),
         ("Loud refusals", test_unsupported_is_loud()),
+        ("Tool surface", test_tool_surface()),
         ("Literature anchors", test_literature_anchors()),
         ("VVV convention detector", test_vvv_convention_consistency()),
     ]

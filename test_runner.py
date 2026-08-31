@@ -414,6 +414,7 @@ def main():
             "scripts": [
                 REPO_ROOT / "tools" / "eda" / "tests" / "test_feyncalc_codegen.py",
                 REPO_ROOT / "tools" / "eda" / "tests" / "test_scattering.py",
+                REPO_ROOT / "tools" / "eda" / "tests" / "test_decay_archetypes.py",
                 REPO_ROOT / "tools" / "eda" / "tests" / "test_symbolic_codegen.py",
                 REPO_ROOT / "tools" / "eda" / "tests" / "test_symbolic_to_python.py",
                 REPO_ROOT / "tools" / "eda" / "tests" / "test_convert_to_python_tool.py",

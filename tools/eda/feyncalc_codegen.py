@@ -664,20 +664,30 @@ class FeynCalcCodeGenerator:
                 )
 
         elif spins == [0, 0, 1]:
-            # SSV
+            # SSV derivative vertex: i g (ka - kb)^mu over the TWO SCALARS,
+            # ALL-INCOMING (see scattering.VVV_CONVENTION_NOTE -- the same
+            # convention governs every momentum-carrying vertex). An outgoing
+            # leg enters as -p.
+            mu = "mu1"
             if (parent.spin or 0) == 1:
-                # V -> S S: parent is the vector
-                mu = "mu1"
+                # V -> S1 S2: both scalars outgoing, so ka - kb = p2 - p1.
                 lines.append(
-                    f"amp = I ({g}) PolarizationVector[{p}, {mu}] FVD[{p1} - {p2}, {mu}];"
+                    f"amp = I ({g}) PolarizationVector[{p}, {mu}] "
+                    f"FVD[{p2} - {p1}, {mu}];"
                 )
             else:
-                # S -> S V: one daughter is the vector
-                mu = "mu1"
+                # S -> S' V: the scalars are the parent (incoming, +p) and the
+                # scalar daughter (outgoing, -ps), so ka - kb = p + ps.
+                #
+                # This WAS `FVD[p - ps]`, using the momenta as drawn. By
+                # momentum conservation p - ps is the vector's own momentum,
+                # and eps(pv) . pv = 0, so the amplitude vanished identically:
+                # heptapod returned ZERO for every S -> S' V decay.
                 v_mom = p1 if (d0.spin or 0) == 1 else p2
                 s_mom = p2 if (d0.spin or 0) == 1 else p1
                 lines.append(
-                    f"amp = I ({g}) PolarizationVector[{v_mom}, {mu}] FVD[{p} - {s_mom}, {mu}];"
+                    f"amp = I ({g}) PolarizationVector[{v_mom}, {mu}] "
+                    f"FVD[{p} + {s_mom}, {mu}];"
                 )
 
         elif spins == [0, 1, 1]:

@@ -134,6 +134,65 @@ ARCHETYPES = {
 }
 
 
+
+# ---------------------------------------------------------------------------
+# Vertex STRUCTURE variants.
+#
+# The ten archetypes above all use the DEFAULT structure at each vertex
+# (yukawa for SFF, vector for VFF). Thirteen structures exist, and the ones
+# below carry the chiral and axial pieces -- where the interference terms
+# live, and where hepbench's own error taxonomy says derivations most often
+# slip. Anchored to the same literature-cited ground truth.
+# ---------------------------------------------------------------------------
+
+VERTEX_VARIANTS = {
+    "SFF pseudoscalar": (
+        dict(initial=[{"label": "S", "spin": 0, "mass": 1240.0}],
+             final=[{"label": "f", "spin": 0.5, "mass": 320.0},
+                    {"label": "fbar", "spin": 0.5, "mass": 320.0}],
+             vertices=[{"type": "pseudoscalar", "coupling": "y"}]),
+        "mS->1240, mf->320, mfbar->320, y->0.54",
+        12.322595987052027, "Djouadi: beta^1 law, not beta^3"),
+    "SFF chiral": (
+        dict(initial=[{"label": "S", "spin": 0, "mass": 1240.0}],
+             final=[{"label": "f1", "spin": 0.5, "mass": 410.0},
+                    {"label": "f2bar", "spin": 0.5, "mass": 95.0}],
+             vertices=[{"type": "chiral", "coupling": {"gL": "yL", "gR": "yR"}}]),
+        "mS->1240, mf1->410, mf2bar->95, yL->0.31, yR->0.78",
+        13.049667657321574, "Djouadi: the +4 yL yR m1 m2 interference term"),
+    "VFF vector-axial": (
+        dict(initial=[{"label": "V", "spin": 1, "mass": 2150.0}],
+             final=[{"label": "f", "spin": 0.5, "mass": 640.0},
+                    {"label": "fbar", "spin": 0.5, "mass": 640.0}],
+             vertices=[{"type": "vector-axial",
+                        "coupling": {"gV": "gV", "gA": "gA"}}]),
+        "mV->2150, mf->640, mfbar->640, gV->0.52, gA->0.36",
+        18.419815247250312, "Barger & Phillips: (1+2x) and (1-4x) factors"),
+    "SFF chiral, F parent": (
+        dict(initial=[{"label": "F", "spin": 0.5, "mass": 880.0}],
+             final=[{"label": "f", "spin": 0.5, "mass": 130.0},
+                    {"label": "S", "spin": 0, "mass": 340.0}],
+             vertices=[{"type": "chiral", "coupling": {"gL": "yL", "gR": "yR"}}]),
+        "mF->880, mf->130, mS->340, yL->0.45, yR->0.18",
+        1.8169652565736776, "Djouadi: t -> b H+ chiral structure"),
+    "VFF chiral, F parent": (
+        dict(initial=[{"label": "F", "spin": 0.5, "mass": 900.0}],
+             final=[{"label": "f", "spin": 0.5, "mass": 180.0},
+                    {"label": "V", "spin": 1, "mass": 240.0}],
+             vertices=[{"type": "chiral", "coupling": {"gL": "gL", "gR": "gR"}}]),
+        "mF->900, mf->180, mV->240, gL->0.58, gR->0.29",
+        42.847094120552605, "Denner: chiral gauge coupling"),
+}
+
+#: Structures with no literature anchor yet. tensor / tensor-chiral are the
+#: real gap: a dipole operator's sigma^{mu nu} k_nu is a Lorentz structure
+#: nothing else here exercises. left-handed, right-handed and axial-vector
+#: are special cases of the chiral and vector-axial forms above (one
+#: coupling set to zero), so they carry little independent risk.
+UNANCHORED_STRUCTURES = ("tensor", "tensor-chiral", "scalar-va",
+                         "axial-vector", "left-handed", "right-handed")
+
+
 def main():
     ws = _wolframscript()
     if not ws:
@@ -146,7 +205,9 @@ def main():
     gen = SymbolicFeynCalcCodeGenerator()
     all_passed = True
 
-    for name, (spec, subs, ref, cite) in ARCHETYPES.items():
+    cases = dict(ARCHETYPES)
+    cases.update(VERTEX_VARIANTS)
+    for name, (spec, subs, ref, cite) in cases.items():
         d = build_diagram_from_symbolic(parse_symbolic_diagram(spec))
         r = gen.generate(d)
         if not r.code:
@@ -178,7 +239,9 @@ def main():
         print(f"           {cite}")
 
     print()
-    print(f"Total: {'all 10 archetypes anchored' if all_passed else 'FAILURES PRESENT'}")
+    print(f"Total: {len(ARCHETYPES)} archetypes + {len(VERTEX_VARIANTS)} vertex "
+          f"variants -- {'all anchored' if all_passed else 'FAILURES PRESENT'}")
+    print(f"Not yet anchored: {', '.join(UNANCHORED_STRUCTURES)}")
     return 0 if all_passed else 1
 
 

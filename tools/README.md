@@ -718,3 +718,71 @@ tool = EnumerateDiagramsTool(
     base_directory="./workspace"
 )
 ```
+
+---
+
+### Literature Tools
+
+Find a paper, get its text, and find out what constrains it. The
+`literature` bundle needs only `pypdfium2`; the search and limit tools use
+`requests` from the base install.
+
+#### ArxivSearchTool / ArxivSourceTool / FetchPaperPDFTool / PDFToTeXTool
+
+**Purpose**: Get the paper. INSPIRE indexes the metadata but serves neither
+the PDF nor the LaTeX source, which is what an agent actually needs to read.
+
+Prefer `ArxivSourceTool` over the PDF path: PDF text extraction mangles
+equations, and equations are the whole point here.
+
+**Example:**
+```python
+from tools.literature.literature_tools import ArxivSourceTool
+
+tool = ArxivSourceTool(arxiv_id="1603.04993", base_directory="./workspace")
+```
+
+#### AdsSearchTool / FindExperimentalLimitsTool / ExtractConstraintsTool
+
+**Purpose**: Ask whether the model is already excluded by measurement.
+
+A model can transcribe its source paper perfectly and still describe a
+region ruled out years earlier. These tools ask whether that has happened.
+
+NASA ADS is used rather than INSPIRE alone for two reasons: it covers the
+published astrophysical and cosmological literature where relic-density,
+direct-detection and supernova-cooling bounds live, and it can search the
+body of a paper, which is where a numeric limit usually sits.
+
+**Example:**
+```python
+from tools.literature.limits_tools import FindExperimentalLimitsTool
+
+tool = FindExperimentalLimitsTool(
+    model_name="S1_LQ_RR",
+    particle_names=["S1"],
+)
+```
+
+Then read the bounds out of a paper you fetched:
+
+```python
+from tools.literature.limits_tools import ExtractConstraintsTool
+
+tool = ExtractConstraintsTool(text_path="papers/1811.11452.txt",
+                              base_directory="./workspace")
+```
+
+Recognises the three ways a limit is normally written — "masses below X TeV
+are excluded", "m > X TeV", "an upper limit of X fb" — and returns each with
+the sentence it came from. Inequalities only count inside a sentence that also
+talks about excluding or constraining, so index ranges and kinematic cuts do
+not become "limits".
+
+Needs `ads_token` for the search tools; without one they return the queries to
+run by hand. `ExtractConstraintsTool` needs no token at all.
+
+**These are a reading aid, not a verdict.** Whether a bound applies depends on
+the assumed production mode, the branching fractions and the analysis's own
+assumptions. Every record keeps its source sentence so a physicist can check
+it.

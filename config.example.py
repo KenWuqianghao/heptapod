@@ -71,3 +71,9 @@ wolframscript_path = "/path/to/wolframscript"
 # MadGraph5_aMC PATH.
 # Example: "/path/to/MG5_aMC_v3.6.6"
 mg5_path = "/path/to/MG5_aMC"
+
+# NASA ADS API token for the literature bundle's ADS search and
+# experimental-limit tools. Register at
+# https://ui.adsabs.harvard.edu/user/settings/token. Optional; the
+# ADS_API_TOKEN environment variable is read when this is None.
+ads_token = None

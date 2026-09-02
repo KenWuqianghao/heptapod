@@ -1,13 +1,42 @@
 # Literature tools
 
-TeX-faithful text extraction from LaTeX-produced PDFs.
+Find a paper, get its text, and find out what constrains it.
+
+| stage | tools |
+|---|---|
+| find it | `ArxivSearchTool`, `AdsSearchTool` |
+| read it | `ArxivSourceTool` (preferred), `PDFToTeXTool` (fallback), `FetchPaperPDFTool` |
+| check it against experiment | `FindExperimentalLimitsTool`, `ExtractConstraintsTool` |
+
+The INSPIRE bundle covers HEP metadata and citations. ADS is here as well
+because it reaches the published astrophysical and cosmological literature —
+where relic-density, direct-detection and supernova-cooling bounds live — and
+because it can search the body of a paper, not just title and abstract.
+
+Most of the document below concerns the PDF→TeX fallback, which is the hardest
+part of the bundle. The other two stages are documented in
+[`../README.md`](../README.md).
 
 ## Why this exists
 
 For papers with an arXiv e-print, the LaTeX source is authoritative and should
 be preferred — nothing recovered from a PDF beats the macros the author
-actually typed. This bundle is the fallback for the cases where no source
-exists: journal-only records, older papers, internal notes, theses.
+actually typed. `ArxivSourceTool` is that preferred path. The PDF→TeX half of
+this bundle is the fallback for the cases where no source exists: journal-only
+records, older papers, internal notes, theses.
+
+## Checking a model against experiment
+
+A model can transcribe its source paper perfectly and still describe a region
+ruled out years earlier. `FindExperimentalLimitsTool` turns a model's field
+content into searches aimed at papers reporting limits on it;
+`ExtractConstraintsTool` pulls the numeric bounds out of those papers, each
+with the sentence it came from.
+
+Both are reading aids. Whether a bound applies depends on the assumed
+production mode, the branching fractions and the analysis's own assumptions —
+so the source sentence travels with every record, and neither tool issues a
+verdict.
 
 ## Why naive PDF text extraction fails on physics
 

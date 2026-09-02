@@ -247,6 +247,21 @@ def check_prerequisites():
 
     return all_ok, has_ollama
 
+def _is_pytest_suite(script_path):
+    """True when a suite expects pytest rather than a direct `python file.py`.
+
+    A standalone suite ends with a `__main__` guard that runs it. A pytest
+    module has none, so executing it defines the test functions and exits
+    without running any of them.
+    """
+    try:
+        with open(script_path, "r", encoding="utf-8", errors="replace") as fh:
+            src = fh.read()
+    except OSError:
+        return False
+    return '__main__' not in src and 'import pytest' in src
+
+
 def run_test_script(script_path, verbose=False, keep_files=False, description=None):
     """
     Run a test script and return success status.
@@ -263,12 +278,19 @@ def run_test_script(script_path, verbose=False, keep_files=False, description=No
     if description:
         print(f">> {description}")
 
-    # Build command
-    cmd = [sys.executable, str(script_path)]
-    if verbose:
-        cmd.append("-v")
-    if keep_files:
-        cmd.append("--keep-files")
+    # Most suites here are standalone scripts with their own __main__, but a
+    # few are pytest modules. Running a pytest module as a script collects
+    # nothing and exits non-zero, which reads as a failure even when every
+    # test passes — so detect that shape and hand it to pytest instead.
+    if _is_pytest_suite(script_path):
+        cmd = [sys.executable, "-m", "pytest", str(script_path)]
+        cmd.append("-v" if verbose else "-q")
+    else:
+        cmd = [sys.executable, str(script_path)]
+        if verbose:
+            cmd.append("-v")
+        if keep_files:
+            cmd.append("--keep-files")
 
     print(f"   Running: {' '.join(cmd)}\n")
 
@@ -388,8 +410,12 @@ def main():
             "description": "INSPIRE tools (paper search, citations, author information)"
         },
         "literature": {
-            "script": REPO_ROOT / "tools" / "literature" / "test_literature.py",
-            "description": "Literature tools (TeX-faithful extraction from LaTeX-produced PDFs)"
+            "scripts": [
+                REPO_ROOT / "tools" / "literature" / "test_literature.py",
+                REPO_ROOT / "tools" / "literature" / "test_arxiv.py",
+                REPO_ROOT / "tools" / "literature" / "test_limits.py",
+            ],
+            "description": "Literature tools (TeX-faithful PDF extraction, arXiv search/source, ADS and experimental limits)"
         },
         "units": {
             "script": REPO_ROOT / "tools" / "units" / "tests" / "test_units.py",

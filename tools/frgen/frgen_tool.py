@@ -25,6 +25,7 @@ from orchestral.tools.base.field_utils import RuntimeField, StateField
 from .frmodel import FeynRulesModel
 from .render import RendererLintError, render_model
 from .structural_validators import run_structural_validators
+from .wolfram_validation_hooks import run_wolfram_validation_hooks
 
 SCHEMA_VERSION = "feynrules-model-1.0"
 
@@ -96,6 +97,26 @@ class GenerateFeynRulesModelTool(BaseTool):
     output_path: Optional[str] = RuntimeField(
         default=None,
         description="Optional .fr output path relative to base_directory",
+    )
+    enable_wolfram_validation: bool = RuntimeField(
+        default=True,
+        description="Run optional Wolfram/FeynRules validation hooks when wolframscript is available",
+    )
+    wolframscript_path: Optional[str] = RuntimeField(
+        default="wolframscript",
+        description="Command/path to wolframscript for optional validation hooks",
+    )
+    feynrules_path: Optional[str] = RuntimeField(
+        default=None,
+        description="Optional FeynRules root path for Wolfram validation hooks",
+    )
+    wolfram_timeout_sec: Optional[int] = RuntimeField(
+        default=180,
+        description="Timeout in seconds for optional Wolfram validation hooks",
+    )
+    wolfram_stall_timeout_sec: Optional[int] = RuntimeField(
+        default=60,
+        description="Inactivity timeout in seconds for optional Wolfram validation hooks",
     )
     # ================================================================ #
 
@@ -192,6 +213,34 @@ class GenerateFeynRulesModelTool(BaseTool):
                 context=rel,
             )
 
+        if bool(self.enable_wolfram_validation):
+            try:
+                wolfram_timeout_sec = int(self.wolfram_timeout_sec or 180)
+                wolfram_stall_timeout_sec = int(self.wolfram_stall_timeout_sec or 60)
+            except (TypeError, ValueError):
+                return self.format_error(
+                    error="Invalid Parameter",
+                    reason=(
+                        "wolfram_timeout_sec and wolfram_stall_timeout_sec must be integers"
+                    ),
+                )
+            wolfram_validation = run_wolfram_validation_hooks(
+                model=model,
+                model_path=dest,
+                base_directory=self.base_directory,
+                wolframscript_path=self.wolframscript_path,
+                feynrules_path=self.feynrules_path or os.environ.get("FEYNRULES_PATH"),
+                timeout_sec=wolfram_timeout_sec,
+                stall_timeout_sec=wolfram_stall_timeout_sec,
+            )
+        else:
+            wolfram_validation = {
+                "schema_version": "wolfram-validation-1.0",
+                "status": "disabled",
+                "reason": "enable_wolfram_validation=False",
+                "checks": [],
+            }
+
         return json.dumps(
             {
                 "status": "ok",
@@ -201,6 +250,7 @@ class GenerateFeynRulesModelTool(BaseTool):
                 "n_particles": len(model.particles),
                 "n_parameters": len(model.parameters),
                 "preview": "\n".join(fr_text.splitlines()[:40]),
+                "wolfram_validation": wolfram_validation,
             },
             indent=2,
         )

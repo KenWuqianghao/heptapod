@@ -64,6 +64,7 @@ from frgen.frmodel import (  # noqa: E402
     Parameter,
     ParticleClass,
 )
+import frgen.wolfram_validation_hooks as wl_hooks  # noqa: E402
 from frgen.wolfram_validation_hooks import (  # noqa: E402
     CHECK_HERMITICITY,
     CHECK_KINETIC_NORM,
@@ -182,10 +183,14 @@ def _write_fake_wolframscript(tmp_path: Path) -> Path:
     return script
 
 
-def test_wolfram_hooks_skip_cleanly_when_binary_is_absent(tmp_path: Path) -> None:
+def test_wolfram_hooks_skip_cleanly_when_binary_is_absent(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     model = _valid_model()
     model_path = tmp_path / "model.fr"
     model_path.write_text('M$ModelName = "EffLRSMHookTest";\n', encoding="utf-8")
+    # Force-disable PATH fallback so "absent" stays absent on Wolfram-enabled hosts.
+    monkeypatch.setattr(wl_hooks.shutil, "which", lambda _name: None)
 
     report = run_wolfram_validation_hooks(
         model=model,
@@ -227,8 +232,12 @@ def test_wolfram_hooks_parse_stubbed_json_payload(
     assert checks[CHECK_NUMERIC_COUPLING]["value"]["gZRq"] == pytest.approx(-0.58)
 
 
-def test_tool_output_includes_wolfram_report_when_unavailable(tmp_path: Path) -> None:
+def test_tool_output_includes_wolfram_report_when_unavailable(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     model_json = _valid_model().model_dump_json()
+    # Force-disable PATH fallback so the tool reports deterministic skip.
+    monkeypatch.setattr(wl_hooks.shutil, "which", lambda _name: None)
     tool = GenerateFeynRulesModelTool(
         model_json=model_json,
         base_directory=str(tmp_path),

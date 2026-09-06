@@ -209,6 +209,12 @@ This checks:
    - Download from [FeynRules website](https://feynrules.irmp.ucl.ac.be/)
    - Extract to a permanent location (e.g., `/path/to/FeynRules_v2.3.49`)
 
+**Cloud note for HEPSIM5 harness work**
+- The compile harness now has a wall-clock watchdog and sextet/high-dimension stall detection.
+- Unit tests use a stub subprocess, so they run without Mathematica.
+- Real end-to-end FeynRules validation still needs an activated Wolfram Engine.
+- Use Ken's shared Grok Bot box for full Wolfram-backed E2E runs.
+
 #### MadGraph5_aMC@NLO
 
 **Required for parton-level event generation.**

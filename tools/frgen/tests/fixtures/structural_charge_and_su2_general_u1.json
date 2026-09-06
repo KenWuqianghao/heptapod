@@ -1,0 +1,86 @@
+{
+  "finding": "General U(1) style miss: Yukawa term uses wrong Higgs charge sign and misses SU(2) epsilon contraction.",
+  "failing_model": {
+    "model_name": "GeneralU1Shape",
+    "info": {
+      "authors": ["HEPSIM5"],
+      "version": "1.0.0",
+      "date": "2026-09-06"
+    },
+    "particles": [
+      {
+        "spin_type": "F",
+        "class_index": 401,
+        "class_name": "qL",
+        "self_conjugate": false,
+        "indices": ["SU2W"],
+        "mass": {"sym": "Mq", "value": "1."},
+        "quantum_numbers": {"X": "1/6"}
+      },
+      {
+        "spin_type": "S",
+        "class_index": 402,
+        "class_name": "H",
+        "self_conjugate": false,
+        "indices": ["SU2W"],
+        "mass": {"sym": "MH", "value": "125."},
+        "quantum_numbers": {"X": "1/2"}
+      },
+      {
+        "spin_type": "F",
+        "class_index": 403,
+        "class_name": "uR",
+        "self_conjugate": false,
+        "mass": {"sym": "Mu", "value": "1."},
+        "quantum_numbers": {"X": "1/3"}
+      }
+    ],
+    "lagrangian_terms": [
+      {"name": "LYuk", "expression": "yU * qL[i] * H[i] * uR"},
+      {"name": "Ltot", "expression": "LYuk"}
+    ]
+  },
+  "passing_model": {
+    "model_name": "GeneralU1ShapeFixed",
+    "info": {
+      "authors": ["HEPSIM5"],
+      "version": "1.0.1",
+      "date": "2026-09-06"
+    },
+    "particles": [
+      {
+        "spin_type": "F",
+        "class_index": 401,
+        "class_name": "qL",
+        "self_conjugate": false,
+        "indices": ["SU2W"],
+        "mass": {"sym": "Mq", "value": "1."},
+        "quantum_numbers": {"X": "1/6"}
+      },
+      {
+        "spin_type": "S",
+        "class_index": 402,
+        "class_name": "H",
+        "self_conjugate": false,
+        "indices": ["SU2W"],
+        "mass": {"sym": "MH", "value": "125."},
+        "quantum_numbers": {"X": "1/2"}
+      },
+      {
+        "spin_type": "F",
+        "class_index": 403,
+        "class_name": "uR",
+        "self_conjugate": false,
+        "mass": {"sym": "Mu", "value": "1."},
+        "quantum_numbers": {"X": "1/3"}
+      }
+    ],
+    "lagrangian_terms": [
+      {
+        "name": "LYuk",
+        "expression": "yU * Eps[i,j] * qL[i] * HC[H][j] * uR"
+      },
+      {"name": "Ltot", "expression": "LYuk"}
+    ]
+  }
+}

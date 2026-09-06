@@ -1,0 +1,26 @@
+{
+  "wrong_json_entries": [
+    {
+      "name": "gZRq",
+      "value": "-kRquark*(ee/sw)*Sqrt[1 - (sw/(cw*kRquark))^2]"
+    },
+    {
+      "name": "gZRl",
+      "value": "-kRlepton*(ee/sw)*Sqrt[1 - (sw/(cw*kRlepton))^2]"
+    }
+  ],
+  "crosscheck_couplings": {
+    "gZRq": "-kRquark*(ee/sw)*Sqrt[1 - (sw/(cw*kRquark))^2]",
+    "gZRl": "-kRlepton*(ee/sw)*Sqrt[1 - (sw/(cw*kRlepton))^2]"
+  },
+  "reference_couplings": {
+    "paper_eq8_quark": "-kRquark*(ee/sw)/Sqrt[1 - (sw/(cw*kRquark))^2]",
+    "paper_eq8_lepton": "-kRlepton*(ee/sw)/Sqrt[1 - (sw/(cw*kRlepton))^2]",
+    "ruiz_quark": "kRquark*ee/sw/Sqrt[1 - (sw/(cw*kRquark))^2]",
+    "ruiz_lepton": "kRlepton*ee/sw/Sqrt[1 - (sw/(cw*kRlepton))^2]"
+  },
+  "chiral_coefficients": {
+    "gZRuL": "(-1/6)*(sw/(cw*kRquark))^2",
+    "gZRuR": "1/2 - (2/3)*(sw/(cw*kRquark))^2"
+  }
+}

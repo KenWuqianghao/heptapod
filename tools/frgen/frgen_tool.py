@@ -24,6 +24,7 @@ from orchestral.tools.base.field_utils import RuntimeField, StateField
 
 from .frmodel import FeynRulesModel
 from .render import RendererLintError, render_model
+from .structural_validators import run_structural_validators
 
 SCHEMA_VERSION = "feynrules-model-1.0"
 
@@ -133,7 +134,23 @@ class GenerateFeynRulesModelTool(BaseTool):
                 ),
             )
 
-        # 3. Render.
+        # 3. Run pure-Python structural validators before rendering.
+        structural_checks = run_structural_validators(model)
+        if not all(bool(check.get("passed")) for check in structural_checks):
+            return json.dumps(
+                {
+                    "status": "lint_failed",
+                    "schema": SCHEMA_VERSION,
+                    "passed": False,
+                    "checks": structural_checks,
+                    "failed_checks": [
+                        check for check in structural_checks if not check.get("passed")
+                    ],
+                },
+                indent=2,
+            )
+
+        # 4. Render.
         try:
             fr_text = render_model(model)
         except RendererLintError as e:
@@ -154,7 +171,7 @@ class GenerateFeynRulesModelTool(BaseTool):
                 reason=str(e),
             )
 
-        # 4. Write into the sandbox.
+        # 5. Write into the sandbox.
         rel = self.output_path or f"models/{_slug(model.model_name)}.fr"
         dest = _safe_join(self.base_directory, rel)
         if dest is None:

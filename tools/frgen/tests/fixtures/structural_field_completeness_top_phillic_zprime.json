@@ -1,0 +1,55 @@
+{
+  "finding": "Top-Phillic-Zprime style miss: V1 appears in interaction terms but has no kinetic or mass term.",
+  "failing_model": {
+    "model_name": "TopPhillicZprimeShape",
+    "info": {
+      "authors": ["HEPSIM5"],
+      "version": "1.0.0",
+      "date": "2026-09-06"
+    },
+    "particles": [
+      {
+        "spin_type": "V",
+        "class_index": 101,
+        "class_name": "V1",
+        "self_conjugate": true,
+        "mass": {"sym": "MV1", "value": "1500."},
+        "width": {"sym": "WV1", "value": "1."},
+        "quantum_numbers": {"X": "0"}
+      }
+    ],
+    "lagrangian_terms": [
+      {
+        "name": "Lint",
+        "expression": "gV * V1[mu] * qLbar[mu] * qL[mu]"
+      },
+      {"name": "Ltot", "expression": "Lint"}
+    ]
+  },
+  "passing_model": {
+    "model_name": "TopPhillicZprimeShapeFixed",
+    "info": {
+      "authors": ["HEPSIM5"],
+      "version": "1.0.1",
+      "date": "2026-09-06"
+    },
+    "particles": [
+      {
+        "spin_type": "V",
+        "class_index": 101,
+        "class_name": "V1",
+        "self_conjugate": true,
+        "mass": {"sym": "MV1", "value": "1500."},
+        "width": {"sym": "WV1", "value": "1."},
+        "quantum_numbers": {"X": "0"}
+      }
+    ],
+    "lagrangian_terms": [
+      {
+        "name": "LkinV1",
+        "expression": "Block[{mu,nu}, -1/4 * DC[V1[nu],mu] * DC[V1[nu],mu] + (MV1^2/2) * V1[mu] * V1[mu]]"
+      },
+      {"name": "Ltot", "expression": "LkinV1"}
+    ]
+  }
+}

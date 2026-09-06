@@ -1,0 +1,50 @@
+{
+  "finding": "EffLRSM style miss: neutral-fermion mass term has no charge-conjugation structure.",
+  "failing_model": {
+    "model_name": "EffLRSMNeutralShape",
+    "info": {
+      "authors": ["HEPSIM5"],
+      "version": "1.0.0",
+      "date": "2026-09-06"
+    },
+    "particles": [
+      {
+        "spin_type": "F",
+        "class_index": 301,
+        "class_name": "N",
+        "self_conjugate": true,
+        "mass": {"sym": "MN", "value": "1000."},
+        "quantum_numbers": {"X": "0"}
+      }
+    ],
+    "lagrangian_terms": [
+      {"name": "LMajorana", "expression": "(MN/2) * N[sp] * N[sp]"},
+      {"name": "Ltot", "expression": "LMajorana"}
+    ]
+  },
+  "passing_model": {
+    "model_name": "EffLRSMNeutralShapeFixed",
+    "info": {
+      "authors": ["HEPSIM5"],
+      "version": "1.0.1",
+      "date": "2026-09-06"
+    },
+    "particles": [
+      {
+        "spin_type": "F",
+        "class_index": 301,
+        "class_name": "N",
+        "self_conjugate": true,
+        "mass": {"sym": "MN", "value": "1000."},
+        "quantum_numbers": {"X": "0"}
+      }
+    ],
+    "lagrangian_terms": [
+      {
+        "name": "LMajorana",
+        "expression": "(MN/2) * anti[CC[N]][sp] * N[sp]"
+      },
+      {"name": "Ltot", "expression": "LMajorana"}
+    ]
+  }
+}

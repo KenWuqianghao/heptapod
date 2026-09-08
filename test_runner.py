@@ -323,7 +323,7 @@ def main():
     )
     parser.add_argument(
         "--only",
-        choices=["prereqs", "conversions", "kinematics", "reconstruction", "delta_r_filter", "feynrules", "mg5", "pythia", "sherpa", "llm", "pdg", "inspire", "literature", "units", "nda", "eda", "feyngraph", "llp", "logging"],
+        choices=["prereqs", "conversions", "kinematics", "reconstruction", "delta_r_filter", "feynrules", "mg5", "pythia", "sherpa", "llm", "pdg", "inspire", "literature", "units", "nda", "wolfram", "eda", "feyngraph", "llp", "logging"],
         help="Run only tests for specified component (prereqs = prerequisites check only)"
     )
     parser.add_argument(
@@ -418,11 +418,19 @@ def main():
                 REPO_ROOT / "tools" / "eda" / "tests" / "test_convert_to_python_tool.py",
                 REPO_ROOT / "tools" / "eda" / "tests" / "test_simplify_result_tool.py",
                 REPO_ROOT / "tools" / "eda" / "tests" / "test_skills_graph.py",
-                REPO_ROOT / "tools" / "eda" / "tests" / "test_wolfram_runner.py",
-                REPO_ROOT / "tools" / "eda" / "tests" / "test_run_wolfram_tool.py",
                 REPO_ROOT / "tools" / "eda" / "tests" / "test_e2e_feyncalc.py",
             ],
-            "description": "EDA tools (FeynCalc codegen, Wolfram runner, symbolic-to-Python conversion)"
+            "description": "EDA tools (FeynCalc codegen, symbolic-to-Python conversion)"
+        },
+        # The generic Wolfram runner behind the eda and feynrules bundles.
+        # Needs wolframscript but no Wolfram add-on package.
+        "wolfram": {
+            "scripts": [
+                REPO_ROOT / "tools" / "wolfram" / "tests" / "test_wolfram_runner.py",
+                REPO_ROOT / "tools" / "wolfram" / "tests" / "test_run_wolfram_tool.py",
+                REPO_ROOT / "tools" / "wolfram" / "tests" / "test_independence.py",
+            ],
+            "description": "Wolfram tools (generic wolframscript execution, structured-result parsing)"
         },
         "llp": {
             "use_pytest": True,

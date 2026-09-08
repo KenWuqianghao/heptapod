@@ -28,7 +28,8 @@ config:
     required: false
   - name: wolframscript_path
     description: Command or absolute path to wolframscript. Required for
-      the feynrules bundle and the eda bundle's Wolfram-backed tools.
+      the wolfram bundle, and for the eda and feynrules bundles, which drive
+      Mathematica through it.
     type: path
     required: false
   - name: cache_enabled
@@ -97,6 +98,15 @@ bundles:
   # ── diagram analysis (NDA) ───────────────────────────────────────
   nda:
     deps: [feyngraph]                    # for EnumerateDiagramsTool, VisualizeDiagramsTool
+
+  # ── generic Wolfram Language execution ───────────────────────────
+  # Runs arbitrary .wl scripts (or inline code) through wolframscript and
+  # parses the optional structured-result markers. Deliberately declares no
+  # pip deps: it is stdlib-only, loads no Wolfram packages, and knows nothing
+  # about what the scripts compute, so it installs on a bare environment.
+  # The eda and feynrules bundles are consumers, not prerequisites.
+  wolfram:
+    requires: [wolframscript_path]
 
   # ── exact symbolic amplitudes via Mathematica/FeynCalc ───────────
   eda:
@@ -203,14 +213,15 @@ tools:
     name: ConvertToPython
     description: Convert a Mathematica symbolic expression to a Python function.
     bundle: eda
-  - module: tools.eda.run_wolfram_tool
+  - module: tools.wolfram.run_wolfram_tool
     name: RunWolframScript
-    description: Execute Mathematica/FeynCalc code via wolframscript.
-    bundle: eda
-  - module: tools.eda.run_wolfram_tool
+    description: Execute Wolfram Language code, or an existing .wl script, via
+      wolframscript. Package-agnostic; a script loads whatever it needs.
+    bundle: [wolfram, eda]
+  - module: tools.wolfram.run_wolfram_tool
     name: RunWolframScriptBatch
-    description: Execute multiple Mathematica/FeynCalc scripts concurrently.
-    bundle: eda
+    description: Execute multiple .wl scripts concurrently via wolframscript.
+    bundle: [wolfram, eda]
   - module: tools.eda.simplify_result_tool
     name: SimplifyResult
     description: Simplify, substitute, or take limits of a Mathematica symbolic

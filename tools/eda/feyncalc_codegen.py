@@ -14,7 +14,7 @@ Supports:
 The generated scripts follow the standard workflow:
   amplitude -> square -> spin/pol sums -> traces -> kinematics -> observable
 and emit SYMBOLIC_RESULT / NUMERICAL_RESULT markers compatible with
-wolfram_runner.py parsing.
+tools/wolfram/wolfram_runner.py parsing.
 """
 
 from dataclasses import dataclass, field

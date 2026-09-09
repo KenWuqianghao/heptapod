@@ -48,6 +48,9 @@ bundles:
   # prebuilt PDFium wheel (Apache-2.0/BSD-3) with no transitive Python
   # dependencies, so this stays clear of the event_gen stack. The glyph
   # table ships with the toolkit; pdflatex is only needed to regenerate it.
+  # Also carries the arXiv tools (search, PDF download, LaTeX e-print). Those
+  # need only `requests` from the base install, not pypdfium2 -- the package
+  # defers its PDF imports so they work on a base install too.
   literature:
     deps: [pypdfium2>=4.30.0]
 
@@ -249,6 +252,23 @@ tools:
     description: Generate a UFO model directory from a FeynRules .fr model file
       by calling Mathematica's `wolframscript`.
     bundle: feynrules
+  - module: tools.literature.literature_tools
+    name: ArxivSearchTool
+    description: Search arXiv for papers (arXiv ids, PDF links, abstracts).
+      Complements the INSPIRE tools, which cover HEP metadata and citations
+      but have no arXiv access.
+    bundle: literature
+  - module: tools.literature.literature_tools
+    name: ArxivSourceTool
+    description: Fetch a paper's LaTeX e-print source from arXiv. Preferred
+      over the PDF path for reading equations, which survive intact in the
+      source and are flattened by PDF text extraction.
+    bundle: literature
+  - module: tools.literature.literature_tools
+    name: FetchPaperPDFTool
+    description: Download an arXiv paper's PDF into the sandbox, for papers
+      arXiv has no e-print source for.
+    bundle: literature
   - module: tools.literature.pdf_to_tex_tool
     name: PDFToTeXTool
     description: Extract TeX-flavoured text from a LaTeX-produced PDF,

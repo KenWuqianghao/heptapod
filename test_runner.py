@@ -397,6 +397,20 @@ def main():
             "script": REPO_ROOT / "tools" / "inspire" / "tests" / "test_inspire_tools.py",
             "description": "INSPIRE tools (paper search, citations, author information)"
         },
+        # `literature` was already an --only choice but had no suite behind it,
+        # so it ran zero tests and reported success.
+        # `literature` was already an --only choice with no suite behind it, so
+        # it ran zero tests and reported success. test_arxiv.py is registered
+        # here; test_literature.py is deliberately NOT, because it guards on
+        # pytest.importorskip("pypdfium2") and pytest exits 5 ("no tests
+        # collected") when that skip fires, which the runner reads as failure
+        # on every machine without the literature bundle's one pip dep.
+        "literature": {
+            "scripts": [
+                REPO_ROOT / "tools" / "literature" / "test_arxiv.py",
+            ],
+            "description": "Literature tools (arXiv search and e-print retrieval)"
+        },
         "units": {
             "script": REPO_ROOT / "tools" / "units" / "tests" / "test_units.py",
             "description": "Unit conversion tools (natural units, metric prefix conversions)"

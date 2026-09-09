@@ -142,7 +142,8 @@ Tools are grouped into **bundles**, so you install only what a workflow needs. B
 | `nda` | Feynman-diagram enumeration + Naive Dimensional Analysis | feyngraph |
 | `eda` | Exact symbolic amplitudes via Mathematica/FeynCalc | `wolframscript_path` |
 | `feynrules` | BSM UFO model generation via FeynRules | `feynrules_path`, `wolframscript_path` |
-| `literature` | arXiv search and LaTeX e-print retrieval, TeX-faithful PDF extraction | pypdfium2 |
+| `arxiv` | arXiv search, PDF retrieval, LaTeX e-print source | — (base install) |
+| `literature` | the arXiv tools, plus TeX-faithful extraction from PDFs arXiv has no source for | pypdfium2 |
 
 Additional domain bundles (e.g. `hepmc`/`delphes` detector simulation, `pythia`-only showering, `llp` long-lived-particle reach studies) ship on their respective feature branches. Inspect [`toolkit.yaml`](toolkit.yaml) for the authoritative, up-to-date list.
 

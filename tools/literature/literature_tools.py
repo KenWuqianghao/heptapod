@@ -34,7 +34,7 @@ from .source_archive import (
     strip_comments,
 )
 
-SCHEMA_VERSION = "literature-1.1"
+SCHEMA_VERSION = "literature-1.2"
 
 _SEARCH_SORT_BY = {"relevance", "submittedDate", "lastUpdatedDate"}
 _SEARCH_SORT_ORDER = {"ascending", "descending"}
@@ -72,6 +72,20 @@ def _pdf_stem(arxiv_id: Optional[str], pdf_url: Optional[str]) -> Optional[str]:
     if pdf_url:
         return "url_" + hashlib.sha1(pdf_url.encode("utf-8")).hexdigest()[:16]
     return None
+
+
+def _paper_dir(base_directory: str, output_dir: Optional[str], stem: str) -> Optional[str]:
+    """Absolute path of the per-paper directory, or None if it escapes.
+
+    Everything retrieved for one paper lives together under
+    ``<output_dir>/<stem>/`` — the PDF, the extracted source tree, and the
+    normalized LaTeX — so a corpus is one directory per paper rather than the
+    same id scattered across three parallel trees.
+    """
+    root = _safe_join(base_directory, output_dir or "papers")
+    if root is None:
+        return None
+    return os.path.join(root, stem)
 
 
 def _sha256_file(path: str) -> str:
@@ -209,7 +223,7 @@ class ArxivSearchTool(BaseTool):
 # ========================= PDF retrieval ======================== #
 
 
-class FetchPaperPDFTool(BaseTool):
+class ArxivPDFTool(BaseTool):
     """
     Download an arXiv paper PDF into the sandbox for later text extraction.
 
@@ -219,17 +233,19 @@ class FetchPaperPDFTool(BaseTool):
         pdf_url: Explicit HTTPS arXiv PDF URL, used only when arxiv_id is not
                  given (must be on an arXiv host). If both are given, arxiv_id
                  wins.
-        output_dir: Directory (relative to base_directory) for the PDF
-                    (default "pdfs").
+        output_dir: Corpus root (relative to base_directory), one directory
+                    per paper beneath it (default "papers").
 
     Behavior:
-        Downloads to {output_dir}/{arxiv_id}.pdf under base_directory, reusing a
-        cached valid PDF if present. Validates the %PDF- header.
+        Downloads to {output_dir}/{arxiv_id}/{arxiv_id}.pdf under
+        base_directory, alongside any source ArxivSourceTool has fetched for
+        the same paper, reusing a cached valid PDF if present. Validates the
+        %PDF- header.
 
     Returns JSON:
-        {"status": "ok", "schema": "literature-1.0", "arxiv_id": "...",
-         "pdf_path": "pdfs/2103.02708.pdf", "bytes": N, "sha256": "...",
-         "cached": false}
+        {"status": "ok", "schema": "literature-1.2", "arxiv_id": "...",
+         "pdf_path": "papers/2103.02708/2103.02708.pdf", "bytes": N,
+         "sha256": "...", "cached": false}
     """
 
     # ======================== Runtime fields ======================== #
@@ -241,7 +257,11 @@ class FetchPaperPDFTool(BaseTool):
         description="Explicit HTTPS arXiv PDF URL; used only when arxiv_id is not given",
     )
     output_dir: Optional[str] = RuntimeField(
-        default="pdfs", description="Directory (relative to base_directory) for the PDF"
+        default="papers",
+        description=(
+            "Corpus root relative to base_directory; the PDF lands in "
+            "<output_dir>/<arxiv_id>/ next to any source fetched for it"
+        ),
     )
     # ================================================================ #
 
@@ -272,20 +292,20 @@ class FetchPaperPDFTool(BaseTool):
                 suggestion="Pass an arxiv_id, or an https://arxiv.org/... PDF URL",
             )
 
-        out_dir = _safe_join(self.base_directory, self.output_dir or "pdfs")
+        stem = _pdf_stem(self.arxiv_id, self.pdf_url)
+        if stem is None:
+            return self.format_error(
+                error="Invalid Parameter",
+                reason="Could not derive a filename from arxiv_id/pdf_url",
+            )
+
+        out_dir = _paper_dir(self.base_directory, self.output_dir, stem)
         if out_dir is None:
             return self.format_error(
                 error="Access Denied",
                 reason="output_dir escapes base_directory",
                 context=self.output_dir,
                 suggestion="Use a relative path inside base_directory",
-            )
-
-        stem = _pdf_stem(self.arxiv_id, self.pdf_url)
-        if stem is None:
-            return self.format_error(
-                error="Invalid Parameter",
-                reason="Could not derive a filename from arxiv_id/pdf_url",
             )
 
         try:
@@ -376,18 +396,19 @@ class ArxivSourceTool(BaseTool):
         the payload (gzipped tar of sources / gzipped single .tex / bare PDF),
         extracts archives with strict safety checks, resolves the main .tex,
         strips % comments, optionally inlines one level of \\input, and writes
-        the normalized LaTeX to text/<id>_source.tex.
+        the normalized LaTeX to <output_dir>/<id>/source.tex. Everything for a
+        paper lands in <output_dir>/<id>/, shared with ArxivPDFTool.
 
     Returns JSON:
         {"status": "ok", "schema": "literature-1.1", "arxiv_id": "...",
          "source_type": "tar"|"single_tex"|"pdf_only",
-         "source_dir": "source/<id>/"?, "main_tex": "source/<id>/ms.tex"?,
-         "tex_path": "text/<id>_source.tex"?, "n_files": N, "chars": M,
+         "source_dir": "papers/<id>/source/"?, "main_tex": ".../ms.tex"?,
+         "tex_path": "papers/<id>/source.tex"?, "n_files": N, "chars": M,
          "preview": "...", "cached": bool}
 
-        source_type "pdf_only" means arXiv has no LaTeX source for this paper;
-        the result includes a suggestion to use FetchPaperPDFTool +
-        PDFToTeXTool instead (this is a normal outcome, not an error).
+        source_type "pdf_only" means arXiv has no LaTeX source for this paper.
+        That is a normal outcome, not an error: the PDF arXiv served instead is
+        saved to "pdf_path" in the same directory, ready for PDFToTeXTool.
     """
 
     # ======================== Runtime fields ======================== #
@@ -395,8 +416,11 @@ class ArxivSourceTool(BaseTool):
         description="arXiv identifier, e.g. '2103.02708' (version suffix optional)"
     )
     output_dir: Optional[str] = RuntimeField(
-        default="source",
-        description="Directory (relative to base_directory) for extracted source files",
+        default="papers",
+        description=(
+            "Corpus root relative to base_directory; this paper's files land in "
+            "<output_dir>/<arxiv_id>/ next to any PDF fetched for it"
+        ),
     )
     inline_one_level: Optional[bool] = RuntimeField(
         default=True,
@@ -425,8 +449,16 @@ class ArxivSourceTool(BaseTool):
         stem = _pdf_stem(self.arxiv_id, None)
 
         base = os.path.realpath(self.base_directory)
-        tex_rel = os.path.join("text", f"{stem}_source.tex")
-        tex_abs = os.path.join(base, tex_rel)
+        paper_dir = _paper_dir(self.base_directory, self.output_dir, stem)
+        if paper_dir is None:
+            return self.format_error(
+                error="Access Denied",
+                reason="output_dir escapes base_directory",
+                context=self.output_dir,
+                suggestion="Use a relative path inside base_directory",
+            )
+        tex_abs = os.path.join(paper_dir, "source.tex")
+        tex_rel = os.path.relpath(tex_abs, base)
 
         # Cache: normalized LaTeX already produced for this id.
         if os.path.isfile(tex_abs) and os.path.getsize(tex_abs) > 0:
@@ -450,14 +482,7 @@ class ArxivSourceTool(BaseTool):
                 indent=2,
             )
 
-        out_dir = _safe_join(self.base_directory, self.output_dir or "source")
-        if out_dir is None:
-            return self.format_error(
-                error="Access Denied",
-                reason="output_dir escapes base_directory",
-                context=self.output_dir,
-            )
-        src_dir = os.path.join(out_dir, stem)
+        src_dir = os.path.join(paper_dir, "source")
 
         # 1. Download the e-print payload.
         try:
@@ -481,20 +506,38 @@ class ArxivSourceTool(BaseTool):
                 if kind == "gzip":  # double-wrapped is not a thing; treat as tex
                     kind = "tex"
             if kind == "pdf":
-                return json.dumps(
-                    {
-                        "status": "ok",
-                        "schema": SCHEMA_VERSION,
-                        "arxiv_id": self.arxiv_id,
-                        "source_type": "pdf_only",
-                        "cached": False,
-                        "suggestion": (
-                            "No LaTeX source on arXiv for this paper; use "
-                            "FetchPaperPDFTool + PDFToTeXTool instead."
-                        ),
-                    },
-                    indent=2,
-                )
+                # arXiv served the PDF because no source was submitted. We
+                # already hold those bytes, so save them under the same
+                # per-paper directory rather than telling the caller to fetch
+                # the identical file again through the 3s rate limiter.
+                result = {
+                    "status": "ok",
+                    "schema": SCHEMA_VERSION,
+                    "arxiv_id": self.arxiv_id,
+                    "source_type": "pdf_only",
+                    "cached": False,
+                }
+                try:
+                    os.makedirs(paper_dir, exist_ok=True)
+                    pdf_abs = os.path.join(paper_dir, f"{stem}.pdf")
+                    with open(pdf_abs, "wb") as fh:
+                        fh.write(data)
+                    result["pdf_path"] = os.path.relpath(pdf_abs, base)
+                    result["bytes"] = len(data)
+                    result["suggestion"] = (
+                        "No LaTeX source on arXiv for this paper. The PDF was "
+                        "saved at pdf_path; run PDFToTeXTool on it to recover "
+                        "TeX-faithful text."
+                    )
+                except OSError as e:
+                    # The PDF is a convenience here, not the result. Report the
+                    # source verdict and let the caller retrieve it separately.
+                    result["pdf_error"] = str(e)
+                    result["suggestion"] = (
+                        "No LaTeX source on arXiv for this paper; use "
+                        "ArxivPDFTool + PDFToTeXTool instead."
+                    )
+                return json.dumps(result, indent=2)
 
             os.makedirs(src_dir, exist_ok=True)
             if kind == "tar":

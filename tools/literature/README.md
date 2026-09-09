@@ -2,10 +2,12 @@
 
 Find a paper, then get its text in a form worth reading.
 
-| stage | tools |
-|---|---|
-| find it | `ArxivSearchTool` |
-| read it | `ArxivSourceTool` (preferred), `PDFToTeXTool` (fallback), `FetchPaperPDFTool` |
+| stage | tools | bundle |
+|---|---|---|
+| find it | `ArxivSearchTool` | `arxiv`, `literature` |
+| read it | `ArxivSourceTool` (preferred) | `arxiv`, `literature` |
+| | `FetchPaperPDFTool` | `arxiv`, `literature` |
+| | `PDFToTeXTool` (fallback) | `literature` |
 
 The INSPIRE bundle covers HEP metadata and citations, and has no arXiv access
 or retrieval of its own, so these are additive rather than overlapping.
@@ -21,13 +23,18 @@ actually typed. `ArxivSourceTool` is that preferred path. The PDF→TeX half of
 this bundle is the fallback for the cases where no source exists: journal-only
 records, older papers, internal notes, theses.
 
-## Installing
+## Two bundles, one directory
 
-The arXiv tools need only `requests`, which is part of the base install. The
-PDF→TeX path needs `pypdfium2`, this bundle's one pip dependency. The package
-defers its PDF imports, so `import tools.literature` and every arXiv tool work
-on a base install; `pdf_to_tex` and `page_to_tex` raise on first use instead,
-naming what to install.
+`heptapod[arxiv]` installs the retrieval tools and **nothing else** — they need
+only `requests`, which is already in the base install.
+`heptapod[literature]` adds the PDF→TeX fallback and its one pip dependency,
+`pypdfium2`.
+
+Both sets of modules live here. A bundle is a grouping rather than a directory
+(the `bsm` bundle likewise spans `tools/analysis/`), and the package defers its
+PDF imports, so an `arxiv`-only install imports cleanly and every arXiv tool
+works. `pdf_to_tex` and `page_to_tex` raise on first use instead, naming what
+to install.
 
 ## Why naive PDF text extraction fails on physics
 

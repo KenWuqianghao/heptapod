@@ -323,7 +323,7 @@ def main():
     )
     parser.add_argument(
         "--only",
-        choices=["prereqs", "conversions", "kinematics", "reconstruction", "delta_r_filter", "feynrules", "mg5", "pythia", "sherpa", "llm", "pdg", "inspire", "literature", "units", "nda", "wolfram", "eda", "feyngraph", "llp", "logging"],
+        choices=["prereqs", "conversions", "kinematics", "reconstruction", "delta_r_filter", "feynrules", "mg5", "pythia", "sherpa", "llm", "pdg", "inspire", "arxiv", "units", "nda", "wolfram", "eda", "feyngraph", "llp", "logging"],
         help="Run only tests for specified component (prereqs = prerequisites check only)"
     )
     parser.add_argument(
@@ -399,17 +399,18 @@ def main():
         },
         # `literature` was already an --only choice but had no suite behind it,
         # so it ran zero tests and reported success.
-        # `literature` was already an --only choice with no suite behind it, so
-        # it ran zero tests and reported success. test_arxiv.py is registered
-        # here; test_literature.py is deliberately NOT, because it guards on
-        # pytest.importorskip("pypdfium2") and pytest exits 5 ("no tests
-        # collected") when that skip fires, which the runner reads as failure
-        # on every machine without the literature bundle's one pip dep.
-        "literature": {
+        # Named for the bundle the suite actually covers. There is no
+        # `literature` component: its only other suite, test_literature.py,
+        # guards on pytest.importorskip("pypdfium2"), and pytest exits 5 ("no
+        # tests collected") when that skip fires, which the runner reads as a
+        # failure on every machine without that pip dep. An --only choice with
+        # nothing runnable behind it reports success while testing nothing,
+        # which is the failure mode this component was added to remove.
+        "arxiv": {
             "scripts": [
                 REPO_ROOT / "tools" / "literature" / "test_arxiv.py",
             ],
-            "description": "Literature tools (arXiv search and e-print retrieval)"
+            "description": "arXiv tools (search, PDF retrieval, LaTeX e-print source)"
         },
         "units": {
             "script": REPO_ROOT / "tools" / "units" / "tests" / "test_units.py",

@@ -1,0 +1,4 @@
+schema_version: 1
+wolframscript_path: /usr/local/bin/wolframscript
+mg5_path: /Users/ynot/code/software/MG5_aMC_v3.6.6
+feynrules_path: /Users/ynot/code/software/FeynRules_v2.3.49

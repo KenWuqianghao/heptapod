@@ -6,7 +6,7 @@ Find a paper, then get its text in a form worth reading.
 |---|---|---|
 | find it | `ArxivSearchTool` | `arxiv`, `literature` |
 | read it | `ArxivSourceTool` (preferred) | `arxiv`, `literature` |
-| | `FetchPaperPDFTool` | `arxiv`, `literature` |
+| | `ArxivPDFTool` | `arxiv`, `literature` |
 | | `PDFToTeXTool` (fallback) | `literature` |
 
 The INSPIRE bundle covers HEP metadata and citations, and has no arXiv access
@@ -14,6 +14,28 @@ or retrieval of its own, so these are additive rather than overlapping.
 
 Most of the document below concerns the PDF→TeX fallback, which is the hardest
 part of the bundle.
+
+## Where files land
+
+One directory per paper, shared by both retrieval tools, under `output_dir`
+(default `papers/`) inside the tool's `base_directory`:
+
+```
+papers/<arxiv_id>/
+  <arxiv_id>.pdf     ArxivPDFTool
+  source.tex         ArxivSourceTool — comments stripped, \input inlined
+  source/            ArxivSourceTool — the extracted e-print archive
+```
+
+The id is the directory name with path separators flattened, so
+`hep-ph/9905221` becomes `hep-ph_9905221`. A version suffix is preserved when
+given, and a bare PDF URL falls back to a hash of the URL, so two different
+sources never collide on one path.
+
+When arXiv has no source for a paper, the e-print endpoint serves the PDF
+itself. `ArxivSourceTool` saves those bytes to `pdf_path` in the same
+directory rather than discarding them and asking you to fetch the identical
+file again through a rate limiter that allows one request every three seconds.
 
 ## Why this exists
 

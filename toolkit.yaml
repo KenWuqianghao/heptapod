@@ -274,9 +274,10 @@ tools:
       source and are flattened by PDF text extraction.
     bundle: [arxiv, literature]
   - module: tools.literature.literature_tools
-    name: FetchPaperPDFTool
+    name: ArxivPDFTool
     description: Download an arXiv paper's PDF into the sandbox, for papers
-      arXiv has no e-print source for.
+      arXiv has no e-print source for. Lands in <output_dir>/<arxiv_id>/
+      alongside anything ArxivSourceTool fetched for the same paper.
     bundle: [arxiv, literature]
   - module: tools.literature.pdf_to_tex_tool
     name: PDFToTeXTool

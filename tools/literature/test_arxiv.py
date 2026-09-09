@@ -35,7 +35,7 @@ from tools.literature.arxiv_interface import (
 )
 from tools.literature.literature_tools import (
     ArxivSearchTool,
-    FetchPaperPDFTool,
+    ArxivPDFTool,
     _safe_join,
 )
 
@@ -163,11 +163,11 @@ def test_atom_parsing() -> bool:
 
 def test_fetch_rejects_bad_url() -> bool:
     print(">> Testing PDF fetch URL allowlist (SSRF guard)...\n")
-    tool = FetchPaperPDFTool(pdf_url="http://evil.example.com/x.pdf", base_directory=str(TEST_DIR))
+    tool = ArxivPDFTool(pdf_url="http://evil.example.com/x.pdf", base_directory=str(TEST_DIR))
     result = tool._run()
     assert "denied" in result.lower() or "error" in result.lower(), result
     # http (non-https) arXiv should also be refused
-    tool2 = FetchPaperPDFTool(pdf_url="http://arxiv.org/pdf/2103.02708.pdf", base_directory=str(TEST_DIR))
+    tool2 = ArxivPDFTool(pdf_url="http://arxiv.org/pdf/2103.02708.pdf", base_directory=str(TEST_DIR))
     assert "denied" in tool2._run().lower()
     print("[✓] URL allowlist test passed\n")
     return True
@@ -175,7 +175,7 @@ def test_fetch_rejects_bad_url() -> bool:
 
 def test_fetch_rejects_invalid_id() -> bool:
     print(">> Testing PDF fetch id validation...\n")
-    tool = FetchPaperPDFTool(arxiv_id="../../etc/passwd", base_directory=str(TEST_DIR))
+    tool = ArxivPDFTool(arxiv_id="../../etc/passwd", base_directory=str(TEST_DIR))
     result = tool._run()
     assert "invalid" in result.lower() or "error" in result.lower(), result
     print("[✓] id validation test passed\n")
@@ -190,20 +190,20 @@ def test_fetch_download_and_cache_mocked() -> bool:
         return_value=_FakeStreamResponse(fake_pdf),
     ):
         r1 = json.loads(
-            FetchPaperPDFTool(arxiv_id="2103.02708", base_directory=str(TEST_DIR))._run()
+            ArxivPDFTool(arxiv_id="2103.02708", base_directory=str(TEST_DIR))._run()
         )
         assert r1["status"] == "ok" and r1["cached"] is False, r1
         assert (TEST_DIR / r1["pdf_path"]).exists()
 
         # Same id again -> cache hit, same hash.
         r1b = json.loads(
-            FetchPaperPDFTool(arxiv_id="2103.02708", base_directory=str(TEST_DIR))._run()
+            ArxivPDFTool(arxiv_id="2103.02708", base_directory=str(TEST_DIR))._run()
         )
         assert r1b["cached"] is True and r1b["sha256"] == r1["sha256"], r1b
 
         # Different id -> different file (no cache collision).
         r2 = json.loads(
-            FetchPaperPDFTool(arxiv_id="1811.07920", base_directory=str(TEST_DIR))._run()
+            ArxivPDFTool(arxiv_id="1811.07920", base_directory=str(TEST_DIR))._run()
         )
         assert r2["status"] == "ok" and r2["pdf_path"] != r1["pdf_path"], r2
 
@@ -212,7 +212,7 @@ def test_fetch_download_and_cache_mocked() -> bool:
         arxiv_interface.requests.Session, "get",
         return_value=_FakeStreamResponse(b"<html>not a pdf</html>"),
     ):
-        r3 = FetchPaperPDFTool(arxiv_id="2000.00001", base_directory=str(TEST_DIR))._run()
+        r3 = ArxivPDFTool(arxiv_id="2000.00001", base_directory=str(TEST_DIR))._run()
         assert "error" in r3.lower() or "not a valid pdf" in r3.lower(), r3
     print("[✓] Download + cache-identity test passed\n")
     return True
@@ -226,7 +226,7 @@ def test_fetch_both_args_precedence() -> bool:
         return_value=_FakeStreamResponse(fake_pdf),
     ):
         r = json.loads(
-            FetchPaperPDFTool(
+            ArxivPDFTool(
                 arxiv_id="2103.02708",
                 pdf_url="https://arxiv.org/pdf/1811.07920.pdf",
                 base_directory=str(TEST_DIR),
@@ -243,7 +243,8 @@ def test_fetch_both_args_precedence() -> bool:
 def test_cache_symlink_not_followed() -> bool:
     print(">> Testing cache does not follow a leaf symlink...\n")
     base = TEST_DIR / "cachebox"
-    pdf_dir = base / "pdfs"
+    # One directory per paper: <base>/papers/<id>/<id>.pdf
+    pdf_dir = base / "papers" / "2103.02708"
     pdf_dir.mkdir(parents=True, exist_ok=True)
     # A malicious symlink at the cache path pointing outside the sandbox.
     outside_pdf = TEST_DIR / "secret.pdf"
@@ -259,7 +260,7 @@ def test_cache_symlink_not_followed() -> bool:
         return_value=_FakeStreamResponse(fake_pdf),
     ):
         r = json.loads(
-            FetchPaperPDFTool(arxiv_id="2103.02708", base_directory=str(base))._run()
+            ArxivPDFTool(arxiv_id="2103.02708", base_directory=str(base))._run()
         )
     assert r["status"] == "ok", r
     assert r["cached"] is False, r  # symlink not served as cache
@@ -416,7 +417,14 @@ def test_arxiv_source_tool_mocked() -> bool:
             ArxivSourceTool(arxiv_id="1811.07920", base_directory=str(TEST_DIR))._run()
         )
     assert r3["status"] == "ok" and r3["source_type"] == "pdf_only", r3
-    assert "FetchPaperPDFTool" in r3.get("suggestion", ""), r3
+    # The e-print WAS the PDF, so it is saved rather than re-fetched: the
+    # bytes are already in hand and arXiv is rate-limited to one request/3s.
+    assert "pdf_path" in r3, r3
+    assert r3["pdf_path"] == "papers/1811.07920/1811.07920.pdf", r3
+    saved = TEST_DIR / r3["pdf_path"]
+    assert saved.is_file() and saved.read_bytes() == b"%PDF-1.4 binary", r3
+    assert r3["bytes"] == len(b"%PDF-1.4 binary"), r3
+    assert "PDFToTeXTool" in r3.get("suggestion", ""), r3
 
     # Malicious archive rejected via the tool path.
     with mock.patch.object(
@@ -462,7 +470,7 @@ def test_path_traversal() -> bool:
     # The PDF-text tool that used to cover this was dropped in favour of
     # PDFToTeXTool, so the check moves to the tool that still writes into the
     # sandbox: a fetch must refuse an output_dir that escapes it.
-    tool = FetchPaperPDFTool(
+    tool = ArxivPDFTool(
         arxiv_id="2103.02708",
         output_dir="../../../../tmp",
         base_directory=str(TEST_DIR),

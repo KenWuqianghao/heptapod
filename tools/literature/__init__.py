@@ -16,8 +16,13 @@ Literature tools: find a paper, then get its text in a form worth reading.
                 TeX-faithful text from the PDF instead -- symbols,
                 sub/superscripts, fractions and radicals come back as TeX
                 macros rather than being flattened into characters that no
-                longer say what they meant. FetchPaperPDFTool retrieves the
+                longer say what they meant. ArxivPDFTool retrieves the
                 PDF that tool reads.
+
+  **Where.**    Everything retrieved for one paper lands together in
+                <output_dir>/<arxiv_id>/ -- the PDF, the extracted source
+                tree, and the normalized LaTeX -- so a corpus is one
+                directory per paper.
 
 IMPORT COST. The arXiv tools need only `requests`, which is a base
 dependency; the PDF path needs pypdfium2, the literature bundle's one pip
@@ -37,7 +42,7 @@ from .arxiv_interface import ArxivInterface
 from .literature_tools import (
     ArxivSearchTool,
     ArxivSourceTool,
-    FetchPaperPDFTool,
+    ArxivPDFTool,
 )
 
 __all__ = [
@@ -45,7 +50,7 @@ __all__ = [
     "ArxivSearchTool",
     # read
     "ArxivSourceTool",
-    "FetchPaperPDFTool",
+    "ArxivPDFTool",
     "PDFToTeXTool",
     "pdf_to_tex",
     "page_to_tex",

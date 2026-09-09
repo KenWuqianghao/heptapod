@@ -165,10 +165,27 @@ def _make_feynrules_tools(base_dir: str) -> list:
     ]
 
 
+def _make_wolfram_tools(base_dir: str) -> list:
+    """Wolfram — generic wolframscript execution (requires Mathematica)."""
+    import config
+    from tools.wolfram import RunWolframScript, RunWolframScriptBatch
+    return [
+        _named(RunWolframScript(
+            base_directory=base_dir,
+            wolframscript_path=config.wolframscript_path,
+        ), "RunWolframScript"),
+        _named(RunWolframScriptBatch(
+            base_directory=base_dir,
+            wolframscript_path=config.wolframscript_path,
+        ), "RunWolframScriptBatch"),
+    ]
+
+
 def _make_eda_tools(base_dir: str) -> list:
     """EDA (Exact Diagrammatic Analysis) — tree-level calculations via FeynCalc (requires Mathematica)."""
     import config
-    from tools.eda import RunWolframScript, RunWolframScriptBatch, ComputeSymbolicAmplitude, ConvertToPython, SimplifyResult, SimplifyResultBatch
+    from tools.wolfram import RunWolframScript, RunWolframScriptBatch
+    from tools.eda import ComputeSymbolicAmplitude, ConvertToPython, SimplifyResult, SimplifyResultBatch
     return [
         _named(RunWolframScript(
             base_directory=base_dir,
@@ -207,7 +224,8 @@ def _make_eda_toolkit_tools(base_dir: str) -> list:
     """
     import config
     from tools.nda import EstimateDecayWidthNDATool, EstimateDecayWidthFormulaNDATool
-    from tools.eda import RunWolframScript, RunWolframScriptBatch, ComputeSymbolicAmplitude, ConvertToPython, SimplifyResult, SimplifyResultBatch
+    from tools.wolfram import RunWolframScript, RunWolframScriptBatch
+    from tools.eda import ComputeSymbolicAmplitude, ConvertToPython, SimplifyResult, SimplifyResultBatch
     from tools.pdg import PDGDatabaseTool
     return [
         # EDA (exact path)
@@ -259,6 +277,41 @@ def _make_nda_toolkit_tools(base_dir: str) -> list:
     ]
 
 
+def _make_llp_tools(base_dir: str) -> list:
+    """LLP reach tools -- the Pythia-driven forward-flux pipeline.
+
+    Pure Python + numpy + yaml; no external software. Chain:
+    harvest a Pythia forward flux -> decay parents to the LLP with a
+    declared spectrum (decay-in-flight vertices) -> decay-in-volume yields
+    with exact g^2 reweighting. The collider vs beam-dump setting lives
+    entirely in the geometry / normalization data products the tools
+    consume, so the same group serves both.
+    """
+    from tools.llp import (HarvestForwardFluxTool, MesonDecayToLLPTool,
+                           DecayInVolumeVsCouplingTool,
+                           DecayInVolumeVsLifetimeTool)
+    return [
+        _named(HarvestForwardFluxTool(base_directory=base_dir), "HarvestForwardFlux"),
+        _named(MesonDecayToLLPTool(base_directory=base_dir),    "MesonDecayToLLP"),
+        _named(DecayInVolumeVsCouplingTool(base_directory=base_dir), "DecayInVolumeVsCoupling"),
+        _named(DecayInVolumeVsLifetimeTool(base_directory=base_dir), "DecayInVolumeVsLifetime"),
+    ]
+
+
+def _make_pythia_tools(base_dir: str) -> list:
+    """Pythia8 event generation (run card -> event JSONL) + jet clustering.
+
+    A lightweight subset of `event_gen` (no MadGraph/Sherpa import), for
+    workflows that only need to generate/shower events -- e.g. the LLP
+    forward-flux generation that feeds the `llp` group.
+    """
+    from tools.pythia import PythiaFromRunCardTool, JetClusterSlowJetTool
+    return [
+        _named(PythiaFromRunCardTool(base_directory=base_dir), "PythiaFromRunCard"),
+        _named(JetClusterSlowJetTool(base_directory=base_dir), "JetClusterSlowJet"),
+    ]
+
+
 # ================================================================== #
 # ======================== Group Registry ========================== #
 # ================================================================== #
@@ -269,15 +322,18 @@ TOOL_GROUPS: dict[str, Callable[[str], list]] = {
     "nda":              _make_nda_tools,
     "units":            _make_units_tools,
     "analysis":         _make_analysis_tools,
+    "llp":              _make_llp_tools,
+    "pythia":           _make_pythia_tools,
     "event_gen":        _make_event_gen_tools,
     "feynrules":        _make_feynrules_tools,
+    "wolfram":          _make_wolfram_tools,
     "eda":              _make_eda_tools,
     "nda_toolkit":              _make_nda_toolkit_tools,
     "eda_toolkit":              _make_eda_toolkit_tools,
 }
 
 # Groups that work out of the box (no external software)
-LIGHTWEIGHT_GROUPS = ["pdg", "inspire", "nda", "units"]
+LIGHTWEIGHT_GROUPS = ["pdg", "inspire", "nda", "units", "llp"]
 
 
 def get_available_groups(base_dir: str | None = None) -> list[str]:

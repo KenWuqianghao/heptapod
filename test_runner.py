@@ -230,7 +230,7 @@ def check_prerequisites():
 
     # Check essential directories
     print("\n>> Checking project structure...")
-    essential_dirs = ['tools', 'examples', 'llm']
+    essential_dirs = ['prompts', 'tools', 'examples', 'llm']
     for dir_name in essential_dirs:
         dir_path = REPO_ROOT / dir_name
         if dir_path.exists():
@@ -262,7 +262,8 @@ def _is_pytest_suite(script_path):
     return '__main__' not in src and 'import pytest' in src
 
 
-def run_test_script(script_path, verbose=False, keep_files=False, description=None):
+def run_test_script(script_path, verbose=False, keep_files=False, description=None,
+                    use_pytest=False):
     """
     Run a test script and return success status.
 
@@ -271,6 +272,7 @@ def run_test_script(script_path, verbose=False, keep_files=False, description=No
         verbose: If True, pass -v flag to the script
         keep_files: If True, pass --keep-files flag to the script
         description: Optional description of what's being tested
+        use_pytest: Force pytest for this suite, whatever the file looks like
 
     Returns:
         True if tests passed, False otherwise
@@ -278,13 +280,24 @@ def run_test_script(script_path, verbose=False, keep_files=False, description=No
     if description:
         print(f">> {description}")
 
-    # Most suites here are standalone scripts with their own __main__, but a
-    # few are pytest modules. Running a pytest module as a script collects
-    # nothing and exits non-zero, which reads as a failure even when every
-    # test passes — so detect that shape and hand it to pytest instead.
-    if _is_pytest_suite(script_path):
-        cmd = [sys.executable, "-m", "pytest", str(script_path)]
-        cmd.append("-v" if verbose else "-q")
+    # Two ways a suite can need pytest, and they catch different files.
+    #
+    #   use_pytest        declared per bundle in TEST_SUITES. Needed for a
+    #                     suite that HAS a `__main__` guard yet still must run
+    #                     under pytest, because its tests share fixtures built
+    #                     by earlier tests in the same file (the llp suites).
+    #   _is_pytest_suite  inferred. Catches a pytest module with no `__main__`
+    #                     guard at all, which running as a script would define
+    #                     and then exit without executing a single test (the
+    #                     literature suite added here).
+    #
+    # Neither subsumes the other, so a suite runs under pytest if either says
+    # so.
+    if use_pytest or _is_pytest_suite(script_path):
+        cmd = [sys.executable, "-m", "pytest", "-q", str(script_path)]
+        if verbose:
+            cmd.append("-v")
+        return_on = None
     else:
         cmd = [sys.executable, str(script_path)]
         if verbose:
@@ -335,7 +348,7 @@ def main():
     )
     parser.add_argument(
         "--only",
-        choices=["prereqs", "conversions", "kinematics", "reconstruction", "delta_r_filter", "feynrules", "mg5", "pythia", "sherpa", "llm", "pdg", "inspire", "literature", "units", "nda", "eda", "feyngraph", "logging"],
+        choices=["prereqs", "conversions", "kinematics", "reconstruction", "delta_r_filter", "feynrules", "mg5", "pythia", "sherpa", "llm", "pdg", "inspire", "literature", "units", "nda", "wolfram", "eda", "feyngraph", "llp", "logging"],
         help="Run only tests for specified component (prereqs = prerequisites check only)"
     )
     parser.add_argument(
@@ -433,16 +446,40 @@ def main():
         "eda": {
             "scripts": [
                 REPO_ROOT / "tools" / "eda" / "tests" / "test_feyncalc_codegen.py",
+                REPO_ROOT / "tools" / "eda" / "tests" / "test_scattering.py",
+                REPO_ROOT / "tools" / "eda" / "tests" / "test_decay_archetypes.py",
                 REPO_ROOT / "tools" / "eda" / "tests" / "test_symbolic_codegen.py",
                 REPO_ROOT / "tools" / "eda" / "tests" / "test_symbolic_to_python.py",
                 REPO_ROOT / "tools" / "eda" / "tests" / "test_convert_to_python_tool.py",
                 REPO_ROOT / "tools" / "eda" / "tests" / "test_simplify_result_tool.py",
                 REPO_ROOT / "tools" / "eda" / "tests" / "test_skills_graph.py",
-                REPO_ROOT / "tools" / "eda" / "tests" / "test_wolfram_runner.py",
-                REPO_ROOT / "tools" / "eda" / "tests" / "test_run_wolfram_tool.py",
                 REPO_ROOT / "tools" / "eda" / "tests" / "test_e2e_feyncalc.py",
             ],
-            "description": "EDA tools (FeynCalc codegen, Wolfram runner, symbolic-to-Python conversion)"
+            "description": "EDA tools (FeynCalc codegen, symbolic-to-Python conversion)"
+        },
+        # The generic Wolfram runner behind the eda and feynrules bundles.
+        # Needs wolframscript but no Wolfram add-on package.
+        "wolfram": {
+            "scripts": [
+                REPO_ROOT / "tools" / "wolfram" / "tests" / "test_wolfram_runner.py",
+                REPO_ROOT / "tools" / "wolfram" / "tests" / "test_run_wolfram_tool.py",
+                REPO_ROOT / "tools" / "wolfram" / "tests" / "test_independence.py",
+            ],
+            "description": "Wolfram tools (generic wolframscript execution, structured-result parsing)"
+        },
+        "llp": {
+            "use_pytest": True,
+            # f0b735f split test_llp_tools.py into per-tool suites; this
+            # entry still named the deleted file, so the runner reported
+            # FAIL for a bundle whose tests all pass.
+            "scripts": [
+                REPO_ROOT / "tools" / "llp" / "tests" / "test_decay_in_volume.py",
+                REPO_ROOT / "tools" / "llp" / "tests" / "test_harvest_forward_flux.py",
+                REPO_ROOT / "tools" / "llp" / "tests" / "test_llp_physics.py",
+                REPO_ROOT / "tools" / "llp" / "tests" / "test_meson_decay_to_llp.py",
+                REPO_ROOT / "tools" / "llp" / "tests" / "test_production_spectrum.py",
+            ],
+            "description": "LLP tools (flux sampling from meson decay, decay-in-volume yields, g^4 scaling)",
         },
         "logging": {
             "script": REPO_ROOT / "tools" / "logging" / "tests" / "test_findings.py",
@@ -489,7 +526,8 @@ def main():
                 script_path,
                 verbose=args.verbose,
                 keep_files=args.keep_files,
-                description=description
+                description=description,
+                use_pytest=config.get("use_pytest", False),
             )
             if not success:
                 all_passed = False

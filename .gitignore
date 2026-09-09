@@ -55,8 +55,10 @@ tools/*/test_files/data*/
 # are not source and must never reach a release archive.
 tools/*/test_files_*/
 
-# Agent wiring and the resolved loadout written by `tb connect` -- per-clone,
-# and they name paths in YOUR environment, so they do not transfer between
+# Agent wiring, the resolved loadout, and per-toolkit config written by
+# `tb connect` / `tb config set` -- per-clone, and they name paths in YOUR
+# environment (wolframscript, MG5, FeynRules), so they do not transfer between
 # machines. Same rationale as /.mcp.json and /.codex/ above.
 /.agents/
 /.toolbase/loadouts/
+/.toolbase/config/

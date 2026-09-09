@@ -1,13 +1,33 @@
 # Literature tools
 
-TeX-faithful text extraction from LaTeX-produced PDFs.
+Find a paper, then get its text in a form worth reading.
+
+| stage | tools |
+|---|---|
+| find it | `ArxivSearchTool` |
+| read it | `ArxivSourceTool` (preferred), `PDFToTeXTool` (fallback), `FetchPaperPDFTool` |
+
+The INSPIRE bundle covers HEP metadata and citations, and has no arXiv access
+or retrieval of its own, so these are additive rather than overlapping.
+
+Most of the document below concerns the PDF→TeX fallback, which is the hardest
+part of the bundle.
 
 ## Why this exists
 
 For papers with an arXiv e-print, the LaTeX source is authoritative and should
 be preferred — nothing recovered from a PDF beats the macros the author
-actually typed. This bundle is the fallback for the cases where no source
-exists: journal-only records, older papers, internal notes, theses.
+actually typed. `ArxivSourceTool` is that preferred path. The PDF→TeX half of
+this bundle is the fallback for the cases where no source exists: journal-only
+records, older papers, internal notes, theses.
+
+## Installing
+
+The arXiv tools need only `requests`, which is part of the base install. The
+PDF→TeX path needs `pypdfium2`, this bundle's one pip dependency. The package
+defers its PDF imports, so `import tools.literature` and every arXiv tool work
+on a base install; `pdf_to_tex` and `page_to_tex` raise on first use instead,
+naming what to install.
 
 ## Why naive PDF text extraction fails on physics
 

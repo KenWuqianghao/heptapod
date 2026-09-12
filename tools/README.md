@@ -799,7 +799,7 @@ Find a paper, get its text, and find out what constrains it. The
 `literature` bundle needs only `pypdfium2`; the search and limit tools use
 `requests` from the base install.
 
-#### ArxivSearchTool / ArxivSourceTool / FetchPaperPDFTool / PDFToTeXTool
+#### ArxivSearchTool / ArxivSourceTool / ArxivPDFTool / PDFToTeXTool
 
 **Purpose**: Get the paper. INSPIRE indexes the metadata but serves neither
 the PDF nor the LaTeX source, which is what an agent actually needs to read.

@@ -1,5 +1,5 @@
 name: heptapod
-version: 2.6.0
+version: 2.8.0
 description: An open-source agentic toolkit for high-energy physics.
 author: Tony Menzo
 license: GPL-3.0
@@ -36,14 +36,6 @@ config:
     description: Enable INSPIRE query caching.
     type: boolean
     default: false
-  - name: ads_token
-    description: NASA ADS API token, used by the literature bundle's ADS
-      search and experimental-limit tools. Free to register at
-      https://ui.adsabs.harvard.edu/user/settings/token. Falls back to the
-      ADS_API_TOKEN environment variable. Without it the limit tools still
-      return the queries to run by hand.
-    type: string
-    required: false
 bundles:
   # ── lightweight / always-available ───────────────────────────────
   units: {}                              # pure python; nothing to install
@@ -52,18 +44,24 @@ bundles:
     deps: [pdg>=0.2.0]                   # PDG database API
 
   # ── literature ───────────────────────────────────────────────────
-  # Find a paper, get its text, and find what constrains it.
-  #
   # TeX-faithful text extraction from LaTeX-produced PDFs. pypdfium2 is a
   # prebuilt PDFium wheel (Apache-2.0/BSD-3) with no transitive Python
   # dependencies, so this stays clear of the event_gen stack. The glyph
   # table ships with the toolkit; pdflatex is only needed to regenerate it.
-  #
-  # Also: arXiv search and LaTeX e-print retrieval (preferred over the PDF
-  # path, since the equations survive), NASA ADS search for the published
-  # astrophysical and cosmological literature, and the experimental-limit
-  # tools that ask whether a model is already excluded. Those add no
-  # dependency of their own — they use `requests` from the base install.
+  # ── paper retrieval from arXiv ───────────────────────────────────
+  # Search, PDF download, LaTeX e-print source. Declares no deps: it needs
+  # only `requests` from the base install. The modules live under
+  # tools/literature/ (a bundle is a grouping, not a directory -- cf. `bsm`
+  # over tools/analysis/), and that package defers its PDF imports, so an
+  # arxiv-only install imports and runs without pypdfium2.
+  arxiv: {}
+
+  # PDF -> TeX extraction, for the papers arXiv has no source for. Carries the
+  # arXiv tools too, since fetching a paper's source and reconstructing text
+  # from its PDF are two halves of one job; pypdfium2 is needed only for the
+  # second half. Also the NASA ADS search and the experimental-limit tools
+  # that ask whether a model is already excluded; those need only `requests`
+  # and an ADS token (`ads_token` in config, or ADS_API_TOKEN).
   literature:
     deps: [pypdfium2>=4.30.0]
 
@@ -265,27 +263,24 @@ tools:
     description: Generate a UFO model directory from a FeynRules .fr model file
       by calling Mathematica's `wolframscript`.
     bundle: feynrules
-  - module: tools.literature.pdf_to_tex_tool
-    name: PDFToTeXTool
-    description: Extract TeX-flavoured text from a LaTeX-produced PDF,
-      recovering symbols, sub/superscripts, fractions and radicals as TeX
-      macros. Writes to a file and returns a summary. Use when arXiv has no
-      e-print source; prefer ArxivSourceTool when it does.
-    bundle: literature
   - module: tools.literature.literature_tools
     name: ArxivSearchTool
-    description: Search arXiv for physics papers (arXiv ids, PDF links,
-      abstracts).
-    bundle: literature
+    description: Search arXiv for papers (arXiv ids, PDF links, abstracts).
+      Complements the INSPIRE tools, which cover HEP metadata and citations
+      but have no arXiv access.
+    bundle: [arxiv, literature]
   - module: tools.literature.literature_tools
     name: ArxivSourceTool
-    description: Fetch a paper's LaTeX source from arXiv (e-print). Preferred
-      over the PDF path, because the equations survive intact.
-    bundle: literature
+    description: Fetch a paper's LaTeX e-print source from arXiv. Preferred
+      over the PDF path for reading equations, which survive intact in the
+      source and are flattened by PDF text extraction.
+    bundle: [arxiv, literature]
   - module: tools.literature.literature_tools
-    name: FetchPaperPDFTool
-    description: Download an arXiv paper PDF into the sandbox.
-    bundle: literature
+    name: ArxivPDFTool
+    description: Download an arXiv paper's PDF into the sandbox, for papers
+      arXiv has no e-print source for. Lands in <output_dir>/<arxiv_id>/
+      alongside anything ArxivSourceTool fetched for the same paper.
+    bundle: [arxiv, literature]
   - module: tools.literature.limits_tools
     name: AdsSearchTool
     description: Search NASA ADS, including full text. Reaches the published
@@ -302,6 +297,12 @@ tools:
     name: ExtractConstraintsTool
     description: Extract reported experimental limits (mass, cross-section,
       coupling) from a paper's text, each with the sentence it came from.
+    bundle: literature
+  - module: tools.literature.pdf_to_tex_tool
+    name: PDFToTeXTool
+    description: Extract TeX-flavoured text from a LaTeX-produced PDF,
+      recovering symbols, sub/superscripts, fractions and radicals as TeX
+      macros. Writes to a file and returns a summary.
     bundle: literature
   - module: tools.inspire.inspire_tools
     name: InspireAuthorTool

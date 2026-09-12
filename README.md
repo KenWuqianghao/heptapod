@@ -142,7 +142,8 @@ Tools are grouped into **bundles**, so you install only what a workflow needs. B
 | `nda` | Feynman-diagram enumeration + Naive Dimensional Analysis | feyngraph |
 | `eda` | Exact symbolic amplitudes via Mathematica/FeynCalc | `wolframscript_path` |
 | `feynrules` | BSM UFO model generation via FeynRules | `feynrules_path`, `wolframscript_path` |
-| `literature` | arXiv search and LaTeX e-print retrieval, TeX-faithful PDF extraction, ADS search, experimental-limit lookup | pypdfium2 |
+| `arxiv` | arXiv search, PDF retrieval, LaTeX e-print source | — (base install) |
+| `literature` | the arXiv tools, TeX-faithful extraction from PDFs arXiv has no source for, NASA ADS search, and experimental-limit lookup | pypdfium2 |
 
 Additional domain bundles (e.g. `hepmc`/`delphes` detector simulation, `pythia`-only showering, `llp` long-lived-particle reach studies) ship on their respective feature branches. Inspect [`toolkit.yaml`](toolkit.yaml) for the authoritative, up-to-date list.
 
@@ -179,8 +180,8 @@ tb config set heptapod base_directory /path/to/workspace          # sandbox root
 tb config set heptapod mg5_path /path/to/MG5_aMC_v3.6.6           # event generation (mg5 bundle)
 tb config set heptapod wolframscript_path /path/to/wolframscript  # eda / feynrules
 tb config set heptapod feynrules_path /path/to/FeynRules_v2.3.49  # feynrules
+tb config set heptapod ads_token YOUR_ADS_TOKEN                  # literature: NASA ADS search (optional)
 tb config set heptapod delphes_path /path/to/Delphes             # delphes bundle (if installed)
-tb config set heptapod ads_token YOUR_ADS_TOKEN                  # literature: NASA ADS search
 
 tb config show heptapod                                          # view effective config
 tb config validate heptapod                                     # check required fields

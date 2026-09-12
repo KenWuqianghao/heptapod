@@ -247,21 +247,6 @@ def check_prerequisites():
 
     return all_ok, has_ollama
 
-def _is_pytest_suite(script_path):
-    """True when a suite expects pytest rather than a direct `python file.py`.
-
-    A standalone suite ends with a `__main__` guard that runs it. A pytest
-    module has none, so executing it defines the test functions and exits
-    without running any of them.
-    """
-    try:
-        with open(script_path, "r", encoding="utf-8", errors="replace") as fh:
-            src = fh.read()
-    except OSError:
-        return False
-    return '__main__' not in src and 'import pytest' in src
-
-
 def run_test_script(script_path, verbose=False, keep_files=False, description=None,
                     use_pytest=False):
     """
@@ -272,7 +257,6 @@ def run_test_script(script_path, verbose=False, keep_files=False, description=No
         verbose: If True, pass -v flag to the script
         keep_files: If True, pass --keep-files flag to the script
         description: Optional description of what's being tested
-        use_pytest: Force pytest for this suite, whatever the file looks like
 
     Returns:
         True if tests passed, False otherwise
@@ -280,20 +264,11 @@ def run_test_script(script_path, verbose=False, keep_files=False, description=No
     if description:
         print(f">> {description}")
 
-    # Two ways a suite can need pytest, and they catch different files.
-    #
-    #   use_pytest        declared per bundle in TEST_SUITES. Needed for a
-    #                     suite that HAS a `__main__` guard yet still must run
-    #                     under pytest, because its tests share fixtures built
-    #                     by earlier tests in the same file (the llp suites).
-    #   _is_pytest_suite  inferred. Catches a pytest module with no `__main__`
-    #                     guard at all, which running as a script would define
-    #                     and then exit without executing a single test (the
-    #                     literature suite added here).
-    #
-    # Neither subsumes the other, so a suite runs under pytest if either says
-    # so.
-    if use_pytest or _is_pytest_suite(script_path):
+    # Build command. `use_pytest` suites are ordinary pytest modules rather
+    # than self-running scripts: their tests share fixtures built by earlier
+    # tests in the same file, so executing the file directly fails on a clean
+    # checkout while pytest collects and orders them correctly.
+    if use_pytest:
         cmd = [sys.executable, "-m", "pytest", "-q", str(script_path)]
         if verbose:
             cmd.append("-v")
@@ -348,7 +323,7 @@ def main():
     )
     parser.add_argument(
         "--only",
-        choices=["prereqs", "conversions", "kinematics", "reconstruction", "delta_r_filter", "feynrules", "mg5", "pythia", "sherpa", "llm", "pdg", "inspire", "literature", "units", "nda", "wolfram", "eda", "feyngraph", "llp", "logging"],
+        choices=["prereqs", "conversions", "kinematics", "reconstruction", "delta_r_filter", "feynrules", "mg5", "pythia", "sherpa", "llm", "pdg", "inspire", "arxiv", "literature", "units", "nda", "wolfram", "eda", "feyngraph", "llp", "logging"],
         help="Run only tests for specified component (prereqs = prerequisites check only)"
     )
     parser.add_argument(
@@ -422,13 +397,26 @@ def main():
             "script": REPO_ROOT / "tools" / "inspire" / "tests" / "test_inspire_tools.py",
             "description": "INSPIRE tools (paper search, citations, author information)"
         },
+        # Named for the bundle the suite actually covers. test_literature.py
+        # (the PDF path) is deliberately NOT registered anywhere: it guards on
+        # pytest.importorskip("pypdfium2"), and pytest exits 5 ("no tests
+        # collected") when that skip fires, which the runner reads as a
+        # failure on every machine without that pip dep.
+        "arxiv": {
+            "scripts": [
+                REPO_ROOT / "tools" / "literature" / "test_arxiv.py",
+            ],
+            "description": "arXiv tools (search, PDF retrieval, LaTeX e-print source)"
+        },
+        # The other half of the literature bundle. test_limits.py is a
+        # self-running script against a stubbed ADS session, so it needs no
+        # token, no network and no pypdfium2, and it always collects tests --
+        # which is what an --only choice must guarantee before it exists.
         "literature": {
             "scripts": [
-                REPO_ROOT / "tools" / "literature" / "test_literature.py",
-                REPO_ROOT / "tools" / "literature" / "test_arxiv.py",
                 REPO_ROOT / "tools" / "literature" / "test_limits.py",
             ],
-            "description": "Literature tools (TeX-faithful PDF extraction, arXiv search/source, ADS and experimental limits)"
+            "description": "Literature tools beyond arXiv (NASA ADS search, experimental-limit lookup and extraction)"
         },
         "units": {
             "script": REPO_ROOT / "tools" / "units" / "tests" / "test_units.py",

@@ -1,21 +1,43 @@
 # Literature tools
 
-Find a paper, get its text, and find out what constrains it.
+Find a paper, get its text in a form worth reading, and find out what constrains it.
 
-| stage | tools |
-|---|---|
-| find it | `ArxivSearchTool`, `AdsSearchTool` |
-| read it | `ArxivSourceTool` (preferred), `PDFToTeXTool` (fallback), `FetchPaperPDFTool` |
-| check it against experiment | `FindExperimentalLimitsTool`, `ExtractConstraintsTool` |
+| stage | tools | bundle |
+|---|---|---|
+| find it | `ArxivSearchTool` | `arxiv`, `literature` |
+| | `AdsSearchTool` | `literature` |
+| read it | `ArxivSourceTool` (preferred) | `arxiv`, `literature` |
+| | `ArxivPDFTool` | `arxiv`, `literature` |
+| | `PDFToTeXTool` (fallback) | `literature` |
+| check it against experiment | `FindExperimentalLimitsTool`, `ExtractConstraintsTool` | `literature` |
 
-The INSPIRE bundle covers HEP metadata and citations. ADS is here as well
-because it reaches the published astrophysical and cosmological literature —
-where relic-density, direct-detection and supernova-cooling bounds live — and
-because it can search the body of a paper, not just title and abstract.
+The INSPIRE bundle covers HEP metadata and citations, and has no arXiv access
+or retrieval of its own, so these are additive rather than overlapping.
 
 Most of the document below concerns the PDF→TeX fallback, which is the hardest
-part of the bundle. The other two stages are documented in
-[`../README.md`](../README.md).
+part of the bundle.
+
+## Where files land
+
+One directory per paper, shared by both retrieval tools, under `output_dir`
+(default `papers/`) inside the tool's `base_directory`:
+
+```
+papers/<arxiv_id>/
+  <arxiv_id>.pdf     ArxivPDFTool
+  source.tex         ArxivSourceTool — comments stripped, \input inlined
+  source/            ArxivSourceTool — the extracted e-print archive
+```
+
+The id is the directory name with path separators flattened, so
+`hep-ph/9905221` becomes `hep-ph_9905221`. A version suffix is preserved when
+given, and a bare PDF URL falls back to a hash of the URL, so two different
+sources never collide on one path.
+
+When arXiv has no source for a paper, the e-print endpoint serves the PDF
+itself. `ArxivSourceTool` saves those bytes to `pdf_path` in the same
+directory rather than discarding them and asking you to fetch the identical
+file again through a rate limiter that allows one request every three seconds.
 
 ## Why this exists
 
@@ -24,6 +46,19 @@ be preferred — nothing recovered from a PDF beats the macros the author
 actually typed. `ArxivSourceTool` is that preferred path. The PDF→TeX half of
 this bundle is the fallback for the cases where no source exists: journal-only
 records, older papers, internal notes, theses.
+
+## Two bundles, one directory
+
+`heptapod[arxiv]` installs the retrieval tools and **nothing else** — they need
+only `requests`, which is already in the base install.
+`heptapod[literature]` adds the PDF→TeX fallback and its one pip dependency,
+`pypdfium2`.
+
+Both sets of modules live here. A bundle is a grouping rather than a directory
+(the `bsm` bundle likewise spans `tools/analysis/`), and the package defers its
+PDF imports, so an `arxiv`-only install imports cleanly and every arXiv tool
+works. `pdf_to_tex` and `page_to_tex` raise on first use instead, naming what
+to install.
 
 ## Checking a model against experiment
 
@@ -37,6 +72,16 @@ Both are reading aids. Whether a bound applies depends on the assumed
 production mode, the branching fractions and the analysis's own assumptions —
 so the source sentence travels with every record, and neither tool issues a
 verdict.
+
+`AdsSearchTool` is here because NASA ADS reaches the published astrophysical
+and cosmological literature — where relic-density, direct-detection and
+supernova-cooling bounds live — and because it can search the body of a
+paper, not just title and abstract. It needs an ADS token (`ads_token` in
+config, or `ADS_API_TOKEN`); without one the limit tools still return the
+queries to run by hand. Three live-ADS behaviours the recorded-response tests
+cannot see: an abstract search returns theory papers ahead of measurements,
+citation ranking surfaces reviews, and "between X and Y excluded" needs both
+edges present to be parsed as a range.
 
 ## Why naive PDF text extraction fails on physics
 
